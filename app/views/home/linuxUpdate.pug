@@ -1,0 +1,33 @@
+extends ../Shared/layoutHome.pug
+block jumbotron
+    script.
+        const url = "#{ url }"
+        const version = "#{ version }"
+    ul.step-list.fg-grayLight
+        li
+            h3( data-bind = " text: infoDefine[ languageIndex() ].linuxUpdate.step1 " )
+            hr.bg-green
+            .liBody
+                button#downloadClick.command-button.success( data-bind ="visible: linuxUpdateStep(), click: linuxUpdataDownloadClick ")
+                    span.icon(style = "margin-top: -1.5rem!important;")
+                        img( src = '/images/qtgate.svg' style = " height: 32px; display: inline-block; " )
+                    span QTGate v#{ version }
+                    small( data-bind = "text: infoDefine[ languageIndex() ].linuxUpdate.newVersionDownload ")
+        li
+            h3( data-bind = "text: infoDefine[ languageIndex() ].linuxUpdate.step2")
+            hr.bg-green
+            .liBody
+                p( data-bind = " text: infoDefine[ languageIndex() ].linuxUpdate.step2_detail1 " )
+                img( data-bind = " attr: { src: infoDefine[ languageIndex() ].linuxUpdate.step2J1 }" style = "height: 300px;" )
+                p( data-bind = " text: infoDefine[ languageIndex() ].linuxUpdate.step2_detail2 " )
+                img( data-bind = " attr: { src: infoDefine[ languageIndex() ].linuxUpdate.step2J2 } " style = "height: 250px;")
+        li
+            h3(data-bind = "text: infoDefine[ languageIndex() ].linuxUpdate.step3")
+            hr.bg-green
+            button.shortcut-button.bg-cyan.bg-active-darkBlue.fg-white( data-bind=" click: exitClick ")
+                span.icon.mif-exit
+                span.title( data-bind = "text: infoDefine[ languageIndex() ].linuxUpdate.exit ")
+
+
+block ScriptBlock
+    script( src='/scripts/linuxUpdate.js', type="text/javascript" )

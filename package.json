@@ -1,0 +1,62 @@
+{
+  "name": "qtgate",
+  "version": "0.8.1",
+  "license": "MIT",
+  "description": "QTGate desktop client",
+  "scripts": {
+    "postinstall": "electron-builder install-app-deps",
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "win": "electron-builder --win",
+    "linux": "electron-builder --linux",
+    "mac": "electron-builder",
+    "pre": "electron-builder install-app-deps",
+    "release": "electron-builder --win && electron-builder --mac && electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.qtgate.client",
+    "win": {
+      "target": [
+        {
+          "target": "nsis"
+        },
+        {
+          "target": "squirrel"
+        }
+      ],
+      "icon": "resources/icon.ico"
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "icon": "resources/qtgate"
+    },
+    "linux": {
+      "target": "deb"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vojtatranta/electron-windows-autoupdate.git"
+  },
+  "author": "qtgate <info@qtgate.com>",
+  "bugs": {
+    "url": "https://github.com/vojtatranta/electron-windows-autoupdate/issues"
+  },
+  "homepage": "https://www.qtgate.com",
+  "devDependencies": {
+    "electron": "~1.7.6",
+    "electron-builder-squirrel-windows": "^19.28.3"
+  },
+  "dependencies": {
+    "async": "^2.5.0",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.4",
+    "node-uuid": "^1.4.8",
+    "nodemailer": "^4.1.0",
+    "openpgp": "^2.5.10",
+    "portastic": "^1.0.1",
+    "pug": "^2.0.0-rc.4",
+    "socket.io": "^2.0.3",
+    "stylus": "^0.54.5"
+  }
+}

@@ -1,0 +1,13 @@
+doctype html
+html
+    head
+    body
+    .text
+    script( src='/scripts/socket.io.min.js', type="text/javascript" )
+    script( src="/scripts/jquery.min.js", type="text/javascript", onload="window.$ = window.jQuery = module.exports;" )
+    script.
+        const UpdateVersion = {
+            version: "#{ version }",
+            newVersion: "#{ newVersion }"
+        }
+    script( src="/scripts/checkUpData.js", type="text/javascript" )
