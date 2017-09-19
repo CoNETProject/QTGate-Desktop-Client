@@ -36,11 +36,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vojtatranta/electron-windows-autoupdate.git"
+    "url": "git+https://github.com/QTGate/QTGate-Desktop-Client.git"
   },
   "author": "qtgate <info@qtgate.com>",
   "bugs": {
-    "url": "https://github.com/vojtatranta/electron-windows-autoupdate/issues"
+    "url": "https://github.com/QTGate/QTGate-Desktop-Client/issues"
   },
   "homepage": "https://www.qtgate.com",
   "devDependencies": {
