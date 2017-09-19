@@ -74,6 +74,7 @@ let isSingleInstanceCheck = true;
 let localServer1 = null;
 let tray = null;
 let mainWindow = null;
+let updateWin = null;
 exports.port = 3000 + Math.round(10000 * Math.random());
 const dirTitleErr = [
     [
@@ -250,6 +251,17 @@ const initialize = () => {
                 contextMenu.items[1].checked = false;
                 tray.setContextMenu(contextMenu);
             }
+            if (!updateWin) {
+                updateWin = new BrowserWindow({ show: false });
+                //updateWin.webContents.openDevTools()
+                updateWin.setIgnoreMouseEvents(true);
+                updateWin.rendererSidePort = exports.port;
+                updateWin.loadURL(url_1.format({
+                    pathname: path_1.join(__dirname, 'app/update.html'),
+                    protocol: 'file:',
+                    slashes: true
+                }));
+            }
         });
     });
     app.on('window-all-closed', () => {
@@ -260,7 +272,7 @@ const initialize = () => {
     });
     app.once('quit', () => {
         if (localServer1) {
-            localServer1.destroy();
+            localServer1 = null;
         }
         app.quit();
     });

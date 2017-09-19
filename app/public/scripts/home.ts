@@ -287,6 +287,8 @@ const initLanguageCookie = () => {
             break
         case 'ja':
             break
+        case 'tw':
+            break;
         default:
             cc = 'en'
     }
@@ -2608,7 +2610,8 @@ module view_layout {
            
             $( '.mainScreen').addClass ( 'animated slideInRight' ).show().one ( animationEnd, () => {
                 $( '.mainScreen' ).removeClass ( 'animated slideInRight' )
-                
+                const body = $('html, body')
+                body.animate( { scrollTop: 0 }, 0, 'swing')
             })
             socketIo.emit ( 'agree', () => {
                 const kk = this.config()
@@ -2622,6 +2625,7 @@ module view_layout {
             this.overflowShow ( false )
             $ ( '#firstNode' ).addClass ( 'animated slideOutLeft' ).one ( animationEnd, () => {
                 $ ( '#firstNode' ).removeClass ( 'animated slideOutLeft' ).hide ()
+                
             })
             this.showMainScreen ()
 
@@ -2908,6 +2912,17 @@ module view_layout {
             uu.showExtraContent ( false )
             this.selectedQTGateRegion ( -1 )
             return false
+        }
+
+        public menuClick ( index: number, scroll: boolean ) {
+            const uu = new Array (8).fill ( false )
+            uu[index] = true
+            this.MenuItems ( uu )
+            const body = $("html, body")
+            body.stop().animate( { scrollTop: 0 }, 100, 'swing', () => { 
+                this.overflowShow ( scroll )
+            })
+           
         }
 
         public QTGateGatewayConnectRequest( data: QTGateRegions, root: this ) {

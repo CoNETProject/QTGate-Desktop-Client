@@ -135,3 +135,7 @@ declare namespace NodeJS {
         mas: boolean
     }
 }
+interface keyPair {
+    publicKey: string;
+    privateKey: string;
+}

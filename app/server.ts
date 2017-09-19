@@ -34,6 +34,7 @@ const version = remote.app.getVersion ()
 const createWindow = () => {
 	remote.getCurrentWindow().rendererCreateWindow ()
 }
+
 const saveLog = ( log: string ) => {
 	const data = `${ new Date().toUTCString () }: ${ log }\r\n`
 	Fs.appendFile ( ErrorLogFile, data, { encoding: 'utf8' }, err => {})
@@ -301,6 +302,25 @@ const encryptWithKey = ( data: string, targetKey: string, privateKey: string, pa
 	})
 }
 
+const RendererProcess = ( name: string, data: any, CallBack ) => {
+	
+	let win = new remote.BrowserWindow ({ show: false  })
+	win.setIgnoreMouseEvents ( true )
+	//win.webContents.openDevTools()
+    //win.maximize ()
+	win.once ( 'first', () => {
+
+		win.once ( 'firstCallBackFinished', returnData => {
+			win.close ()
+			win = null
+			CallBack ( returnData )
+		})
+		win.emit ( 'firstCallBack', data )
+	})
+	win.loadURL (`file://${ Path.join ( __dirname, name +'.html')}`)
+}
+
+
 export class localServer {
     private ex_app = null
     private socketServer: SocketIO.Server = null
@@ -314,8 +334,7 @@ export class localServer {
 	private newRelease: newReleaseData = null
 	private savedPasswrod = ''
 	private imapDataPool: IinputData_server [] = []
-	private CreateKeyPairProcess: ChildProcess.ChildProcess = null
-
+	private CreateKeyPairProcess = null
 	private QTGateConnectImap: number = -1
 	private sendRequestToQTGate = false
 	private qtGateConnectEmitData: IQtgateConnect = null
@@ -730,53 +749,38 @@ export class localServer {
 				return callback ()
 			})
 
-			socket.on ( 'NewKeyPair', ( data: INewKeyPair ) => {
+			socket.on ( 'NewKeyPair', ( preData: INewKeyPair ) => {
+
 				//		already have key pair
 				if ( this.config.keypair.createDate ) {
-					console.log (`already have key pair!`)
+
 					return socket.emit ( 'newKeyPairCallBack', this.config.keypair )
 				}
-				this.savedPasswrod = data.password
+				this.savedPasswrod = preData.password
 				this.listenAfterPassword ( socket )
-				return this.getPbkdf2 ( this.savedPasswrod, ( err, _data: Buffer ) => {
+				return this.getPbkdf2 ( this.savedPasswrod, ( err, Pbkdf2Password: Buffer ) => {
 
-					data.password = _data.toString ( 'hex' )
-					this.CreateKeyPairProcess = ChildProcess.fork ( Path.join ( __dirname,'newKeyPair.js'), [ data.nikeName, data.email, data.password, data.keyLength ])
-					this.CreateKeyPairProcess.once ( 'message', message => {
-
-						this.CreateKeyPairProcess.kill ()
-						this.CreateKeyPairProcess = null
-						try {
-							const ret = JSON.parse ( message )
-							return getKeyPairInfo ( ret.publicKey, ret.privateKey, data.password, ( err1?: Error, data?: keypair ) => {
-								
-								if ( err1 ) {
-									saveLog ( 'server.js getKeyPairInfo ERROR: ' + err1.message + '\r\n' + JSON.stringify ( err ))
-									return this.socketServer.emit ( 'newKeyPairCallBack' )
-								}
-								this.config.keypair = data
-								this.config.account = data.email
-								this.saveConfig ()
-								
-								const ret = KeyPairDeleteKeyDetail ( this.config.keypair, true )
-								return this.socketServer.emit ( 'newKeyPairCallBack', data )
-			
-							})
-						} catch ( ex ) {
-							return console.log ( `CreateKeyPairProcess JSON.parse catch error`, ex )
-						}
-						
+					preData.password = Pbkdf2Password.toString ( 'hex' )
+					RendererProcess ( 'newKeyPair', preData, ( retData ) => {
+						if ( !retData )
+							return this.socketServer.emit ( 'newKeyPairCallBack' )
+						saveLog (`RendererProcess finished [${ retData }]` )
+						return getKeyPairInfo ( retData.publicKey, retData.privateKey, preData.password, ( err1?: Error, keyPairInfoData?: keypair ) => {
+							
+							if ( err1 ) {
+								saveLog ( 'server.js getKeyPairInfo ERROR: ' + err1.message + '\r\n' + JSON.stringify ( err ))
+								return this.socketServer.emit ( 'newKeyPairCallBack' )
+							}
+							this.config.keypair = keyPairInfoData
+							this.config.account = keyPairInfoData.email
+							this.saveConfig ()
+							
+							const ret = KeyPairDeleteKeyDetail ( this.config.keypair, true )
+							return this.socketServer.emit ( 'newKeyPairCallBack', keyPairInfoData )
+		
+						})
 					})
-					
-					this.CreateKeyPairProcess.once ( 'exit', sign => {
-						console.log ( `CreateKeyPairProcess once exit`, sign )
-						if ( sign > 0 ) {
-							console.log ( `Async.waterfall error`, err )
-							saveLog ( 'server.js getPbkdf2 got ERROR: ' + err.message )
-							return socket.emit ( 'newKeyPairCallBack' )
-						}
-						
-					})
+									
 				})
 				
 			})
@@ -905,7 +909,7 @@ export class localServer {
 	//--------------------------   check imap setup
 
 	
-	private checkConfig ( first: boolean ) {
+	private checkConfig () {
 
 		Fs.access ( configPath, err => {
 			
@@ -915,8 +919,6 @@ export class localServer {
 			}
 			try {
 				const config = require ( configPath )
-				if ( first )
-					config.firstRun = true
 				
 				config.salt = Buffer.from ( config.salt.data )
 				this.config = config
@@ -966,7 +968,7 @@ export class localServer {
 		Crypto1.pbkdf2 ( passwrod, this.config.salt, this.config.iterations, this.config.keylen, this.config.digest, CallBack )
 	}
 
-    constructor ( firstRun: boolean, private version, private port ) {
+    constructor ( private version, private port ) {
 
         this.ex_app = Express ()
         this.ex_app.set ( 'views', Path.join ( __dirname, 'views' ))
@@ -980,20 +982,21 @@ export class localServer {
         this.ex_app.get ( '/', ( req, res ) => {
             res.render( 'home', { title: 'home' })
 		})
-		
-		this.ex_app.get ( '/agree', ( req, res ) => {
-            res.render( 'home/agree', { title: 'agree' })
-		})
 
-		this.ex_app.get ( '/newKeyPair', ( req, res ) => {
-			res.render ( 'home/newKeyPair', req.query )
+		this.ex_app.get ( '/doingUpdate', ( req, res ) => {
+			const { ver } = req.query
+			this.config.newVersion = ver
+			this.config.newVerReady = true
+			this.saveConfig ()
+			saveLog ( `this.ex_app.get ( '/doingUpdate' ) get ver = [${ req.query }]`)
+			return res.end()
 		})
 
 		this.ex_app.get ( '/update/mac', ( req, res ) => {
 			if ( !this.config.newVerReady ) {
 				return res.status ( 204 ).end()
 			}
-			 const { ver } = req.query
+			const { ver } = req.query
     		return res.json ({ url: `http://127.0.0.1:3000/latest/${ ver }/qtgate-${ ver.substr(1) }-mac.zip`})
 			
 		})
@@ -1020,7 +1023,7 @@ export class localServer {
 
         this.httpServer.listen ( port, '127.0.0.1' )
 
-		this.checkConfig ( firstRun )
+		this.checkConfig ()
 		saveLog( `Version: ${ process.version }` )
     }
 
@@ -1315,6 +1318,11 @@ export class localServer {
 		})
 	}
 
+	public shutdown () {
+		this.saveConfig ()
+		this.saveImapData()
+		this.httpServer.close ()
+	}
 	
 }
 
@@ -1451,7 +1459,42 @@ class ImapConnect extends Imap.imapPeer {
 }
 
 const port = remote.getCurrentWindow().rendererSidePort
-console.log (`server start with port[${ port }] version [${ version }]`)
-saveLog (`server start with port[${ port }] version [${ version }]`)
-const server = new localServer ( true, version, port )
 
+const server = new localServer ( version, port )
+saveLog ( `***************** start server at port [${ port }] version = [${ version }] ***************** `)
+const _doUpdate = ( tag_name ) => {
+	let url = null
+	
+    if ( process.platform === 'darwin' ) {
+        url = `http://127.0.0.1:3000/update/mac?ver=${ tag_name }`
+    } else 
+    if ( process.platform === 'win32' ) {
+        url = `http://127.0.0.1:3000/latest/${ tag_name }/`
+    } else {
+		return
+	}
+	const autoUpdater = remote.require ('electron').autoUpdater
+    autoUpdater.on ( 'update-availabe', () => {
+        console.log ( 'update available' )
+    })
+
+    autoUpdater.on ( 'error', err => {
+        console.log ( 'systemError autoUpdater.on error ' + err.message )
+    })
+
+    autoUpdater.on('checking-for-update', () => {
+        console.log ( `checking-for-update [${ url }]` )
+    })
+
+    autoUpdater.on('update-not-available', () => {
+        console.log ( 'update-not-available' )
+    })
+
+    autoUpdater.on('update-downloaded', e => {
+        console.log ( "Install?" )
+            autoUpdater.quitAndInstall ()
+    })
+
+    autoUpdater.setFeedURL ( url )
+    autoUpdater.checkForUpdates ()
+}

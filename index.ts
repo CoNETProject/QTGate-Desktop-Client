@@ -1,3 +1,8 @@
+/**
+ * 
+ * 
+ *  
+ */
 import * as Fs from 'fs'
 import * as Os from 'os'
 import { join, resolve, basename } from  'path'
@@ -82,6 +87,7 @@ let isSingleInstanceCheck = true
 let localServer1 = null
 let tray = null
 let mainWindow = null
+let updateWin = null
 export let port = 3000 + Math.round ( 10000 * Math.random ())
 const dirTitleErr = [
     [
@@ -239,6 +245,7 @@ const findPort = ( CallBack ) => {
         return findPort ( CallBack )
     })
 }
+
 const initialize = () => {
 
     app.once ( 'ready', () => {
@@ -273,6 +280,19 @@ const initialize = () => {
                 contextMenu.items[1].checked = false
                 tray.setContextMenu ( contextMenu )
             }
+
+            if ( ! updateWin ) {
+                updateWin = new BrowserWindow ({ show: false })
+                //updateWin.webContents.openDevTools()
+                updateWin.setIgnoreMouseEvents ( true )
+                updateWin.rendererSidePort = port
+                updateWin.loadURL ( format ({
+                    pathname: join( __dirname, 'app/update.html'),
+                    protocol: 'file:',
+                    slashes: true
+                }))
+            }
+
         })
         
     })
@@ -287,7 +307,7 @@ const initialize = () => {
 
     app.once ( 'quit', () => {
         if ( localServer1 ) {
-            localServer1.destroy()
+            localServer1 = null
         }
         app.quit()
     })

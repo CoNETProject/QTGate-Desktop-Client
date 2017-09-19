@@ -264,8 +264,23 @@ const encryptWithKey = (data, targetKey, privateKey, password, CallBack) => {
         CallBack(err);
     });
 };
+const RendererProcess = (name, data, CallBack) => {
+    let win = new remote.BrowserWindow({ show: false });
+    win.setIgnoreMouseEvents(true);
+    //win.webContents.openDevTools()
+    //win.maximize ()
+    win.once('first', () => {
+        win.once('firstCallBackFinished', returnData => {
+            win.close();
+            win = null;
+            CallBack(returnData);
+        });
+        win.emit('firstCallBack', data);
+    });
+    win.loadURL(`file://${Path.join(__dirname, name + '.html')}`);
+};
 class localServer {
-    constructor(firstRun, version, port) {
+    constructor(version, port) {
         this.version = version;
         this.port = port;
         this.ex_app = null;
@@ -295,11 +310,13 @@ class localServer {
         this.ex_app.get('/', (req, res) => {
             res.render('home', { title: 'home' });
         });
-        this.ex_app.get('/agree', (req, res) => {
-            res.render('home/agree', { title: 'agree' });
-        });
-        this.ex_app.get('/newKeyPair', (req, res) => {
-            res.render('home/newKeyPair', req.query);
+        this.ex_app.get('/doingUpdate', (req, res) => {
+            const { ver } = req.query;
+            this.config.newVersion = ver;
+            this.config.newVerReady = true;
+            this.saveConfig();
+            saveLog(`this.ex_app.get ( '/doingUpdate' ) get ver = [${req.query}]`);
+            return res.end();
         });
         this.ex_app.get('/update/mac', (req, res) => {
             if (!this.config.newVerReady) {
@@ -324,7 +341,7 @@ class localServer {
             this.socketConnectListen(socket);
         });
         this.httpServer.listen(port, '127.0.0.1');
-        this.checkConfig(firstRun);
+        this.checkConfig();
         saveLog(`Version: ${process.version}`);
     }
     saveConfig() {
@@ -679,45 +696,30 @@ class localServer {
             this.saveConfig();
             return callback();
         });
-        socket.on('NewKeyPair', (data) => {
+        socket.on('NewKeyPair', (preData) => {
             //		already have key pair
             if (this.config.keypair.createDate) {
-                console.log(`already have key pair!`);
                 return socket.emit('newKeyPairCallBack', this.config.keypair);
             }
-            this.savedPasswrod = data.password;
+            this.savedPasswrod = preData.password;
             this.listenAfterPassword(socket);
-            return this.getPbkdf2(this.savedPasswrod, (err, _data) => {
-                data.password = _data.toString('hex');
-                this.CreateKeyPairProcess = ChildProcess.fork(Path.join(__dirname, 'newKeyPair.js'), [data.nikeName, data.email, data.password, data.keyLength]);
-                this.CreateKeyPairProcess.once('message', message => {
-                    this.CreateKeyPairProcess.kill();
-                    this.CreateKeyPairProcess = null;
-                    try {
-                        const ret = JSON.parse(message);
-                        return getKeyPairInfo(ret.publicKey, ret.privateKey, data.password, (err1, data) => {
-                            if (err1) {
-                                saveLog('server.js getKeyPairInfo ERROR: ' + err1.message + '\r\n' + JSON.stringify(err));
-                                return this.socketServer.emit('newKeyPairCallBack');
-                            }
-                            this.config.keypair = data;
-                            this.config.account = data.email;
-                            this.saveConfig();
-                            const ret = KeyPairDeleteKeyDetail(this.config.keypair, true);
-                            return this.socketServer.emit('newKeyPairCallBack', data);
-                        });
-                    }
-                    catch (ex) {
-                        return console.log(`CreateKeyPairProcess JSON.parse catch error`, ex);
-                    }
-                });
-                this.CreateKeyPairProcess.once('exit', sign => {
-                    console.log(`CreateKeyPairProcess once exit`, sign);
-                    if (sign > 0) {
-                        console.log(`Async.waterfall error`, err);
-                        saveLog('server.js getPbkdf2 got ERROR: ' + err.message);
-                        return socket.emit('newKeyPairCallBack');
-                    }
+            return this.getPbkdf2(this.savedPasswrod, (err, Pbkdf2Password) => {
+                preData.password = Pbkdf2Password.toString('hex');
+                RendererProcess('newKeyPair', preData, (retData) => {
+                    if (!retData)
+                        return this.socketServer.emit('newKeyPairCallBack');
+                    saveLog(`RendererProcess finished [${retData}]`);
+                    return getKeyPairInfo(retData.publicKey, retData.privateKey, preData.password, (err1, keyPairInfoData) => {
+                        if (err1) {
+                            saveLog('server.js getKeyPairInfo ERROR: ' + err1.message + '\r\n' + JSON.stringify(err));
+                            return this.socketServer.emit('newKeyPairCallBack');
+                        }
+                        this.config.keypair = keyPairInfoData;
+                        this.config.account = keyPairInfoData.email;
+                        this.saveConfig();
+                        const ret = KeyPairDeleteKeyDetail(this.config.keypair, true);
+                        return this.socketServer.emit('newKeyPairCallBack', keyPairInfoData);
+                    });
                 });
             });
         });
@@ -825,7 +827,7 @@ class localServer {
         });
     }
     //--------------------------   check imap setup
-    checkConfig(first) {
+    checkConfig() {
         Fs.access(configPath, err => {
             if (err) {
                 createWindow();
@@ -833,8 +835,6 @@ class localServer {
             }
             try {
                 const config = require(configPath);
-                if (first)
-                    config.firstRun = true;
                 config.salt = Buffer.from(config.salt.data);
                 this.config = config;
                 if (this.config.keypair && this.config.keypair.publicKeyID)
@@ -1130,6 +1130,11 @@ class localServer {
             });
         });
     }
+    shutdown() {
+        this.saveConfig();
+        this.saveImapData();
+        this.httpServer.close();
+    }
 }
 exports.localServer = localServer;
 class ImapConnect extends Imap.imapPeer {
@@ -1248,6 +1253,36 @@ class ImapConnect extends Imap.imapPeer {
     }
 }
 const port = remote.getCurrentWindow().rendererSidePort;
-console.log(`server start with port[${port}] version [${version}]`);
-saveLog(`server start with port[${port}] version [${version}]`);
-const server = new localServer(true, version, port);
+const server = new localServer(version, port);
+saveLog(`***************** start server at port [${port}] version = [${version}] ***************** `);
+const _doUpdate = (tag_name) => {
+    let url = null;
+    if (process.platform === 'darwin') {
+        url = `http://127.0.0.1:3000/update/mac?ver=${tag_name}`;
+    }
+    else if (process.platform === 'win32') {
+        url = `http://127.0.0.1:3000/latest/${tag_name}/`;
+    }
+    else {
+        return;
+    }
+    const autoUpdater = remote.require('electron').autoUpdater;
+    autoUpdater.on('update-availabe', () => {
+        console.log('update available');
+    });
+    autoUpdater.on('error', err => {
+        console.log('systemError autoUpdater.on error ' + err.message);
+    });
+    autoUpdater.on('checking-for-update', () => {
+        console.log(`checking-for-update [${url}]`);
+    });
+    autoUpdater.on('update-not-available', () => {
+        console.log('update-not-available');
+    });
+    autoUpdater.on('update-downloaded', e => {
+        console.log("Install?");
+        autoUpdater.quitAndInstall();
+    });
+    autoUpdater.setFeedURL(url);
+    autoUpdater.checkForUpdates();
+};

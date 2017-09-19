@@ -6,31 +6,31 @@ html
 		.mainScreen( style = "z-index: 1020;")
 			.ui.left.vertical.fluid.tabular.menu.fixed( style="width:75px!important; margin: 10px!important; margin-top: 40px!important; ")
 				
-				a.item( data-bind = "css:{ active: MenuItems() [0]}, click: function(){ MenuItems([ true, false, false, false, false, false, false, false ]); overflowShow( true )}")
+				a.item( data-bind = "css:{ active: MenuItems() [0]}, click: function(){ return menuClick (0, true )}")
 					img.ui.mini.image( src = "/images/256x256.png" style="width:25px!important;")
-				a.item( data-bind = "css:{ active: MenuItems() [1]}, click: function(){ MenuItems([ false, true, false, false, false, false, false, false ]);overflowShow( false )}")
+				a.item( data-bind = "css:{ active: MenuItems() [1]}, click: function(){ return menuClick (1, false )}")
 					.menuItem
 						i.icon.privacy.large.green
 				//-		IMAP account
-				a.item( data-bind = "css:{ active: MenuItems() [2]}, click: function(){ MenuItems([ false, false, true, false, false, false, false, false ]);overflowShow( false )}, visible: imapInputFormActive()")
+				a.item( data-bind = "css:{ active: MenuItems() [2]}, click: function(){ return menuClick (2, false )}, visible: imapInputFormActive()")
 					.menuItem
 						i.address.card.outline.icon.large.blue
 				//-		QTGate connect & region area
-				a.item( data-bind = "css:{ active: MenuItems() [3]}, click: function(){ MenuItems([ false, false, false, true, false, false, false, false ]);overflowShow( true )}, visible: QTGateConnectActive() || QTGateConnectRegionActive")
+				a.item( data-bind = "css:{ active: MenuItems() [3]}, click: function(){ return menuClick ( 3, true )}, visible: QTGateConnectActive() || QTGateConnectRegionActive")
 					.menuItem
 						i.exchange.icon.large.purple
 				//-		QTGate file storage
-				a.item( data-bind = "css:{ active: MenuItems() [4]}, click: function(){ MenuItems([ false, false, false, false, true, false, false, false ]);overflowShow( false )}, visible: false")
+				a.item( data-bind = "css:{ active: MenuItems() [4]}, click: function(){ return menuClick (4, false )}, visible: false")
 					.menuItem
 						i.cloud.upload.icon.large.violet
 				//-		QTGate message
-				a.item( data-bind = "css:{ active: MenuItems() [5]}, click: function(){ MenuItems([ false, false, false, false, false, true, false, false ]);overflowShow( false )}, visible: false")
+				a.item( data-bind = "css:{ active: MenuItems() [5]}, click: function(){ return menuClick (5, false )}, visible: false")
 					.menuItem
 						i.talk.outline.icon.large.pink
-				a.item( data-bind = "css:{ active: MenuItems() [6]}, click: function(){ MenuItems([ false, false, false, false, false, false, true, false ]);overflowShow( true )}")
+				a.item( data-bind = "css:{ active: MenuItems() [6]}, click: function(){ return menuClick (6, true )}")
 					.menuItem
 						i.map.outline.icon.large.yellow
-				a.item( data-bind = "css:{ active: MenuItems() [7]}, visible: config().newVerReady,click: function(){ MenuItems([ false, false, false, false, false, false, false, true ]);overflowShow( false )}")
+				a.item( data-bind = "css:{ active: MenuItems() [7]}, visible: config().newVerReady,click: function(){ return menuClick (7, true )}")
 					.menuItem
 						i.icon.setting.big.loading.red( style = "margin-left: -6px;")
 					

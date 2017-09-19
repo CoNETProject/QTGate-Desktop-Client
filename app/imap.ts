@@ -841,7 +841,6 @@ export class qtGateImap extends Event.EventEmitter {
 
 }
 
-
 export class qtGateImapwrite extends qtGateImap {
 
     private ready = false

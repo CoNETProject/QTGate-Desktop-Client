@@ -4,46 +4,33 @@ const Fs = require("fs");
 const Os = require("os");
 const Path = require("path");
 const Async = require("async");
-const { autoUpdater, BrowserWindow } = require("electron");
+const $ = require('jquery');
+const { autoUpdater, remote } = require("electron");
 const preQTGateFolder = Path.join(Os.homedir(), '.QTGate');
 const QTGateFolder = Path.join(Os.homedir(), '.QTGate/latest');
-const _doUpdate = (url) => {
-    autoUpdater.on('update-availabe', () => {
-        console.log('update available');
-    });
-    autoUpdater.on('error', err => {
-        console.log('systemError autoUpdater.on error ' + err.message);
-    });
-    autoUpdater.on('checking-for-update', () => {
-        console.log(`checking-for-update [${url}]`);
-    });
-    autoUpdater.on('update-not-available', () => {
-        console.log('update-not-available');
-    });
-    autoUpdater.on('update-downloaded', e => {
-        console.log("Install?");
-        autoUpdater.quitAndInstall();
-    });
-    autoUpdater.setFeedURL(url);
-    autoUpdater.checkForUpdates();
+const ErrorLogFile = Path.join(preQTGateFolder, 'systemError.log');
+const saveLog = (log) => {
+    const data = `${new Date().toUTCString()}: ${log}\r\n`;
+    Fs.appendFile(ErrorLogFile, data, { encoding: 'utf8' }, err => { });
 };
 const hideWindowDownload = (downloadUrl, saveFilePath, Callback) => {
     if (!downloadUrl) {
-        return console.log(`hideWindowDownload downloadUrl string null error`);
+        saveLog(`hideWindowDownload downloadUrl string null error! downloadUrl = [${downloadUrl}], saveFilePath = [${saveFilePath}]`);
+        return Callback(new Error('no url'));
     }
     Fs.access(saveFilePath, err => {
         if (!err) {
-            console.log(`[${saveFilePath}] already have skip!`);
+            saveLog(`[${saveFilePath}] already have skip!`);
             return Callback();
         }
-        let win = new BrowserWindow({ visible: false });
+        let win = new remote.BrowserWindow({ visible: false });
         win.setIgnoreMouseEvents(true);
         let startTime = 0;
         let downloadBytes = 0;
         win.webContents.session.once('will-download', (event, item, webContents) => {
             item.setSavePath(saveFilePath);
             startTime = new Date().getTime();
-            console.log(`start download file from [${downloadUrl}]\r\n saveTo [${saveFilePath}]`);
+            //console.log ( `start download file from [${ downloadUrl }]\r\n saveTo [${ saveFilePath }]`)
             /*
             const DEBUG = true
                 item.on ( 'updated', ( event, state ) => {
@@ -65,23 +52,22 @@ const hideWindowDownload = (downloadUrl, saveFilePath, Callback) => {
                 })
             */
             item.once('done', (event, state) => {
+                win.close();
                 const stopTime = new Date().getTime();
-                win.destroy();
                 if (state === 'completed') {
                     const fileLength = Math.round(downloadBytes / 1024);
                     const speed = fileLength / ((stopTime - startTime) / 1000);
-                    console.log(`hideWindowDownload: success: [${item.getFilename()}] totalBytes[${fileLength}] KBytes speed[${speed}]Kb/s`);
-                    console.log(`BrowserWindow.getAllWindows() = [${BrowserWindow.getAllWindows().length}]`);
+                    saveLog(`hideWindowDownload: success: [${item.getFilename()}] totalBytes[${fileLength}] KBytes speed[${speed}]Kb/s`);
                     return Callback();
                 }
-                console.log(`${downloadUrl} Download failed: ${state}`);
+                saveLog(`${downloadUrl} Download failed: ${state}`);
                 return Fs.unlink(saveFilePath, err => {
                     return Callback(new Error(state));
                 });
             });
         });
         win.once('closed', () => {
-            console.log(`${downloadUrl} on closed, windows = [${BrowserWindow.getAllWindows().length}]`);
+            saveLog(`${downloadUrl} on closed, windows = [${remote.BrowserWindow.getAllWindows().length}]`);
             win = null;
         });
         return win.loadURL(downloadUrl);
@@ -142,30 +128,41 @@ const getDownloadFiles = (name, assets, CallBack) => {
         }, CallBack);
     });
 };
-const getVersion = (CallBack) => {
-    const saveFile = Path.join(preQTGateFolder, 'ver.json');
-    return Async.serial([
-        next => Fs.unlink(saveFile, next),
-        next => hideWindowDownload('https://api.github.com/repos/QTGate/QTGate-desktop-client/releases/latest', saveFile, next)
-    ], err => {
-        if (err) {
-            console.log(`getVersion return error`, err);
-            return CallBack(err);
+$(document).ready(() => {
+    const url = 'https://api.github.com/repos/QTGate/QTGate-Desktop-Client/releases/latest';
+    $.getJSON(url)
+        .done(json => {
+        if (!json) {
+            saveLog(`Check update got null JSON!`);
+            return remote.getCurrentWindow().close();
         }
-        console.log(`getVersion success`);
+        const localVer = 'v' + remote.app.getVersion();
+        if (localVer <= json.tag_name) {
+            saveLog(`same version localVer = [${localVer}] tag_name = [${json.tag_name}]`);
+            return remote.getCurrentWindow().close();
+        }
+        return getDownloadFiles(json.tag_name, json.assets, err => {
+            if (err) {
+                saveLog(`getDownloadFiles tag_name = [${json.tag_name}], assets = [${json.assets}] got error!`);
+                return remote.getCurrentWindow().close();
+            }
+            const url = `http://127.0.0.1:${remote.getCurrentWindow().rendererSidePort}/doingUpdate?ver='${json.tag_name}'`;
+            $.ajax({
+                type: 'GET',
+                url: url,
+                timeout: 5000,
+                success: () => {
+                    saveLog(`new update [${json.tag_name}] download success, ready for update!`);
+                    return remote.getCurrentWindow().close();
+                },
+                error: (xhr, textStatus, errorThrown) => {
+                    saveLog(`local server url [${url}] do not working`);
+                    return remote.getCurrentWindow().close();
+                }
+            });
+        });
+    }).fail((jqxhr, textStatus, error) => {
+        saveLog(`Check update got ERROR! url = [${url}] ${JSON.stringify(error)}`);
+        return remote.getCurrentWindow().close();
     });
-};
-exports.doUpdate = (tag_name, assets) => {
-    return getDownloadFiles(tag_name, assets, err => {
-        if (err) {
-            return console.log(err);
-        }
-        if (process.platform === 'darwin') {
-            const url = `http://127.0.0.1:3000/update/mac?ver=${tag_name}`;
-            return _doUpdate(url);
-        }
-        if (process.platform === 'win32') {
-            return _doUpdate(`http://127.0.0.1:3000/latest/${tag_name}/`);
-        }
-    });
-};
+});
