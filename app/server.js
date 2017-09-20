@@ -264,21 +264,29 @@ const encryptWithKey = (data, targetKey, privateKey, password, CallBack) => {
         CallBack(err);
     });
 };
-const RendererProcess = (name, data, CallBack) => {
-    let win = new remote.BrowserWindow({ show: false });
-    win.setIgnoreMouseEvents(true);
-    //win.webContents.openDevTools()
-    //win.maximize ()
-    win.once('first', () => {
-        win.once('firstCallBackFinished', returnData => {
-            win.close();
-            win = null;
-            CallBack(returnData);
+class RendererProcess {
+    constructor(name, data, CallBack) {
+        this.win = null;
+        this.win = new remote.BrowserWindow({ show: false });
+        this.win.setIgnoreMouseEvents(true);
+        //win.webContents.openDevTools()
+        //win.maximize ()
+        this.win.once('first', () => {
+            this.win.once('firstCallBackFinished', returnData => {
+                this.win.close();
+                this.win = null;
+                CallBack(returnData);
+            });
+            this.win.emit('firstCallBack', data);
         });
-        win.emit('firstCallBack', data);
-    });
-    win.loadURL(`file://${Path.join(__dirname, name + '.html')}`);
-};
+        this.win.loadURL(`file://${Path.join(__dirname, name + '.html')}`);
+    }
+    cancel() {
+        if (this.win && typeof this.win.destroy === 'function') {
+            this.win.destroy();
+        }
+    }
+}
 class localServer {
     constructor(version, port) {
         this.version = version;
@@ -705,7 +713,8 @@ class localServer {
             this.listenAfterPassword(socket);
             return this.getPbkdf2(this.savedPasswrod, (err, Pbkdf2Password) => {
                 preData.password = Pbkdf2Password.toString('hex');
-                RendererProcess('newKeyPair', preData, (retData) => {
+                this.CreateKeyPairProcess = new RendererProcess('newKeyPair', preData, (retData) => {
+                    this.CreateKeyPairProcess = null;
                     if (!retData)
                         return this.socketServer.emit('newKeyPairCallBack');
                     saveLog(`RendererProcess finished [${retData}]`);
@@ -788,9 +797,7 @@ class localServer {
         });
         socket.on('CancelCreateKeyPair', () => {
             if (this.CreateKeyPairProcess) {
-                console.log(`CreateKeyPairProcess kill!`);
-                this.CreateKeyPairProcess.kill();
-                this.CreateKeyPairProcess = null;
+                this.CreateKeyPairProcess.cancel();
             }
         });
         socket.on('checkUpdateBack', (jsonData) => {

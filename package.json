@@ -1,6 +1,6 @@
 {
   "name": "qtgate",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "license": "MIT",
   "description": "QTGate desktop client",
   "scripts": {
@@ -14,6 +14,9 @@
     "release": "electron-builder --win && electron-builder --mac && electron-builder --linux"
   },
   "build": {
+    "squirrelWindows": {
+      "remoteReleases": "https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v0.8.5/"
+    },
     "appId": "com.qtgate.client",
     "win": {
       "target": [

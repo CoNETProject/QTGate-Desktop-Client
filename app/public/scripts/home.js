@@ -344,6 +344,7 @@ const infoDefine = [
     {
         QTGateInfo: {
             title: 'QTGate功能简介',
+            version: '本机QTGate版本：v',
             detail: [{
                     header: '隐身匿名自由上网',
                     color: '#a333c8',
@@ -601,6 +602,7 @@ const infoDefine = [
     }, {
         QTGateInfo: {
             title: 'QTGate機能紹介',
+            version: '本機QTGateバージョン：v',
             detail: [{
                     color: '#a333c8',
                     icon: 'exchange',
@@ -871,6 +873,7 @@ const infoDefine = [
     }, {
         QTGateInfo: {
             title: 'QTGate Features',
+            version: 'Installed QTGate veriosn：v',
             detail: [{
                     color: '#a333c8',
                     icon: 'exchange',
@@ -1125,6 +1128,7 @@ const infoDefine = [
     }, {
         QTGateInfo: {
             title: 'QTGate功能簡介',
+            version: '本機安裝的QTGate版本：v',
             detail: [{
                     color: '#a333c8',
                     icon: 'exchange',
@@ -2275,11 +2279,11 @@ var view_layout;
             socketIo.on('qtGateConnect', (data) => {
                 this.imapInputFormActive(true);
                 this.QTGateConnectActive(true);
-                this.MenuItems([false, false, false, true, false]);
+                this.menuClick(3, true);
                 //      have no imap data 
                 if (!data) {
                     //      show imap manager area
-                    this.MenuItems([false, false, true, false, false]);
+                    this.menuClick(2, true);
                     return this.QTGateConnectActive(false);
                 }
                 /*

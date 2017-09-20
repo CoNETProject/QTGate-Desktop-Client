@@ -302,23 +302,31 @@ const encryptWithKey = ( data: string, targetKey: string, privateKey: string, pa
 	})
 }
 
-const RendererProcess = ( name: string, data: any, CallBack ) => {
+class RendererProcess {
+	private win = null
+	constructor ( name: string, data: any, CallBack ) {
+		this.win = new remote.BrowserWindow ({ show: false  })
+		this.win.setIgnoreMouseEvents ( true )
+		//win.webContents.openDevTools()
+		//win.maximize ()
+		this.win.once ( 'first', () => {
 	
-	let win = new remote.BrowserWindow ({ show: false  })
-	win.setIgnoreMouseEvents ( true )
-	//win.webContents.openDevTools()
-    //win.maximize ()
-	win.once ( 'first', () => {
-
-		win.once ( 'firstCallBackFinished', returnData => {
-			win.close ()
-			win = null
-			CallBack ( returnData )
+			this.win.once ( 'firstCallBackFinished', returnData => {
+				this.win.close ()
+				this.win = null
+				CallBack ( returnData )
+			})
+			this.win.emit ( 'firstCallBack', data )
 		})
-		win.emit ( 'firstCallBack', data )
-	})
-	win.loadURL (`file://${ Path.join ( __dirname, name +'.html')}`)
+		this.win.loadURL (`file://${ Path.join ( __dirname, name +'.html')}`)
+	}
+	public cancel () {
+		if ( this.win && typeof this.win.destroy ==='function' ) {
+			this.win.destroy()
+		}
+	}
 }
+
 
 
 export class localServer {
@@ -334,7 +342,7 @@ export class localServer {
 	private newRelease: newReleaseData = null
 	private savedPasswrod = ''
 	private imapDataPool: IinputData_server [] = []
-	private CreateKeyPairProcess = null
+	private CreateKeyPairProcess: RendererProcess = null
 	private QTGateConnectImap: number = -1
 	private sendRequestToQTGate = false
 	private qtGateConnectEmitData: IQtgateConnect = null
@@ -761,7 +769,8 @@ export class localServer {
 				return this.getPbkdf2 ( this.savedPasswrod, ( err, Pbkdf2Password: Buffer ) => {
 
 					preData.password = Pbkdf2Password.toString ( 'hex' )
-					RendererProcess ( 'newKeyPair', preData, ( retData ) => {
+					this.CreateKeyPairProcess = new RendererProcess ( 'newKeyPair', preData, ( retData ) => {
+						this.CreateKeyPairProcess = null
 						if ( !retData )
 							return this.socketServer.emit ( 'newKeyPairCallBack' )
 						saveLog (`RendererProcess finished [${ retData }]` )
@@ -863,9 +872,7 @@ export class localServer {
 			
 			socket.on ( 'CancelCreateKeyPair', () => {
 				if ( this.CreateKeyPairProcess ) {
-					console.log (`CreateKeyPairProcess kill!`)
-					this.CreateKeyPairProcess.kill ()
-					this.CreateKeyPairProcess = null
+					this.CreateKeyPairProcess.cancel()
 				}
 			})
 			

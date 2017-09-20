@@ -50,7 +50,10 @@ block jumbotron1
 				.ui.attached.segment
 					span( data-bind = " html: detail " style = "color: rgba(0,0,0,0.5)")
 		#QTGateInfo.content( data-bind = " visible: MenuItems()[0]" )
-			.ui.header( data-bind = " text: infoDefine[ languageIndex() ].QTGateInfo.title " style = "color: grey; margin-left: 30px; margin-right: 100px;")
+			.ui.header
+				span( data-bind = " text: infoDefine[ languageIndex() ].QTGateInfo.title " style = "color: grey; margin-left: 30px; margin-right: 100px;")
+				p( style = "font-size: small;padding-left: 2.4em; color: green;font-weight: lighter;" data-bind = " text: infoDefine[ languageIndex() ].QTGateInfo.version + config().version ")
+
 			.detailSegment( data-bind = " foreach: infoDefine[ languageIndex() ].QTGateInfo.detail " )
 				.ui.top.attached.header( data-bind = " visible: header && header.length " )
 					

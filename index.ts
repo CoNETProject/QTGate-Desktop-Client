@@ -220,7 +220,7 @@ const makeSingleInstance = () => {
     if ( process.mas )
         return false
     return app.makeSingleInstance (() => {
-        //Server.createWindow ( false )
+        return createWindow ()
     })
 }
 
@@ -249,6 +249,8 @@ const findPort = ( CallBack ) => {
 const initialize = () => {
 
     app.once ( 'ready', () => {
+        if ( (isSingleInstanceCheck = makeSingleInstance ()))
+            app.exit ()
         series([
             next => checkFolder ( QTGateFolder, next ),
             next => checkFolder ( QTGateLatest, next )

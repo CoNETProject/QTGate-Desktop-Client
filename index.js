@@ -1,5 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ *
+ *
+ *
+ */
 const Fs = require("fs");
 const Os = require("os");
 const path_1 = require("path");
@@ -198,7 +203,7 @@ const makeSingleInstance = () => {
     if (process.mas)
         return false;
     return app.makeSingleInstance(() => {
-        //Server.createWindow ( false )
+        return createWindow();
     });
 };
 const sendFromServer = message => {
@@ -223,6 +228,8 @@ const findPort = (CallBack) => {
 };
 const initialize = () => {
     app.once('ready', () => {
+        if ((isSingleInstanceCheck = makeSingleInstance()))
+            app.exit();
         async_1.series([
             next => checkFolder(QTGateFolder, next),
             next => checkFolder(QTGateLatest, next)
