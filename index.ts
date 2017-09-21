@@ -82,7 +82,7 @@ const debug = false
 enum lang { 'zh', 'ja', 'en', 'tw' }
 const QTGateFolder = join ( Os.homedir(), '.QTGate' )
 const QTGateLatest = join ( QTGateFolder, 'latest' )
-const logFile = join ( QTGateFolder, 'systemLog.log' )
+
 let isSingleInstanceCheck = true
 let localServer1 = null
 let tray = null
@@ -253,12 +253,10 @@ const initialize = () => {
             app.exit ()
         series([
             next => checkFolder ( QTGateFolder, next ),
-            next => checkFolder ( QTGateLatest, next )
+            next => checkFolder ( QTGateLatest, next ),
         ], err => {
-            if ( err ) {
-                return showError ( dirTitleErr[0][localLanguage], `${dirTitleErr[1][localLanguage].replace (/__folder__/, QTGateFolder )}:[ ${ JSON.stringify ( err )} ]`, app )
-            }
-            if ( ! localServer1 && ! ( isSingleInstanceCheck = makeSingleInstance ())) {
+
+            if ( ! localServer1 ) {
                 findPort(() => {
                     localServer1 = new BrowserWindow ({ show: false })
                     localServer1.setIgnoreMouseEvents ( true )

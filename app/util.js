@@ -78,7 +78,7 @@ const checkUpdateFolder = (updateFolder, CallBack) => {
         if (err) {
             return Fs.mkdir(updateFolder, err1 => {
                 if (err1) {
-                    console.log(`Fs.mkdir [${updateFolder}] got ERROR: `, err1);
+                    saveLog(`Fs.mkdir [${updateFolder}] got ERROR: [${JSON.stringify(err1)}]`);
                     return CallBack(err1);
                 }
                 return CallBack();
@@ -101,9 +101,9 @@ const getDownloadFiles = (name, assets, CallBack) => {
     const verName = name.substr(1);
     checkUpdateFolder(updateFolder, err => {
         if (err) {
-            return console.log(`checkUpdateFolder got error! stop getDownloadFiles`, err);
+            return saveLog(`checkUpdateFolder got error! stop getDownloadFiles [${JSON.stringify(err)}]`);
         }
-        console.log(`getDownloadFiles updateFolder =[${updateFolder}]`);
+        saveLog(`getDownloadFiles updateFolder =[${updateFolder}]`);
         const downloadFiles = [];
         switch (process.platform) {
             case 'win32': {
@@ -122,7 +122,7 @@ const getDownloadFiles = (name, assets, CallBack) => {
                 break;
             }
         }
-        console.log(`downloadFiles = ${downloadFiles} `);
+        saveLog(`downloadFiles = ${downloadFiles} `);
         return Async.eachSeries(downloadFiles, (n, next) => {
             hideWindowDownload(getUrlFromAssets(n, assets), Path.join(updateFolder, n), next);
         }, CallBack);
@@ -137,13 +137,14 @@ $(document).ready(() => {
             return remote.getCurrentWindow().close();
         }
         const localVer = 'v' + remote.app.getVersion();
-        if (localVer <= json.tag_name) {
+        if (json.tag_name <= localVer) {
             saveLog(`same version localVer = [${localVer}] tag_name = [${json.tag_name}]`);
             return remote.getCurrentWindow().close();
         }
+        saveLog(`localVer[${localVer}] > json.tag_name [${json.tag_name}] [${json.tag_name <= localVer}]`);
         return getDownloadFiles(json.tag_name, json.assets, err => {
             if (err) {
-                saveLog(`getDownloadFiles tag_name = [${json.tag_name}], assets = [${json.assets}] got error!`);
+                saveLog(`getDownloadFiles tag_name = [${json.tag_name}], assets = [${json.assets}] got error! [${err}]`);
                 return remote.getCurrentWindow().close();
             }
             const url = `http://127.0.0.1:${remote.getCurrentWindow().rendererSidePort}/doingUpdate?ver='${json.tag_name}'`;

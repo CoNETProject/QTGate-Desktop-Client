@@ -12,8 +12,17 @@ const Event = require("events");
 const Uuid = require("node-uuid");
 const Async = require("async");
 const crypto = require("crypto");
+const path_1 = require("path");
+const os_1 = require("os");
 const MAX_INT = 9007199254740992;
 const debug = true;
+const QTGateFolder = path_1.join(os_1.homedir(), '.QTGate');
+const ErrorLogFile = path_1.join(QTGateFolder, 'imap.log');
+const saveLog = (log) => {
+    const Fs = require('fs');
+    const data = `${new Date().toUTCString()}: ${log}\r\n`;
+    Fs.appendFile(ErrorLogFile, data, err => { });
+};
 const debugOut = (text, isIn) => {
     console.log(`【${new Date().toISOString()}】${isIn ? '<=' : '=>'} 【${text}】`);
 };
@@ -98,6 +107,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                 }
                 case 'I':
                 case 'D': //  NODE
+                case 'N':
                 case 'A': {
                     clearTimeout(this.appendWaitResponsrTimeOut);
                     clearTimeout(this.idleResponsrTime);
@@ -114,7 +124,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                     return callback();
                 }
                 default:
-                    return this.serverCommandError(new Error(`_commandPreProcess got switch default error!`), callback);
+                    return this.serverCommandError(new Error(`_commandPreProcess got switch default error! commandLine = [${commandLine[0]}]`), callback);
             }
         }
         this.login(commandLine, cmdArray, _next, callback);
@@ -194,6 +204,7 @@ class ImapServerSwitchStream extends Stream.Transform {
     capability() {
         this.doCommandCallback = (err) => {
             if (this.imapServer.listenFolder) {
+                console.log(`Doing openBox `);
                 return this.openBox((err, newMail) => {
                     if (err) {
                         console.log(`========================= [ this.openBox return err ] do this.end ()`, err);
@@ -773,7 +784,7 @@ class qtGateImapwrite extends qtGateImap {
 exports.qtGateImapwrite = qtGateImapwrite;
 class qtGateImapRead extends qtGateImap {
     constructor(IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, newMail) {
-        super(IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, null, false, newMail);
+        super(IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, null, true, newMail);
         this.once('ready', () => {
             console.log(`qtGateImapRead ready!`);
         });
@@ -790,6 +801,7 @@ exports.getMailAttached = (email) => {
     return Buffer.from(attachment.toString(), 'base64');
 };
 exports.imapAccountTest = (IMapConnect, CallBack) => {
+    debug ? saveLog(`*************** [imapAccountTest] doing imapAccountTest! , ${JSON.stringify(IMapConnect)}`) : null;
     let callbackCall = false;
     let startTime = null;
     let wImap = null;
@@ -823,10 +835,13 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
         rImap.logout();
     });
     rImap.once('ready', () => {
+        debug ? saveLog(`[imapAccountTest] rImap.once on ready! no doing wImap`) : null;
         wImap = new qtGateImapwrite(IMapConnect, listenFolder);
         wImap.once('ready', () => {
+            debug ? saveLog(`[imapAccountTest] wImap.once on ready! no doing append`) : null;
             startTime = new Date().getTime();
             wImap.append(ramdomText.toString('base64'), () => {
+                debug ? saveLog(`[imapAccountTest] wImap.append CallBack!`) : null;
                 wImap.logout();
                 wImap = null;
             });

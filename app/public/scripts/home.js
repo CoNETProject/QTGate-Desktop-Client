@@ -1382,7 +1382,7 @@ const _QTGateRegions = [
         description: ['', '', '', ''],
         canVoe: ko.observable(false),
         canVoH: ko.observable(true),
-        available: ko.observable(true),
+        available: ko.observable(false),
         selected: ko.observable(false),
         showExtraContent: ko.observable(false),
         QTGateRegionsSetup: QTGateRegionsSetup,
@@ -1427,7 +1427,7 @@ const _QTGateRegions = [
         description: ['', '', '', ''],
         canVoe: ko.observable(true),
         canVoH: ko.observable(true),
-        available: ko.observable(true),
+        available: ko.observable(false),
         selected: ko.observable(false),
         showExtraContent: ko.observable(false),
         QTGateRegionsSetup: QTGateRegionsSetup,
@@ -1442,7 +1442,7 @@ const _QTGateRegions = [
         description: ['', '', '', ''],
         canVoe: ko.observable(true),
         canVoH: ko.observable(true),
-        available: ko.observable(true),
+        available: ko.observable(false),
         selected: ko.observable(false),
         showExtraContent: ko.observable(false),
         QTGateRegionsSetup: QTGateRegionsSetup,
@@ -1457,7 +1457,7 @@ const _QTGateRegions = [
         description: ['', '', '', ''],
         canVoe: ko.observable(true),
         canVoH: ko.observable(true),
-        available: ko.observable(true),
+        available: ko.observable(false),
         selected: ko.observable(false),
         showExtraContent: ko.observable(false),
         QTGateRegionsSetup: QTGateRegionsSetup,
@@ -1472,7 +1472,7 @@ const _QTGateRegions = [
         description: ['', '', '', ''],
         canVoe: ko.observable(true),
         canVoH: ko.observable(true),
-        available: ko.observable(true),
+        available: ko.observable(false),
         selected: ko.observable(false),
         showExtraContent: ko.observable(false),
         QTGateRegionsSetup: QTGateRegionsSetup,
@@ -1502,7 +1502,7 @@ const _QTGateRegions = [
         description: ['', '', '', ''],
         canVoe: ko.observable(true),
         canVoH: ko.observable(true),
-        available: ko.observable(true),
+        available: ko.observable(false),
         selected: ko.observable(false),
         showExtraContent: ko.observable(false),
         QTGateRegionsSetup: QTGateRegionsSetup,
@@ -1517,7 +1517,7 @@ const _QTGateRegions = [
         description: ['', '', '', ''],
         canVoe: ko.observable(true),
         canVoH: ko.observable(true),
-        available: ko.observable(true),
+        available: ko.observable(false),
         selected: ko.observable(false),
         showExtraContent: ko.observable(false),
         QTGateRegionsSetup: QTGateRegionsSetup,
@@ -1532,7 +1532,7 @@ const _QTGateRegions = [
         description: ['', '', '', ''],
         canVoe: ko.observable(true),
         canVoH: ko.observable(true),
-        available: ko.observable(true),
+        available: ko.observable(false),
         selected: ko.observable(false),
         showExtraContent: ko.observable(false),
         QTGateRegionsSetup: QTGateRegionsSetup,
@@ -1889,7 +1889,7 @@ var view_layout;
             this.imapCheckOk(data.imapCheck);
             this.imapCheckResult(data.imapTestResult);
             this.smtpCheckOk(data.smtpCheck);
-            this.imapDataEditShow(false);
+            this.imapDataEditShow(!data.imapTestResult ? true : false);
             this.imapDataEnited(false);
             this.imapDeletebtn_view(false);
             this.saved(true);
@@ -2004,6 +2004,7 @@ var view_layout;
     class view {
         constructor() {
             this.overflowShow = ko.observable(false);
+            this.CancelCreateKeyPairSent = false;
             this.menu = Menu;
             this.infoDefine = infoDefine;
             this.documentReady = ko.observable(false);
@@ -2224,6 +2225,8 @@ var view_layout;
                 this.showKeyPairPorcess(false);
                 this.showKeyPairInformation(true);
                 if (!data) {
+                    if (this.CancelCreateKeyPairSent)
+                        return this.CancelCreateKeyPairSent = false;
                     return this.MakeErrorNotify('errorKeyPair', null);
                 }
                 this.keyPair(data);
@@ -2434,6 +2437,7 @@ var view_layout;
             this.showKeyPairInformation(false);
             this.keyPairGenerateFormActive(true);
             this.showKeyPairPorcess(false);
+            this.CancelCreateKeyPairSent = true;
         }
         canShowAddAImapButton() {
             const index = this.emailPool().findIndex(n => { return n.emailAddress().length === 0; });
@@ -2625,7 +2629,9 @@ var view_layout;
             uu.selected(true);
             this.selectedQTGateRegion(index);
             uu.showExtraContent(true);
-            $('.popupField').popup();
+            $('.popupField').popup({
+                on: 'click'
+            });
         }
         selectedQTGateRegionCancel(index) {
             const uu = this.QTGateRegions()[index];
@@ -2683,7 +2689,7 @@ var view_layout;
                     //this.QTGateGatewayActiveProcess ( false )
                     return data.error(_data.error);
                 }
-                root.QTTransferData(_data.Args[0]);
+                root.QTTransferData(_data.transferData);
                 $('.userDetail').progress();
                 return data.showConnectedArea(true);
             });
@@ -2706,15 +2712,3 @@ $('.activating.element').popup({
     on: 'focus'
 });
 $('.mainAccordion').accordion({});
-let _CallBack = false;
-const p = $.getJSON('https://api.github.com/repos/QTGate/QTGate/releases/latest', data => {
-    _CallBack = true;
-    clearTimeout(timeOut);
-    socketIo.emit('checkUpdateBack', data);
-});
-const timeOut = setTimeout(() => {
-    if (!_CallBack) {
-        p.abort();
-        return _socket.emit('checkUpdateBack');
-    }
-}, 10000);

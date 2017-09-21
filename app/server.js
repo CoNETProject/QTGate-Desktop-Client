@@ -31,9 +31,12 @@ const version = remote.app.getVersion();
 const createWindow = () => {
     remote.getCurrentWindow().rendererCreateWindow();
 };
+let flag = 'w';
 const saveLog = (log) => {
     const data = `${new Date().toUTCString()}: ${log}\r\n`;
-    Fs.appendFile(ErrorLogFile, data, { encoding: 'utf8' }, err => { });
+    Fs.appendFile(ErrorLogFile, data, { flag: flag }, err => {
+        flag = 'a';
+    });
 };
 const findPort = (port, CallBack) => {
     return freePort.test(port).then(isOpen => {
@@ -276,14 +279,21 @@ class RendererProcess {
                 this.win.close();
                 this.win = null;
                 CallBack(returnData);
+                return CallBack = null;
             });
             this.win.emit('firstCallBack', data);
+        });
+        this.win.once('closed', () => {
+            if (CallBack && typeof CallBack === 'function') {
+                CallBack();
+                return CallBack = null;
+            }
         });
         this.win.loadURL(`file://${Path.join(__dirname, name + '.html')}`);
     }
     cancel() {
         if (this.win && typeof this.win.destroy === 'function') {
-            this.win.destroy();
+            return this.win.destroy();
         }
     }
 }
@@ -408,7 +418,6 @@ class localServer {
                         return next(null, data);
                     }
                     catch (e) {
-                        console.log(plaintext);
                         return next(new Error('readImapData try SON.parse ( plaintext.data ) catch ERROR:' + e.message));
                     }
                 }).catch(err => {
@@ -417,14 +426,12 @@ class localServer {
             }
         ], (err, data) => {
             if (err) {
-                saveLog(`readImapData got error: ${Util.inspect(options)}, err:${Util.inspect(err)}`);
                 return CallBack(err);
             }
             return CallBack(null, data);
         });
     }
     pgpEncrypt(text, CallBack) {
-        console.log(`local server pgpEncrypt `);
         if (!text || !text.length) {
             return CallBack(new Error('no text'));
         }
@@ -488,7 +495,6 @@ class localServer {
             }
         ], (err, data) => {
             if (err) {
-                saveLog(`readImapData got error: ${Util.inspect(options)}, err:${Util.inspect(err)}`);
                 return CallBack(err);
             }
             this.imapDataPool = data;
@@ -496,7 +502,6 @@ class localServer {
         });
     }
     listenAfterPassword(socket) {
-        saveLog('listen listenAfterPassword!');
         socket.on('deleteAImapData', (email) => {
             DEBUG ? saveLog('socket.on deleteAImapData' + ` [${email}] total data [${this.imapDataPool.length}]`) : null;
             const index = this.imapDataPool.findIndex(n => { return n.email === email; });
@@ -507,7 +512,6 @@ class localServer {
             this.saveImapData();
         });
         socket.on('startCheckImap', (id, imapData, CallBack) => {
-            console.log(`on startCheckImap `, imapData);
             if (!id || !id.length || !imapData || !Object.keys(imapData).length) {
                 saveLog(`socket.on startCheckImap but data format is error! id:[${id}] imapData:[${Util.inspect(imapData)}]`);
                 return CallBack(1);
@@ -547,9 +551,7 @@ class localServer {
                 error: null,
                 requestSerial: Crypto1.randomBytes(8).toString('hex')
             };
-            console.log(`socket on getAvaliableRegion doing getAvaliableRegion!`);
             return this.QTClass.request(com, (err, res) => {
-                console.log(`get server callback getAvaliableRegion`, res.Args);
                 CallBack(res.Args);
             });
         });
@@ -578,7 +580,6 @@ class localServer {
                         return socket.emit('qtGateConnect', 5);
                     }
                     if (res.error > -1) {
-                        console.log(`this.QTClass.request call back ERROR!`, res.error);
                         return socket.emit('checkActiveEmailError', res.error);
                     }
                     if (res.Args && res.Args.length) {
@@ -596,7 +597,6 @@ class localServer {
             });
         });
         socket.on('connectQTGate', uuid => {
-            console.log(`socket.on ( 'connectQTGate', uuid[${uuid}]`);
             const index = this.imapDataPool.findIndex(n => { return n.uuid === uuid; });
             if (index < 0)
                 return;
@@ -610,8 +610,10 @@ class localServer {
                 error: null,
                 requestSerial: Crypto1.randomBytes(8).toString('hex')
             };
-            console.log(Util.inspect(cmd, { depth: 4, colors: true }));
-            const transfer = {
+            /*
+            
+
+            const transfer: iTransferData = {
                 productionPackage: 'free',
                 usedMonthlyOverTransfer: 1073741824,
                 account: 'info@qtgate.com',
@@ -619,26 +621,87 @@ class localServer {
                 power: 1,
                 usedMonthlyTransfer: 0,
                 timeZoneOffset: 420,
-                usedDayTransfer: 1024 * 500,
-                resetTime: new Date('2017-08-29T14:08:02.803Z'),
+                usedDayTransfer: 1024* 500,
+                resetTime: new Date ('2017-08-29T14:08:02.803Z'),
                 availableMonthlyTransfer: 1073741824,
-                startDate: new Date('2017-08-29T14:08:02.803Z'),
+                startDate: new Date ('2017-08-29T14:08:02.803Z'),
                 transferMonthly: 1073741824,
                 transferDayLimit: 104857600
-            };
-            setTimeout(() => {
-                com.error = -1;
-                com.Args = [transfer];
-                CallBack(com);
-            }, 2000);
+            }
+            
+            setTimeout (() => {
+                com.error = -1
+                com.Args = [transfer]
+                CallBack ( com )
+            }, 2000 )
+            */
             /*
-            this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
-                const arg = res.Args[0]
-                console.log(typeof arg )
-                console.log(Object.keys(arg))
-                console.log(arg)
+            const u = { account: 'info@QTGate.com',
+            imapData:
+             { email: 'vpnemail2017@icloud.com',
+               account: 'info@QTGate.com',
+               imapServer: 'imap.mail.me.com',
+               imapPortNumber: '993',
+               imapSsl: true,
+               imapUserName: 'vpnemail2017@icloud.com',
+               imapUserPassword: 'lluf-eflz-zgnt-ygpr',
+               smtpServer: 'smtp.mail.me.com',
+               smtpSsl: true,
+               smtpPortNumber: '587',
+               smtpUserName: 'vpnemail2017@icloud.com',
+               smtpUserPassword: 'lluf-eflz-zgnt-ygpr',
+               smtpIgnoreCertificate: false,
+               imapIgnoreCertificate: false,
+               imapTestResult: null,
+               language: 'tw',
+               serverFolder: null,
+               clientFolder: null,
+               sendToQTGate: null,
+               smtpCheck: null,
+               imapCheck: null,
+               timeZoneOffset: 420,
+               randomPassword: null,
+               uuid: 'a2e3d6fd598d4b48b1ab0e0194e23b65',
+               canDoDelete: false },
+            gateWayIpAddress: '138.197.134.48',
+            region: 'toronto',
+            connectType: 2,
+            localServerPort: 3001,
+            AllDataToGateway: false,
+            error: -1,
+            fingerprint: '82DD98CA8F734278672383863DAF0455954A16FA',
+            transferData:
+             { startDate: '2017-09-21T16:20:01.752Z',
+               transferMonthly: 1073741824,
+               transferDayLimit: 104857600,
+               productionPackage: 'free',
+               usedMonthlyOverTransfer: 1073741824,
+               account: 'info@qtgate.com',
+               availableDayTransfer: 104857600,
+               power: 1,
+               usedMonthlyTransfer: 0,
+               timeZoneOffset: 420,
+               usedDayTransfer: 0,
+               resetTime: '2017-09-21T16:20:01.752Z',
+               availableMonthlyTransfer: 1073741824 },
+            runningDocker: 'd8802c693-79f3-4520-b74d-972df8d43c75' }
+            
+            setTimeout (() => {
+                CallBack ( u )
             })
             */
+            this.QTClass.request(com, (err, res) => {
+                const arg = res.Args[0];
+                saveLog(JSON.stringify(arg));
+                //		no error
+                if (arg.error < 0) {
+                    //		@QTGate connect
+                    if (arg.connectType === 1) {
+                    }
+                    //		iQTGate connect
+                }
+                return CallBack(arg);
+            });
         });
     }
     addInImapData(imapData) {
@@ -713,15 +776,17 @@ class localServer {
             this.listenAfterPassword(socket);
             return this.getPbkdf2(this.savedPasswrod, (err, Pbkdf2Password) => {
                 preData.password = Pbkdf2Password.toString('hex');
-                this.CreateKeyPairProcess = new RendererProcess('newKeyPair', preData, (retData) => {
+                this.CreateKeyPairProcess = new RendererProcess('newKeyPair', preData, retData => {
                     this.CreateKeyPairProcess = null;
-                    if (!retData)
-                        return this.socketServer.emit('newKeyPairCallBack');
+                    if (!retData) {
+                        saveLog(`CreateKeyPairProcess ON FINISHED! HAVE NO newKeyPair DATA BACK!`);
+                        return this.socketServer.emit('newKeyPairCallBack', null);
+                    }
                     saveLog(`RendererProcess finished [${retData}]`);
                     return getKeyPairInfo(retData.publicKey, retData.privateKey, preData.password, (err1, keyPairInfoData) => {
                         if (err1) {
                             saveLog('server.js getKeyPairInfo ERROR: ' + err1.message + '\r\n' + JSON.stringify(err));
-                            return this.socketServer.emit('newKeyPairCallBack');
+                            return this.socketServer.emit('newKeyPairCallBack', null);
                         }
                         this.config.keypair = keyPairInfoData;
                         this.config.account = keyPairInfoData.email;
@@ -797,41 +862,46 @@ class localServer {
         });
         socket.on('CancelCreateKeyPair', () => {
             if (this.CreateKeyPairProcess) {
+                saveLog(`socket.on ( 'CancelCreateKeyPair') canceled!`);
                 this.CreateKeyPairProcess.cancel();
             }
         });
-        socket.on('checkUpdateBack', (jsonData) => {
-            this.config.newVersionCheckFault = true;
-            if (!jsonData) {
-                return saveLog(`socket.on checkUpdateBack but have not jsonData`);
+        /*
+        socket.on ( 'checkUpdateBack', ( jsonData: any ) => {
+            this.config.newVersionCheckFault = true
+            if ( !jsonData ) {
+                return saveLog (`socket.on checkUpdateBack but have not jsonData`)
             }
-            const { tag_name, assets } = jsonData;
-            if (!tag_name) {
-                return saveLog(`socket.on checkUpdateBack but have not jsonData`);
+            const { tag_name, assets } = jsonData
+            if ( ! tag_name ) {
+                return saveLog ( `socket.on checkUpdateBack but have not jsonData`)
             }
-            this.config.newVersionCheckFault = false;
-            const ver = jsonData.tag_name;
-            console.log(`config.version = [${this.config.version}] ver = [${ver}]`);
-            if (ver <= this.config.version || !assets || assets.length < 7) {
-                console.log(`no new version!`);
-                return saveLog(`server.js checkVersion no new version! ver=[${ver}], newVersion[${this.config.newVersion}] jsonData.assets[${jsonData.assets ? jsonData.assets.length : null}]`);
+            
+            this.config.newVersionCheckFault = false
+            const ver = jsonData.tag_name
+            console.log ( `config.version = [${ this.config.version }] ver = [${ ver }]`)
+            if ( ver <= this.config.version || ! assets || assets.length < 7 ) {
+                console.log ( `no new version!`)
+                return saveLog ( `server.js checkVersion no new version! ver=[${ ver }], newVersion[${ this.config.newVersion }] jsonData.assets[${ jsonData.assets? jsonData.assets.length: null }]` )
             }
-            saveLog('server.js checkVersion have new version:' + ver);
-            this.config.newVersion = ver;
+            saveLog ( 'server.js checkVersion have new version:' + ver )
+            this.config.newVersion = ver
             //process.send ( jsonData )
-            process.once('message', message => {
-                console.log(`server on process.once message`, message);
-                if (message) {
-                    ++this.config.newVersionDownloadFault;
-                    this.saveConfig();
-                    return saveLog(`getDownloadFiles callBack ERROR!`);
+            process.once ( 'message', message => {
+                console.log ( `server on process.once message`, message )
+                if ( message ) {
+                    ++this.config.newVersionDownloadFault
+                    this.saveConfig ()
+                    return saveLog ( `getDownloadFiles callBack ERROR!`)
                 }
-                this.config.newVersionDownloadFault = 0;
-                this.config.newVersionCheckFault = false;
-                this.config.newVerReady = true;
-                this.saveConfig();
-            });
-        });
+                this.config.newVersionDownloadFault = 0
+                this.config.newVersionCheckFault = false
+                this.config.newVerReady = true
+                this.saveConfig ()
+            })
+
+        })
+        */
     }
     //--------------------------   check imap setup
     checkConfig() {
@@ -844,6 +914,7 @@ class localServer {
                 const config = require(configPath);
                 config.salt = Buffer.from(config.salt.data);
                 this.config = config;
+                this.config.version = this.version;
                 if (this.config.keypair && this.config.keypair.publicKeyID)
                     return Async.waterfall([
                         next => {
@@ -931,10 +1002,10 @@ class localServer {
         };
         transporter.sendMail(mailOptions, (err, info, infoID) => {
             if (err) {
-                console.log(`transporter.sendMail got ERROR!`, err);
+                saveLog(`transporter.sendMail got ERROR! [${JSON.stringify(err)}]`);
                 return Callback(err);
             }
-            console.log(`transporter.sendMail success!`);
+            saveLog(`transporter.sendMail success!`);
             return Callback();
         });
     }
@@ -986,7 +1057,6 @@ class localServer {
             Imap.imapAccountTest(imapData, next);
         };
         const uu1 = Array(testNumber).fill(uu);
-        console.log(`do imapTest!`);
         Async.parallel(uu1, (err, num) => {
             if (err) {
                 const message = err.message;
@@ -1043,7 +1113,6 @@ class localServer {
         //	case 4: sent conform & wait return from QTGate
         const index = this.imapDataPool.findIndex(n => { return n.uuid === this.config.QTGateConnectImapUuid; });
         if (index < 0) {
-            console.log(`if ( index < 0 )`);
             this.config.QTGateConnectImapUuid = this.imapDataPool[0].uuid;
             this.QTGateConnectImap = 0;
         }
@@ -1066,7 +1135,6 @@ class localServer {
             if (!this.imapDataPool.length)
                 return;
             this.QTClass = new ImapConnect(imapData, this.qtGateConnectEmitData, sendWhenTimeOut, this, this.savedPasswrod, (err) => {
-                console.log(`ImapConnect exit with err: [${err}]`);
                 if (err !== null) {
                     //		have connect error
                     if (err > 0) {
@@ -1075,11 +1143,9 @@ class localServer {
                         return socket.emit('qtGateConnect', this.qtGateConnectEmitData);
                     }
                     // QTGate disconnected resend connect request
-                    console.log(`QTGate disconnected resend connect request`);
                     imapData.sendToQTGate = false;
                     this.saveImapData();
                 }
-                console.log(`restart this.QTClass!`);
                 this.QTClass.removeAllListeners();
                 this.QTClass = null;
                 return doConnect();
@@ -1091,7 +1157,6 @@ class localServer {
             return;
         }
         if (!imapData.serverFolder || !imapData.uuid || imapData.canDoDelete) {
-            console.log('have not imapData serverFolder', imapData);
             imapData.serverFolder = Uuid.v4();
             imapData.clientFolder = Uuid.v4();
             imapData.randomPassword = Uuid.v4();
@@ -1099,11 +1164,12 @@ class localServer {
             imapData.canDoDelete = false;
         }
         this.saveImapData();
+        saveLog(JSON.stringify(imapData));
         if (!imapData.sendToQTGate) {
+            saveLog(`sendToQTGate == false, now send request to QTGate!`);
             sendWhenTimeOut = false;
             return this.sendEmailTest(imapData, err => {
                 if (err) {
-                    console.log(`sendEmailTest got error!`, err);
                     this.qtGateConnectEmitData.qtGateConnecting = 3;
                     this.qtGateConnectEmitData.error = 0;
                     return socket.emit('qtGateConnect', this.qtGateConnectEmitData);
@@ -1170,7 +1236,7 @@ class ImapConnect extends Imap.imapPeer {
             next => this.localServer.getPbkdf2(password, next)
         ], (err, data) => {
             if (err) {
-                return console.log(err);
+                return saveLog(`class [ImapConnect] doing Async.parallel [readQTGatePublicKey, this.localServer.getPbkdf2 ] got error! [${JSON.stringify(err)}]`);
             }
             this.QTGatePublicKey = data[0].toString();
             this.password = data[1].toString('hex');
@@ -1180,10 +1246,10 @@ class ImapConnect extends Imap.imapPeer {
             }
         });
         const readyTime = exitWhenServerNotReady ? setTimeout(() => {
-            console.log(`server not ready!, send request mail!`);
             this.localServer.sendEmailTest(imapData, err => {
                 if (err)
-                    return console.log(`localServer.sendEmailTest got error!`, err);
+                    return saveLog(`class [ImapConnect] connect QTGate timeout! send request mail to QTGate! ERRIR [${JSON.stringify(err)}]`);
+                saveLog(`class [ImapConnect] connect QTGate timeout! send request mail to QTGate! success`);
             });
         }, QTGatePongReplyTime) : null;
         this.once('ready', () => {
@@ -1196,15 +1262,12 @@ class ImapConnect extends Imap.imapPeer {
         });
         this.newMail = (ret) => {
             if (!ret || !ret.requestSerial) {
-                console.log('QTGateAPIRequestCommand have not requestSerial! ');
                 return saveLog('QTGateAPIRequestCommand have not requestSerial! ');
             }
             const CallBack = this.commandCallBackPool.get(ret.requestSerial);
             if (!CallBack || typeof CallBack !== 'function') {
-                console.log(`ret.requestSerial [${ret.requestSerial}] have not callback `);
                 return saveLog(`ret.requestSerial [${ret.requestSerial}] have not callback `);
             }
-            console.log(`got QTGate CallBack success for return [${ret.requestSerial}]`);
             return CallBack(null, ret);
         };
     }
@@ -1235,24 +1298,22 @@ class ImapConnect extends Imap.imapPeer {
         this.commandCallBackPool.set(command.requestSerial, CallBack);
         this._enCrypto(JSON.stringify(command), (err1, data) => {
             if (err1) {
-                console.log(`_deCrypto got error `, err1);
+                saveLog(`request _deCrypto got error [${JSON.stringify(err1)}]`);
                 return CallBack(err1);
             }
             this.append(data);
-            console.log(`request finished and wait server responsr!`);
+            saveLog(`do request command [${command.command}] finished and wait server responsr!`);
         });
     }
     checkConnect(CallBack) {
-        console.log(`doing checkConnect `);
         const time = setTimeout(() => {
-            console.log(`server not ready!, send request mail!`);
             this.localServer.sendEmailTest(this.imapData, err => {
                 if (err)
-                    return console.log(`localServer.sendEmailTest got error!`, err);
+                    return saveLog(`class [ImapConnect] checkConnect timeout! send request mail to QTGate! ERROR! [${JSON.stringify(err)}]`);
+                saveLog(`class [ImapConnect] checkConnect timeout! send request mail to QTGate! success`);
             });
         }, QTGatePongReplyTime);
         this.once('ready', () => {
-            console.log(`server ready clear setTimeout`);
             clearTimeout(time);
             CallBack();
         });

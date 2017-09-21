@@ -74,7 +74,6 @@ var lang;
 })(lang || (lang = {}));
 const QTGateFolder = path_1.join(Os.homedir(), '.QTGate');
 const QTGateLatest = path_1.join(QTGateFolder, 'latest');
-const logFile = path_1.join(QTGateFolder, 'systemLog.log');
 let isSingleInstanceCheck = true;
 let localServer1 = null;
 let tray = null;
@@ -232,12 +231,9 @@ const initialize = () => {
             app.exit();
         async_1.series([
             next => checkFolder(QTGateFolder, next),
-            next => checkFolder(QTGateLatest, next)
+            next => checkFolder(QTGateLatest, next),
         ], err => {
-            if (err) {
-                return showError(dirTitleErr[0][localLanguage], `${dirTitleErr[1][localLanguage].replace(/__folder__/, QTGateFolder)}:[ ${JSON.stringify(err)} ]`, app);
-            }
-            if (!localServer1 && !(isSingleInstanceCheck = makeSingleInstance())) {
+            if (!localServer1) {
                 findPort(() => {
                     localServer1 = new BrowserWindow({ show: false });
                     localServer1.setIgnoreMouseEvents(true);

@@ -11,9 +11,18 @@ import * as Uuid from 'node-uuid'
 import * as Async from 'async'
 import * as crypto from 'crypto'
 import * as Util from 'util'
+import { join } from 'path'
+import { homedir }from 'os'
 
 const MAX_INT = 9007199254740992
 const debug = true
+const QTGateFolder = join ( homedir(), '.QTGate' )
+const ErrorLogFile = join ( QTGateFolder, 'imap.log' )
+const saveLog = ( log: string ) => {
+    const Fs = require ('fs')
+	const data = `${ new Date().toUTCString () }: ${ log }\r\n`
+	Fs.appendFile ( ErrorLogFile, data, err => {})
+}
 const debugOut = ( text: string, isIn: boolean ) => {
     console.log ( `【${ new Date().toISOString()}】${ isIn ? '<=' : '=>'} 【${ text }】`)
 }
@@ -58,9 +67,9 @@ class ImapServerSwitchStream extends Stream.Transform {
         this.imapServer.on ( 'nextNewMail', () => {
             this.nextRead = true
 
-            if (this.runningCommand!= 'idle')
+            if ( this.runningCommand!= 'idle' )
                 return
-            if (this.imapServer.idleSupport) {
+            if ( this.imapServer.idleSupport ) {
                 return this.idleStop ()
             }
 
@@ -68,7 +77,7 @@ class ImapServerSwitchStream extends Stream.Transform {
     }
 
     public idleStop () {
-        if ( !this.imapServer.idleSupport || this.runningCommand !== 'idle') {
+        if ( !this.imapServer.idleSupport || this.runningCommand !== 'idle' ) {
             return 
         }
 
@@ -76,16 +85,16 @@ class ImapServerSwitchStream extends Stream.Transform {
         clearTimeout ( this.idleResponsrTime )
         this.cmd = this.runningCommand = `DONE`
 
-        this.debug ? debugOut(this.cmd, false) : null
-        if (this.writable) {
+        this.debug ? debugOut( this.cmd, false ) : null
+        if ( this.writable ) {
             this.idleResponsrTime = setTimeout(() => {
                 console.log(`【${ new Date().toISOString() }】====================[ IDLE DONE time out ]`)
-                this.imapServer.destroyAll(null)
+                this.imapServer.destroyAll ( null )
             }, 30000 )
 
-            return this.push(this.cmd + '\r\n')
+            return this.push ( this.cmd + '\r\n' )
         }
-        return this.imapServer.destroyAll(null)
+        return this.imapServer.destroyAll ( null )
 
     }
 
@@ -115,6 +124,7 @@ class ImapServerSwitchStream extends Stream.Transform {
 
                 case 'I':
                 case 'D':           //  NODE
+                case 'N':
                 case 'A': {                                  /////       A
                     clearTimeout ( this.appendWaitResponsrTimeOut )
                     clearTimeout ( this.idleResponsrTime )
@@ -134,7 +144,7 @@ class ImapServerSwitchStream extends Stream.Transform {
 
                 }
                 default:
-                    return this.serverCommandError ( new Error (`_commandPreProcess got switch default error!` ), callback )
+                    return this.serverCommandError ( new Error (`_commandPreProcess got switch default error! commandLine = [${ commandLine[0] }]` ), callback )
             }
         }
         this.login ( commandLine, cmdArray, _next, callback )
@@ -233,11 +243,11 @@ class ImapServerSwitchStream extends Stream.Transform {
 
         this.doCommandCallback = ( err ) => {
             if ( this.imapServer.listenFolder ) {
-
+                console.log (`Doing openBox `)
                 return this.openBox (( err, newMail ) => {
                     
                     if ( err ) {
-                        console.log (`========================= [ this.openBox return err ] do this.end ()`, err )
+                        console.log ( `========================= [ this.openBox return err ] do this.end ()`, err )
                         return this.imapServer.destroyAll( err )
                     }
                     if ( this.waitLogout ) {
@@ -445,7 +455,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                     this.callback = this._login = true
                     if ( this.writable )
                         return next ( null, this.cmd + '\r\n' )
-                    this.imapServer.destroyAll(null)
+                    this.imapServer.destroyAll ( null )
                 }
                 //
                 return _callback ()
@@ -882,7 +892,7 @@ export class qtGateImapwrite extends qtGateImap {
 export class qtGateImapRead extends qtGateImap {
 
     constructor ( IMapConnect: imapConnect, listenFolder: string, isEachMail: boolean, deleteBoxWhenEnd: boolean, newMail: ( mail ) => void ) {
-        super ( IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, null, false, newMail )
+        super ( IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, null, true, newMail )
         this.once ( 'ready', () => {
             console.log ( `qtGateImapRead ready!`)
         })
@@ -903,6 +913,7 @@ export const getMailAttached = (email: Buffer) => {
 }
 
 export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
+    debug ? saveLog (`*************** [imapAccountTest] doing imapAccountTest! , ${JSON.stringify (IMapConnect)}`) : null
     let callbackCall = false
     let startTime = null
     let wImap: qtGateImapwrite = null
@@ -941,10 +952,13 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
     })
 
     rImap.once ( 'ready', () => {
+        debug ? saveLog (`[imapAccountTest] rImap.once on ready! no doing wImap`) : null
         wImap = new qtGateImapwrite ( IMapConnect, listenFolder )
         wImap.once ( 'ready', () => {
+            debug ? saveLog (`[imapAccountTest] wImap.once on ready! no doing append`) : null
             startTime = new Date ().getTime ()
             wImap.append ( ramdomText.toString ('base64'), () => {
+                debug ? saveLog (`[imapAccountTest] wImap.append CallBack!`) : null
                 wImap.logout ()
                 wImap = null
             })
@@ -956,7 +970,7 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
         doCallBack ( err, null )
     })
 
-    rImap.once ('end', err => {
+    rImap.once ( 'end', err => {
         console.log ( `rImap on END err = [${ err }]`)
         doCallBack ( err, null )
     })
@@ -1171,4 +1185,3 @@ export class imapPeer extends Event.EventEmitter {
     }
 
 }
-
