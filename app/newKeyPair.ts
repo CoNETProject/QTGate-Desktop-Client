@@ -1,5 +1,5 @@
 import * as openpgp from 'openpgp'
-const { remote, ipcRenderer } = require ( "electron" )
+const { remote } = require ( "electron" )
 
 const NewKeyPair = ( data: INewKeyPair, CallBack ) => {
     

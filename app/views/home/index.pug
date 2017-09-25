@@ -1,5 +1,6 @@
 extends ../Shared/layoutHome.pug
 block jumbotron
+
 	.content
 		#cover1
 			.VideoBox
@@ -37,458 +38,539 @@ block jumbotron
 
 
 block jumbotron1
-	.mainScreen
-		#AgreeMent.content( data-bind = " visible: MenuItems()[6]")
-			.ui.header( data-bind = " text: infoDefine[ languageIndex() ].firstNote.title " style = " margin-left: 30px; margin-right: 100px; color: rgba(0,0,0,0.7);")
+	.content
+		#feedBackView( style="")
+			h3( data-bind=" text: infoDefine[ languageIndex() ].feedBack.title " style="color: gray")
 			.ui.divider
-			.detailSegment
-				.ui.attached.segment
-					span( data-bind = " text: infoDefine[ languageIndex() ].firstNote.firstPart " style = "font-weight: bold; color: rgba(0,0,0,0.7)")
-			.detailSegment( data-bind = " foreach: infoDefine[ languageIndex() ].firstNote.detail " style = " margin-top: 30px;")
-				.ui.top.attached.header( data-bind = " visible: header && header.length " )
-					h4( data-bind = " text: header " style = "color: rgba(0,0,0,0.7)")
-				.ui.attached.segment
-					span( data-bind = " html: detail " style = "color: rgba(0,0,0,0.5)")
-		#QTGateInfo.content( data-bind = " visible: MenuItems()[0]" )
-			.ui.header
-				span( data-bind = " text: infoDefine[ languageIndex() ].QTGateInfo.title " style = "color: grey; margin-left: 30px; margin-right: 100px;")
-				p( style = "font-size: small;padding-left: 2.4em; color: green;font-weight: lighter;" data-bind = " text: infoDefine[ languageIndex() ].QTGateInfo.version + config().version ")
+			.ui.feed( data-bind = "foreach: feed ")
+				.event
+					.label
+						i.icon.user.circle( data-bind = "visible: isUser")
+					.content
+						.summary
+							a.user( data-bind = "text: isUser ? $root.keyPair().nikeName : 'QTGate' ")
+							.date( data-bind = " text: date ")
+						.extra.images( data-bind = "foreach: images")
+							img( data-bind="attr: { src: url }")
+						.meta
+							a.like
+								i.like.icon
+			.ui.reply.form
+				.field( data-bind="visible: feedBackAttachImg()")
+					.ui.small.image
+						a( href="#" data-bind="click: openFeedBackAttachImg")
+							img( data-bind=" attr: { src: feedBackAttachImg ()} ")
+						a.floating.ui.red.label( href="#" data-bind="click: function(){ feedBackAttachImg( null) }") x
+				.field
+					a( href="#" data-bind="click: openFeedBackAttachLog, visible: !attachedLog().length ")
+						span( data-bind=" text: infoDefine[ languageIndex() ].feedBack.additional ")
+						span
+							i.attach.link.icon
+					.ui.raised.segment( data-bind = " visible: attachedLog().length" )
+						a.floating.ui.red.label( href="#" data-bind="click: function(){attachedLog('')}") x
+						span( data-bind=" html: attachedLog()" style="font-size: smaller;")
 
-			.detailSegment( data-bind = " foreach: infoDefine[ languageIndex() ].QTGateInfo.detail " )
-				.ui.top.attached.header( data-bind = " visible: header && header.length " )
-					
-					h4( data-bind = " text: header, style: { color: color } " )
-					i( data-bind = " attr: { class: 'pull-right icon ' + icon }, style: { color: color }" style="margin-top: -1.7em;" )
-				.ui.attached.segment
-					span( data-bind = " html: detail "  style = "color: rgba(0,0,0,0.5)" )
+				.field
+					textarea( data-bind = "value: feedBackTextArea ")
+				.field
+					.ui.buttons
+						button.ui.button( data-bind=" click: returnMainWin,text: infoDefine[ languageIndex() ].home_index_view.cancel")
+						.or
+						button.ui.positive.button( data-bind=" click: feedBackSuccess, text: infoDefine[ languageIndex() ].feedBack.okTitle")
+				.field
 
-		.keyPairGenerate( data-bind = " visible: MenuItems()[1]" )
-			.ketPairGenerateForm( data-bind = " visible: keyPairGenerateFormActive ()" )
-				.ui.segment.teal( data-bind = "html: infoDefine [ languageIndex() ].home_index_view.inputEmail" style = "color: rgba(200,150,30,0.9)")
-				form.ui.form
-					.field.required( data-bind = "css: { error: EmailAddressError() }" )
-						.ui.input.focus.left.icon
-							i.icon.spy
-							input( type = "email", z-index = "1", data-bind = "value : SystemAdministratorEmailAddress, attr: { placeholder: infoDefine [ languageIndex() ].home_index_view.emailAddress, 'data-content' : EmailAddressError() ? infoDefine[ $root.languageIndex() ].error_message.EmailAddress[0] : null }, css: { 'activating element': EmailAddressError() }" )
-						.ui.info.message( data-bind = " visible: showInsideFireWallEmail()" )
-							i.icon.close
-							span.errorInformationText( data-bind = " text: infoDefine [ languageIndex() ].home_index_view.accountEmailInfo ")
+		.mainScreen
+			.mainScreen1( style = "z-index: 1020;")
+				.ui.left.vertical.fluid.tabular.menu.fixed( style="width:75px!important; margin: 10px!important; margin-top: 40px!important; ")
+					a.item( data-bind = "css:{ active: MenuItems() [0]}, click: function(){ return menuClick (0, true )}")
+						img.ui.mini.image( src = "/images/256x256.png" style="width:25px!important;")
+					a.item( data-bind = "css:{ active: MenuItems() [1]}, click: function(){ return menuClick (1, false )}")
+						.menuItem
+							i.icon.privacy.large.green
+					//-		IMAP account
+					a.item( data-bind = "css:{ active: MenuItems() [2]}, click: function(){ return menuClick (2, true )}, visible: imapInputFormActive()")
+						.menuItem
+							i.address.card.outline.icon.large.blue
+					//-		QTGate connect & region area
+					a.item( data-bind = "css:{ active: MenuItems() [3]}, click: function(){ return menuClick ( 3, true )}, visible: QTGateConnectActive() || QTGateConnectRegionActive")
+						.menuItem
+							i.exchange.icon.large.purple
+					//-		QTGate file storage
+					a.item( data-bind = "css:{ active: MenuItems() [4]}, click: function(){ return menuClick (4, false )}, visible: false")
+						.menuItem
+							i.cloud.upload.icon.large.violet
+					//-		QTGate message
+					a.item( data-bind = "css:{ active: MenuItems() [5]}, click: function(){ return menuClick (5, false )}, visible: false")
+						.menuItem
+							i.talk.outline.icon.large.pink
+					a.item( data-bind = "css:{ active: MenuItems() [6]}, click: function(){ return menuClick (6, true )}")
+						.menuItem
+							i.map.outline.icon.large.yellow
+					a.item( data-bind = "css:{ active: MenuItems() [7]}, visible: config().newVerReady,click: function(){ return menuClick (7, true )}")
+						.menuItem
+							i.icon.setting.big.loading.red( style = "margin-left: -6px;")
+					#feedBack
+						a( href = "#" data-bind="click: takeScreen ")
+							i.big.icons
+								i.comment.icon
+								i.warning.small.icon( style="color:white;")
+			#AgreeMent.content( data-bind = " visible: MenuItems()[6]")
+				.ui.header( data-bind = " text: infoDefine[ languageIndex() ].firstNote.title " style = " margin-left: 30px; margin-right: 100px; color: rgba(0,0,0,0.7);")
+				.ui.divider
+				.detailSegment
+					.ui.attached.segment
+						span( data-bind = " text: infoDefine[ languageIndex() ].firstNote.firstPart " style = "font-weight: bold; color: rgba(0,0,0,0.7)")
+				.detailSegment( data-bind = " foreach: infoDefine[ languageIndex() ].firstNote.detail " style = " margin-top: 30px;")
+					.ui.top.attached.header( data-bind = " visible: header && header.length " )
+						h4( data-bind = " text: header " style = "color: rgba(0,0,0,0.7)")
+					.ui.attached.segment
+						span( data-bind = " html: detail " style = "color: rgba(0,0,0,0.5)")
+			#QTGateInfo.content( data-bind = " visible: MenuItems()[0]" )
+				.ui.header
+					span( data-bind = " text: infoDefine[ languageIndex() ].QTGateInfo.title " style = "color: grey; margin-left: 30px; margin-right: 100px;")
+					p( style = "font-size: small;padding-left: 2.4em; color: green;font-weight: lighter;" data-bind = " text: infoDefine[ languageIndex() ].QTGateInfo.version + config().version ")
+
+				.detailSegment( data-bind = " foreach: infoDefine[ languageIndex() ].QTGateInfo.detail " )
+					.ui.top.attached.header( data-bind = " visible: header && header.length " )
 						
-					.field.required( data-bind = " css: { error: NickNameError ()}")
-						.ui.input.focus.left.icon
-							i.icon.student
-							input( type = "text", z-index = "2", data-bind = " value : SystemAdministratorNickName, attr: { 'data-content' : NickNameError() ? infoDefine[ $root.languageIndex() ].error_message.required : null , placeholder: infoDefine [ languageIndex() ].home_index_view.SystemAdministratorNickName }, css: { 'activating element': NickNameError() }" )
-					.field.required( data-bind = " css: { error: passwordError ()}")
-						.ui.input.focus.left.icon
-							i.icon.privacy
-							input( type = "password" z-index = "3" data-bind = " value: systemSetup_systemPassword, attr: { placeholder: infoDefine[ languageIndex() ].Home_keyPairInfo_view.password, 'data-content' : passwordError() ? infoDefine[ $root.languageIndex() ].error_message.PasswordLengthError : null }, css: { 'activating element': passwordError() }" )
-					.field.required
-						.ui.info.message( data-bind = " visible: keyLengthInfoShow (), attr: { 'data-bind-show-name': keyLengthInfoShow ( false )}" )
+						h4( data-bind = " text: header, style: { color: color } " )
+						i( data-bind = " attr: { class: 'pull-right icon ' + icon }, style: { color: color }" style="margin-top: -1.7em;" )
+					.ui.attached.segment
+						span( data-bind = " html: detail "  style = "color: rgba(0,0,0,0.5)" )
+
+			.keyPairGenerate( data-bind = " visible: MenuItems()[1]" )
+				.ketPairGenerateForm( data-bind = " visible: keyPairGenerateFormActive ()" )
+					.ui.segment.teal( data-bind = "html: infoDefine [ languageIndex() ].home_index_view.inputEmail" style = "color: rgba(200,150,30,0.9)")
+					form.ui.form
+						.field.required( data-bind = "css: { error: EmailAddressError() }" )
+							.ui.input.focus.left.icon
+								i.icon.spy
+								input( type = "email", z-index = "1", data-bind = "value : SystemAdministratorEmailAddress, attr: { placeholder: infoDefine [ languageIndex() ].home_index_view.emailAddress, 'data-content' : EmailAddressError() ? infoDefine[ $root.languageIndex() ].error_message.EmailAddress[0] : null }, css: { 'activating element': EmailAddressError() }" )
+							.ui.info.message( data-bind = " visible: showInsideFireWallEmail()" )
+								i.icon.close
+								span.errorInformationText( data-bind = " text: infoDefine [ languageIndex() ].home_index_view.accountEmailInfo ")
+							
+						.field.required( data-bind = " css: { error: NickNameError ()}")
+							.ui.input.focus.left.icon
+								i.icon.student
+								input( type = "text", z-index = "2", data-bind = " value : SystemAdministratorNickName, attr: { 'data-content' : NickNameError() ? infoDefine[ $root.languageIndex() ].error_message.required : null , placeholder: infoDefine [ languageIndex() ].home_index_view.SystemAdministratorNickName }, css: { 'activating element': NickNameError() }" )
+						.field.required( data-bind = " css: { error: passwordError ()}")
+							.ui.input.focus.left.icon
+								i.icon.privacy
+								input( type = "password" z-index = "3" data-bind = " value: systemSetup_systemPassword, attr: { placeholder: infoDefine[ languageIndex() ].Home_keyPairInfo_view.password, 'data-content' : passwordError() ? infoDefine[ $root.languageIndex() ].error_message.PasswordLengthError : null }, css: { 'activating element': passwordError() }" )
+						.field.required
+							.ui.info.message( data-bind = " visible: keyLengthInfoShow (), attr: { 'data-bind-show-name': keyLengthInfoShow ( false )}" )
+								i.icon.close
+								p.fg-grayLight( data-bind = "text: infoDefine [ languageIndex() ].home_index_view.KeypairLength" )
+							.ui.compact.menu.green
+								a.item( data-bind = " css: { active: keyPairLengthSelect() === '2048' }, click: function() { tileClick( '2048' )}" style = "color: rgba(0,0,0,0.5)")
+									i.fa.fa-key
+									span 2048
+								a.item( data-bind = " css: { active: keyPairLengthSelect() === '3072' }, click: function() { tileClick( '3072' )}" style = "color: rgba(0,0,0,0.5)")
+									i.fa.fa-key
+									span 3072
+								a.item( data-bind = " css: { active: keyPairLengthSelect() === '4096' }, click: function() { tileClick( '4096' )}" style = "color: rgba(0,0,0,0.5)")
+									i.fa.fa-key
+									span 4096
+							i.icon.help.circle.outline.large.questionIcon( data-bind = "visible: ! keyLengthInfoShow (), click: () => { keyLengthInfoShow ( true )} " style = "color: rgba(200,150,30,0.9)" )
+						button.ui.green.basic.button( type="submit" data-bind = " text: infoDefine [ languageIndex() ].home_index_view.creatKeyPair, click: form_AdministratorEmail_submit ")
+				.keyPairGenerateFormPorcess.content( data-bind = " visible: showKeyPairPorcess ()")
+					.ui.segment
+						p( data-bind = "html: infoDefine [ languageIndex() ].home_index_view.GenerateKeypair ")
+						.keyPairProcessBar.ui.bottom.teal.attached.progress( data-bind = 'visible: SystemPassword_submitRunning ()')
+							.bar
+					button.ui.negative.basic.button( data-bind= " text: infoDefine [ languageIndex() ].home_index_view.cancel, click: function() { delete_btn_view ( ! delete_btn_view ()) }, visible: newKeyPairRunningCancelButtonShow() && ! delete_btn_view () ")
+					.ui.buttons( data-bind = " visible: newKeyPairRunningCancelButtonShow() && delete_btn_view () ")
+						button.ui.button( data-bind = "text: infoDefine [ languageIndex() ].home_index_view.continueCreateKeyPair, click: function() { delete_btn_view ( ! delete_btn_view ()); keyPairGenerateFormActive ( false )} ")
+						.or
+						button.ui.button.negative( data-bind = " text: infoDefine [ languageIndex() ].home_index_view.stopCreateKeyPair, click: CancelCreateKeyPair ")
+				.content( data-bind = " visible: showKeyPairInformation() " style = "margin-top: 5em;")
+					form.ui.form.equal.width( data-bind = "submit: keyPair_checkPemPasswordClick ")
+						.fields
+							.field
+								.ui.card( style = "width: 330px;")
+									.content
+										.ui.red.right.ribbon.label( data-bind = "visible: ! keyPair().passwordOK ")
+											i.icon.lock
+										.ui.teal.right.ribbon.label( data-bind = "visible: keyPair().passwordOK ")
+											i.icon.unlock.alternate
+										.header
+											i.icon.privacy.teal
+											span( data-bind = "text: keyPair().email " style=" color:#00b5ad!important;")
+											a.activating.element( href="#" data-bind = " attr: { 'data-content': keyPair().verified ? infoDefine[ languageIndex() ].Home_keyPairInfo_view.emailVerified : infoDefine[ languageIndex() ].Home_keyPairInfo_view.emailNotVerifi }")
+												i.huge.icons( style = " margin-left: 10px; font-size: 2em; margin-top: 5px;" )
+													i.icon.small.certificate( data-bind = " css: { grey: ! keyPair().verified, orange: keyPair().verified }")
+													i.icon.tiny.warning( data-bind = " visible: ! keyPair().verified " style = " color: white; margin-top: -4px;margin-left: -1px;")
+													i.icon.tiny.checkmark( data-bind = " visible: keyPair().verified " style = " color: white; margin-top: -4px;margin-left: -1px;")
+										.meta( data-bind = " text: keyPair().nikeName ")
+										.description
+											p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.creatDate + keyPair().createDate" )
+											p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.keyLength + keyPair().keyLength" )
+											p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.keyID + keyPair().publicKeyID" )
+										.ui.bottom.right.attached.label.background-clolr-white( data-bind = " click: function() { keyPair_delete_btn_view ( true ); showPasswordErrorMessage ( false ); showSystemError ( false )}, visible: ! keyPair_delete_btn_view()")
+											a
+												i.trash.outline.icon.large( style = " color: red;")
+									.extra.content( data-bind = "visible : keyPair_delete_btn_view() ")
+										.ui.one.column.centered.grid
+											.column.center
+												.ui.buttons
+													.ui.button( data-bind = " text: infoDefine[ languageIndex() ].home_index_view.cancel, click: function() { keyPair_delete_btn_view ( false )}")
+													.or
+													.ui.negative.button( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.delete, click: deletePasswordNext ")
+							.field.required( data-bind = " css: { error: showPasswordErrorMessage() }")
+								p( data-bind = " text: infoDefine [ languageIndex() ].Home_keyPairInfo_view.locked, visible: !keyPair_delete_btn_view() && ! keyPair().passwordOK ")
+								.ui.input( data-bind = " visible: !keyPair_delete_btn_view() && ! keyPair().passwordOK, css: { action: systemSetup_systemPassword().length > 4 && ! passwordChecking(), 'left loading': passwordChecking()}")
+									i.search.icon.right( data-bind = " visible: passwordChecking()" style = " margin: 0 0 0 0!important; width: auto!important; height:auto!important;" )
+									input( type = "password", z-index = "1" data-bind = " attr: { placeholder: infoDefine[ languageIndex() ].Home_keyPairInfo_view.password1, 'data-content': showPasswordErrorMessage () ? infoDefine[ $root.languageIndex() ].error_message.SystemPasswordError : null }, css: { 'activating element': showPasswordErrorMessage() }, textInput: systemSetup_systemPassword, hasFocus: true" )
+									button.ui.icon.button.positive( data-bind = "visible: systemSetup_systemPassword().length > 4 && ! passwordChecking (), click: keyPair_checkPemPasswordClick ")
+										i.icon.angle.right
+								.ui.negative.message( data-bind = "visible: keyPair_delete_btn_view(), animate:{ animation: 'pulse', state: languageIndex() + 1 || keyPair_delete_btn_view() }")
+									p( data-bind = " text : infoDefine[ languageIndex() ].Home_keyPairInfo_view.deleteKeyPairInfo ")
+								.ui.negative.message( data-bind = "visible: showSystemError(), animate:{ animation: 'pulse', state: languageIndex() + 1} ")
+									p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.systemError")
+			.content( data-bind = "visible: MenuItems()[2] && imapInputFormActive()" style = "margin-top: 3em;")
+				.ui.info.message.hideArea( data-bind = " visible: !emailPool().length || !emailPool()[ emailPool().length - 1 ].emailAddress().length, css: { 'accordion AccordionBox-shadow-delete': emailPool().length && emailPool()[emailPool().length - 1].emailAddress().length } ")
+					.area( data-bind = "visible: !emailPool().length || !emailPool()[ emailPool().length - 1 ].emailAddress().length, css: { 'AccordionBox-shadow-delete title': emailPool().length && emailPool()[ emailPool().length - 1].emailAddress().length } ")
+						a.ui.top.right.attached.label.background-clolr-white
 							i.icon.close
-							p.fg-grayLight( data-bind = "text: infoDefine [ languageIndex() ].home_index_view.KeypairLength" )
-						.ui.compact.menu.green
-							a.item( data-bind = " css: { active: keyPairLengthSelect() === '2048' }, click: function() { tileClick( '2048' )}" style = "color: rgba(0,0,0,0.5)")
-								i.fa.fa-key
-								span 2048
-							a.item( data-bind = " css: { active: keyPairLengthSelect() === '3072' }, click: function() { tileClick( '3072' )}" style = "color: rgba(0,0,0,0.5)")
-								i.fa.fa-key
-								span 3072
-							a.item( data-bind = " css: { active: keyPairLengthSelect() === '4096' }, click: function() { tileClick( '4096' )}" style = "color: rgba(0,0,0,0.5)")
-								i.fa.fa-key
-								span 4096
-						i.icon.help.circle.outline.large.questionIcon( data-bind = "visible: ! keyLengthInfoShow (), click: () => { keyLengthInfoShow ( true )} " style = "color: rgba(200,150,30,0.9)" )
-					button.ui.green.basic.button( type="submit" data-bind = " text: infoDefine [ languageIndex() ].home_index_view.creatKeyPair, click: form_AdministratorEmail_submit ")
-			.keyPairGenerateFormPorcess.content( data-bind = " visible: showKeyPairPorcess ()")
-				.ui.segment
-					p( data-bind = "html: infoDefine [ languageIndex() ].home_index_view.GenerateKeypair ")
-					.keyPairProcessBar.ui.bottom.teal.attached.progress( data-bind = 'visible: SystemPassword_submitRunning ()')
-						.bar
-				button.ui.negative.basic.button( data-bind= " text: infoDefine [ languageIndex() ].home_index_view.cancel, click: function() { delete_btn_view ( ! delete_btn_view ()) }, visible: newKeyPairRunningCancelButtonShow() && ! delete_btn_view () ")
-				.ui.buttons( data-bind = " visible: newKeyPairRunningCancelButtonShow() && delete_btn_view () ")
-					button.ui.button( data-bind = "text: infoDefine [ languageIndex() ].home_index_view.continueCreateKeyPair, click: function() { delete_btn_view ( ! delete_btn_view ()); keyPairGenerateFormActive ( false )} ")
-					.or
-					button.ui.button.negative( data-bind = " text: infoDefine [ languageIndex() ].home_index_view.stopCreateKeyPair, click: CancelCreateKeyPair ")
-			.content( data-bind = " visible: showKeyPairInformation() " style = "margin-top: 5em;")
-				form.ui.form.equal.width( data-bind = "submit: keyPair_checkPemPasswordClick ")
-					.fields
-						.field
-							.ui.card( style = "width: 330px;")
-								.content
-									.ui.red.right.ribbon.label( data-bind = "visible: ! keyPair().passwordOK ")
-										i.icon.lock
-									.ui.teal.right.ribbon.label( data-bind = "visible: keyPair().passwordOK ")
-										i.icon.unlock.alternate
-									.header
-										i.icon.privacy.teal
-										span( data-bind = "text: keyPair().email " style=" color:#00b5ad!important;")
-										a.activating.element( href="#" data-bind = " attr: { 'data-content': keyPair().verified ? infoDefine[ languageIndex() ].Home_keyPairInfo_view.emailVerified : infoDefine[ languageIndex() ].Home_keyPairInfo_view.emailNotVerifi }")
-											i.huge.icons( style = " margin-left: 10px; font-size: 2em; margin-top: 5px;" )
-												i.icon.small.certificate( data-bind = " css: { grey: ! keyPair().verified, orange: keyPair().verified }")
-												i.icon.tiny.warning( data-bind = " visible: ! keyPair().verified " style = " color: white; margin-top: -4px;margin-left: -1px;")
-												i.icon.tiny.checkmark( data-bind = " visible: keyPair().verified " style = " color: white; margin-top: -4px;margin-left: -1px;")
-									.meta( data-bind = " text: keyPair().nikeName ")
-									.description
-										p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.creatDate + keyPair().createDate" )
-										p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.keyLength + keyPair().keyLength" )
-										p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.keyID + keyPair().publicKeyID" )
-									.ui.bottom.right.attached.label.background-clolr-white( data-bind = " click: function() { keyPair_delete_btn_view ( true ); showPasswordErrorMessage ( false ); showSystemError ( false )}, visible: ! keyPair_delete_btn_view()")
-										a
-											i.trash.outline.icon.large( style = " color: red;")
-								.extra.content( data-bind = "visible : keyPair_delete_btn_view() ")
-									.ui.one.column.centered.grid
+						p.fg-grayLight( style="margin-top: 0!important;" data-bind = " html: infoDefine[ languageIndex() ].imapInformation.infomation, animate:{ animation: 'pulse', state: languageIndex() + 1 }" )
+				.ui.cards.ImapItemAccordionCards
+					<!-- ko foreach : { data: emailPool, afterAdd: showPlanetElement } -->
+						.ui.card.imapItemCard( data-bind = " css: { imapItemEdit: imapDataEditShow (), imapItemUncheckShow: ! imapDataEditShow () && ! smtpCheckOk () && ! imapCheckOk(), imapItemCheckOKShow: ! imapDataEditShow () && smtpCheckOk () && imapCheckOk() }, attr: { id: uuid }")
+							.content.imapItemCardContent
+								img.right.floated.mini.ui.image.cardImageSetup( data-bind = " attr: { src: getMailIcon() }")
+								a.floating.ui.red.circular.label( data-bind = " text: '!', visible: imapCheckReturnError(), css: { 'activating element': imapCheckReturnError() }, attr: { 'data-html': imapCheckReturnError() ? infoDefine[ $root.languageIndex() ].error_message.imapErrorMessage [ imapCheckReturnError() ]: null }" )
+								a.floating.ui.teal.circular.label( data-bind = " text: '✓',visible: showImapTestSuccess(), css: { 'activating element': showImapTestSuccess() }, attr: { 'data-html': showImapTestSuccess() ? infoDefine[ $root.languageIndex() ].imapInformation.testSuccess : null } ")
+								.header( data-bind = " text: emailAddress() " )
+								.meta( data-bind = " visible: runningCheck () " )
+									p( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.imapCheckingStep [ imapCheckingStep() ] ")
+								.meta( data-bind = " visible: imapCheckResult() && ! imapDataEditShow()" )
+									span( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.imapResultTitle" )
+									span.ui.star.rating( data-bind = " attr: { 'data-rating': dataRating() }" data-max-rating = "3" )
+								.ui.bottom.top.left.attached.label.background-clolr-white( data-bind = " click: function() { imapDataEditShow ( true ) }, visible: !imapDataEditShow () && ! runningCheck() && canDoDelete()", style = "left: -10px!important;top: -6px!important;")
+									a
+										i.edit.outline.icon.large.blue
+								.description
+									.QTGateImapAccount
+									form.ui.form.fluid( data-bind = " visible: imapDataEditShow () ")
+										h4.ui.dividing.header.imapItemCardTitle( data-bind = " text: infoDefine [ $root.languageIndex() ].imapInformation.title ")
+										.two.fields
+											.field.required( data-bind = " css: { error: emailAddressShowError ()}")
+												.ui.left.icon.input
+													i.icon.outline.mail
+													input( data-bind = " value : emailAddress, css:{ 'activating element': emailAddressShowError() }, attr: { 'tabindex': ( $index() + 1 ) * 100 + 1, placeholder: infoDefine [ $root.languageIndex() ].home_index_view.emailAddress, 'data-content' : emailAddressShowError() ? infoDefine[ $root.languageIndex() ].error_message.EmailAddress[ EmailAddressErrorType() ]: null }" type = "text")
+											.field.required
+												.passwdInput.ui.input( data-bind = " css: { 'left icon': !password().length, 'action': password().length }")
+													i.icon.privacy( data-bind = " visible: !password().length ")
+													input( data-bind = " textInput: password, attr: { placeholder: infoDefine [ $root.languageIndex() ].imapInformation.emailServerPassword, 'tabindex': ( $index() + 2 ) * 100 + 1 }" type = "password" )
+													button.ui.icon.button.positive(  data-bind = " visible: password().length, click: imapAccountGoCheckClick" )
+														i.icon.angle.right
+										.ui.accordion.field.AccordionBox-shadow-delete.ImapDetailAccordionTitle( data-bind = " visible: showImapSmtpdetailTreeView() " )
+											.title
+												.dropdown.icon
+												span( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.serverDetail " )
+											.content.field
+												.ui.accordion.field.AccordionBox-shadow-delete.ImapDetailAccordionTitleSub
+													.title( data-bind = " attr: { id: uuid + '-imap'}")
+														.dropdown.icon
+														span( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.imapServer " )
+													.content.field
+														.form.ui
+															.field
+																.ui.left.icon.input
+																	i.icon.desktop
+																	input( type = "text", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].imapInformation.imapServerInput, tabindex: ( $index() + 1 ) * 100 + 3 }, value: iMapServerName " )
+															.field
+																.ui.left.icon.input
+																	i.icon.user
+																	input( type = "text", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].imapInformation.UserName, tabindex: ( $index() + 1 ) * 100 + 4 }, value: iMapServerLoginName" )
+															.field
+																.ui.left.icon.input
+																	i.icon.privacy
+																	input( type = "password", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].home_index_view.systemPassword, tabindex: ( $index() + 1 ) * 100 + 5 }, value: iMapServerLoginPassword " )
+															.fields.inline
+																.field.inline
+																	.label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.Ssl" )
+																	input( type="checkbox" data-bind = " checked: iMapSecure ")
+																.field.inline( data-bind = " visible: iMapSecure()")
+																	.label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.IgnoreCertificate " )
+																	input( type="checkbox" data-bind = " checked: imapIgnoreCertificate ")
+															.field( data-bind = "visible: imapIgnoreCertificate()")
+																.ui.negative.message
+																	p.fg-grayLight( data-bind = "html: infoDefine[ $root.languageIndex() ].imapInformation.Certificat, , animate:{ animation: 'pulse', state: $root.languageIndex() + 1 }" )
+															.fields.inline
+																label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.portName ")
+																<!-- ko foreach : imapPortArray -->
+																.field
+																	ui.radio.checkbox
+																		input( type = "radio" data-bind = "checked: $parent.imapPortChecked, value: $data" )
+																		.label( data-bind = " text: ( $data !== 'other' ) ? $data: infoDefine[ $root.languageIndex() ].imapInformation.otherPortNumber " )
+
+																<!-- /ko -->
+																.field( data-bind =" css: { error: iMapServerPortNumberError() }, visible: imapPortChecked () === 'other' ")
+																	.ui.input
+																		input( data-bind = "value : iMapServerPortNumber, attr : { 'data-content' : iMapServerPortNumberError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': iMapServerPortNumberError()} " type = "text" )
+
+
+												.ui.accordion.field.AccordionBox-shadow-delete.ImapDetailAccordionTitleSub
+													.title( data-bind = " attr: { id: uuid + '-smtp'}")
+														.dropdown.icon
+														span( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.smtpServer " )
+													.content.field
+														.form.ui
+															.field.required
+																.ui.left.icon.input
+																	i.icon.desktop
+																	input( type = "text", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].imapInformation.smtpServerInput, 'z-index': ( $index() + 1 ) * 100 + 3 }, value: SmtpServerName " )
+															.field.required
+																.ui.left.icon.input
+																	i.icon.user
+																	input( type = "text", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].imapInformation.UserName, 'z-index': ( $index() + 1 ) * 100 + 4 }, value: SmtpServerLoginName" )
+															.field.required
+																.ui.left.icon.input
+																	i.icon.privacy
+																	input( type = "password", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].home_index_view.systemPassword,'z-index': ( $index() + 1 ) * 100 + 5 }, value: smtpServerLoginPassword " )
+															.fields.inline
+																.field.inline
+																	.label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.Ssl" )
+																	input.hidden( type="checkbox" data-bind = "checked: smtpSecure ")
+																.field.inline( data-bind = " visible: smtpSecure()")
+																	.label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.IgnoreCertificate " )
+																	input.hidden( type="checkbox" data-bind = "checked: smtpIgnoreCertificate ")
+															.field( data-bind = "visible: smtpIgnoreCertificate()")
+																.ui.negative.message
+																	p.fg-grayLight( data-bind = "html: infoDefine[ $root.languageIndex() ].imapInformation.Certificat, , animate:{ animation: 'pulse', state: $root.languageIndex() + 1 }" )
+															.fields.inline
+																label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.portName ")
+																<!-- ko foreach : smtpPortArray -->
+																.field
+																	ui.radio.checkbox
+																		input( type = "radio" data-bind = "checked: $parent.smtpPortChecked, value: $data" )
+																		.label( data-bind = " text: ( $data !== 'other' ) ? $data: infoDefine[ $root.languageIndex() ].imapInformation.otherPortNumber " )
+
+																<!-- /ko -->
+																.field( data-bind =" css: { error: smtpServerPortNumberError() }, visible: smtpPortChecked () === 'other' ")
+																	.ui.input
+																		input( data-bind = "value : smtpServerPortNumber, attr : { 'data-content' : smtpServerPortNumberError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': smtpServerPortNumberError()} " type = "text" )
+							.ui.bottom.right.attached.label.background-clolr-white( data-bind = " visible: !imapDataEditShow() && ! showDeleteArea () && canDoDelete(), click: function() { showDeleteArea ( true ) }")
+								a
+									i.trash.outline.icon.large( style = " color: red;", data-bind = " visible: ! runningCheck ()")
+							
+							.ui.bottom.attached.progress.yellow( data-bind = " visible: runningCheck ()" )
+								.bar( style="transition-duration: 300ms; width: 30%;" )
+
+							.ui.bottom.attached.button( data-bind = " visible: imapDataEditShow (), text: infoDefine[ $root.languageIndex() ].imapInformation.exitEdit, click: calcelEdit" )
+								i.icon.blue.remove
+							.extra.content( data-bind = " visible: showDeleteArea () ")
+								.ui.one.column.centered.grid
 										.column.center
 											.ui.buttons
-												.ui.button( data-bind = " text: infoDefine[ languageIndex() ].home_index_view.cancel, click: function() { keyPair_delete_btn_view ( false )}")
+												.ui.button( data-bind = " text: infoDefine[ $root.languageIndex() ].home_index_view.cancel, click: function() { showDeleteArea ( false )}")
 												.or
-												.ui.negative.button( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.delete, click: deletePasswordNext ")
-						.field.required( data-bind = " css: { error: showPasswordErrorMessage() }")
-							p( data-bind = " text: infoDefine [ languageIndex() ].Home_keyPairInfo_view.locked, visible: !keyPair_delete_btn_view() && ! keyPair().passwordOK ")
-							.ui.input( data-bind = " visible: !keyPair_delete_btn_view() && ! keyPair().passwordOK, css: { action: systemSetup_systemPassword().length > 4 && ! passwordChecking(), 'left loading': passwordChecking()}")
-								i.search.icon.right( data-bind = " visible: passwordChecking()" style = " margin: 0 0 0 0!important; width: auto!important; height:auto!important;" )
-								input( type = "password", z-index = "1" data-bind = " attr: { placeholder: infoDefine[ languageIndex() ].Home_keyPairInfo_view.password1, 'data-content': showPasswordErrorMessage () ? infoDefine[ $root.languageIndex() ].error_message.SystemPasswordError : null }, css: { 'activating element': showPasswordErrorMessage() }, textInput: systemSetup_systemPassword, hasFocus: true" )
-								button.ui.icon.button.positive( data-bind = "visible: systemSetup_systemPassword().length > 4 && ! passwordChecking (), click: keyPair_checkPemPasswordClick ")
-									i.icon.angle.right
-							.ui.negative.message( data-bind = "visible: keyPair_delete_btn_view(), animate:{ animation: 'pulse', state: languageIndex() + 1 || keyPair_delete_btn_view() }")
-								p( data-bind = " text : infoDefine[ languageIndex() ].Home_keyPairInfo_view.deleteKeyPairInfo ")
-							.ui.negative.message( data-bind = "visible: showSystemError(), animate:{ animation: 'pulse', state: languageIndex() + 1} ")
-								p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.systemError")
-		.content( data-bind = "visible: MenuItems()[2] && imapInputFormActive()" style = "margin-top: 3em;")
-			.ui.info.message.hideArea( data-bind = " visible: !emailPool().length || !emailPool()[ emailPool().length - 1 ].emailAddress().length, css: { 'accordion AccordionBox-shadow-delete': emailPool().length && emailPool()[emailPool().length - 1].emailAddress().length } ")
-				.area( data-bind = "visible: !emailPool().length || !emailPool()[ emailPool().length - 1 ].emailAddress().length, css: { 'AccordionBox-shadow-delete title': emailPool().length && emailPool()[ emailPool().length - 1].emailAddress().length } ")
-					a.ui.top.right.attached.label.background-clolr-white
-						i.icon.close
-					p.fg-grayLight( style="margin-top: 0!important;" data-bind = " html: infoDefine[ languageIndex() ].imapInformation.infomation, animate:{ animation: 'pulse', state: languageIndex() + 1 }" )
-			.ui.cards.ImapItemAccordionCards
-				<!-- ko foreach : { data: emailPool, afterAdd: showPlanetElement } -->
-					.ui.card.imapItemCard( data-bind = " css: { imapItemEdit: imapDataEditShow (), imapItemUncheckShow: ! imapDataEditShow () && ! smtpCheckOk () && ! imapCheckOk(), imapItemCheckOKShow: ! imapDataEditShow () && smtpCheckOk () && imapCheckOk() }, attr: { id: uuid }")
-						.content.imapItemCardContent
-							img.right.floated.mini.ui.image.cardImageSetup( data-bind = " attr: { src: getMailIcon() }")
-							a.floating.ui.red.circular.label( data-bind = " text: '!', visible: imapCheckReturnError(), css: { 'activating element': imapCheckReturnError() }, attr: { 'data-html': imapCheckReturnError() ? infoDefine[ $root.languageIndex() ].error_message.imapErrorMessage [ imapCheckReturnError() ]: null }" )
-							a.floating.ui.teal.circular.label( data-bind = " text: '✓',visible: showImapTestSuccess(), css: { 'activating element': showImapTestSuccess() }, attr: { 'data-html': showImapTestSuccess() ? infoDefine[ $root.languageIndex() ].imapInformation.testSuccess : null } ")
-							.header( data-bind = " text: emailAddress() " )
-							.meta( data-bind = " visible: runningCheck () " )
-								p( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.imapCheckingStep [ imapCheckingStep() ] ")
-							.meta( data-bind = " visible: imapCheckResult() && ! imapDataEditShow()" )
-								span( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.imapResultTitle" )
-								span.ui.star.rating( data-bind = " attr: { 'data-rating': dataRating() }" data-max-rating = "3" )
-							.ui.bottom.top.left.attached.label.background-clolr-white( data-bind = " click: function() { imapDataEditShow ( true ) }, visible: !imapDataEditShow () && ! runningCheck() && canDoDelete()", style = "left: -10px!important;top: -6px!important;")
-								a
-									i.edit.outline.icon.large.blue
+												.ui.negative.button( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.deleteImap, click: deleteImap ")
+
+					<!-- /ko -->
+					.ui.fluid.card( style = "width: 36px!important;box-shadow: none!important; " data-bind = " visible: $root.showAddImapDataButton () ")
+							.insideButtom( style = "display: table;height: 100%;width: 100%;")
+								.meddle( style = "display: table-cell!important;vertical-align: middle;")
+									button.circular.ui.icon.button( data-bind= " click: function () { $root.addANewImapData( $root ) }")
+										i.icon.plus( style = " color: white!important;")
+
+				//-
+			#QTGateConnectContent.content( data-bind = "  visible: QTGateConnectActive() && MenuItems()[3] && ! keyPair().verified " style = "margin-top: 3em;")
+				#QTGateConnecting.ui.tiny.steps.top.attached.hideArea( data-bind = "css: { 'two': QTGateConnecting() < 2, 'three': QTGateConnecting () === 2 || QTGateConnecting () > 3 && QTGateConnecting() < 6}, visible: QTGateConnecting() < 6 ")
+					.step.completed( style = "padding: 8px;")
+						a.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', visible: QTGateConnecting() === 3, attr: { 'data-html': infoDefine[ languageIndex() ].error_message.imapErrorMessage [ QTGateConnectError() ]}")
+						.content
+							.title
+								i.icon.spy.violet
+								span( data-bind = " text: emailPool().length ? emailPool()[ qtgateImapAccount() ].emailAddress() : null" style="color:rgba(0,0,0,.5);")
+					.step( data-bind = " visible: !keyPair().verified, click: function() { if ( QTGateConnecting()) return; $('.SendToQTGateIMAPInformation').transition('slide down')}, css: { link: ! QTGateConnecting(), completed: QTGateConnecting() === 2 || QTGateConnecting() === 4, fixStepAfter: QTGateConnecting() !== 2, stepError: QTGateConnecting() === 3 }" style = "padding: 8px;")
+						a#QTGateSignInformationPopupa.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', attr: { 'data-html': infoDefine [ languageIndex() ].qtGateView.QTGateSign[2] }, visible: QTGateConnecting() === 2 ")
+						a#QTGateSignInformationPopupa.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', attr: { 'data-html': infoDefine [ languageIndex() ].qtGateView.QTGateSign[4] }, visible: QTGateConnecting() === 5 ")
+						.content
+							.title
+								i.icon.exchange.teal
+								span( data-bind = " text: infoDefine [ languageIndex() ].qtGateView.QTGateConnectResult [ QTGateConnecting() ] " style="color:rgba(0,0,0,.5);")
+							.loader( data-bind = " css: { 'ui active': QTGateConnecting() === 1 } ")
+					.step.link( data-bind = " visible: QTGateConnecting() === 2 || QTGateConnecting() === 4 || QTGateConnecting() === 5, css: { stepError: QTGateConnecting() === 5 }, click: function (){ $('.KeypairSign').transition('slide down')}" style = "padding: 8px;")
+						.content
+							.title
+								i.icon.privacy.purple
+								span(data-bind = " text: ': '+ keyPair().email" style="color:rgba(0,0,0,.5);")
+								i.icon.warning.sign.red
+							//-.description
+								span( data-bind = " text: infoDefine [ languageIndex() ].qtGateView.QTGateSign [ QTGateConnecting() === 2 ? 1: QTGateConnecting() === 5 ? 5 : 3 ] " style="color:rgba(0,0,0,.5);")
+							.loader( data-bind = " css: { 'ui active': QTGateConnecting() === 4 } ")
+
+				.KeypairSign.ui.attached.segment( data-bind = " visible: QTGateConnecting() === 2" )
+					.KeypairSignTitle.AccordionBox-shadow-delete.title( data-bind = " visible: QTGateConnecting() === 2" )
+						span( data-bind = " text: infoDefine [ $root.languageIndex() ].emailConform.info1_1 " style="color:rgba(0,0,0,.5);")
+						span( data-bind = " text: keyPair().email" style="color:rgba(0,0,0,.5);")
+						span( data-bind = " text: infoDefine [ $root.languageIndex() ].emailConform.info1_2"  style="color:rgba(0,0,0,.5);")
+						.ui.raised.segment
+							.ui.grid.equal.width
+								.row( style = "background-color: #D94235; padding-bottom: 0px;")
+									.column
+										img( src = "/images/qtgate.svg" style = "margin-left: 1em; height: 50px;")
+									.column.right.floated
+										
+								.row( style = "background-color: #D94235; padding-top: .5em;")
+									h2( style = "color: white; margin-left: 2em; padding-top: 0px;" data-bind = "text: infoDefine [ $root.languageIndex() ].emailConform.emailTitle " )
+								.row( style = "background-color: #FAFAFA; font-weight: bold; padding-bottom: 0px")
+									span( data-bind="text: infoDefine [ $root.languageIndex() ].emailConform.emailDetail1" style="margin-left: 20px;color:rgba(0,0,0,.5);")
+									span( data-bind="text: keyPair().nikeName" style="color:rgba(0,0,0,.5);")
+									span( data-bind="text: infoDefine [ $root.languageIndex() ].emailConform.emailDetail1_1" style="color:rgba(0,0,0,.5);")
+								.row( style = "background-color: #FAFAFA;padding-top: .2em;padding-bottom: 0px;")
+									span( data-bind = "text: infoDefine [ $root.languageIndex() ].emailConform.emailDetail2" style="margin-left: 20px;color:rgba(0,0,0,.5);")
+								.row( style = "background-color: #FAFAFA; padding-top: .2em; padding-bottom: 0.2em")
+									.ui.form( style="margin: 20px;width: 100%;")
+										.field( data-bind = " css: { error: conformTextError() }")
+											textarea#SendToQTGateTextArea( data-position="right center" data-bind = "value: conformText, attr: { placeholder: infoDefine [ $root.languageIndex() ].emailConform.info2 }" )
+											a.floating.ui.red.circular.label( data-bind = " text: '!', visible: conformTextError(), attr: { 'data-content': conformTextError () ? infoDefine[ languageIndex() ].emailConform.formatError[ conformTextErrorNumber() ] : null }, css: { 'activating element1': conformTextError() } ")
+								.row( style = "background-color: #FAFAFA;padding-top: 0px;")
+									.ui.two.column.grid
+										.stretched.row( style ="padding-top: 0px;")
+											.column(style = "padding-top: 0px;padding-bottom: 0.2em")
+												span( data-bind=" text: infoDefine [ languageIndex() ].emailConform.bottom1_1" style="margin-left: 20px;color:rgba(0,0,0,.5);" )
+												span( data-bind=" text: infoDefine [ languageIndex() ].emailConform.bottom1_2" style="margin-left: 20px;color:rgba(0,0,0,.5);" )
+											.column.right.floated
+												.ui.purple.button( style = "position: absolute; right: 2em; top: 0em;" data-bind="text: infoDefine [ $root.languageIndex() ].emailConform.conformButtom, click: checkActiveEmailSubmit, visible: conformButtom ()" )
+								.row( style = "background-color: #FAFAFA;padding-top: 0px;")
+				.SendToQTGateIMAPInformation.ui.attached.segment.hideArea.AccordionBox-shadow-delete( data-bind = "css: { 'accordion AccordionBox-shadow-delete': QTGateConnecting ()}, visible: !QTGateConnecting ()")
+					.SendToQTGateIMAPInformationTitle( data-bind = " css: { 'AccordionBox-shadow-delete title': QTGateConnecting()}, visible: !QTGateConnecting()")
+						p( data-bind = " html: infoDefine [ languageIndex() ].imapInformation.imapAccountConform" style=" color: rgba(255,0,0,.5)")
+						.ui.buttons
+							button.ui.button( data-bind=" text: infoDefine [ languageIndex() ].home_index_view.cancel, click: function() { $('.SendToQTGateIMAPInformation').transition('slide down')}")
+							.or
+							button.ui.button.positive( data-bind = " text: infoDefine [ languageIndex() ].imapInformation.agree, click: connectQTGate ")
+			.content( data-bind = " visible: QTGateConnectRegionActive () && MenuItems()[3]" style = "margin-top: 3em;")
+				h4( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.title " style="color: #a333c8;")
+				.content( data-bind = " visible: QTGateRegionInfo (), css: { active: QTGateRegionInfo ()} ")
+					.connectImformation
+						span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.connectQTGate ")
+						.ui.raised.segment( data-bind = " visible: sendConnectRequestMail()")
+							span( data-bind = " text: config().freeUser ? infoDefine [ languageIndex() ].QTGateRegion.sendConnectRequestMail[0] +  infoDefine [ languageIndex() ].QTGateRegion.sendConnectRequestMail[1]: infoDefine [ languageIndex() ].QTGateRegion.sendConnectRequestMail[0]")
+						.ui.raised.segment( data-bind = "visible: QTGateRegionERROR()> -1")
+							span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.QTGateRegionERROR[QTGateRegionERROR()]" style = "color: red;")
+						#connectImformationProcess.olive.ui.tiny.progress(style = " margin-top: 10px; ")
+							.bar
+				.ui.cards(data-bind = " visible: !QTGateRegionInfo(),foreach: QTGateRegions " )
+					.ui.card( data-bind = "attr: { style: $root.selectedQTGateRegion() === $index() ? 'width:100%;' : ''}, css: { 'raised link': available() && $root.selectedQTGateRegion() < 0, 'selected': $root.selectedQTGateRegion() === $index(), 'unavailable': ! available() }, visible: $root.selectedQTGateRegion() < 0 || $root.selectedQTGateRegion() === $index(), click: function () { if ( !available()){ return }; $root.QTGateRegionCardClick ( $index()) }")
+						.content
+							i( data-bind = " attr: { class: 'right floated flag ' + icon }")
+							.header.QTGateGatewayCardHeader( data-bind = " text: content[ $root.languageIndex() ], css: { active: available() } " )
+							.meta( data-bind = " text: meta [ $root.languageIndex() ] ")
 							.description
-								.QTGateImapAccount
-								form.ui.form.fluid( data-bind = " visible: imapDataEditShow () ")
-									h4.ui.dividing.header.imapItemCardTitle( data-bind = " text: infoDefine [ $root.languageIndex() ].imapInformation.title ")
-									.two.fields
-										.field.required( data-bind = " css: { error: emailAddressShowError ()}")
-											.ui.left.icon.input
-												i.icon.outline.mail
-												input( data-bind = " value : emailAddress, css:{ 'activating element': emailAddressShowError() }, attr: { 'tabindex': ( $index() + 1 ) * 100 + 1, placeholder: infoDefine [ $root.languageIndex() ].home_index_view.emailAddress, 'data-content' : emailAddressShowError() ? infoDefine[ $root.languageIndex() ].error_message.EmailAddress[ EmailAddressErrorType() ]: null }" type = "text")
-										.field.required
-											.passwdInput.ui.input( data-bind = " css: { 'left icon': !password().length, 'action': password().length }")
-												i.icon.privacy( data-bind = " visible: !password().length ")
-												input( data-bind = " textInput: password, attr: { placeholder: infoDefine [ $root.languageIndex() ].imapInformation.emailServerPassword, 'tabindex': ( $index() + 2 ) * 100 + 1 }" type = "password" )
-												button.ui.icon.button.positive(  data-bind = " visible: password().length, click: imapAccountGoCheckClick" )
-													i.icon.angle.right
-									.ui.accordion.field.AccordionBox-shadow-delete.ImapDetailAccordionTitle( data-bind = " visible: showImapSmtpdetailTreeView() " )
-										.title
-											.dropdown.icon
-											span( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.serverDetail " )
-										.content.field
-											.ui.accordion.field.AccordionBox-shadow-delete.ImapDetailAccordionTitleSub
-												.title( data-bind = " attr: { id: uuid + '-imap'}")
-													.dropdown.icon
-													span( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.imapServer " )
-												.content.field
-													.form.ui
-														.field
-															.ui.left.icon.input
-																i.icon.desktop
-																input( type = "text", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].imapInformation.imapServerInput, tabindex: ( $index() + 1 ) * 100 + 3 }, value: iMapServerName " )
-														.field
-															.ui.left.icon.input
-																i.icon.user
-																input( type = "text", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].imapInformation.UserName, tabindex: ( $index() + 1 ) * 100 + 4 }, value: iMapServerLoginName" )
-														.field
-															.ui.left.icon.input
-																i.icon.privacy
-																input( type = "password", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].home_index_view.systemPassword, tabindex: ( $index() + 1 ) * 100 + 5 }, value: iMapServerLoginPassword " )
-														.fields.inline
-															.field.inline
-																.label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.Ssl" )
-																input( type="checkbox" data-bind = " checked: iMapSecure ")
-															.field.inline( data-bind = " visible: iMapSecure()")
-																.label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.IgnoreCertificate " )
-																input( type="checkbox" data-bind = " checked: imapIgnoreCertificate ")
-														.field( data-bind = "visible: imapIgnoreCertificate()")
-															.ui.negative.message
-																p.fg-grayLight( data-bind = "html: infoDefine[ $root.languageIndex() ].imapInformation.Certificat, , animate:{ animation: 'pulse', state: $root.languageIndex() + 1 }" )
-														.fields.inline
-															label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.portName ")
-															<!-- ko foreach : imapPortArray -->
-															.field
-																ui.radio.checkbox
-																	input( type = "radio" data-bind = "checked: $parent.imapPortChecked, value: $data" )
-																	.label( data-bind = " text: ( $data !== 'other' ) ? $data: infoDefine[ $root.languageIndex() ].imapInformation.otherPortNumber " )
-
-															<!-- /ko -->
-															.field( data-bind =" css: { error: iMapServerPortNumberError() }, visible: imapPortChecked () === 'other' ")
-																.ui.input
-																	input( data-bind = "value : iMapServerPortNumber, attr : { 'data-content' : iMapServerPortNumberError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': iMapServerPortNumberError()} " type = "text" )
-
-
-											.ui.accordion.field.AccordionBox-shadow-delete.ImapDetailAccordionTitleSub
-												.title( data-bind = " attr: { id: uuid + '-smtp'}")
-													.dropdown.icon
-													span( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.smtpServer " )
-												.content.field
-													.form.ui
-														.field.required
-															.ui.left.icon.input
-																i.icon.desktop
-																input( type = "text", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].imapInformation.smtpServerInput, 'z-index': ( $index() + 1 ) * 100 + 3 }, value: SmtpServerName " )
-														.field.required
-															.ui.left.icon.input
-																i.icon.user
-																input( type = "text", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].imapInformation.UserName, 'z-index': ( $index() + 1 ) * 100 + 4 }, value: SmtpServerLoginName" )
-														.field.required
-															.ui.left.icon.input
-																i.icon.privacy
-																input( type = "password", data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].home_index_view.systemPassword,'z-index': ( $index() + 1 ) * 100 + 5 }, value: smtpServerLoginPassword " )
-														.fields.inline
-															.field.inline
-																.label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.Ssl" )
-																input.hidden( type="checkbox" data-bind = "checked: smtpSecure ")
-															.field.inline( data-bind = " visible: smtpSecure()")
-																.label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.IgnoreCertificate " )
-																input.hidden( type="checkbox" data-bind = "checked: smtpIgnoreCertificate ")
-														.field( data-bind = "visible: smtpIgnoreCertificate()")
-															.ui.negative.message
-																p.fg-grayLight( data-bind = "html: infoDefine[ $root.languageIndex() ].imapInformation.Certificat, , animate:{ animation: 'pulse', state: $root.languageIndex() + 1 }" )
-														.fields.inline
-															label( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.portName ")
-															<!-- ko foreach : smtpPortArray -->
-															.field
-																ui.radio.checkbox
-																	input( type = "radio" data-bind = "checked: $parent.smtpPortChecked, value: $data" )
-																	.label( data-bind = " text: ( $data !== 'other' ) ? $data: infoDefine[ $root.languageIndex() ].imapInformation.otherPortNumber " )
-
-															<!-- /ko -->
-															.field( data-bind =" css: { error: smtpServerPortNumberError() }, visible: smtpPortChecked () === 'other' ")
-																.ui.input
-																	input( data-bind = "value : smtpServerPortNumber, attr : { 'data-content' : smtpServerPortNumberError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': smtpServerPortNumberError()} " type = "text" )
-						.ui.bottom.right.attached.label.background-clolr-white( data-bind = " visible: !imapDataEditShow() && ! showDeleteArea () && canDoDelete(), click: function() { showDeleteArea ( true ) }")
-							a
-								i.trash.outline.icon.large( style = " color: red;", data-bind = " visible: ! runningCheck ()")
-						
-						.ui.bottom.attached.progress.yellow( data-bind = " visible: runningCheck ()" )
-							.bar( style="transition-duration: 300ms; width: 30%;" )
-
-						.ui.bottom.attached.button( data-bind = " visible: imapDataEditShow (), text: infoDefine[ $root.languageIndex() ].imapInformation.exitEdit, click: calcelEdit" )
-							i.icon.blue.remove
-						.extra.content( data-bind = " visible: showDeleteArea () ")
-							.ui.one.column.centered.grid
-									.column.center
-										.ui.buttons
-											.ui.button( data-bind = " text: infoDefine[ $root.languageIndex() ].home_index_view.cancel, click: function() { showDeleteArea ( false )}")
-											.or
-											.ui.negative.button( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.deleteImap, click: deleteImap ")
-
-				<!-- /ko -->
-				.ui.fluid.card( style = "width: 36px!important;box-shadow: none!important; " data-bind = " visible: $root.showAddImapDataButton () ")
-						.insideButtom( style = "display: table;height: 100%;width: 100%;")
-							.meddle( style = "display: table-cell!important;vertical-align: middle;")
-								button.circular.ui.icon.button( data-bind= " click: function () { $root.addANewImapData( $root ) }")
-									i.icon.plus( style = " color: white!important;")
-
-			//-
-		#QTGateConnectContent.content( data-bind = "  visible: QTGateConnectActive() && MenuItems()[3] && ! keyPair().verified " style = "margin-top: 3em;")
-			#QTGateConnecting.ui.tiny.steps.top.attached.hideArea( data-bind = "css: { 'two': QTGateConnecting() < 2, 'three': QTGateConnecting () === 2 || QTGateConnecting () > 3 && QTGateConnecting() < 6}, visible: QTGateConnecting() < 6 ")
-				.step.completed( style = "padding: 8px;")
-					a.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', visible: QTGateConnecting() === 3, attr: { 'data-html': infoDefine[ languageIndex() ].error_message.imapErrorMessage [ QTGateConnectError() ]}")
-					.content
-						.title
-							i.icon.spy.violet
-							span( data-bind = " text: emailPool().length ? emailPool()[ qtgateImapAccount() ].emailAddress() : null" style="color:rgba(0,0,0,.5);")
-				.step( data-bind = " visible: !keyPair().verified, click: function() { if ( QTGateConnecting()) return; $('.SendToQTGateIMAPInformation').transition('slide down')}, css: { link: ! QTGateConnecting(), completed: QTGateConnecting() === 2 || QTGateConnecting() === 4, fixStepAfter: QTGateConnecting() !== 2, stepError: QTGateConnecting() === 3 }" style = "padding: 8px;")
-					a#QTGateSignInformationPopupa.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', attr: { 'data-html': infoDefine [ languageIndex() ].qtGateView.QTGateSign[2] }, visible: QTGateConnecting() === 2 ")
-					a#QTGateSignInformationPopupa.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', attr: { 'data-html': infoDefine [ languageIndex() ].qtGateView.QTGateSign[4] }, visible: QTGateConnecting() === 5 ")
-					.content
-						.title
-							i.icon.exchange.teal
-							span( data-bind = " text: infoDefine [ languageIndex() ].qtGateView.QTGateConnectResult [ QTGateConnecting() ] " style="color:rgba(0,0,0,.5);")
-						.loader( data-bind = " css: { 'ui active': QTGateConnecting() === 1 } ")
-				.step.link( data-bind = " visible: QTGateConnecting() === 2 || QTGateConnecting() === 4 || QTGateConnecting() === 5, css: { stepError: QTGateConnecting() === 5 }, click: function (){ $('.KeypairSign').transition('slide down')}" style = "padding: 8px;")
-					.content
-						.title
-							i.icon.privacy.purple
-							span(data-bind = " text: ': '+ keyPair().email" style="color:rgba(0,0,0,.5);")
-							i.icon.warning.sign.red
-						//-.description
-							span( data-bind = " text: infoDefine [ languageIndex() ].qtGateView.QTGateSign [ QTGateConnecting() === 2 ? 1: QTGateConnecting() === 5 ? 5 : 3 ] " style="color:rgba(0,0,0,.5);")
-						.loader( data-bind = " css: { 'ui active': QTGateConnecting() === 4 } ")
-
-			.KeypairSign.ui.attached.segment( data-bind = " visible: QTGateConnecting() === 2" )
-				.KeypairSignTitle.AccordionBox-shadow-delete.title( data-bind = " visible: QTGateConnecting() === 2" )
-					span( data-bind = " text: infoDefine [ $root.languageIndex() ].emailConform.info1_1 " style="color:rgba(0,0,0,.5);")
-					span( data-bind = " text: keyPair().email" style="color:rgba(0,0,0,.5);")
-					span( data-bind = " text: infoDefine [ $root.languageIndex() ].emailConform.info1_2"  style="color:rgba(0,0,0,.5);")
-					.ui.raised.segment
-						.ui.grid.equal.width
-							.row( style = "background-color: #D94235; padding-bottom: 0px;")
-								.column
-									img( src = "/images/qtgate.svg" style = "margin-left: 1em; height: 50px;")
-								.column.right.floated
+								span( style = " color: mediumseagreen!important;" data-bind = "visible: available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.available")
+								
+								span( style = " color: palevioletred!important;" data-bind = "visible: !available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.unavailable" )
+								span( data-bind = "visible: canVoe() && ! selected() " style = " color: purple!important; font-size: small!important; margin-left: 10px!important;" ) VoE
+								span( data-bind = "visible: canVoH() && ! selected() " style = " color:rebeccapurple!important; font-size: small!important; margin-left: 10px!important;" ) VoH	
+								.ui.negative.message( data-bind=" visible: error() > -1, text: error() > -1 ?  $root.infoDefine [ $root.languageIndex() ].QTGateGateway.error[ error() ]: ''")
+								.ui.tiny.progress.purple.regionConnectProcessBar( data-bind = "visible: showRegionConnectProcessBar()")
+									.bar
+										.progress
+								.connectedArea( data-bind="visible: showConnectedArea()")
+									.ui.divider
+									p( data-bind=" text: infoDefine [ $root.languageIndex() ].QTGateGateway.userType[$root.QTTransferData().productionPackage === 'free' ? 0 : 1]")
+									.ui.grid
+										.three.wide.column
+											span( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateGateway.todaysDatatransfer " )
+										.thirteen.wide.column
+											.userDetail.ui.progress.success( data-bind="attr: { 'data-total': $root.QTTransferData().transferDayLimit / ( 1024 * 1024 ), 'data-value':( $root.QTTransferData().transferDayLimit - $root.QTTransferData().usedDayTransfer) /( 1024 * 1024 )}")
+												.bar
+													.progress
+												.label
+													span( data-bind="text: infoDefine [ $root.languageIndex() ].QTGateGateway.datatransferToday ")
+													span( data-bind=" text: $root.QTTransferData().transferDayLimit / ( 1024 * 1024 ) + ' Mbyte'")
+										.three.wide.column
+											span( data-bind = "text: infoDefine [ $root.languageIndex() ].QTGateGateway.monthDatatransfer " )
+										.thirteen.wide.column
+											.userDetail.ui.progress.success( data-bind = "attr: { 'data-total': $root.QTTransferData().transferMonthly / ( 1024 * 1024 ), 'data-value':( $root.QTTransferData().transferMonthly - $root.QTTransferData().usedMonthlyTransfer)/( 1024 * 1024 )}")
+												.bar
+													.progress
+												.label
+													span( data-bind=" text: infoDefine [ $root.languageIndex() ].QTGateGateway.datatransferMonth ")
+													span( data-bind=" text: $root.QTTransferData().transferMonthly / ( 1024 * 1024 ) + ' Mbyte'")
 									
-							.row( style = "background-color: #D94235; padding-top: .5em;")
-								h2( style = "color: white; margin-left: 2em; padding-top: 0px;" data-bind = "text: infoDefine [ $root.languageIndex() ].emailConform.emailTitle " )
-							.row( style = "background-color: #FAFAFA; font-weight: bold; padding-bottom: 0px")
-								span( data-bind="text: infoDefine [ $root.languageIndex() ].emailConform.emailDetail1" style="margin-left: 20px;color:rgba(0,0,0,.5);")
-								span( data-bind="text: keyPair().nikeName" style="color:rgba(0,0,0,.5);")
-								span( data-bind="text: infoDefine [ $root.languageIndex() ].emailConform.emailDetail1_1" style="color:rgba(0,0,0,.5);")
-							.row( style = "background-color: #FAFAFA;padding-top: .2em;padding-bottom: 0px;")
-								span( data-bind = "text: infoDefine [ $root.languageIndex() ].emailConform.emailDetail2" style="margin-left: 20px;color:rgba(0,0,0,.5);")
-							.row( style = "background-color: #FAFAFA; padding-top: .2em; padding-bottom: 0.2em")
-								.ui.form( style="margin: 20px;width: 100%;")
-									.field( data-bind = " css: { error: conformTextError() }")
-										textarea#SendToQTGateTextArea( data-position="right center" data-bind = "value: conformText, attr: { placeholder: infoDefine [ $root.languageIndex() ].emailConform.info2 }" )
-										a.floating.ui.red.circular.label( data-bind = " text: '!', visible: conformTextError(), attr: { 'data-content': conformTextError () ? infoDefine[ languageIndex() ].emailConform.formatError[ conformTextErrorNumber() ] : null }, css: { 'activating element1': conformTextError() } ")
-							.row( style = "background-color: #FAFAFA;padding-top: 0px;")
-								.ui.two.column.grid
-									.stretched.row( style ="padding-top: 0px;")
-										.column(style = "padding-top: 0px;padding-bottom: 0.2em")
-											span( data-bind=" text: infoDefine [ languageIndex() ].emailConform.bottom1_1" style="margin-left: 20px;color:rgba(0,0,0,.5);" )
-											span( data-bind=" text: infoDefine [ languageIndex() ].emailConform.bottom1_2" style="margin-left: 20px;color:rgba(0,0,0,.5);" )
-										.column.right.floated
-											.ui.purple.button( style = "position: absolute; right: 2em; top: 0em;" data-bind="text: infoDefine [ $root.languageIndex() ].emailConform.conformButtom, click: checkActiveEmailSubmit, visible: conformButtom ()" )
-							.row( style = "background-color: #FAFAFA;padding-top: 0px;")
-			.SendToQTGateIMAPInformation.ui.attached.segment.hideArea.AccordionBox-shadow-delete( data-bind = "css: { 'accordion AccordionBox-shadow-delete': QTGateConnecting ()}, visible: !QTGateConnecting ()")
-				.SendToQTGateIMAPInformationTitle( data-bind = " css: { 'AccordionBox-shadow-delete title': QTGateConnecting()}, visible: !QTGateConnecting()")
-					p( data-bind = " html: infoDefine [ languageIndex() ].imapInformation.imapAccountConform" style=" color: rgba(255,0,0,.5)")
-					.ui.buttons
-						button.ui.button( data-bind=" text: infoDefine [ languageIndex() ].home_index_view.cancel, click: function() { $('.SendToQTGateIMAPInformation').transition('slide down')}")
-						.or
-						button.ui.button.positive( data-bind = " text: infoDefine [ languageIndex() ].imapInformation.agree, click: connectQTGate ")
-		.content( data-bind = " visible: QTGateConnectRegionActive () && MenuItems()[3]" style = "margin-top: 3em;")
-			h4( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.title " style="color: #a333c8;")
-			.content( data-bind = " visible: QTGateRegionInfo (), css: { active: QTGateRegionInfo ()} ")
-				.connectImformation
-					span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.connectQTGate ")
-					#connectImformationProcess.olive.ui.tiny.progress(style = " margin-top: 10px; ")
-						.bar
-			.ui.cards(data-bind = " visible: !QTGateRegionInfo(),foreach: QTGateRegions " )
-				.ui.card( data-bind = "attr: { style: $root.selectedQTGateRegion() === $index() ? 'width:100%;' : ''}, css: { 'raised link': available() && $root.selectedQTGateRegion() < 0, 'selected': $root.selectedQTGateRegion() === $index(), 'unavailable': ! available() }, visible: $root.selectedQTGateRegion() < 0 || $root.selectedQTGateRegion() === $index(), click: function () { if ( !available()){ return }; $root.QTGateRegionCardClick ( $index()) }")
-					.content
-						i( data-bind = " attr: { class: 'right floated flag ' + icon }")
-						.header.QTGateGatewayCardHeader( data-bind = " text: content[ $root.languageIndex() ], css: { active: available() } " )
-						.meta( data-bind = " text: meta [ $root.languageIndex() ] ")
-						.description
-							span( style = " color: mediumseagreen!important;" data-bind = "visible: available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.available")
-							
-							span( style = " color: palevioletred!important;" data-bind = "visible: !available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.unavailable" )
-							span( data-bind = "visible: canVoe() && ! selected() " style = " color: purple!important; font-size: small!important; margin-left: 10px!important;" ) VoE
-							span( data-bind = "visible: canVoH() && ! selected() " style = " color:rebeccapurple!important; font-size: small!important; margin-left: 10px!important;" ) VoH	
-							.ui.negative.message( data-bind=" visible: error() > -1, text: error() > -1 ?  $root.infoDefine [ $root.languageIndex() ].QTGateGateway.error[ error() ]: ''")
-							.ui.tiny.progress.purple.regionConnectProcessBar( data-bind = "visible: showRegionConnectProcessBar()")
-								.bar
-									.progress
-							.connectedArea( data-bind="visible: showConnectedArea()")
-								.ui.divider
-								p( data-bind=" text: infoDefine [ $root.languageIndex() ].QTGateGateway.userType[$root.QTTransferData().productionPackage === 'free' ? 0 : 1]")
-								.ui.grid
-									.three.wide.column
-										span( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateGateway.todaysDatatransfer " )
-									.thirteen.wide.column
-										.userDetail.ui.progress.success( data-bind="attr: { 'data-total': $root.QTTransferData().transferDayLimit / ( 1024 * 1024 ), 'data-value':( $root.QTTransferData().transferDayLimit - $root.QTTransferData().usedDayTransfer) /( 1024 * 1024 )}")
-											.bar
-												.progress
-											.label
-												span( data-bind="text: infoDefine [ $root.languageIndex() ].QTGateGateway.datatransferToday ")
-												span( data-bind=" text: $root.QTTransferData().transferDayLimit / ( 1024 * 1024 ) + ' Mbyte'")
-									.three.wide.column
-										span( data-bind = "text: infoDefine [ $root.languageIndex() ].QTGateGateway.monthDatatransfer " )
-									.thirteen.wide.column
-										.userDetail.ui.progress.success( data-bind = "attr: { 'data-total': $root.QTTransferData().transferMonthly / ( 1024 * 1024 ), 'data-value':( $root.QTTransferData().transferMonthly - $root.QTTransferData().usedMonthlyTransfer)/( 1024 * 1024 )}")
-											.bar
-												.progress
-											.label
-												span( data-bind=" text: infoDefine [ $root.languageIndex() ].QTGateGateway.datatransferMonth ")
-												span( data-bind=" text: $root.QTTransferData().transferMonthly / ( 1024 * 1024 ) + ' Mbyte'")
-								
 
-					.extra.content( data-bind = "visible: showExtraContent()")
-						.ui.form( style = "margin-top: 0px!important;" data-bind = " visible: selected(), css:{ two: canVoe() && canVoH(), one: !canVoe() || !canVoH()} ")
-							.inline.fields
-								label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.setupCardTitle " style="color:rgba(0,0,0,.8);")
-								.field.popupField( data-position="bottom left" data-bind = "attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[1]}, click: function(){ $root.QTGateConnect1('1'); error ( -1 )}" )
-									.ui.radio.checkbox
-										input( type = "radio" name="rrr" checked style="color:rgba(0,0,0,.7);" )
-										label( data-bind = " text: $root.QTGateRegionsSetup()[1].title" style="color:rgba(0,0,0,.7);" )
-								.field.popupField( data-position="bottom left" data-bind = "attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[0]}, click:function(){ $root.QTGateConnect1('2'); error ( -1 )}")
-									.ui.radio.checkbox
-										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.8);" )
-										label( data-bind = " text: $root.QTGateRegionsSetup()[0].title" style="color:rgba(0,0,0,.7);" )
-								.field
-									.ui.checkbox
-										input( type="checkbox" tabindex="0" class="hidden" checked readonly style="color:rgba(0,0,0,.7);" )
-										label.popupField( data-bind = " attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[2]}, text: $root.infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDomain " data-position="top left" style="color: rgba(100,0,0,.4)!important;")
-							.inline.fields
-								label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.dataTransfer " style="color:rgba(0,0,0,.8);" )
-								.field.popupField( data-position="bottom left" data-bind =" attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[3]}, click: function(){ $root.QTGateConnect2(false); error ( -1 ) }")
-									.ui.radio.checkbox
-										input( type = "radio" name="dataTransfer" checked class="hidden" style="color:rgba(0,0,0,.7);" )
-										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.dataTransfer_datail[0]" style="color:rgba(0,0,0,.7);" )
-								.field.popupField( data-position="bottom left" data-bind =" attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[4]}, click: function(){ $root.QTGateConnect2(true); error ( -1 ) }")
-									.ui.radio.checkbox
-										input( type = "radio" name="dataTransfer" class="hidden" style="color:rgba(0,0,0,.7);" )
-										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.dataTransfer_datail[1]" style="color:rgba(0,0,0,.7);" )
-							//-.inline.fields
-								label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache " )
-								.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (6); $root.QTGateCacheUse ( false) }")
-									.ui.radio.checkbox
-										input( type = "radio" name="dataCache" checked="checked" class="hidden" )
-										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[1]" )
-								.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (5);$root.QTGateCacheUse ( true) }")
-									.ui.radio.checkbox
-										input( type = "radio" name="dataCache" class="hidden" )
-										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[0]" )
-								.field( data-bind =" visible: $root.QTGateCacheUse(), click: function(){ $root.QTGateConnect_SelectTech (7) } ")
-									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceholder " )
-									select.ui.compact.selection.dropdown( data-bind = "options: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceDate, optionsText: 'name', optionsValue: 'id' " )
-								.field( data-bind =" visible: $root.QTGateCacheUse()" )
-									.ui.primary.basic.button( data-bind = "visible: !$root.QTGate_showDeleteCacheButton(), click: function() { $root.QTGate_showDeleteCacheButton(true)},text: infoDefine [ $root.languageIndex() ].QTGateRegion.clearCache ")
-									.ui.buttons( data-bind = "visible: $root.QTGate_showDeleteCacheButton()")
-										button.ui.button( data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.cancel, click: function() { $root.QTGate_showDeleteCacheButton(false) } ")
-										.or
-										button.ui.positive.button( data-bind = " text: infoDefine [ $root.languageIndex() ].Home_keyPairInfo_view.delete")
-							
-							.inline.fields.popupField( data-position="right center" data-bind ="attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[8]}")
-								//-.field
-									p( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.GlobalIp " )
-									p( data-bind = " text: $root.config().serverGlobalIpAddress")
-								.field
-									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.localPort " )
-									.ui.input
-										input( data-bind = "value : $root.QTGateLocalProxyPort, attr : { 'data-content' : $root.localProxyPortError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': $root.localProxyPortError()} " style="color:rgba(0,0,0,.7);" )
-								//-.field
-									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.localPath " )
-									i.input
-										input( data-bind = "value : $root.QTGateLocalProxyPort, attr : { 'data-content' : $root.localProxyPortError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': $root.localProxyPortError()} ")
-							//-.inline.fields( data-bind ="click: function(){ $root.QTGateConnect_SelectTech (9) } ")
-								label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.outDoormode " )
-								.ui.input
+						.extra.content( data-bind = "visible: showExtraContent()")
+							.ui.form( style = "margin-top: 0px!important;" data-bind = " visible: selected(), css:{ two: canVoe() && canVoH(), one: !canVoe() || !canVoH()} ")
+								.inline.fields
+									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.setupCardTitle " style="color:rgba(0,0,0,.8);")
+									.field.popupField( data-position="bottom left" data-bind = "attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[1]}, click: function(){ $root.QTGateConnect1('1'); error ( -1 )}" )
+										.ui.radio.checkbox
+											input( type = "radio" name="rrr" checked style="color:rgba(0,0,0,.7);" )
+											label( data-bind = " text: $root.QTGateRegionsSetup()[1].title" style="color:rgba(0,0,0,.7);" )
+									.field.popupField( data-position="bottom left" data-bind = "attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[0]}, click:function(){ $root.QTGateConnect1('2'); error ( -1 )}")
+										.ui.radio.checkbox
+											input( type = "radio" name="rrr" style="color:rgba(0,0,0,.8);" )
+											label( data-bind = " text: $root.QTGateRegionsSetup()[0].title" style="color:rgba(0,0,0,.7);" )
+									.field
+										.ui.checkbox
+											input( type="checkbox" tabindex="0" class="hidden" checked readonly style="color:rgba(0,0,0,.7);" )
+											label.popupField( data-bind = " attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[2]}, text: $root.infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDomain " data-position="top left" style="color: rgba(100,0,0,.4)!important;")
+								.inline.fields
+									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.dataTransfer " style="color:rgba(0,0,0,.8);" )
+									.field.popupField( data-position="bottom left" data-bind =" attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[3]}, click: function(){ $root.QTGateConnect2(false); error ( -1 ) }")
+										.ui.radio.checkbox
+											input( type = "radio" name="dataTransfer" checked class="hidden" style="color:rgba(0,0,0,.7);" )
+											label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.dataTransfer_datail[0]" style="color:rgba(0,0,0,.7);" )
+									.field.popupField( data-position="bottom left" data-bind =" attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[4]}, click: function(){ $root.QTGateConnect2(true); error ( -1 ) }")
+										.ui.radio.checkbox
+											input( type = "radio" name="dataTransfer" class="hidden" style="color:rgba(0,0,0,.7);" )
+											label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.dataTransfer_datail[1]" style="color:rgba(0,0,0,.7);" )
+								//-.inline.fields
+									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache " )
+									.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (6); $root.QTGateCacheUse ( false) }")
+										.ui.radio.checkbox
+											input( type = "radio" name="dataCache" checked="checked" class="hidden" )
+											label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[1]" )
+									.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (5);$root.QTGateCacheUse ( true) }")
+										.ui.radio.checkbox
+											input( type = "radio" name="dataCache" class="hidden" )
+											label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[0]" )
+									.field( data-bind =" visible: $root.QTGateCacheUse(), click: function(){ $root.QTGateConnect_SelectTech (7) } ")
+										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceholder " )
+										select.ui.compact.selection.dropdown( data-bind = "options: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceDate, optionsText: 'name', optionsValue: 'id' " )
+									.field( data-bind =" visible: $root.QTGateCacheUse()" )
+										.ui.primary.basic.button( data-bind = "visible: !$root.QTGate_showDeleteCacheButton(), click: function() { $root.QTGate_showDeleteCacheButton(true)},text: infoDefine [ $root.languageIndex() ].QTGateRegion.clearCache ")
+										.ui.buttons( data-bind = "visible: $root.QTGate_showDeleteCacheButton()")
+											button.ui.button( data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.cancel, click: function() { $root.QTGate_showDeleteCacheButton(false) } ")
+											.or
+											button.ui.positive.button( data-bind = " text: infoDefine [ $root.languageIndex() ].Home_keyPairInfo_view.delete")
 								
-							.field
-								.ui.segment( data-bind = "visible: $root.QTGateConnect1()==='1' && error() === -1 " )
-									p( style="color: red;" data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.GlobalIpInfo " )
-								.ui.two.buttons
-									.ui.basic.red.button( data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.cancel, click: function() { $root.selectedQTGateRegionCancel ($index()); error(-1)}, clickBubble: false" )
-									.ui.basic.green.button( data-bind = "text: infoDefine [ $root.languageIndex() ].qtGateView.title, click: function() { $root.QTGateGatewayConnectRequest( $data, $root )}" )
-		//-
-		.content( data-bind="visible: MenuItems()[4]")
-		.content( data-bind="visible: MenuItems()[5]")
-		.content( data-bind="visible: MenuItems()[7]")
-			.ui.red.segment( style=" margin: 5em;")
-				p( data-bind="text: infoDefine[languageIndex()].home_index_view.newVersion ")
-				button.positive.ui.button( data-bind="text: infoDefine[languageIndex()].home_index_view.clickInstall, click: newVersionInstall ")
+								.inline.fields.popupField( data-position="right center" data-bind ="attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[8]}")
+									//-.field
+										p( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.GlobalIp " )
+										p( data-bind = " text: $root.config().serverGlobalIpAddress")
+									.field
+										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.localPort " )
+										.ui.input
+											input( data-bind = "value : $root.QTGateLocalProxyPort, attr : { 'data-content' : $root.localProxyPortError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': $root.localProxyPortError()} " style="color:rgba(0,0,0,.7);" )
+									//-.field
+										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.localPath " )
+										i.input
+											input( data-bind = "value : $root.QTGateLocalProxyPort, attr : { 'data-content' : $root.localProxyPortError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': $root.localProxyPortError()} ")
+								//-.inline.fields( data-bind ="click: function(){ $root.QTGateConnect_SelectTech (9) } ")
+									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.outDoormode " )
+									.ui.input
+									
+								.field
+									.ui.segment( data-bind = "visible: $root.QTGateConnect1()==='1' && error() === -1 " )
+										p( style="color: red;" data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.GlobalIpInfo " )
+									.ui.two.buttons
+										.ui.basic.red.button( data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.cancel, click: function() { $root.selectedQTGateRegionCancel ($index()); error(-1)}, clickBubble: false" )
+										.ui.basic.green.button( data-bind = "text: infoDefine [ $root.languageIndex() ].qtGateView.title, click: function() { $root.QTGateGatewayConnectRequest( $data, $root )}" )
+			//-
+			.content( data-bind="visible: MenuItems()[4]")
+			.content( data-bind="visible: MenuItems()[5]")
+			.content( data-bind="visible: MenuItems()[7]")
+				.ui.red.segment( style=" margin: 5em;")
+					p( data-bind="text: infoDefine[languageIndex()].home_index_view.newVersion ")
+					button.positive.ui.button( data-bind="text: infoDefine[languageIndex()].home_index_view.clickInstall, click: newVersionInstall ")
 		
+
+				
 

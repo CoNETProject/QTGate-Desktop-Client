@@ -74,6 +74,7 @@ var lang;
 })(lang || (lang = {}));
 const QTGateFolder = path_1.join(Os.homedir(), '.QTGate');
 const QTGateLatest = path_1.join(QTGateFolder, 'latest');
+const QTGateTemp = path_1.join(QTGateFolder, 'tempfile');
 let isSingleInstanceCheck = true;
 let localServer1 = null;
 let tray = null;
@@ -105,7 +106,7 @@ const createWindow = () => {
         height: 480,
         minWidth: 850,
         minHeight: 480,
-        resizable: false,
+        resizable: debug,
         backgroundColor: '#ffffff',
         icon: process.platform === 'linux' ? path_1.join(__dirname, 'app/public/assets/images/512x512.png') : path_1.join(__dirname, 'app/qtgate.icns')
     });
@@ -113,7 +114,7 @@ const createWindow = () => {
     if (debug) {
         mainWindow.webContents.openDevTools();
         mainWindow.maximize();
-        //require('devtron').install()
+        require('devtron').install();
     }
     mainWindow.once('closed', () => {
         mainWindow = null;
@@ -232,6 +233,7 @@ const initialize = () => {
         async_1.series([
             next => checkFolder(QTGateFolder, next),
             next => checkFolder(QTGateLatest, next),
+            next => checkFolder(QTGateTemp, next)
         ], err => {
             if (!localServer1) {
                 findPort(() => {

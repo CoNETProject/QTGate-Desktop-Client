@@ -82,7 +82,7 @@ const debug = false
 enum lang { 'zh', 'ja', 'en', 'tw' }
 const QTGateFolder = join ( Os.homedir(), '.QTGate' )
 const QTGateLatest = join ( QTGateFolder, 'latest' )
-
+const QTGateTemp = join ( QTGateFolder, 'tempfile' )
 let isSingleInstanceCheck = true
 let localServer1 = null
 let tray = null
@@ -115,7 +115,7 @@ const createWindow = () => {
         height: 480,
         minWidth: 850,
         minHeight: 480,
-        resizable: false,
+        resizable: debug,
         backgroundColor: '#ffffff',
         icon: process.platform === 'linux' ? join ( __dirname, 'app/public/assets/images/512x512.png' ) : join ( __dirname, 'app/qtgate.icns' )
     })
@@ -123,7 +123,7 @@ const createWindow = () => {
     if ( debug ) {
         mainWindow.webContents.openDevTools()
         mainWindow.maximize()
-        //require('devtron').install()
+        require('devtron').install()
     }
     
     mainWindow.once ( 'closed', () => {
@@ -254,6 +254,7 @@ const initialize = () => {
         series([
             next => checkFolder ( QTGateFolder, next ),
             next => checkFolder ( QTGateLatest, next ),
+            next => checkFolder ( QTGateTemp, next )
         ], err => {
 
             if ( ! localServer1 ) {

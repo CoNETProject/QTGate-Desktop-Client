@@ -34,6 +34,7 @@ interface install_config {
     freeUser: boolean
     account: string
     serverGlobalIpAddress: string
+    serverPort: number
 }
 
 interface imapConnect {
@@ -86,7 +87,7 @@ interface QTGateAPIRequestCommand {
 	command: string
 	error: number
 	requestSerial: string
-	Args: any[]
+    Args: any[]
 }
 interface iTransferData {
     startDate: Date
@@ -138,4 +139,39 @@ declare namespace NodeJS {
 interface keyPair {
     publicKey: string;
     privateKey: string;
+}
+interface VE_IPptpStream {
+    type?: string;
+    buffer: string;
+    host: string;
+    port: number;
+    cmd: number;
+    ATYP: number;
+    uuid?: string;
+    length?:number;
+    randomBuffer?: Buffer
+}
+
+declare module "dns" {
+    interface lookup_option {
+        family?: number;
+        hints?: number;
+        all?: boolean
+    }
+    interface address {
+        address: string;
+        family: number;
+        expire: number;
+        connect?: number []
+    }
+    export function lookup ( domain: string, option: lookup_option , callback: ( err: Error, address: address[] ) => void ): string;
+
+}
+
+interface feedBackData {
+    attachImagePath: string
+    attachedLog: string
+    comment: string
+    date: string
+    attachImage?: string
 }

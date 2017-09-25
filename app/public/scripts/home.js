@@ -563,7 +563,11 @@ const infoDefine = [
             localPath: '本地代理服务器HTTP链接路径',
             outDoormode: '接受外網訪問',
             GlobalIp: '本机互联网IP地址:',
+            QTGateRegionERROR: ['发送连接请求Email到QTGate系统发生送信错误， 请检查您的IMAP账号的设定。',
+                ''],
             GlobalIpInfo: '注意：当您按下【QTGate连结】时您会把您的本机互联网IP提供给QTGate系统，如果您不愿意，请选择【@QTGate】技术来使用QTGate服务！',
+            sendConnectRequestMail: ['您的QTGate客户端没有和QTgate系统联机，客户端已向QTgate系统重新发出联机请求Email。和QTgate系统联机需要额外的时间，请耐心等待。',
+                '当免费用户连续24小时内没有使用客户端，您的连接会被中断。付费用户情况下QTgate系统可保持持续联机一个月。'],
             cacheDatePlaceDate: [{ name: '1小时', id: 1 }, { name: '12小时', id: 12 }, { name: '1日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永远', id: -1 }],
             atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用强加密Email通讯，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私功能，强抗干扰和超強防火墙穿透能力。缺点是有延迟，网络通讯响应受您所使用的email服务供应商的服务器影响，不适合游戏视频会话等通讯。',
                 'QTGate独创HTTP强加密代理技术，能够隐藏变换您的IP地址高速通讯，隐身和保护隐私，抗干扰和超強防火墙穿透能力。缺点是需要使用您的IP来直接连结代理服务器。如果您只是需要自由访问互联网，则推荐使用本技术。',
@@ -587,6 +591,11 @@ const infoDefine = [
         },
         topWindow: {
             title: '庆祝加拿大150周年特别提供'
+        },
+        feedBack: {
+            title: '使用信息反馈',
+            additional: '添附附加信息',
+            okTitle: '发送至QTGate'
         },
         qtGateView: {
             title: 'QTGate连接',
@@ -836,6 +845,10 @@ const infoDefine = [
             localPort: 'ローカルポロックシーポート番号:',
             localPath: 'ローカルポロックシーポートPATHを指定します。',
             outDoormode: '接受外網訪問',
+            QTGateRegionERROR: ['QTGateへ接続要請メールの送信ができなかったです。IMAPアカウントの設定を調べてください。',
+                ''],
+            sendConnectRequestMail: ['QTGateクライアントはQTGateシステムとの接続が切れた。再接続要請メールをQTGateシステムへ送信しました、接続を完了するまで時間がかかるのためしばらくお待ちおください。',
+                'フリーユーザアカンウトには24時間以内、QTGateをご利用していなっかたの場合、QTGateシステムは接続を切る事にします。QTGateシステムは有料ユーザーにはが一ヶ月長時間接続できます。'],
             GlobalIp: 'グロバールIP:',
             GlobalIpInfo: '要注意：【QTGate接続】をおすとあなたのグロバールIPアドレスをQTGateシステムに送信しますので、それを遠慮すれば【@QTGate】接続を選んでください。',
             cacheDatePlaceDate: [{ name: '1時間', id: 1 }, { name: '12時間', id: 12 }, { name: '一日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永遠', id: -1 }],
@@ -869,7 +882,12 @@ const infoDefine = [
                 'QTGateに接続しました。'],
             QTGateSign: ['あなたの鍵ペア状態', 'QTGateに信頼サインがないです', 'QTGateに信頼サインを取得したことで、QTGateシステムにユーザーの間にファイル又はインフォーメーションなど秘密情報を交換する際、あなたの身元証明となります。本人以外のを区別することができます。あなたも持っている鍵ペアで他のQTGateユーサーに信頼サインすることで、あるQTGateユーサーを信頼関係確定することができます。',
                 'QTGateに信頼サインを取得しています', 'QTGateシステムエラー、QTGateを再起動してからもう一度してみてください。もし直れないならQTGateを一から再インストールしてください。', 'QTGateシステムエラー']
-        }
+        },
+        feedBack: {
+            title: 'フィードバック',
+            additional: '追加情報を添付する',
+            okTitle: 'QTGateへ送信'
+        },
     }, {
         QTGateInfo: {
             title: 'QTGate Features',
@@ -892,9 +910,9 @@ const infoDefine = [
                 }]
         },
         cover: {
-            firstTitle1: 'Security and Privacy Online for all Devices',
-            firstTitle2: 'Designed to protect your internet traffic',
-            start: 'Open the door.'
+            firstTitle1: 'Protect Your Personal Privacy Online',
+            firstTitle2: 'Achieve a Secure and Open Internet Experience',
+            start: 'TRY NOW'
         },
         topWindow: {
             title: '150th anniversary of Canada'
@@ -1088,8 +1106,12 @@ const infoDefine = [
             localPort: 'Local proxy port number:',
             localPath: 'HTTP/HTTPS conect path name:',
             GlobalIp: 'Global IP:',
+            QTGateRegionERROR: ['Send connect request mail got error. Please check your IMAP account setup.',
+                ''],
             GlobalIpInfo: 'Note: When you press [QTGate], you will send your Internet IP to the QTGate system, if you do like that please choose [@QTGate] technology to use QTGate service!',
             cacheDatePlaceholder: 'Web cache freshness lifetime.',
+            sendConnectRequestMail: ['QTGate connect looks down. A connect request mail was sent to QTGate system. Please wait for a moment.',
+                'Free user connect will be down when user had not use QTGate last 24 hours. QTGate system keep connection 1 month for paid user.'],
             cacheDatePlaceDate: [{ name: '1 hour', id: 1 }, { name: '12 hour', id: 12 }, { name: '1 day', id: 24 }, { name: '15 days', id: 360 }, { name: '1 month', id: 720 }, { name: '6 months', id: 4320 }, { name: 'forever', id: -1 }],
             atQTGateDetail: [`The world's first QTGate no IP Internet communication technology, client and proxy server do not know each other IP address, security and reliability, firewall transparency. The network communication response by the email service provider you use the impact of the server, not suitable for video games and video chat.`,
                 'QTGate original encryption HTTP protocol proxy technology, to hide your IP address high-speed communication, stealth and protection of privacy, strong anti-interference, firewall transparency. You need to use your IP to connect proxy server. This is best chooses If you just want freedom of internet.',
@@ -1124,7 +1146,12 @@ const infoDefine = [
             QTGateSign: ['Keypair status', 'Your keypair has not get sign from QTGate.',
                 'QTGate certification authority is a trusted thus certifying your public keys is yoursalf in QTGate users when you share files of send message to other QTGate user. You also can signing another QTGate users with your keypair for make your trust relationship.',
                 'Getting QTGate certification authority.', 'Opps. System error. Try restart QTGate, if still have please re-install QTGate.', 'System error!']
-        }
+        },
+        feedBack: {
+            title: 'FEEDBACK',
+            additional: 'Additional info',
+            okTitle: 'Send to QTGate'
+        },
     }, {
         QTGateInfo: {
             title: 'QTGate功能簡介',
@@ -1341,6 +1368,10 @@ const infoDefine = [
             cacheDatePlaceholder: '緩存失效時間',
             clearCache: '立即清除所有緩存',
             GlobalIp: '本機互聯網IP地址:',
+            QTGateRegionERROR: ['發送連接請求Email到QTGate系統發生送信錯誤， 請檢查您的IMAP賬號的設定。 ',
+                ''],
+            sendConnectRequestMail: ['您的QTGate客戶端沒有和QTgate系統聯機，客戶端已向QTgate系統重新發出聯機請求Email。和QTgate系統聯機需要額外的時間，請耐心等待。 ',
+                '當免費用戶連續24小時內沒有使用客戶端，您的連接會被中斷。付費用戶情況下QTgate系統可保持持續聯機一個月。 '],
             GlobalIpInfo: '注意：當您按下【QTGate連結】時您會把您的本機互聯網IP提供給QTGate系統，如果您不願意，請選擇【@QTGate】技術來使用QTGate服務！',
             localPort: '本地代理服務器端口號:',
             cacheDatePlaceDate: [{ name: '1小时', id: 1 }, { name: '12小时', id: 12 }, { name: '1日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永遠', id: -1 }],
@@ -1371,7 +1402,12 @@ const infoDefine = [
             QTGateSign: ['您的密鑰狀態', '還未獲得QTGate信任簽署,點擊完成信任簽署',
                 '密钥获得QTGate信任签署是QTGate一个重要步骤，您今后在QTGate用户之间分享文件或传送秘密信息时，QTGate可以證明是您本人而非其他冒充者。你也可以通过您的密钥签署信任给其他QTGate用户，用以区别您自己的信任用户和非信任用户。',
                 '正在獲得QTGate信任簽署中', '系統錯誤，請重啓QTGate後再試，如果仍然存在，請嘗試重新安裝QTGate。', 'QTGate系統錯誤!']
-        }
+        },
+        feedBack: {
+            title: '使用信息反饋',
+            additional: '添附附加信息',
+            okTitle: '發送至QTGate'
+        },
     }
 ];
 const _QTGateRegions = [
@@ -2052,6 +2088,7 @@ var view_layout;
             this.QTGateRegionsSetup = ko.observableArray(QTGateRegionsSetup);
             this.selectedQTGateRegion = ko.observable(-1);
             this.showSystemError = ko.observable(false);
+            this.feed = ko.observableArray([]);
             // - keyPair info manager
             this.keyPairInfomationView = ko.observable(false);
             // - linuxUpdate pages
@@ -2110,7 +2147,10 @@ var view_layout;
                 imapConnectStatus: null,
                 QTGateConnectImapUuid: null,
                 serverGlobalIpAddress: null,
+                serverPort: null
             });
+            this.sendConnectRequestMail = ko.observable(false);
+            this.QTGateRegionERROR = ko.observable(-1);
             this.LocalLanguage = 'up';
             this.selectItem = (that, site) => {
                 const self = this;
@@ -2133,8 +2173,13 @@ var view_layout;
                     }
                 });
                 $('.languageText').shape('flip ' + this.LocalLanguage);
-                $('.KnockoutAnimation').transition('jiggle');
+                return $('.KnockoutAnimation').transition('jiggle');
             };
+            this.showMainScreenBackOverflowShow = null;
+            this.feedBackAttachImg = ko.observable('');
+            this.feedBackAttachImgPath = ko.observable('');
+            this.attachedLog = ko.observable('');
+            this.feedBackTextArea = ko.observable('');
             this.conformButtom = ko.computed(() => {
                 this.conformTextError(false);
                 const text = this.conformText();
@@ -2160,12 +2205,11 @@ var view_layout;
                 const num = parseInt(newValue.toString());
                 if (!/^[0-9]*$/.test(newValue.toString()) || !num || num < 1 || num > 65535 || num === 3000) {
                     this.localProxyPortError(true);
-                    $('.activating.element').popup({
+                    return $('.activating.element').popup({
                         on: 'focus',
                         movePopup: false
                     });
                 }
-                return;
             });
             socketIo.emit('init', (err, data) => {
                 this.config(data);
@@ -2174,7 +2218,7 @@ var view_layout;
                 else
                     this.showKeyPairInformation(true);
                 this.keyPair(data.keypair);
-                $('.activating.element').popup({
+                return $('.activating.element').popup({
                     on: 'focus',
                     position: 'bottom left',
                 });
@@ -2218,22 +2262,24 @@ var view_layout;
                 }
             });
             socketIo.on('newKeyPairCallBack', (data) => {
-                this.passwordError(false);
-                this.SystemPassword_submitRunning(false);
-                this.keyPair_delete_btn_view(false);
-                this.newKeyPairRunningCancelButtonShow(false);
-                this.showKeyPairPorcess(false);
-                this.showKeyPairInformation(true);
                 if (!data) {
                     if (this.CancelCreateKeyPairSent)
                         return this.CancelCreateKeyPairSent = false;
                     return this.MakeErrorNotify('errorKeyPair', null);
                 }
                 this.keyPair(data);
-                this.showAddImapDataButton(false);
-                this.emailPool([new emailPoolData(this)]);
-                this.imapInputFormActive(true);
-                return this.MenuItems([false, false, true, false, false]);
+                if (!this.emailPool() || !this.emailPool().length) {
+                    this.showAddImapDataButton(false);
+                    this.passwordError(false);
+                    this.SystemPassword_submitRunning(false);
+                    this.keyPair_delete_btn_view(false);
+                    this.newKeyPairRunningCancelButtonShow(false);
+                    this.showKeyPairPorcess(false);
+                    this.showKeyPairInformation(true);
+                    this.emailPool([new emailPoolData(this)]);
+                    this.imapInputFormActive(true);
+                    return this.MenuItems([false, false, true, false, false]);
+                }
             });
             socketIo.on('ImapData', (data) => {
                 this.imapInputFormActive(true);
@@ -2261,7 +2307,7 @@ var view_layout;
                 this.ImapAccountConnected(false);
                 this.emailAddressDoingCheck(false);
                 this.showConformMailForm(false);
-                this.showKeyPairInformation(false);
+                return this.showKeyPairInformation(false);
             });
             socketIo.on('checkActiveEmailError', (err, status) => {
                 if (err !== null && err > -1) {
@@ -2277,7 +2323,7 @@ var view_layout;
                         }
                     });
                 }
-                this.QTGateConnecting(4);
+                return this.QTGateConnecting(4);
             });
             socketIo.on('qtGateConnect', (data) => {
                 this.imapInputFormActive(true);
@@ -2313,7 +2359,7 @@ var view_layout;
                     this.QTGateConnectError(data.error);
                     //      connected to QTGate system
                     if (data.qtGateConnecting === 2) {
-                        $('.activating.element').popup({
+                        return $('.activating.element').popup({
                             on: 'click',
                             onHidden: () => {
                                 $('#QTGateSignInformationPopupa').hide();
@@ -2323,7 +2369,7 @@ var view_layout;
                     }
                     //      IMAP connect error!
                     if (data.qtGateConnecting === 3) {
-                        $('.activating.element').popup({
+                        return $('.activating.element').popup({
                             on: 'click',
                             onHidden: () => {
                                 this.emailPool()[this.qtgateImapAccount()].callBackError(data.error);
@@ -2335,7 +2381,7 @@ var view_layout;
                     }
                     //      send verified ERROR!
                     if (data.qtGateConnecting === 5) {
-                        $('.activating.element').popup({
+                        return $('.activating.element').popup({
                             on: 'click',
                             onHidden: () => {
                             },
@@ -2345,26 +2391,37 @@ var view_layout;
                     $('.QTGateConnect').accordion('refresh');
                     return $('#QTGateConnecting').removeClass('transition hidden');
                 }
+                const process = $('#connectImformationProcess');
+                let percent = 0;
+                const doingProcessBar = () => {
+                    clearTimeout(this.doingProcessBarTime);
+                    this.doingProcessBarTime = setTimeout(() => {
+                        process.progress({
+                            percent: ++percent
+                        });
+                        if (percent < 100)
+                            return doingProcessBar();
+                    }, 1000);
+                };
                 this.QTGateConnectRegionActive(true);
                 //      first connect 
                 if (data.qtGateConnecting === 1) {
-                    const process = $('#connectImformationProcess').progress('reset');
-                    let doingProcessBarTime = null;
-                    let percent = 0;
-                    const doingProcessBar = () => {
-                        clearTimeout(doingProcessBarTime);
-                        doingProcessBarTime = setTimeout(() => {
-                            process.progress({
-                                percent: ++percent
-                            });
-                            if (percent < 100)
-                                return doingProcessBar();
-                        }, 1000);
-                    };
+                    process.progress('reset');
                     doingProcessBar();
                     this.QTGateRegionInfo(true);
-                    this.MenuItems([false, false, false, true, false]);
+                    this.menuClick(3, true);
                     return this.QTGateConnectActive(false);
+                }
+                //          timeout!
+                if (data.qtGateConnecting === 6) {
+                    return this.sendConnectRequestMail(true);
+                }
+                //          send request mail error
+                if (data.qtGateConnecting === 5) {
+                    clearTimeout(this.doingProcessBarTime);
+                    process.addClass('error');
+                    this.emailPool()[this.qtgateImapAccount()].callBackError(data.error);
+                    return this.QTGateRegionERROR(0);
                 }
                 if (data.qtGateConnecting === 2) {
                     socketIo.emit('getAvaliableRegion', (region) => {
@@ -2379,8 +2436,6 @@ var view_layout;
                 this.QTGateRegionInfo(false);
                 //$('.mainAccordion').accordion('refresh')
                 return this.QTGateConnectActive(false);
-            });
-            socketIo.on(`transferData`, (data) => {
             });
         }
         MakeNotify(note, _title, type, addNode, keepTime) {
@@ -2401,19 +2456,17 @@ var view_layout;
         deletePasswordNext() {
             socketIo.emit('deleteKeyPair');
         }
-        exitClick() {
-            socketIo.emit('exit');
-        }
         showMainScreen() {
             $('.mainScreen').addClass('animated slideInRight').show().one(animationEnd, () => {
                 $('.mainScreen').removeClass('animated slideInRight');
-                const body = $('html, body');
-                body.animate({ scrollTop: 0 }, 0, 'swing');
+                $('.mainScreen1').animate({
+                    opacity: "show"
+                }, 800);
             });
-            socketIo.emit('agree', () => {
+            return socketIo.emit('agree', () => {
                 const kk = this.config();
                 kk.firstRun = false;
-                this.config(kk);
+                return this.config(kk);
             });
         }
         agreeClick() {
@@ -2422,12 +2475,111 @@ var view_layout;
             $('#firstNode').addClass('animated slideOutLeft').one(animationEnd, () => {
                 $('#firstNode').removeClass('animated slideOutLeft').hide();
             });
-            this.showMainScreen();
+            return this.showMainScreen();
         }
         tileClick(data) {
             const self = this;
             self.keyPairLengthSelect(data);
             return true;
+        }
+        showFeedBackWin() {
+            $('.mainScreen').hide();
+            $('#feedBackView').addClass('animated bounceIn').show().one(animationEnd, () => {
+                $('#feedBackView').removeClass('animated bounceIn');
+            });
+            this.showMainScreenBackOverflowShow = this.overflowShow();
+            this.overflowShow(true);
+        }
+        returnMainWin() {
+            $('#feedBackView').hide();
+            $('.mainScreen').animate({
+                opacity: "show"
+            }, 800);
+            const body = $("html, body");
+            return body.stop().animate({ scrollTop: 0 }, 100, 'swing', () => {
+                return this.overflowShow(this.showMainScreenBackOverflowShow);
+            });
+        }
+        takeScreen() {
+            const { desktopCapturer, remote } = require('electron');
+            const path = require('path');
+            const Os = require('os');
+            const Fs = require('fs');
+            desktopCapturer.getSources({ types: ['window', 'screen'], thumbnailSize: { width: 850, height: 480 } }, (error, sources) => {
+                if (error)
+                    throw error;
+                const debug = true;
+                sources.forEach(n => {
+                    if (n.name === 'QTGate') {
+                        const QTGateFolder = path.join(Os.homedir(), '.QTGate/tempfile');
+                        const screenshotFileName = uuID() + '.png';
+                        const screenshotSavePath = path.join(QTGateFolder, screenshotFileName);
+                        const screenshotUrl = '/tempfile/' + screenshotFileName;
+                        Fs.writeFile(screenshotSavePath, n.thumbnail.toPng(), error => {
+                            if (error)
+                                return console.log(error);
+                            this.feedBackAttachImg(screenshotUrl);
+                            this.showFeedBackWin();
+                            this.attachedLog();
+                            this.feedBackAttachImgPath(screenshotSavePath);
+                            /*
+                            let win = new remote.BrowserWindow ({
+                                minWidth: 900,
+                                minHeight: 600,
+                                backgroundColor: '#ffffff',
+                            })
+                            if ( debug ) {
+                                win.webContents.openDevTools()
+                                win.maximize()
+                                
+                            }
+                            win.loadURL ( `http://127.0.0.1:${ this.config().serverPort }/feedBack?imagFile=${ screenshotUrl }` )
+                            win.once ( 'closed', () => {
+                                win = null
+                            })
+                            */
+                        });
+                    }
+                });
+            });
+        }
+        feedBackSuccess() {
+            this.returnMainWin();
+            const Fs = require('fs');
+            const Os = require('os');
+            const path = require('path');
+            const savePath = path.join(Os.homedir(), '.QTGate/.feedBack.json');
+            const data = {
+                attachedLog: this.attachedLog(),
+                attachImagePath: this.feedBackAttachImgPath(),
+                comment: this.feedBackTextArea(),
+                date: new Date().toISOString()
+            };
+            Fs.access(savePath, err => {
+                if (err) {
+                    return Fs.writeFile(savePath, JSON.stringify([data]), err => { });
+                }
+                const feeds = require(savePath);
+                feeds.push(data);
+                return Fs.writeFile(savePath, JSON.stringify(feeds), err => { });
+            });
+        }
+        openFeedBackAttachImg() {
+            const { shell } = require('electron');
+            return shell.openExternal(`file://${this.feedBackAttachImgPath()}`);
+        }
+        openFeedBackAttachLog() {
+            const Fs = require('fs');
+            const path = require('path');
+            const Os = require('os');
+            const QTGateFolder = path.join(Os.homedir(), '.QTGate/systemError.log');
+            return Fs.readFile(QTGateFolder, 'utf8', (err, data) => {
+                if (err)
+                    return;
+                const u = data.split('\n');
+                const uuu = '<p>' + u.join('</p><p>') + '</p>';
+                this.attachedLog(uuu);
+            });
         }
         CancelCreateKeyPair() {
             socketIo.emit('CancelCreateKeyPair');
@@ -2437,14 +2589,14 @@ var view_layout;
             this.showKeyPairInformation(false);
             this.keyPairGenerateFormActive(true);
             this.showKeyPairPorcess(false);
-            this.CancelCreateKeyPairSent = true;
+            return this.CancelCreateKeyPairSent = true;
         }
         canShowAddAImapButton() {
             const index = this.emailPool().findIndex(n => { return n.emailAddress().length === 0; });
             if (index === -1) {
                 return this.showAddImapDataButton(true);
             }
-            this.showAddImapDataButton(false);
+            return this.showAddImapDataButton(false);
         }
         addANewImapData(_self) {
             const index = _self.emailPool().findIndex(n => { return n.emailAddress().length === 0; });
@@ -2608,15 +2760,7 @@ var view_layout;
             this.checkActiveEmailError(false);
             this.checkingActiveEmail(true);
             this.QTGateConnecting(4);
-            socketIo.emit('checkActiveEmailSubmit', this.conformText());
-        }
-        deleteImapAccount(index) {
-            socketIo.emit('deleteAImapData', this.emailPool()[index].emailAddress());
-            this.emailPool.splice(index, 1);
-            if (!this.emailPool().length) {
-                this.emailPool([new emailPoolData(this)]);
-            }
-            this.showConformMailForm(false);
+            return socketIo.emit('checkActiveEmailSubmit', this.conformText());
         }
         connectQTGate() {
             this.emailPool()[this.qtgateImapAccount()];
@@ -2629,7 +2773,7 @@ var view_layout;
             uu.selected(true);
             this.selectedQTGateRegion(index);
             uu.showExtraContent(true);
-            $('.popupField').popup({
+            return $('.popupField').popup({
                 on: 'click'
             });
         }
@@ -2645,8 +2789,8 @@ var view_layout;
             uu[index] = true;
             this.MenuItems(uu);
             const body = $("html, body");
-            body.stop().animate({ scrollTop: 0 }, 100, 'swing', () => {
-                this.overflowShow(scroll);
+            return body.stop().animate({ scrollTop: 0 }, 100, 'swing', () => {
+                return this.overflowShow(scroll);
             });
         }
         QTGateGatewayConnectRequest(data, root) {
@@ -2712,3 +2856,5 @@ $('.activating.element').popup({
     on: 'focus'
 });
 $('.mainAccordion').accordion({});
+$('.mainScreen1').hide();
+$('#feedBackView').hide();

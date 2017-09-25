@@ -449,6 +449,16 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   height: 600px;
   transition: opacity 0.4s ease-out;
 }
+#feedBack {
+  position: fixed;
+  z-index: 100;
+  top: 0.6em;
+  right: 1.1em;
+  opacity: 0.5;
+}
+#feedBack:hover{
+  opacity: 0.8;
+}
 #languageArea {
   z-index: 100;
   width: 160px;
@@ -456,6 +466,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   left: 10px;
   position: fixed;
 }
+
 #firstNode{
   background-color: #ecf2f4;
   width: 100%;

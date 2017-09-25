@@ -23,6 +23,7 @@ const QTGateFolder = Path.join(Os.homedir(), '.QTGate');
 const QTGateSignKeyID = /3acbe3cbd3c1caa9/i;
 const configPath = Path.join(QTGateFolder, 'config.json');
 const ErrorLogFile = Path.join(QTGateFolder, 'systemError.log');
+const feedbackFilePath = Path.join(QTGateFolder, '.feedBack.json');
 const imapDataFileName = Path.join(QTGateFolder, 'imapData.pem');
 const myIpServerUrl = ['https://ipinfo.io/ip', 'https://icanhazip.com/', 'https://diagnostic.opendns.com/myip', 'http://ipecho.net/plain', 'https://www.trackip.net/ip'];
 const keyServer = 'https://pgp.mit.edu';
@@ -122,7 +123,8 @@ const emitConfig = (config, passwordOK) => {
         freeUser: config.freeUser,
         account: config.keypair.email,
         QTGateConnectImapUuid: config.QTGateConnectImapUuid,
-        serverGlobalIpAddress: config.serverGlobalIpAddress
+        serverGlobalIpAddress: config.serverGlobalIpAddress,
+        serverPort: config.serverPort
     };
     return ret;
 };
@@ -195,7 +197,7 @@ const getKeyPairInfo = (publicKey, privateKey, password, CallBack) => {
     ret.passwordOK = true;
     return CallBack(null, ret);
 };
-const InitConfig = (first, version) => {
+const InitConfig = (first, version, port) => {
     const ret = {
         firstRun: first,
         alreadyInit: false,
@@ -211,7 +213,8 @@ const InitConfig = (first, version) => {
         freeUser: true,
         account: null,
         QTGateConnectImapUuid: null,
-        serverGlobalIpAddress: null
+        serverGlobalIpAddress: null,
+        serverPort: port
     };
     return ret;
 };
@@ -348,6 +351,9 @@ class localServer {
         });
         this.ex_app.get('/checkUpdate', (req, res) => {
             res.render('home/checkUpdate', req.query);
+        });
+        this.ex_app.get('/feedBack', (req, res) => {
+            res.render('home/feedback', { imagFile: req.query });
         });
         this.ex_app.use((req, res, next) => {
             saveLog('ex_app.use 404:' + req.url);
@@ -502,15 +508,6 @@ class localServer {
         });
     }
     listenAfterPassword(socket) {
-        socket.on('deleteAImapData', (email) => {
-            DEBUG ? saveLog('socket.on deleteAImapData' + ` [${email}] total data [${this.imapDataPool.length}]`) : null;
-            const index = this.imapDataPool.findIndex(n => { return n.email === email; });
-            if (index === -1)
-                return;
-            this.imapDataPool.splice(index, 1);
-            DEBUG ? saveLog('socket.on deleteAImapData find data' + `[${index}] total data [${this.imapDataPool.length}]`) : null;
-            this.saveImapData();
-        });
         socket.on('startCheckImap', (id, imapData, CallBack) => {
             if (!id || !id.length || !imapData || !Object.keys(imapData).length) {
                 saveLog(`socket.on startCheckImap but data format is error! id:[${id}] imapData:[${Util.inspect(imapData)}]`);
@@ -552,6 +549,7 @@ class localServer {
                 requestSerial: Crypto1.randomBytes(8).toString('hex')
             };
             return this.QTClass.request(com, (err, res) => {
+                saveLog(JSON.stringify(res.Args));
                 CallBack(res.Args);
             });
         });
@@ -610,89 +608,12 @@ class localServer {
                 error: null,
                 requestSerial: Crypto1.randomBytes(8).toString('hex')
             };
-            /*
-            
-
-            const transfer: iTransferData = {
-                productionPackage: 'free',
-                usedMonthlyOverTransfer: 1073741824,
-                account: 'info@qtgate.com',
-                availableDayTransfer: 104857600,
-                power: 1,
-                usedMonthlyTransfer: 0,
-                timeZoneOffset: 420,
-                usedDayTransfer: 1024* 500,
-                resetTime: new Date ('2017-08-29T14:08:02.803Z'),
-                availableMonthlyTransfer: 1073741824,
-                startDate: new Date ('2017-08-29T14:08:02.803Z'),
-                transferMonthly: 1073741824,
-                transferDayLimit: 104857600
-            }
-            
-            setTimeout (() => {
-                com.error = -1
-                com.Args = [transfer]
-                CallBack ( com )
-            }, 2000 )
-            */
-            /*
-            const u = { account: 'info@QTGate.com',
-            imapData:
-             { email: 'vpnemail2017@icloud.com',
-               account: 'info@QTGate.com',
-               imapServer: 'imap.mail.me.com',
-               imapPortNumber: '993',
-               imapSsl: true,
-               imapUserName: 'vpnemail2017@icloud.com',
-               imapUserPassword: 'lluf-eflz-zgnt-ygpr',
-               smtpServer: 'smtp.mail.me.com',
-               smtpSsl: true,
-               smtpPortNumber: '587',
-               smtpUserName: 'vpnemail2017@icloud.com',
-               smtpUserPassword: 'lluf-eflz-zgnt-ygpr',
-               smtpIgnoreCertificate: false,
-               imapIgnoreCertificate: false,
-               imapTestResult: null,
-               language: 'tw',
-               serverFolder: null,
-               clientFolder: null,
-               sendToQTGate: null,
-               smtpCheck: null,
-               imapCheck: null,
-               timeZoneOffset: 420,
-               randomPassword: null,
-               uuid: 'a2e3d6fd598d4b48b1ab0e0194e23b65',
-               canDoDelete: false },
-            gateWayIpAddress: '138.197.134.48',
-            region: 'toronto',
-            connectType: 2,
-            localServerPort: 3001,
-            AllDataToGateway: false,
-            error: -1,
-            fingerprint: '82DD98CA8F734278672383863DAF0455954A16FA',
-            transferData:
-             { startDate: '2017-09-21T16:20:01.752Z',
-               transferMonthly: 1073741824,
-               transferDayLimit: 104857600,
-               productionPackage: 'free',
-               usedMonthlyOverTransfer: 1073741824,
-               account: 'info@qtgate.com',
-               availableDayTransfer: 104857600,
-               power: 1,
-               usedMonthlyTransfer: 0,
-               timeZoneOffset: 420,
-               usedDayTransfer: 0,
-               resetTime: '2017-09-21T16:20:01.752Z',
-               availableMonthlyTransfer: 1073741824 },
-            runningDocker: 'd8802c693-79f3-4520-b74d-972df8d43c75' }
-            
-            setTimeout (() => {
-                CallBack ( u )
-            })
-            */
+            saveLog(JSON.stringify(com));
             this.QTClass.request(com, (err, res) => {
                 const arg = res.Args[0];
+                const connect = res.Args[1];
                 saveLog(JSON.stringify(arg));
+                saveLog(`Have connect\n[${connect}]`);
                 //		no error
                 if (arg.error < 0) {
                     //		@QTGate connect
@@ -702,6 +623,33 @@ class localServer {
                 }
                 return CallBack(arg);
             });
+        });
+        socket.on('stopGatwayConnect', () => {
+            this.stopGetwayConnect(arg => {
+                saveLog(`stopGatwayConnect callback Args = [${JSON.stringify(arg)}]`);
+            });
+        });
+    }
+    stopGetwayConnect(CallBack) {
+        const com = {
+            command: 'stopGetwayConnect',
+            Args: null,
+            error: null,
+            requestSerial: Crypto1.randomBytes(8).toString('hex')
+        };
+        this.QTClass.request(com, (err, res) => {
+            const arg = res.Args[0];
+            const connect = res.Args[1];
+            saveLog(JSON.stringify(arg));
+            saveLog(`Have connect\n[${connect}]`);
+            //		no error
+            if (arg.error < 0) {
+                //		@QTGate connect
+                if (arg.connectType === 1) {
+                }
+                //		iQTGate connect
+            }
+            return CallBack(arg);
         });
     }
     addInImapData(imapData) {
@@ -798,7 +746,7 @@ class localServer {
             });
         });
         socket.on('deleteKeyPair', () => {
-            const config = InitConfig(true, this.version);
+            const config = InitConfig(true, this.version, this.port);
             config.newVerReady = this.config.newVerReady;
             config.newVersion = this.config.newVersion;
             this.config = config;
@@ -810,6 +758,11 @@ class localServer {
             this.saveConfig();
             if (this.QTClass) {
                 this.QTClass.destroy(1);
+                this.QTClass = null;
+            }
+            socket.emit('ImapData', []);
+            if (this.QTClass) {
+                this.QTClass.destroy(null);
                 this.QTClass = null;
             }
             return socket.emit('deleteKeyPair');
@@ -908,13 +861,14 @@ class localServer {
         Fs.access(configPath, err => {
             if (err) {
                 createWindow();
-                return this.config = InitConfig(true, this.version);
+                return this.config = InitConfig(true, this.version, this.port);
             }
             try {
                 const config = require(configPath);
                 config.salt = Buffer.from(config.salt.data);
                 this.config = config;
                 this.config.version = this.version;
+                this.config.serverPort = this.port;
                 if (this.config.keypair && this.config.keypair.publicKeyID)
                     return Async.waterfall([
                         next => {
@@ -945,7 +899,7 @@ class localServer {
             catch (e) {
                 saveLog('localServer->checkConfig: catch ERROR: ' + e.message);
                 createWindow();
-                return this.config = InitConfig(true, this.version);
+                return this.config = InitConfig(true, this.version, this.port);
             }
         });
     }
@@ -1057,8 +1011,9 @@ class localServer {
             Imap.imapAccountTest(imapData, next);
         };
         const uu1 = Array(testNumber).fill(uu);
-        Async.parallel(uu1, (err, num) => {
+        return Async.parallel(uu1, (err, num) => {
             if (err) {
+                saveLog(`imapTest error [${err.message}]`);
                 const message = err.message;
                 if (message && message.length) {
                     if (/Auth|Lookup failed|Invalid|Login|username/i.test(message))
@@ -1186,7 +1141,7 @@ class localServer {
         imapData.imapCheck = imapData.smtpCheck = false;
         imapData.imapTestResult = 0;
         this.saveImapData();
-        this.imapTest(imapData, (err, code) => {
+        return this.imapTest(imapData, (err, code) => {
             socket.emit(id + '-imap', err ? err : null, code);
             imapData.imapTestResult = code;
             imapData.imapCheck = code > 0;
@@ -1246,19 +1201,35 @@ class ImapConnect extends Imap.imapPeer {
             }
         });
         const readyTime = exitWhenServerNotReady ? setTimeout(() => {
-            this.localServer.sendEmailTest(imapData, err => {
-                if (err)
-                    return saveLog(`class [ImapConnect] connect QTGate timeout! send request mail to QTGate! ERRIR [${JSON.stringify(err)}]`);
+            saveLog('ImapConnect waiting timeout!, send connect request email now!');
+            this.clearServerListenFolder();
+            return this.localServer.sendEmailTest(imapData, err => {
+                if (err) {
+                    qtGateConnectEmitData.qtGateConnecting = 5;
+                    qtGateConnectEmitData.error = 0;
+                    return saveLog(`class [ImapConnect] connect QTGate timeout! send request mail to QTGate! ERRIR [${err.message})]`);
+                }
+                qtGateConnectEmitData.qtGateConnecting = 6;
+                socket.emit('qtGateConnect', qtGateConnectEmitData);
                 saveLog(`class [ImapConnect] connect QTGate timeout! send request mail to QTGate! success`);
             });
         }, QTGatePongReplyTime) : null;
         this.once('ready', () => {
+            saveLog('ImapConnect got response from QTGate imap server, connect ready!');
             clearTimeout(readyTime);
             this.QTGateServerready = true;
             imapData.canDoDelete = false;
             qtGateConnectEmitData.qtGateConnecting = 2;
             this.localServer.saveImapData();
-            return socket.emit('qtGateConnect', qtGateConnectEmitData);
+            socket.emit('qtGateConnect', qtGateConnectEmitData);
+            makeFeedbackData((data, callback) => {
+                this.request(data, callback);
+            }, err => {
+                if (err) {
+                    return saveLog(`makeFeedbackData back ERROR [${err.message}]`);
+                }
+                return saveLog(`makeFeedbackData success!`);
+            });
         });
         this.newMail = (ret) => {
             if (!ret || !ret.requestSerial) {
@@ -1270,6 +1241,7 @@ class ImapConnect extends Imap.imapPeer {
             }
             return CallBack(null, ret);
         };
+        saveLog(`new ImapConnect created!`);
     }
     errNumber(err) {
         if (!err || !err.message)
@@ -1293,6 +1265,14 @@ class ImapConnect extends Imap.imapPeer {
     }
     _deCrypto(text, CallBack) {
         return deCryptoWithKey(text, this.QTGatePublicKey, this.localServer.config.keypair.privateKey, this.password, CallBack);
+    }
+    clearServerListenFolder() {
+        saveLog(`doing clearServerListenFolder!`);
+        const iRead = new Imap.qtGateImapRead(this.imapData, this.imapData.serverFolder, false, true, () => { return; });
+        return iRead.once('ready', () => {
+            saveLog(`doing clearServerListenFolder on ready now destroyAll!`);
+            iRead.destroyAll(null);
+        });
     }
     request(command, CallBack) {
         this.commandCallBackPool.set(command.requestSerial, CallBack);
@@ -1322,7 +1302,11 @@ class ImapConnect extends Imap.imapPeer {
 }
 const port = remote.getCurrentWindow().rendererSidePort;
 const server = new localServer(version, port);
-saveLog(`***************** start server at port [${port}] version = [${version}] ***************** `);
+saveLog(`
+*************************** QTGate [ ${version} ] server start up on [ ${port} ] *****************************
+OS: ${process.platform}, ver: ${Os.release()}, cpus: ${Os.cpus().length}, model: ${Os.cpus()[0].model}
+Memory: ${Os.totalmem() / (1024 * 1024)} MB, free memory: ${Math.round(Os.freemem() / (1024 * 1024))} MB
+**************************************************************************************************`);
 const _doUpdate = (tag_name) => {
     let url = null;
     if (process.platform === 'darwin') {
@@ -1353,4 +1337,51 @@ const _doUpdate = (tag_name) => {
     });
     autoUpdater.setFeedURL(url);
     autoUpdater.checkForUpdates();
+};
+const makeFeedBackDataToQTGateAPIRequestCommand = (data, Callback) => {
+    const ret = {
+        command: 'feedBackData',
+        Args: [data],
+        error: null,
+        requestSerial: Crypto1.randomBytes(10).toString('hex')
+    };
+    if (!data.attachImagePath) {
+        return Callback(null, ret);
+    }
+    Fs.readFile(data.attachImagePath, (err, iData) => {
+        if (err) {
+            return Callback(err, null);
+        }
+        data.attachImage = iData.toString('base64');
+        ret.Args = [data];
+        Fs.unlink(data.attachImagePath, () => {
+            return Callback(null, ret);
+        });
+    });
+};
+const makeFeedbackData = (request, CallBack) => {
+    let feedData = null;
+    return Async.waterfall([
+        next => Fs.access(feedbackFilePath, next),
+        next => Fs.readFile(feedbackFilePath, 'utf8', next)
+    ], (err, jData) => {
+        if (err)
+            return CallBack(err);
+        try {
+            feedData = JSON.parse(jData);
+            return Async.each(feedData, (n, next) => {
+                return makeFeedBackDataToQTGateAPIRequestCommand(n, (err, data) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    return request(data, next);
+                });
+            }, err => {
+                return Fs.unlink(feedbackFilePath, CallBack);
+            });
+        }
+        catch (ex) {
+            return CallBack(ex);
+        }
+    });
 };
