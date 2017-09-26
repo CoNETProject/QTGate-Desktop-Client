@@ -13,7 +13,7 @@ QTGATE是一种安全通讯手段，通过eMail的IMAP协议建立一个虚拟�
 
 このプロジェクトはQTGATE端末用ソフトです.  
 QTGATEとは、eMailの通信プロトコルIMAPを使用して、端末とサーバの間に、仮想のネットワークトンネルを構築し、さらにVPNをカプセル化にしたことで、どんな端末からも利用することができます。QTGATEの一番重要な特徴は，端末とサーバの通信がIPアドレスではなく、一つのeMailアカウントを使います。それによって世界中に安全と自由な通信ができるようになります。
-![http protocol](/resources/startScreen.jpeg?raw=true)
+![http protocol](/resources/startScreen.jpg?raw=true)
 
 ![http protocol](/resources/vpn.email11.jpg?raw=true)
 
