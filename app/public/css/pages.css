@@ -210,6 +210,11 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
 .item-height{
   height: 350px;
 }
+.buttom{
+   display:block;
+   height: 4em;
+}
+
 .btn-group-fix-left-shift{
   margin-left: 0px!important;
 }
@@ -432,7 +437,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   font-weight: lighter!important;
 }
 .company {
-  top: -125px;
+  top: -110px;
   left: 80%;
   width: 130px;
   font-weight: lighter!important;

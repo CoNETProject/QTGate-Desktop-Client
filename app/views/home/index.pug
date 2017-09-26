@@ -15,7 +15,7 @@ block jumbotron
 				.VideoBoxButtom.ui.two.column.centered.grid( data-bind = " click: startClick ")
 					buttom.ui.basic.button.positive.column.header.item.center
 						span( data-bind = " text: infoDefine [ languageIndex() ].cover.start ")
-				h1.company QTGATE
+				img.company( src="/images/QTLogo_purple.png")
 		#firstNode()
 			.content.firstNodeContent
 				.ui.header( data-bind = " text: infoDefine[ languageIndex() ].firstNote.title " style = " margin-left: 30px; margin-right: 100px;")
@@ -35,6 +35,7 @@ block jumbotron
 							.or
 							buttom.ui.positive.button( data-bind = " text: infoDefine[ languageIndex() ].home_index_view.agree, click: agreeClick  ")
 					.column
+						
 
 
 block jumbotron1
@@ -125,6 +126,8 @@ block jumbotron1
 						h4( data-bind = " text: header " style = "color: rgba(0,0,0,0.7)")
 					.ui.attached.segment
 						span( data-bind = " html: detail " style = "color: rgba(0,0,0,0.5)")
+				img.ui.centered.small.image( src = "images/QTGate-Systems-Inc.png")
+				.buttom
 			#QTGateInfo.content( data-bind = " visible: MenuItems()[0]" )
 				.ui.header
 					span( data-bind = " text: infoDefine[ languageIndex() ].QTGateInfo.title " style = "color: grey; margin-left: 30px; margin-right: 100px;")
