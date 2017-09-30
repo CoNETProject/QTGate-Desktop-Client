@@ -271,8 +271,6 @@ const initialize = () => {
                         slashes: true
                     }))
                 })
-                
-
             }
     
             if ( !tray ) {

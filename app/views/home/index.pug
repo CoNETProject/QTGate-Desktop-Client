@@ -97,7 +97,7 @@ block jumbotron1
 						.menuItem
 							i.exchange.icon.large.purple
 					//-		QTGate file storage
-					a.item( data-bind = "css:{ active: MenuItems() [4]}, click: function(){ return menuClick (4, false )}, visible: false")
+					a.item( data-bind = "css:{ active: MenuItems() [4]}, click: function(){ return menuClick (4, false )}, visible: true")
 						.menuItem
 							i.cloud.upload.icon.large.violet
 					//-		QTGate message
@@ -415,7 +415,7 @@ block jumbotron1
 							.ui.grid.equal.width
 								.row( style = "background-color: #D94235; padding-bottom: 0px;")
 									.column
-										img( src = "/images/qtgate.svg" style = "margin-left: 1em; height: 50px;")
+										img( src = "/images/512x512.png" style = "margin-left: 1em; height: 50px;")
 									.column.right.floated
 										
 								.row( style = "background-color: #D94235; padding-top: .5em;")
@@ -568,6 +568,7 @@ block jumbotron1
 										.ui.basic.green.button( data-bind = "text: infoDefine [ $root.languageIndex() ].qtGateView.title, click: function() { $root.QTGateGatewayConnectRequest( $data, $root )}" )
 			//-
 			.content( data-bind="visible: MenuItems()[4]")
+				button.ui.primary.basic.button( data-bind="click: doingiOpn ") iOPN
 			.content( data-bind="visible: MenuItems()[5]")
 			.content( data-bind="visible: MenuItems()[7]")
 				.ui.red.segment( style=" margin: 5em;")

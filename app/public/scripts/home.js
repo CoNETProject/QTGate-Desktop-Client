@@ -320,7 +320,7 @@ var lang;
 const transfer = {
     productionPackage: 'free',
     usedMonthlyOverTransfer: 1073741824,
-    account: 'info@qtgate.com',
+    account: null,
     availableDayTransfer: 104857600,
     power: 1,
     usedMonthlyTransfer: 0,
@@ -1890,7 +1890,8 @@ var view_layout;
                 timeZoneOffset: new Date().getTimezoneOffset(),
                 randomPassword: null,
                 uuid: this.uuid,
-                canDoDelete: false
+                canDoDelete: false,
+                clientIpAddress: null
             };
             return data;
         }
@@ -2147,7 +2148,8 @@ var view_layout;
                 imapConnectStatus: null,
                 QTGateConnectImapUuid: null,
                 serverGlobalIpAddress: null,
-                serverPort: null
+                serverPort: null,
+                connectedQTGateServer: false
             });
             this.sendConnectRequestMail = ko.observable(false);
             this.QTGateRegionERROR = ko.observable(-1);
@@ -2462,6 +2464,8 @@ var view_layout;
                 $('.mainScreen1').animate({
                     opacity: "show"
                 }, 800);
+                const body = $("html, body");
+                return body.stop().animate({ scrollTop: 0 }, 100, 'swing', () => { });
             });
             return socketIo.emit('agree', () => {
                 const kk = this.config();
@@ -2838,6 +2842,9 @@ var view_layout;
                 return data.showConnectedArea(true);
             });
             return false;
+        }
+        doingiOpn() {
+            socketIo.emit('iOpn');
         }
     }
     view_layout.view = view;

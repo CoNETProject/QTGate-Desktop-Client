@@ -35,6 +35,7 @@ interface install_config {
     account: string
     serverGlobalIpAddress: string
     serverPort: number
+    connectedQTGateServer: boolean
 }
 
 interface imapConnect {
@@ -78,6 +79,7 @@ interface IinputData extends imapConnect {
     randomPassword: string
     uuid: string
     canDoDelete: boolean
+    clientIpAddress: string
 }
 interface IinputData_server extends IinputData {
     connectEmail: boolean;
@@ -116,6 +118,7 @@ interface IConnectCommand {
     runningDocker?: string
     fingerprint: string
     gateWayIpAddress?: string
+    gateWayPort?: number
     connectPeer?: string
     AllDataToGateway: boolean
     localServerPort: number

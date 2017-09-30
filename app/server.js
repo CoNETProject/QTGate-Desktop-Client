@@ -124,7 +124,8 @@ const emitConfig = (config, passwordOK) => {
         account: config.keypair.email,
         QTGateConnectImapUuid: config.QTGateConnectImapUuid,
         serverGlobalIpAddress: config.serverGlobalIpAddress,
-        serverPort: config.serverPort
+        serverPort: config.serverPort,
+        connectedQTGateServer: config.connectedQTGateServer
     };
     return ret;
 };
@@ -214,7 +215,8 @@ const InitConfig = (first, version, port) => {
         account: null,
         QTGateConnectImapUuid: null,
         serverGlobalIpAddress: null,
-        serverPort: port
+        serverPort: port,
+        connectedQTGateServer: false
     };
     return ret;
 };
@@ -271,12 +273,14 @@ const encryptWithKey = (data, targetKey, privateKey, password, CallBack) => {
     });
 };
 class RendererProcess {
-    constructor(name, data, CallBack) {
+    constructor(name, data, debug, CallBack) {
         this.win = null;
-        this.win = new remote.BrowserWindow({ show: false });
-        this.win.setIgnoreMouseEvents(true);
-        //win.webContents.openDevTools()
-        //win.maximize ()
+        this.win = new remote.BrowserWindow({ show: debug });
+        this.win.setIgnoreMouseEvents(!debug);
+        if (debug) {
+            this.win.webContents.openDevTools();
+            this.win.maximize();
+        }
         this.win.once('first', () => {
             this.win.once('firstCallBackFinished', returnData => {
                 this.win.close();
@@ -321,6 +325,9 @@ class localServer {
         this.sendRequestToQTGate = false;
         this.qtGateConnectEmitData = null;
         this.bufferPassword = null;
+        this.clientIpAddress = null;
+        this.proxyServerWindow = null;
+        this.connectCommand = null;
         this.ex_app = Express();
         this.ex_app.set('views', Path.join(__dirname, 'views'));
         this.ex_app.set('view engine', 'pug');
@@ -354,6 +361,9 @@ class localServer {
         });
         this.ex_app.get('/feedBack', (req, res) => {
             res.render('home/feedback', { imagFile: req.query });
+        });
+        this.ex_app.get('/iOpn', (req, res) => {
+            res.render('home/iOpn');
         });
         this.ex_app.use((req, res, next) => {
             saveLog('ex_app.use 404:' + req.url);
@@ -525,6 +535,7 @@ class localServer {
                     return CallBack(2);
                 }
                 CallBack(null);
+                this.clientIpAddress = ip;
                 return this.doingCheck(id, imapData, socket);
             });
         });
@@ -602,26 +613,38 @@ class localServer {
             this.emitQTGateToClient(socket, uuid);
         });
         socket.on('QTGateGatewayConnectRequest', (cmd, CallBack) => {
-            const com = {
-                command: 'connectRequest',
-                Args: [cmd],
-                error: null,
-                requestSerial: Crypto1.randomBytes(8).toString('hex')
-            };
-            saveLog(JSON.stringify(com));
-            this.QTClass.request(com, (err, res) => {
-                const arg = res.Args[0];
-                const connect = res.Args[1];
-                saveLog(JSON.stringify(arg));
-                saveLog(`Have connect\n[${connect}]`);
-                //		no error
-                if (arg.error < 0) {
-                    //		@QTGate connect
-                    if (arg.connectType === 1) {
-                    }
-                    //		iQTGate connect
+            return myIpServer((err, ipAddress) => {
+                if (err) {
+                    return saveLog(`myIpServer return error: [${err.message}]`);
                 }
-                return CallBack(arg);
+                if (cmd.connectType === 2) {
+                    if (!Net.isIPv4(ipAddress)) {
+                        ipAddress = ipAddress.split('\n')[0];
+                    }
+                }
+                cmd.imapData.clientIpAddress = ipAddress;
+                cmd.imapData.randomPassword = Crypto1.randomBytes(15).toString('hex');
+                saveLog(`ipAddress = [${ipAddress}] Buffer [] = ${Buffer.from(ipAddress).toString('hex')}`);
+                const com = {
+                    command: 'connectRequest',
+                    Args: [cmd],
+                    error: null,
+                    requestSerial: Crypto1.randomBytes(8).toString('hex')
+                };
+                return this.QTClass.request(com, (err, res) => {
+                    const arg = res.Args[0];
+                    const connect = res.Args[1];
+                    saveLog(JSON.stringify(arg));
+                    saveLog(`Have connect\n[${connect}]`);
+                    //		no error
+                    if (arg.error < 0) {
+                        //		@QTGate connect
+                        if (arg.connectType === 1) {
+                        }
+                        //		iQTGate connect
+                    }
+                    return CallBack(arg);
+                });
             });
         });
         socket.on('stopGatwayConnect', () => {
@@ -682,7 +705,8 @@ class localServer {
                 timeZoneOffset: imapData.timeZoneOffset,
                 randomPassword: null,
                 uuid: imapData.uuid,
-                canDoDelete: imapData.canDoDelete
+                canDoDelete: imapData.canDoDelete,
+                clientIpAddress: null
             };
             this.imapDataPool.unshift(data);
             return 0;
@@ -702,6 +726,11 @@ class localServer {
         data.smtpUserPassword = imapData.smtpUserPassword;
         // -
         return index;
+    }
+    iOpnStart() {
+        this.proxyServerWindow = new RendererProcess('iOpn', this.connectCommand, true, () => {
+            saveLog(`proxyServerWindow on exit!`);
+        });
     }
     //- socket server 
     socketConnectListen(socket) {
@@ -724,7 +753,7 @@ class localServer {
             this.listenAfterPassword(socket);
             return this.getPbkdf2(this.savedPasswrod, (err, Pbkdf2Password) => {
                 preData.password = Pbkdf2Password.toString('hex');
-                this.CreateKeyPairProcess = new RendererProcess('newKeyPair', preData, retData => {
+                this.CreateKeyPairProcess = new RendererProcess('newKeyPair', preData, false, retData => {
                     this.CreateKeyPairProcess = null;
                     if (!retData) {
                         saveLog(`CreateKeyPairProcess ON FINISHED! HAVE NO newKeyPair DATA BACK!`);
@@ -819,6 +848,9 @@ class localServer {
                 this.CreateKeyPairProcess.cancel();
             }
         });
+        socket.on('iOpn', () => {
+            this.iOpnStart();
+        });
         /*
         socket.on ( 'checkUpdateBack', ( jsonData: any ) => {
             this.config.newVersionCheckFault = true
@@ -889,7 +921,7 @@ class localServer {
                         }
                         return myIpServer((err, ipaddress) => {
                             this.config.keypair = keyPair;
-                            this.config.serverGlobalIpAddress = ipaddress;
+                            this.clientIpAddress = this.config.serverGlobalIpAddress = ipaddress;
                             this.saveConfig();
                             return createWindow();
                         });
@@ -1120,7 +1152,7 @@ class localServer {
         }
         this.saveImapData();
         saveLog(JSON.stringify(imapData));
-        if (!imapData.sendToQTGate) {
+        if (!imapData.sendToQTGate || !this.config.connectedQTGateServer) {
             saveLog(`sendToQTGate == false, now send request to QTGate!`);
             sendWhenTimeOut = false;
             return this.sendEmailTest(imapData, err => {
@@ -1221,6 +1253,8 @@ class ImapConnect extends Imap.imapPeer {
             imapData.canDoDelete = false;
             qtGateConnectEmitData.qtGateConnecting = 2;
             this.localServer.saveImapData();
+            this.localServer.config.connectedQTGateServer = true;
+            this.localServer.saveConfig();
             socket.emit('qtGateConnect', qtGateConnectEmitData);
             makeFeedbackData((data, callback) => {
                 this.request(data, callback);

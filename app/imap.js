@@ -984,6 +984,7 @@ class imapPeer extends Event.EventEmitter {
         });
     }
     sendAllMail() {
+        saveLog(`sendAllMail `);
         if (!this.sendMailPool.length || !this.wImapReady)
             return saveLog(`sendAllMail do nothing! sendMailPool.length [${this.sendMailPool.length}] wImapReady [${this.wImapReady}]`);
         const uu = Buffer.from(this.sendMailPool.pop());
@@ -997,6 +998,7 @@ class imapPeer extends Event.EventEmitter {
                     return this.sendAllMail();
                 }, 500);
             }
+            saveLog(`sendAllMail sendToRemote success!`);
         });
     }
     newWriteImap() {

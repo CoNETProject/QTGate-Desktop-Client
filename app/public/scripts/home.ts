@@ -364,7 +364,7 @@ interface IQTGateRegionsSetup {
 const transfer: iTransferData = {
     productionPackage: 'free',
     usedMonthlyOverTransfer: 1073741824,
-    account: 'info@qtgate.com',
+    account: null,
     availableDayTransfer: 104857600,
     power: 1,
     usedMonthlyTransfer: 0,
@@ -1797,7 +1797,8 @@ module view_layout {
                 timeZoneOffset: new Date ().getTimezoneOffset (),
                 randomPassword:  null,
                 uuid: this.uuid,
-                canDoDelete: false
+                canDoDelete: false,
+                clientIpAddress: null
                 
             }
             return data 
@@ -2355,7 +2356,8 @@ module view_layout {
             imapConnectStatus: null,
             QTGateConnectImapUuid: null,
             serverGlobalIpAddress: null,
-            serverPort: null
+            serverPort: null,
+            connectedQTGateServer: false
         })
 
 		constructor () {
@@ -2678,6 +2680,8 @@ module view_layout {
                 $( '.mainScreen1' ).animate({
                     opacity: "show"
                   }, 800 )
+                const body = $( "html, body" )
+                return body.stop().animate({ scrollTop: 0 }, 100, 'swing', () => {})
             })
             return socketIo.emit ( 'agree', () => {
                 const kk = this.config()
@@ -2693,6 +2697,7 @@ module view_layout {
                 $ ( '#firstNode' ).removeClass ( 'animated slideOutLeft' ).hide ()
                 
             })
+            
             return this.showMainScreen ()
 
         }
@@ -3004,7 +3009,7 @@ module view_layout {
                     })
                     this.canShowAddAImapButton ()
 
-                    const index = this.emailPool().findIndex ( n => { return n.sendToQTGate() })
+                    const index = this.emailPool().findIndex ( n => { return n.sendToQTGate()})
                     if ( index < 0 ) {
                         return this.qtgateImapAccount ( 0 )
                     }
@@ -3152,6 +3157,10 @@ module view_layout {
 
             })
             return false
+        }
+
+        public doingiOpn () {
+            socketIo.emit ( 'iOpn' )
         }
 
 	}

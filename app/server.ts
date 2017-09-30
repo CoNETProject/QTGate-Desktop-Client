@@ -52,6 +52,7 @@ const findPort = ( port: number, CallBack ) => {
         return findPort ( port, CallBack )
     })
 }
+
 const doUrl = ( url: string, CallBack) => {
 	let ret = ''
 	if ( /^https/.test( url ))
@@ -134,7 +135,8 @@ const emitConfig = ( config: install_config, passwordOK: boolean ) => {
 		account: config.keypair.email,
 		QTGateConnectImapUuid: config.QTGateConnectImapUuid,
 		serverGlobalIpAddress: config.serverGlobalIpAddress,
-		serverPort: config.serverPort
+		serverPort: config.serverPort,
+		connectedQTGateServer: config.connectedQTGateServer
 	}
 	return ret
 }
@@ -241,8 +243,8 @@ const InitConfig = ( first: boolean, version, port ) => {
 		account: null,
 		QTGateConnectImapUuid: null,
 		serverGlobalIpAddress: null,
-		serverPort: port
-		
+		serverPort: port,
+		connectedQTGateServer: false
 	}
 	return ret
 }
@@ -311,11 +313,14 @@ const encryptWithKey = ( data: string, targetKey: string, privateKey: string, pa
 
 class RendererProcess {
 	private win = null
-	constructor ( name: string, data: any, CallBack ) {
-		this.win = new remote.BrowserWindow ({ show: false  })
-		this.win.setIgnoreMouseEvents ( true )
-		//win.webContents.openDevTools()
-		//win.maximize ()
+	constructor ( name: string, data: any, debug: boolean, CallBack ) {
+		this.win = new remote.BrowserWindow ({ show: debug  })
+		this.win.setIgnoreMouseEvents ( !debug )
+		if ( debug ) {
+			this.win.webContents.openDevTools()
+			this.win.maximize ()
+		} 
+		
 		this.win.once ( 'first', () => {
 			this.win.once ( 'firstCallBackFinished', returnData => {
 				this.win.close ()
@@ -331,7 +336,6 @@ class RendererProcess {
 				CallBack ()
 				return CallBack = null
 			}
-
 		})
 		this.win.loadURL (`file://${ Path.join ( __dirname, name +'.html')}`)
 	}
@@ -360,8 +364,10 @@ export class localServer {
 	private sendRequestToQTGate = false
 	private qtGateConnectEmitData: IQtgateConnect = null
 	private bufferPassword = null
-
-	private saveConfig () {
+	private clientIpAddress = null
+	private proxyServerWindow = null
+	private connectCommand: IConnectCommand = null
+	public saveConfig () {
 		Fs.writeFile ( configPath, JSON.stringify ( this.config ) , { encoding: 'utf8' }, err => {
 			if ( err )
 				return saveLog ( `localServer->saveConfig ERROR: ` + err.message )
@@ -543,7 +549,7 @@ export class localServer {
 					return CallBack (2)
 				}
 				CallBack ( null )
-				
+				this.clientIpAddress = ip
 				return this.doingCheck ( id, imapData, socket )
 			})
 			
@@ -641,32 +647,48 @@ export class localServer {
 		})
 
 		socket.on ( 'QTGateGatewayConnectRequest', ( cmd: IConnectCommand, CallBack ) => {
-			const com: QTGateAPIRequestCommand = {
-				command: 'connectRequest',
-				Args: [ cmd ],
-				error: null,
-				
-				requestSerial: Crypto1.randomBytes(8).toString('hex')
-			}
-			saveLog ( JSON.stringify ( com ))
-			
-			this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
-				const arg: IConnectCommand = res.Args[0]
-				const connect = res.Args [1]
-				saveLog ( JSON.stringify ( arg ))
-				saveLog (`Have connect\n[${ connect }]`)
-				//		no error
-				if ( arg.error < 0 ) {
-					//		@QTGate connect
-					if ( arg.connectType === 1 ) {
-
-					}
-					//		iQTGate connect
-					
+			return myIpServer (( err, ipAddress: string ) => {
+				if ( err ) {
+					return saveLog ( `myIpServer return error: [${ err.message }]`)
 				}
-				return CallBack ( arg )
-		
+				if ( cmd.connectType === 2 ) {
+					if ( ! Net.isIPv4 ( ipAddress )) {
+						ipAddress = ipAddress.split ('\n')[0]
+					}
+				}
+				cmd.imapData.clientIpAddress = ipAddress
+				cmd.imapData.randomPassword = Crypto1.randomBytes (15).toString('hex')
+				saveLog (`ipAddress = [${ ipAddress }] Buffer [] = ${ Buffer.from ( ipAddress ).toString ('hex')}`)
+
+				
+				const com: QTGateAPIRequestCommand = {
+					command: 'connectRequest',
+					Args: [ cmd ],
+					error: null,
+					
+					requestSerial: Crypto1.randomBytes(8).toString('hex')
+				}
+				
+				return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
+					const arg: IConnectCommand = res.Args[0]
+					const connect = res.Args [1]
+					saveLog ( JSON.stringify ( arg ))
+					saveLog (`Have connect\n[${ connect }]`)
+					//		no error
+					if ( arg.error < 0 ) {
+						//		@QTGate connect
+						if ( arg.connectType === 1 ) {
+	
+						}
+						//		iQTGate connect
+						
+					}
+					return CallBack ( arg )
+			
+				})
+				
 			})
+			
 
 		})
 
@@ -733,7 +755,8 @@ export class localServer {
 				timeZoneOffset: imapData.timeZoneOffset,
 				randomPassword: null,
 				uuid: imapData.uuid,
-				canDoDelete: imapData.canDoDelete
+				canDoDelete: imapData.canDoDelete,
+				clientIpAddress: null
 			}
 			this.imapDataPool.unshift ( data )
 			return 0
@@ -755,6 +778,12 @@ export class localServer {
 
 		// -
 		return index
+	}
+
+	private iOpnStart () {
+		this.proxyServerWindow = new RendererProcess ( 'iOpn', this.connectCommand, true, () => {
+			saveLog (`proxyServerWindow on exit!`)
+		})
 	}
 
 
@@ -785,7 +814,7 @@ export class localServer {
 				return this.getPbkdf2 ( this.savedPasswrod, ( err, Pbkdf2Password: Buffer ) => {
 
 					preData.password = Pbkdf2Password.toString ( 'hex' )
-					this.CreateKeyPairProcess = new RendererProcess ( 'newKeyPair', preData,  retData => {
+					this.CreateKeyPairProcess = new RendererProcess ( 'newKeyPair', preData, false, retData => {
 						this.CreateKeyPairProcess = null
 						if ( !retData ) {
 							 saveLog (`CreateKeyPairProcess ON FINISHED! HAVE NO newKeyPair DATA BACK!`)
@@ -902,7 +931,11 @@ export class localServer {
 					this.CreateKeyPairProcess.cancel()
 				}
 			})
-			
+
+
+			socket.on ('iOpn', () => {
+				this.iOpnStart ()
+			})
 			/*
 			socket.on ( 'checkUpdateBack', ( jsonData: any ) => {
 				this.config.newVersionCheckFault = true
@@ -983,7 +1016,7 @@ export class localServer {
 							
 						return myIpServer(( err, ipaddress ) => {
 							this.config.keypair = keyPair
-							this.config.serverGlobalIpAddress = ipaddress
+							this.clientIpAddress = this.config.serverGlobalIpAddress = ipaddress
 							this.saveConfig()
 							return createWindow ( )
 						})
@@ -1048,10 +1081,16 @@ export class localServer {
 			res.render ( 'home/feedback', { imagFile: req.query })
 		})
 
+		this.ex_app.get ('/iOpn', ( req, res ) => {
+			res.render ( 'home/iOpn' )
+		})
+
         this.ex_app.use (( req, res, next ) => {
 			saveLog ( 'ex_app.use 404:' + req.url )
             return res.status( 404 ).send ( "Sorry can't find that!" )
-        })
+		})
+		
+		
 
 		this.httpServer =  Http.createServer ( this.ex_app )
         this.socketServer = socketIo ( this.httpServer )
@@ -1218,7 +1257,6 @@ export class localServer {
 	}
 
 	private emitQTGateToClient ( socket: SocketIO.Socket, _imapUuid: string ) {
-
 		
 		let sendWhenTimeOut = true
 		if ( this.qtGateConnectEmitData && this.qtGateConnectEmitData.qtGateConnecting ) {
@@ -1315,7 +1353,7 @@ export class localServer {
 
 		this.saveImapData()
 		saveLog ( JSON.stringify ( imapData ))
-		if ( ! imapData.sendToQTGate ) {
+		if ( ! imapData.sendToQTGate || ! this.config.connectedQTGateServer ) {
 			saveLog (`sendToQTGate == false, now send request to QTGate!`)
 			sendWhenTimeOut = false
 			return this.sendEmailTest ( imapData, err => {
@@ -1469,6 +1507,8 @@ class ImapConnect extends Imap.imapPeer {
 			imapData.canDoDelete = false
 			qtGateConnectEmitData.qtGateConnecting = 2
 			this.localServer.saveImapData ()
+			this.localServer.config.connectedQTGateServer = true
+			this.localServer.saveConfig ()
 			socket.emit ( 'qtGateConnect', qtGateConnectEmitData )
 			
 			makeFeedbackData (( data, callback ) => {

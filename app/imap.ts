@@ -1115,6 +1115,7 @@ export class imapPeer extends Event.EventEmitter {
     private sendMailPool: string[] = []
 
     private sendAllMail () {
+        saveLog ( `sendAllMail `)
         if ( ! this.sendMailPool.length || !this.wImapReady )
             return saveLog ( `sendAllMail do nothing! sendMailPool.length [${this.sendMailPool.length }] wImapReady [${ this.wImapReady }]`)
 
@@ -1129,6 +1130,7 @@ export class imapPeer extends Event.EventEmitter {
                     return this.sendAllMail ()
                 }, 500 )
             }
+            saveLog (`sendAllMail sendToRemote success!`)
         })
     }
 

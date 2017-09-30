@@ -15,7 +15,7 @@ import * as Crypto from 'crypto'
 import * as Stream from 'stream'
 import * as Fs from 'fs'
 import * as Path from 'path'
-
+import * as Os from 'os'
 const { remote } = require ( "electron" )
 
 const whiteIpFile = 'whiteIpList.json'
@@ -202,7 +202,7 @@ const closeClientSocket = ( socket: Net.Socket, status: number, body: string ) =
 }
 
 const _connect = ( hostname: string, hostIp: string, port: number, clientSocket: Net.Socket, data: Buffer, connectHostTimeOut: number,  CallBack ) => {
-
+	console.log (`direct _connect!`)
 	const socket = new Net.Socket()
 	const ip = clientSocket.remoteAddress.split (':')[3]
 	let err = null
@@ -282,10 +282,8 @@ const tryConnectHost = ( hostname: string, hostIp: domainData, port: number, dat
 		return closeClientSocket ( clientSocket, -200, '' )
 	}
 
-
-	if ( ! hostIp ) {
-		console.log ( hostname, ' tryConnectHost have not hostIp CallBack!' )
-		return CallBack ( new Error ( 'not hostIp' ), data )
+	if ( gateway || ! hostIp ) {
+		return CallBack ( new Error ('useGateWay!'), data )
 	}
 
 	const now = new Date ().getTime ()
@@ -362,6 +360,7 @@ class gateWay {
 
 	public hostLookup ( hostName: string, userAgent: string, CallBack: ( err?: Error, data?: domainData ) => void ) {
 
+		console.log (`try get nslookup data from remote!`)
 		const _data = new Buffer ( JSON.stringify ({ hostName: hostName }), 'utf8' )
 		
 		const encrypt = new Compress.encryptStream ( this.password, 0, ( str: string ) => {
@@ -382,6 +381,8 @@ class gateWay {
 				})
 				encrypt.pipe ( _socket ).pipe ( httpBlock ).pipe ( decrypt ).pipe ( finish )
 				encrypt.write ( _data )
+				console.log (`send data to remote!`)
+				console.log(`*************\n${_data.toString ()}\n*********`)
 			})
 		})
 		
@@ -441,7 +442,7 @@ const isAllBlackedByFireWall = ( hostName: string, ip6: boolean, checkAgainTime:
 
 	const hostIp = domainListPool.get ( hostName )
 	const now = new Date ().getTime ()
-	if ( ! hostIp || hostIp.expire < now)
+	if ( ! hostIp || hostIp.expire < now )
 		return  gatway.hostLookup ( hostName, userAgent, CallBack )
 	return CallBack ( null, hostIp )
 }
@@ -559,7 +560,9 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 	const userAgent = httpHead.headers [ 'user-agent' ]
 
 	const CallBack = ( err?: Error, _data?: Buffer ) => {
+
 		if ( err ) {
+			
 			if ( useGatWay && _data && _data.length && clientSocket.writable ) {
 				const uuuu : VE_IPptpStream = {
 					uuid: Crypto.randomBytes (10).toString ('hex'),
@@ -593,9 +596,10 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 		const hostIp: domainData = ! isIp ? domainListPool.get ( hostName ) : { dns: [{ family: isIp, address: hostName, expire: null, connect: [] }], expire: null }
         
         if ( ! hostIp ) {
-			
+			console.log ( `domain connect to [${ hostName }]`)
 			return isAllBlackedByFireWall ( hostName,  ip6, checkAgainTime, gatway, userAgent, domainListPool, ( err, _hostIp ) => {
 				if ( err ) {
+					console.log ( `[${ hostName }] Blocked!`)
 					return closeClientSocket ( clientSocket, 504, null )
 				}
 
@@ -615,7 +619,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 	})
 
 }
-
+/*
 const httpProxyTest = ( socket: Net.Socket, data: Buffer,  gateway: gateWay ) => {
 	const httpHead = new HttpProxyHeader ( data )
 	const port = parseInt ( httpHead.Url.port ||  httpHead.isHttps ? '443' : '80' )
@@ -667,10 +671,10 @@ const httpProxyTest = ( socket: Net.Socket, data: Buffer,  gateway: gateWay ) =>
 
 	return connectTestPort ( data )
 }
-
+*/
 export default class proxyServer {
 
-	private hostLocalIpv4: { network: string, address: string } []= null
+	private hostLocalIpv4: { network: string, address: string } []= []
 	private hostLocalIpv6: string = null
 	private hostGlobalIpV4: string = null
 	private hostGlobalIpV6: string = null
@@ -695,6 +699,7 @@ export default class proxyServer {
 		gateWay.hostLookup ( testGatewayDomainName, null, ( err, data ) => {
 			if ( err )
 				return console.log ( 'getGlobalIp ERROR:', err.message )
+			console.log ( data )
 			this.network = true
 			this.hostLocalIpv6 ? console.log ( `LocalIpv6[ ${ this.hostLocalIpv6 } ]`) : null
 
@@ -788,11 +793,28 @@ interface proxyServerInfo {
     allToGateway: boolean
     localPort: number
 }
-/*
-remote.getCurrentWindow().once ( 'firstCallBack', ( data: proxyServerInfo ) => {
-    const localProxyServer = new proxyServer ( [], new Map (), data.localPort, 'pac', data.serverAddress, data.serverPort, data.password, 5000, 50000, data.allToGateway, [])
+let flag = 'w'
+const QTGateFolder = Path.join ( Os.homedir(), '.QTGate' )
+const proxyLogFile = Path.join ( QTGateFolder, 'proxy.log' )
+const saveLog = ( log: string ) => {
+	const data = `${ new Date().toUTCString () }: ${ log }\r\n`
+	Fs.appendFile ( proxyLogFile, data, { flag: flag }, err => {
+		flag = 'a'
+	})
+}
+
+
+remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
+	
+	const server = new proxyServer ([], new Map(), data.localServerPort, 'pac', data.gateWayIpAddress, data.gateWayPort, data.imapData.randomPassword,
+		 5000, 50000, data.AllDataToGateway, [] )
+		 remote.getCurrentWindow().on ('', ( data: IConnectCommand) => {
+			 
+		 })
+	
 })
-    
+
 remote.getCurrentWindow().emit ( 'first' )
 
-*/
+
+new proxyServer ([], new Map(), 3001, 'pac', '159.203.28.148', 80, 'e7a72f1e490c5b5d4188fc5a1c3de7', 5000, 50000, true, [])

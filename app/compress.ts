@@ -154,6 +154,7 @@ export class encryptStream extends Stream.Transform {
 			},
 			( _iv, next ) => {
 				this.iv = _iv
+				console.log (password)
 				crypto.pbkdf2 ( password, this.salt, 2145, 32, 'sha512', next )
 			}
 		], ( err, derivedKey ) => {
