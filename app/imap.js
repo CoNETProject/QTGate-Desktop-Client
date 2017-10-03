@@ -15,7 +15,7 @@ const crypto = require("crypto");
 const path_1 = require("path");
 const os_1 = require("os");
 const MAX_INT = 9007199254740992;
-const debug = true;
+const debug = false;
 const QTGateFolder = path_1.join(os_1.homedir(), '.QTGate');
 const ErrorLogFile = path_1.join(QTGateFolder, 'imap.log');
 const saveLog = (log) => {
@@ -782,21 +782,12 @@ class qtGateImap extends Event.EventEmitter {
         }, socketTimeOut);
     }
     destroyAll(err) {
-        if (this.socket) {
-            if (typeof this.socket.removeAllListeners === 'function') {
-                this.socket.removeAllListeners();
-            }
-            if (this.socket.writable) {
-                this.socket.end();
-            }
-            if (typeof this.socket.destroy === 'function') {
-                this.socket.destroy();
-            }
-        }
         clearTimeout(this.imapStream.idleResponsrTime);
         clearTimeout(this.imapStream.appendWaitResponsrTimeOut);
         clearTimeout(this.imapStream.idleNextStop);
         this.emit('end', err);
+        if (this.socket && typeof this.socket.end === 'function')
+            this.socket.end();
     }
     logout() {
         this.imapStream.logout(() => {
@@ -807,12 +798,12 @@ class qtGateImap extends Event.EventEmitter {
 exports.qtGateImap = qtGateImap;
 class qtGateImapwrite extends qtGateImap {
     constructor(IMapConnect, writeFolder) {
-        super(IMapConnect, null, false, false, writeFolder, false, null);
+        super(IMapConnect, null, false, false, writeFolder, debug, null);
         this.ready = false;
         this.canAppend = false;
         this.appendPool = [];
         this.once('ready', () => {
-            console.log(`qtGateImapwrite ready`);
+            console.log(`qtGateImapwrite [${writeFolder}] ready`);
             this.ready = this.canAppend = true;
         });
     }
@@ -840,7 +831,10 @@ class qtGateImapwrite extends qtGateImap {
 exports.qtGateImapwrite = qtGateImapwrite;
 class qtGateImapRead extends qtGateImap {
     constructor(IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, newMail) {
-        super(IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, null, true, newMail);
+        super(IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, null, debug, newMail);
+        this.once('ready', () => {
+            console.log(`qtGateImapRead [${listenFolder}] ready`);
+        });
     }
 }
 exports.qtGateImapRead = qtGateImapRead;

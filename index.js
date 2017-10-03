@@ -13,9 +13,9 @@ const freePort = require("portastic");
 const url_1 = require("url");
 const child_process_1 = require("child_process");
 const { app, BrowserWindow, Tray, Menu, dialog, remote } = require('electron');
-const handleSquirrelEvent = () => {
-    if (process.argv.length === 1) {
-        return false;
+const handleSquirrelEvent = (CallBack) => {
+    if (process.argv.length === 1 || process.platform !== 'win32') {
+        return CallBack(false);
     }
     const appFolder = path_1.resolve(process.execPath, '..');
     const rootAtomFolder = path_1.resolve(appFolder, '..');
@@ -30,7 +30,7 @@ const handleSquirrelEvent = () => {
         return spawnedProcess;
     };
     const spawnUpdate = args => {
-        return child_process_1.spawn(updateDotExe, args);
+        return _spawn(updateDotExe, args);
     };
     const squirrelEvent = process.argv[1];
     switch (squirrelEvent) {
@@ -42,27 +42,25 @@ const handleSquirrelEvent = () => {
             //   explorer context menus
             // Install desktop and start menu shortcuts
             spawnUpdate(['--createShortcut', exeName]);
-            setTimeout(app.quit, 1000);
-            return true;
+            return setTimeout(() => {
+                return CallBack(true);
+            }, 1000);
         case '--squirrel-uninstall':
             // Undo anything you did in the --squirrel-install and
             // --squirrel-updated handlers
             // Remove desktop and start menu shortcuts
             spawnUpdate(['--removeShortcut', exeName]);
-            setTimeout(app.quit, 1000);
-            return true;
+            return setTimeout(() => {
+                return CallBack(true);
+            }, 1000);
         case '--squirrel-obsolete':
             // This is called on the outgoing version of your app before
             // we update to the new version - it's the opposite of
             // --squirrel-updated
-            app.quit();
-            return true;
+            return CallBack(true);
     }
 };
-if (handleSquirrelEvent()) {
-    // squirrel event handled and app will exit in 1000ms, so don't do anything else
-    return;
-}
+// squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion();
 const debug = false;
 var lang;
@@ -282,4 +280,9 @@ const initialize = () => {
         app.quit();
     });
 };
-initialize();
+handleSquirrelEvent(isReset => {
+    if (isReset) {
+        return app.quit();
+    }
+    initialize();
+});

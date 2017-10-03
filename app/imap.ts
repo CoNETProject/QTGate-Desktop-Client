@@ -15,7 +15,7 @@ import { join } from 'path'
 import { homedir }from 'os'
 
 const MAX_INT = 9007199254740992
-const debug = true
+const debug = false
 const QTGateFolder = join ( homedir(), '.QTGate' )
 const ErrorLogFile = join ( QTGateFolder, 'imap.log' )
 const saveLog = ( log: string ) => {
@@ -874,7 +874,7 @@ export class qtGateImap extends Event.EventEmitter {
         }, socketTimeOut )
     }
 
-    constructor ( public IMapConnect: imapConnect, public listenFolder: string, private isEachMail: boolean, public deleteBoxWhenEnd: boolean, public writeFolder, private debug: boolean, public newMail: ( mail ) => void ) {
+    constructor ( public IMapConnect: imapConnect, public listenFolder: string, private isEachMail: boolean, public deleteBoxWhenEnd: boolean, public writeFolder: string, private debug: boolean, public newMail: ( mail ) => void ) {
         super ()
         this.connect ()
         process.once ( 'uncaughtException', err => {
@@ -884,29 +884,17 @@ export class qtGateImap extends Event.EventEmitter {
     }
 
     public destroyAll ( err: Error ) {
-
-        if ( this.socket ) {
-            if ( typeof this.socket.removeAllListeners === 'function') {
-
-                this.socket.removeAllListeners ()
-            }
-            if ( this.socket.writable ) {
-
-                this.socket.end ()
-            }
-            if ( typeof this.socket.destroy === 'function' ) {
-
-                this.socket.destroy ()
-            }
-        }
+        
         clearTimeout ( this.imapStream.idleResponsrTime )
         clearTimeout ( this.imapStream.appendWaitResponsrTimeOut )
         clearTimeout ( this.imapStream.idleNextStop )
         this.emit ( 'end', err )
+        if ( this.socket && typeof this.socket.end === 'function' )
+            this.socket.end()
+        
     }
 
     public logout () {
-
         this.imapStream.logout (() => {
             this.destroyAll ( null )
         })
@@ -921,13 +909,12 @@ export class qtGateImapwrite extends qtGateImap {
     private appendPool: qtGateImapwriteAppendPool[]  = []
 
     public append ( text: string, _callback ) {
-        
+
         if ( ! this.ready )
             return _callback ( new Error ( 'not ready!' ))
         if ( this.canAppend ) {
             this.canAppend = false
             return this.imapStream.append ( text, err => {
-                
                 this.canAppend = true
                 _callback ( err )
                 const uu = this.appendPool.pop ()
@@ -944,9 +931,9 @@ export class qtGateImapwrite extends qtGateImap {
     }
     
     constructor ( IMapConnect: imapConnect, writeFolder: string ) {
-        super ( IMapConnect, null, false, false, writeFolder, false, null )
+        super ( IMapConnect, null, false, false, writeFolder, debug, null )
         this.once ( 'ready', () => {
-            console.log ( `qtGateImapwrite ready`)
+            console.log ( `qtGateImapwrite [${ writeFolder }] ready`)
             this.ready = this.canAppend = true
         })
     }
@@ -955,9 +942,14 @@ export class qtGateImapwrite extends qtGateImap {
 export class qtGateImapRead extends qtGateImap {
 
     constructor ( IMapConnect: imapConnect, listenFolder: string, isEachMail: boolean, deleteBoxWhenEnd: boolean, newMail: ( mail ) => void ) {
-        super ( IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, null, true, newMail )
+        super ( IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, null, debug, newMail )
+        this.once ( 'ready', () => {
+            console.log ( `qtGateImapRead [${ listenFolder }] ready`)
+        })
     }
+    
 }
+
 
 export const getMailAttached = ( email: Buffer ) => {
     const attachmentStart = email.indexOf('\r\n\r\n')

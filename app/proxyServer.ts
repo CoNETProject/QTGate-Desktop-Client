@@ -2,6 +2,7 @@
  *  Copyright (c) QTGate System Inc. All rights reserved.
  *  Licensed under the MIT License. See License in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+/// <reference path="../typings/types/v7/index.d.ts" />
 import * as Net from 'net'
 import * as Http from 'http'
 import * as Dns from 'dns'
@@ -11,90 +12,23 @@ import * as Compress from './compress'
 import * as util from 'util'
 import * as Rfc1928 from './rfc1928'
 import * as Crypto from 'crypto'
-
+import * as res from './res'
 import * as Stream from 'stream'
 import * as Fs from 'fs'
 import * as Path from 'path'
+import socket5 from './socket5'
+import gateWay from './gateWay'
 import * as Os from 'os'
 const { remote } = require ( "electron" )
 
 const whiteIpFile = 'whiteIpList.json'
 Http.globalAgent.maxSockets = 1024
 const ipConnectResetTime = 1000 * 60 * 5
-const Day = 1000 * 60 * 60 * 24
+
 const managerPagePort = 8001
 
-const _HTTP_502 = `HTTP/1.1 502 Bad Gateway
-Content-Length: 0
-Connection: close
-Proxy-Connection: close
-Content-Type: text/html; charset=UTF-8
-Cache-Control: private, max-age=0
-
-`
-
-const _HTTP_404 = `HTTP/1.1 404 Not Found
-Content-Length: 0
-Connection: close
-Proxy-Connection: close
-Content-Type: text/html; charset=UTF-8
-Cache-Control: private, max-age=0
-
-`
-
-const _HTTP_599_body = 'Have not internet.\r\n無互聯網，請檢查您的網絡連結\r\nネットワークはオフラインです\r\n'
-const _HTTP_599 = `HTTP/1.1 599 Have not internet
-Content-Length: 100
-Connection: close
-Proxy-Connection: close
-Content-Type: text/html; charset=UTF-8
-Cache-Control: private, max-age=0
-
-${ _HTTP_599_body }
-`
-const _HTTP_598_body = `Domain name can't find.\r\n無此域名\r\nこのドメイン名が見つからないです\r\n`
-const _HTTP_598 = `HTTP/1.1 598 Domain name can't find
-Content-Length: 100
-Connection: close
-Proxy-Connection: close
-Content-Type: text/html; charset=UTF-8
-Cache-Control: private, max-age=0
-
-${ _HTTP_598_body }
-`
-
-const _HTTP_200 = ( body: string ) => {
-	return `HTTP/1.1 200 OK
-Content-Type: text/html; charset=UTF-8
-Connection: keep-alive
-Content-Length: ${ body.length }
-
-${ body }\r\n\r\n`
-}
-
-const body_403 = '<!DOCTYPE html><html><p>This domain in proxy blacklist.</p><p>這個域名被代理服務器列入黑名單</p><p>このサイドはプロクシーの禁止リストにあります</p></html>'
-const HTTP_403 = `HTTP/1.1 403 Forbidden
-Content-Type: text/html; charset=UTF-8
-Connection: close
-Proxy-Connection: close
-Content-Length: 300
-
-${ body_403 }
-
-`
-const _HTTP_PROXY_200 = `HTTP/1.1 200 Connection Established
-Content-Type: text/html; charset=UTF-8
-
-`
-interface domainData {
-	dns: Dns.address[]
-	expire: number;
-}
-
 const testGatewayDomainName = 'www.google.com'
-//	socks 5 headers
-	const res_NO_AUTHENTICATION_REQUIRED = new Buffer ( '0500', 'hex' )
-	const respon_se = new Buffer ( '05000001000000000000', 'hex' )
+
 //	-
 const IsSslConnect = ( buffer: Buffer ) => {
 	
@@ -103,13 +37,13 @@ const IsSslConnect = ( buffer: Buffer ) => {
 	return /^1603(01|02|03|00)|^80..0103|^(14|15|17)03(00|01)/.test (kk)
 }
 
-const checkDomain = ( domainList: string[], domain: string, CallBack ) => {
+const checkDomainInBlackList = ( BlackLisk: string[], domain: string, CallBack ) => {
 
 	if ( Net.isIP ( domain )) {
-		return CallBack ( null, domainList.find ( n => { return n === domain }) ? true : false )
+		return CallBack ( null, BlackLisk.find ( n => { return n === domain }) ? true : false )
 	}
 	const domainS = domain.split ('.')
-	return Async.some ( domainList, ( n, next ) => {
+	return Async.some ( BlackLisk, ( n, next ) => {
 		const nS = n.split ('.')
 		let ret = false
 
@@ -152,21 +86,6 @@ const otherRespon = ( path: string, host: string, port: number, UserAgent: strin
 	return option
 }
 
-const otherRequestForNet = ( path: string, host: string, port: number, UserAgent: string ) => {
-	if ( path.length < 2048) 
-		return `GET /${ path } HTTP/1.1\r\n` +
-				`Host: ${ host }:${ port }\r\n` +
-				`Accept: */*\r\n` +
-				`Accept-Language: en-ca\r\n` +
-				`Connection: keep-alive\r\n` +
-				`Accept-Encoding: gzip, deflate\r\n` +
-				`User-Agent: ${ UserAgent ? UserAgent : 'Mozilla/5.0' }\r\n\r\n`
-	return 	`POST /${ Buffer.allocUnsafe ( 10 + Math.random()).toString('base64') } HTTP/1.1\r\n` +
-			`Host: ${ host }:${ port }\r\n` +
-			`Content-Length: ${ path.length }\r\n\r\n` +
-			path + '\r\n\r\n'
-}
-
 const testLogin = ( req: Buffer, loginUserList: string ) => {
 	
 	const header = new HttpProxyHeader ( req )
@@ -179,19 +98,19 @@ const testLogin = ( req: Buffer, loginUserList: string ) => {
 const closeClientSocket = ( socket: Net.Socket, status: number, body: string ) => {
 	if ( !socket || ! socket.writable )
 		return
-	let stat = _HTTP_404
+	let stat = res._HTTP_404
 	switch ( status ) {
 		case 502:
-			stat = _HTTP_502
+			stat = res._HTTP_502
 			break;
 		case 599:
-			stat = _HTTP_599
+			stat = res._HTTP_599
 			break;
 		case 598:
-			stat = _HTTP_598
+			stat = res._HTTP_598
 			break;
 		case -200:
-			stat = _HTTP_PROXY_200
+			stat = res._HTTP_PROXY_200
 			socket.write ( stat )
 			return socket.resume ()
 		default:
@@ -328,229 +247,18 @@ const tryConnectHost = ( hostname: string, hostIp: domainData, port: number, dat
 	
 }
 
-class hostLookupResponse extends Stream.Writable {
-	constructor ( private CallBack: ( err?: Error, dns?: domainData ) => void ) { super ()}
-	public _write ( chunk: Buffer, enc, next ) {
-		const ns = chunk.toString ( 'utf8' )
-		try {
-			const _ret = JSON.parse ( ns )
-			const ret: domainData = {
-				expire: new Date().getTime () + Day,
-				dns: _ret
-			}
-			this.CallBack ( null, ret )
-			next ()
-			return this.end ()
-		} catch ( e ) {
-			return next ( e )
-		}
-	}
-}
-
-class gateWay {
-
-	private userAgent = null
-
-	private request ( str: string ) {
-		return Buffer.from ( otherRequestForNet ( str, this.serverIp, this.serverPort, this.userAgent ), 'utf8' )
-	}
-
-	constructor ( public serverIp: string, public serverPort: number, private password: string ) {
-	}
-
-	public hostLookup ( hostName: string, userAgent: string, CallBack: ( err?: Error, data?: domainData ) => void ) {
-
-		console.log (`try get nslookup data from remote!`)
-		const _data = new Buffer ( JSON.stringify ({ hostName: hostName }), 'utf8' )
-		
-		const encrypt = new Compress.encryptStream ( this.password, 0, ( str: string ) => {
-			return this.request ( str )
-		}, err => {
-			if ( err ) {
-				return CallBack ( err )
-			}
-			const finish = new hostLookupResponse ( CallBack )
-			const httpBlock = new Compress.getDecryptClientStreamFromHttp ()
-			const decrypt = new Compress.decryptStream ( this.password )
-			
-
-			const _socket = Net.connect ({ port: this.serverPort, host: this.serverIp }, () => {
-				httpBlock.on ( 'error', err => {
-					_socket.end ( _HTTP_502 )
-					return CallBack ( err )
-				})
-				encrypt.pipe ( _socket ).pipe ( httpBlock ).pipe ( decrypt ).pipe ( finish )
-				encrypt.write ( _data )
-				console.log (`send data to remote!`)
-				console.log(`*************\n${_data.toString ()}\n*********`)
-			})
-		})
-		
-	}
-
-	public requestGetWay ( id: string, uuuu: VE_IPptpStream, userAgent: string, socket: Net.Socket ) {
-		this.userAgent = userAgent
-		const decrypt = new Compress.decryptStream ( this.password )
-		const encrypt = new Compress.encryptStream ( this.password, 0, ( str: string ) => {
-			return this.request ( str )
-		}, err => {
-
-			if ( err ) {
-				return console.log ( 'requestGetWay new Compress.encryptStream got ERROR: ', err.message )
-			}
-
-			const httpBlock = new Compress.getDecryptClientStreamFromHttp ()
-			httpBlock.on ( 'error', err => {
-				socket.end ( _HTTP_404 )
-			})
-			const _socket = Net.connect ({ port: this.serverPort, host: this.serverIp }, () => {
-				console.log ( 'requestGetWay connect:', uuuu.host, uuuu.port )
-				encrypt.pipe ( _socket ).pipe ( httpBlock ).pipe ( decrypt ).pipe ( socket ).pipe ( encrypt )
-				encrypt.write ( Buffer.from ( JSON.stringify ( uuuu ), 'utf8' ))
-			})
-		
-		})
-		
-		
-	}
-
-	public requestGetWayTest ( id: string, uuuu: VE_IPptpStream, userAgent: string, socket: Net.Socket ) {
-		console.log ('connect to test port!')
-		const _socket = Net.createConnection ({ port: this.serverPort + 1, host: this.serverIp })
-		
-		_socket.on ( 'connect', () => {
-			const ls = new Compress.printStream ('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-			const ls1 = new Compress.printStream ('<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-			_socket.pipe ( socket ).pipe ( _socket )
-			const _buf = Buffer.from ( otherRequestForNet ( Buffer.from ( JSON.stringify ( uuuu ), 'utf8' ).toString ( 'base64' ), this.serverIp, this.serverPort, this.userAgent ), 'utf8' )
-			_socket.write ( _buf )
-			
-		})
-		
-		_socket.on ( 'end', () => {
-			return console.log ( 'test gateway END' )
-		})
-
-		_socket.on ( 'error', error => {
-			return console.log ( 'test gateway ERROR:', error.message )
-		})
-	}
-}
-
 const isAllBlackedByFireWall = ( hostName: string, ip6: boolean, checkAgainTime: number, gatway: gateWay, userAgent: string, domainListPool: Map < string, domainData >,
 	CallBack: ( err?: Error, hostIp?: domainData ) => void ) => {
 
 	const hostIp = domainListPool.get ( hostName )
 	const now = new Date ().getTime ()
 	if ( ! hostIp || hostIp.expire < now )
-		return  gatway.hostLookup ( hostName, userAgent, CallBack )
+		return  gatway.hostLookup ( hostName, userAgent, ( err, ipadd ) => {
+			return CallBack ( err, ipadd )
+		})
 	return CallBack ( null, hostIp )
 }
 
-class socks5 {
-
-	private host: string;
-	public ATYP: number;
-	public port: number;
-	public cmd: number;
-	private keep = false
-	private closeSocks5 ( buffer: Buffer ) {
-		if ( this.socket ) {
-
-			if ( this.socket.writable ) {
-				this.socket.end ( buffer )
-			}
-
-			if ( typeof this.socket.removeAllListeners === 'function')
-				this.socket.removeAllListeners()
-			
-		}
-		
-	}
-	private connectStat2_after ( retBuffer: Rfc1928.Requests, cmd: string ) {
-		if ( this.keep ) {
-			this.socket.once ( 'data', ( data: Buffer ) => {
-				/*
-				const header = new HttpProxyHeader.httpProxy ( data )
-				
-				if ( this.hostList.putListSock5 ( this.host, IsSslConnect ? null : header ))
-					return this.closeSocks5 ( HTTP_403 )
-				
-				if (  header.cachePath && this.cacheKeepTime ) {
-					return this.proxyCacheSave ( header, ( err, data1: Buffer ) => {
-						if ( !data1 ) {
-							this.mainSsWrite = new mainSSWrite ( this.vpnServerSocket, this.masterPassword, IsSslConnect ( data ), this.id, 0 )
-							this.socket.pipe ( this.mainSsWrite )
-							if ( this.savePath )
-								return this.save ( header.BufferWithOutKeepAlife )
-							return this.save ( data )
-						}
-						
-						this.ending = true
-						return this.endConnect ( data1 )
-
-					})
-				}
-				*/
-				
-			})
-
-			return this.socket.write ( retBuffer.buffer )
-			
-		}
-
-		return this.closeSocks5 ( retBuffer.buffer )
-
-	}
-	
-	private connectStat2 ( data: Buffer ) {
-		
-		const req = new Rfc1928.Requests ( data )
-		this.ATYP = req.ATYP
-		this.host = req.host
-		this.port = req.port
-		this.cmd = req.cmd
-		
-		const localIp = this.socket.localAddress.split (':')[3]
-		const retBuffer = new Rfc1928.Requests ( respon_se )
-		retBuffer.ATYP_IP4Address = localIp
-		
-		let cmd = ''
-		
-		switch ( this.cmd ) {
-			case Rfc1928.CMD.CONNECT:
-				this.keep = true
-				console.log ('got Rfc1928.CMD.CONNECT',this.ATYP)
-			break
-
-			case Rfc1928.CMD.BIND:
-				cmd = 'Rfc1928.CMD.BIND'
-				console.log ('Rfc1928.CMD.BIND request')
-				retBuffer.REP = Rfc1928.Replies.COMMAND_NOT_SUPPORTED_or_PROTOCOL_ERROR
-			break
-
-			case Rfc1928.CMD.UDP_ASSOCIATE:
-				cmd = 'Rfc1928.CMD.UDP_ASSOCIATE'
-				console.log ('Rfc1928.CMD.UDP_ASSOCIATE')
-				retBuffer.REP = Rfc1928.Replies.COMMAND_NOT_SUPPORTED_or_PROTOCOL_ERROR
-			break
-			default:
-				retBuffer.REP = Rfc1928.Replies.COMMAND_NOT_SUPPORTED_or_PROTOCOL_ERROR
-			break
-		}
-
-		return this.connectStat2_after ( retBuffer, cmd )
-	}
-	
-	constructor ( private socket: Net.Socket ) {
-		
-		this.socket.once ( 'data', ( chunk: Buffer ) => {	
-			return this.connectStat2 ( chunk )
-		})
-
-		this.socket.write ( res_NO_AUTHENTICATION_REQUIRED )
-	}
-}
 
 const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean, ip6: boolean, connectTimeOut: number,  
 	domainListPool: Map < string, domainData >, gatway: gateWay, checkAgainTime: number, blackDomainList: string[] ) => {
@@ -570,9 +278,9 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 					buffer: _data.toString ( 'base64' ),
 					cmd: Rfc1928.CMD.CONNECT,
 					ATYP: Rfc1928.ATYP.IP_V4,
-					port: parseInt ( httpHead.Url.port || httpHead.isHttps ? '443' : '80' )
+					port: parseInt ( httpHead.Url.port || httpHead.isHttps ? '443' : '80' ),
+					ssl: httpHead.isHttps
 				}
-
 
 				const id = `[${ clientSocket.remoteAddress.split(':')[3] }:${ clientSocket.remotePort }][${ uuuu.uuid }] `
 				console.log ( ` ${id} [${ hostName }]`, 'try use gateway\n' )
@@ -580,15 +288,15 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 				
 			}
 
-			return clientSocket.end ( HTTP_403 )
+			return clientSocket.end ( res.HTTP_403 )
 		}
 		return
 	}
 
-	return checkDomain ( blackDomainList, hostName, ( err, result: boolean ) => {
+	return checkDomainInBlackList ( blackDomainList, hostName, ( err, result: boolean ) => {
 
 		if ( result ) {
-			return clientSocket.end ( HTTP_403 )
+			return clientSocket.end ( res.HTTP_403 )
 		}
 
 		const port = parseInt ( httpHead.Url.port ||  httpHead.isHttps ? '443' : '80' )
@@ -761,7 +469,7 @@ export default class proxyServer {
 						return console.log ( 'SOCK4 connect' )
 					case 0x5:
 						console.log ( 'socks5 connect' )
-						return new socks5 ( socket )
+						return new socket5 ( socket )
 					default:
 						return httpProxy ( socket, data, useGatWay, this.hostGlobalIpV6 ? true : false, connectHostTimeOut, domainListPool, gateway, checkAgainTimeOut, domainBlackList )
 				}
@@ -803,7 +511,7 @@ const saveLog = ( log: string ) => {
 	})
 }
 
-
+/*
 remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
 	
 	const server = new proxyServer ([], new Map(), data.localServerPort, 'pac', data.gateWayIpAddress, data.gateWayPort, data.imapData.randomPassword,
@@ -815,6 +523,5 @@ remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
 })
 
 remote.getCurrentWindow().emit ( 'first' )
-
-
-new proxyServer ([], new Map(), 3001, 'pac', '159.203.28.148', 80, 'e7a72f1e490c5b5d4188fc5a1c3de7', 5000, 50000, true, [])
+*/
+new proxyServer ([], new Map(), 3001, 'pac', '159.203.15.123', 80, 'c04b04e9720fadcfd83f03a0156b16', 5000, 50000, true, [])

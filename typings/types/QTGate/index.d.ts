@@ -153,6 +153,7 @@ interface VE_IPptpStream {
     uuid?: string;
     length?:number;
     randomBuffer?: Buffer
+    ssl: boolean
 }
 
 declare module "dns" {
@@ -177,4 +178,15 @@ interface feedBackData {
     comment: string
     date: string
     attachImage?: string
+}
+
+interface dnsAddress {
+	address: string
+	family: number
+	expire: Date
+	connect: Date []
+}
+interface domainData {
+	dns: dnsAddress[]
+	expire: number
 }
