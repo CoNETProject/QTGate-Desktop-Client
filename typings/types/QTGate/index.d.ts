@@ -29,6 +29,7 @@ interface install_config {
     salt?: Buffer
     iterations?: number
     keylen?: number
+    localIpAddress: string []
     digest?: string
     QTGateConnectImapUuid: string
     freeUser: boolean
@@ -36,6 +37,7 @@ interface install_config {
     serverGlobalIpAddress: string
     serverPort: number
     connectedQTGateServer: boolean
+    lastConnectType: number
 }
 
 interface imapConnect {
@@ -122,6 +124,7 @@ interface IConnectCommand {
     connectPeer?: string
     AllDataToGateway: boolean
     localServerPort: number
+    localServerIp: string
 }
 
 interface QTGateCommand {

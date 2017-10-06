@@ -1,6 +1,7 @@
 import * as Net from 'net'
 import * as Rfc1928 from './Rfc1928'
 import * as res from './res'
+import * as os from 'os'
 //	socks 5 headers
 const res_NO_AUTHENTICATION_REQUIRED = new Buffer ( '0500', 'hex' )
 const respon_se = new Buffer ( '05000001000000000000', 'hex' )

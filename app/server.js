@@ -39,6 +39,22 @@ const saveLog = (log) => {
         flag = 'a';
     });
 };
+const getLocalInterface = () => {
+    const ifaces = Os.networkInterfaces();
+    const ret = [];
+    Object.keys(ifaces).forEach(n => {
+        let alias = 0;
+        ifaces[n].forEach(iface => {
+            if ('IPv4' !== iface.family || iface.internal !== false) {
+                // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+                return;
+            }
+            ret.push(iface.address);
+            alias++;
+        });
+    });
+    return ret;
+};
 const findPort = (port, CallBack) => {
     return freePort.test(port).then(isOpen => {
         if (isOpen)
@@ -125,7 +141,9 @@ const emitConfig = (config, passwordOK) => {
         QTGateConnectImapUuid: config.QTGateConnectImapUuid,
         serverGlobalIpAddress: config.serverGlobalIpAddress,
         serverPort: config.serverPort,
-        connectedQTGateServer: config.connectedQTGateServer
+        connectedQTGateServer: config.connectedQTGateServer,
+        localIpAddress: getLocalInterface(),
+        lastConnectType: config.lastConnectType
     };
     return ret;
 };
@@ -216,7 +234,9 @@ const InitConfig = (first, version, port) => {
         QTGateConnectImapUuid: null,
         serverGlobalIpAddress: null,
         serverPort: port,
-        connectedQTGateServer: false
+        connectedQTGateServer: false,
+        localIpAddress: getLocalInterface(),
+        lastConnectType: 1
     };
     return ret;
 };
@@ -328,6 +348,7 @@ class localServer {
         this.clientIpAddress = null;
         this.proxyServerWindow = null;
         this.connectCommand = null;
+        this.proxyServer = null;
         this.ex_app = Express();
         this.ex_app.set('views', Path.join(__dirname, 'views'));
         this.ex_app.set('view engine', 'pug');
@@ -374,7 +395,7 @@ class localServer {
         this.socketServer.on('connection', socket => {
             this.socketConnectListen(socket);
         });
-        this.httpServer.listen(port, '127.0.0.1');
+        this.httpServer.listen(port);
         this.checkConfig();
         saveLog(`Version: ${process.version}`);
     }
@@ -612,7 +633,24 @@ class localServer {
             this.imapDataPool[index].sendToQTGate = true;
             this.emitQTGateToClient(socket, uuid);
         });
+        socket.on('checkPort', (portNum, CallBack) => {
+            const num = parseInt(portNum.toString());
+            if (!/^[0-9]*$/.test(portNum.toString()) || !num || num < 1000 || num > 65535)
+                return CallBack(true);
+            return findPort(portNum, (err, kk) => {
+                saveLog(`check port [${typeof portNum}] got back kk [${typeof kk}]`);
+                if (kk !== portNum) {
+                    return CallBack(true);
+                }
+                return CallBack(false);
+            });
+        });
         socket.on('QTGateGatewayConnectRequest', (cmd, CallBack) => {
+            saveLog('socket.on QTGateGatewayConnectRequest');
+            //		already have proxy
+            if (this.proxyServer) {
+                return;
+            }
             return myIpServer((err, ipAddress) => {
                 if (err) {
                     return saveLog(`myIpServer return error: [${err.message}]`);
@@ -633,21 +671,34 @@ class localServer {
                 };
                 return this.QTClass.request(com, (err, res) => {
                     const arg = res.Args[0];
-                    const connect = res.Args[1];
-                    saveLog(JSON.stringify(arg));
-                    saveLog(`Have connect\n[${connect}]`);
                     //		no error
                     if (arg.error < 0) {
                         //		@QTGate connect
                         if (arg.connectType === 1) {
+                            return;
                         }
+                        //
                         //		iQTGate connect
+                        arg.localServerIp = this.config.localIpAddress[0];
+                        this.connectCommand = arg;
+                        saveLog(`this.proxyServer = new RendererProcess type = [${arg.connectType}] data = [${JSON.stringify(arg)}]`);
+                        this.proxyServer = new RendererProcess('iOpn', arg, false, () => {
+                            saveLog(`proxyServerWindow on exit!`);
+                        });
                     }
                     return CallBack(arg);
                 });
             });
         });
-        socket.on('stopGatwayConnect', () => {
+        socket.on('disconnectClick', CallBack => {
+            setTimeout(() => {
+                saveLog('this.proxyServer.close().');
+                this.proxyServer.cancel();
+                this.proxyServer = null;
+                this.connectCommand = null;
+                saveLog('disconnectClick finished.');
+                return CallBack();
+            }, 1000);
             this.stopGetwayConnect(arg => {
                 saveLog(`stopGatwayConnect callback Args = [${JSON.stringify(arg)}]`);
             });
@@ -812,6 +863,10 @@ class localServer {
                     return callBack(false);
                 callBack(true, this.imapDataPool);
                 this.listenAfterPassword(socket);
+                saveLog(`this.connectCommand && this.httpServer [${this.connectCommand && this.httpServer}]`);
+                if (this.connectCommand && this.httpServer) {
+                    return socket.emit('QTGateGatewayConnectRequest', this.connectCommand);
+                }
                 return this.emitQTGateToClient(socket, null);
             }
             return Async.waterfall([
@@ -847,9 +902,6 @@ class localServer {
                 saveLog(`socket.on ( 'CancelCreateKeyPair') canceled!`);
                 this.CreateKeyPairProcess.cancel();
             }
-        });
-        socket.on('iOpn', () => {
-            this.iOpnStart();
         });
         /*
         socket.on ( 'checkUpdateBack', ( jsonData: any ) => {
@@ -901,9 +953,10 @@ class localServer {
                 this.config = config;
                 this.config.version = this.version;
                 this.config.serverPort = this.port;
+                this.config;
                 if (this.config.keypair && this.config.keypair.publicKeyID)
                     return Async.waterfall([
-                        next => {
+                            next => {
                             if (!this.config.keypair.publicKey)
                                 return checkKey(this.config.keypair.publicKeyID, next);
                             return next(null, null);
@@ -1002,8 +1055,8 @@ class localServer {
             return CallBack(new Error(err));
         }
         Async.parallel([
-            next => readQTGatePublicKey(next),
-            next => this.getPbkdf2(this.savedPasswrod, next)
+                next => readQTGatePublicKey(next),
+                next => this.getPbkdf2(this.savedPasswrod, next)
         ], (err, data) => {
             if (err) {
                 saveLog(`sendEmailToQTGate readQTGatePublicKey && getPbkdf2 got ERROR [${Util.inspect(err)}]`);
@@ -1219,8 +1272,8 @@ class ImapConnect extends Imap.imapPeer {
         this.localGlobalIpAddress = null;
         this.commandCallBackPool = new Map();
         Async.parallel([
-            next => readQTGatePublicKey(next),
-            next => this.localServer.getPbkdf2(password, next)
+                next => readQTGatePublicKey(next),
+                next => this.localServer.getPbkdf2(password, next)
         ], (err, data) => {
             if (err) {
                 return saveLog(`class [ImapConnect] doing Async.parallel [readQTGatePublicKey, this.localServer.getPbkdf2 ] got error! [${JSON.stringify(err)}]`);
@@ -1396,8 +1449,8 @@ const makeFeedBackDataToQTGateAPIRequestCommand = (data, Callback) => {
 const makeFeedbackData = (request, CallBack) => {
     let feedData = null;
     return Async.waterfall([
-        next => Fs.access(feedbackFilePath, next),
-        next => Fs.readFile(feedbackFilePath, 'utf8', next)
+            next => Fs.access(feedbackFilePath, next),
+            next => Fs.readFile(feedbackFilePath, 'utf8', next)
     ], (err, jData) => {
         if (err)
             return CallBack(err);

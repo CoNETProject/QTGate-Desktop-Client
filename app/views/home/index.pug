@@ -35,12 +35,10 @@ block jumbotron
 							.or
 							buttom.ui.positive.button( data-bind = " text: infoDefine[ languageIndex() ].home_index_view.agree, click: agreeClick  ")
 					.column
-						
-
 
 block jumbotron1
 	.content
-		#feedBackView( style="")
+		#feedBackView
 			h3( data-bind=" text: infoDefine[ languageIndex() ].feedBack.title " style="color: gray")
 			.ui.divider
 			.ui.feed( data-bind = "foreach: feed ")
@@ -61,56 +59,132 @@ block jumbotron1
 					.ui.small.image
 						a( href="#" data-bind="click: openFeedBackAttachImg")
 							img( data-bind=" attr: { src: feedBackAttachImg ()} ")
-						a.floating.ui.red.label( href="#" data-bind="click: function(){ feedBackAttachImg( null) }") x
+						a.floating.ui.red.label( href="#" data-bind="click: () => { feedBackAttachImg ( null ) }") x
 				.field
 					a( href="#" data-bind="click: openFeedBackAttachLog, visible: !attachedLog().length ")
 						span( data-bind=" text: infoDefine[ languageIndex() ].feedBack.additional ")
 						span
 							i.attach.link.icon
 					.ui.raised.segment( data-bind = " visible: attachedLog().length" )
-						a.floating.ui.red.label( href="#" data-bind="click: function(){attachedLog('')}") x
+						a.floating.ui.red.label( href="#" data-bind="click: () => { attachedLog('')}") x
 						span( data-bind=" html: attachedLog()" style="font-size: smaller;")
 
 				.field
 					textarea( data-bind = "value: feedBackTextArea ")
 				.field
 					.ui.buttons
-						button.ui.button( data-bind=" click: returnMainWin,text: infoDefine[ languageIndex() ].home_index_view.cancel")
+						button.ui.button( data-bind=" click: () => {returnMainWin ('#feedBackView')}, text: infoDefine[ languageIndex() ].home_index_view.cancel")
 						.or
 						button.ui.positive.button( data-bind=" click: feedBackSuccess, text: infoDefine[ languageIndex() ].feedBack.okTitle")
 				.field
+		#macOsUseInfo.useInfoView
+			a.feedBack( href = "#" data-bind="click: () => { returnMainWin ( '#macOsUseInfo' )} ")
+				i.icon.reply
+			h4( data-bind = " text: infoDefine[ languageIndex() ].useInfoMacOS.title1" style = "padding-left: 2em; color:darkgreen;")
+			.detailSegment( data-bind=" foreach: infoDefine[ languageIndex() ].useInfoMacOS.info ")
+				.ui.top.attached.header( data-bind = " visible: title && title.length " )
+					h4( data-bind = "text: title" style = "color: rgba(0,0,0,0.5)")
+					img.pull-right( data-bind = "attr: { src: titleImage }, visible: titleImage" style="margin-top: -38px;")
+				.ui.attached.segment
+					span( data-bind="html: detail " style = "color: rgba(0,0,0,0.5)" )
+					span.localIP( data-bind=" text: $index() > 1 ? $root.QTConnectData().localServerIp : null, style: {'margin-top': ($index()>0 && $index()<3 ) ? '6.7em' : '7em' }")
+					span.localIPPort( data-bind = " text: $index() > 1 ? $root.QTConnectData().localServerPort : null, style: {'margin-top': ($index()>0 && $index()<3) ? '6.7em' : '7em' }")
+					img( data-bind="attr: { src: image }" style ="width: 500px;")
+		#WindowsUseInfo.useInfoView
+			a.feedBack( href = "#" data-bind="click: () => { returnMainWin ( '#WindowsUseInfo' )} ")
+				i.icon.reply
+			h4( data-bind = " text: infoDefine[ languageIndex() ].useInfoWindows.title1" style = "padding-left: 2em; color:darkgreen;")
+			.detailSegment( data-bind=" foreach: infoDefine[ languageIndex() ].useInfoWindows.info ")
+				.ui.top.attached.header( data-bind = " visible: title && title.length " )
+					h4( data-bind = "text: title" style = "color: rgba(0,0,0,0.5)")
+					img.pull-right( data-bind = "attr: { src: titleImage }, visible: titleImage" style="margin-top: -38px;")
+				.ui.attached.segment
+					span( data-bind="html: detail " style = "color: rgba(0,0,0,0.5);" )
+					p( data-bind="visible: $index() < 1 ")
+						span( data-bind="text: $root.infoDefine[ $root.languageIndex() ].useInfoMacOS.proxyServerIp" style = "color: rgba(0,0,0,0.5);")
+						span( data-bind="text: $root.QTConnectData().localServerIp + ','" style="color: darkcyan;")
+						span( data-bind="text: $root.infoDefine[ $root.languageIndex() ].useInfoMacOS.proxyServerPort" style="padding-left: 10px;color: rgba(0,0,0,0.5);")
+						span( data-bind="text: $root.QTConnectData().localServerPort + ','" style="color: darkcyan;")
+					span.WindowsUseInfoLocalServerIp( data-bind="text: $index() === 4 ? $root.QTConnectData().localServerIp : '' " )
+					span.WindowsUseInfoPort( data-bind="text: $index() === 4 ? $root.QTConnectData().localServerPort : ''" )
+					img( data-bind="attr: { src: image }, visible: image" style ="width: 500px;")
+		#iOSUseInfo.useInfoView
+			a.feedBack( href = "#" data-bind="click: () => { returnMainWin ( '#iOSUseInfo' )} ")
+				i.icon.reply
+			h4( data-bind = " text: infoDefine[ languageIndex() ].useInfoiOS.title1" style = "padding-left: 2em; color:darkgreen;")
+			.detailSegment( data-bind=" foreach: infoDefine[ languageIndex() ].useInfoiOS.info ")
+				.ui.top.attached.header( data-bind = " visible: title && title.length " )
+					h4( data-bind = "text: title" style = "color: rgba(0,0,0,0.5)")
+					img.pull-right( data-bind = "attr: { src: titleImage }, visible: titleImage" style="margin-top: -38px;")
+				.ui.attached.segment
+					span( data-bind="html: detail " style = "color: rgba(0,0,0,0.5);" )
+					span.iOSUseInfoLocalServerIp( data-bind="text: $index() === 3 ? $root.QTConnectData().localServerIp : '' ")
+					span.iOSUseInfoPort( data-bind="text: $index() === 3 ? $root.QTConnectData().localServerPort : ''")
+					img( data-bind="attr: { src: image }, visible: image" style ="width: 250px;")
+		#firefoxUseInfo.useInfoView
+			a.feedBack( href = "#" data-bind="click: () => { returnMainWin ( '#firefoxUseInfo' )} ")
+				i.icon.reply
+			h4( data-bind = " text: infoDefine[ languageIndex() ].firefoxUseInfo.title1" style = "padding-left: 2em; color:darkgreen;")
+			.detailSegment( data-bind=" foreach: infoDefine[ languageIndex() ].firefoxUseInfo.info ")
+				.ui.top.attached.header( data-bind = " visible: title && title.length " )
+					h4( data-bind = "text: title" style = "color: rgba(0,0,0,0.5)")
+					img.pull-right( data-bind = "attr: { src: titleImage }, visible: titleImage" style="margin-top: -38px;")
+				.ui.attached.segment
+					span( data-bind="html: detail " style = "color: rgba(0,0,0,0.5);" )
 
+					span.firefoxUseLocalIp( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerIp : '' ")
+					span.firefoxUseLocalPort( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerPort : ''")
+					span.firefoxUseLocalIp1( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerIp : '' ")
+					span.firefoxUseLocalPort1( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerPort : ''")
+					span.firefoxUseLocalIp2( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerIp : '' ")
+					span.firefoxUseLocalPort2( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerPort : ''")
+					span.firefoxUseLocalIp3( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerIp : '' ")
+					span.firefoxUseLocalPort3( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerPort : ''")
+					img( data-bind="attr: { src: image }, visible: image" style ="width: 500px;")
+		#androidUseInfo.useInfoView
+			a.feedBack( href = "#" data-bind="click: () => { returnMainWin ( '#androidUseInfo' )} ")
+				i.icon.reply
+			h4( data-bind = " text: infoDefine[ languageIndex() ].useInfoAndroid.title1" style = "padding-left: 2em; color:darkgreen;")
+			.detailSegment( data-bind=" foreach: infoDefine[ languageIndex() ].useInfoAndroid.info ")
+				.ui.top.attached.header( data-bind = " visible: title && title.length " )
+					h4( data-bind = "text: title" style = "color: rgba(0,0,0,0.5)")
+					img.pull-right( data-bind = "attr: { src: titleImage }, visible: titleImage" style="margin-top: -38px;")
+				.ui.attached.segment
+					span( data-bind="html: detail " style = "color: rgba(0,0,0,0.5);" )
+					span.androidUseInfoLocalServerIp( data-bind="text: $index() === 3 ? $root.QTConnectData().localServerIp : '' ")
+					span.androidUseInfoPort( data-bind="text: $index() === 3 ? $root.QTConnectData().localServerPort : ''")
+					img( data-bind="attr: { src: image }, visible: image" style ="width: 500px;")
 		.mainScreen
 			.mainScreen1( style = "z-index: 1020;")
 				.ui.left.vertical.fluid.tabular.menu.fixed( style="width:75px!important; margin: 10px!important; margin-top: 40px!important; ")
-					a.item( data-bind = "css:{ active: MenuItems() [0]}, click: function(){ return menuClick (0, true )}")
+					a.item( data-bind = "css:{ active: MenuItems() [0]}, click: () => { return menuClick (0, true )}")
 						img.ui.mini.image( src = "/images/256x256.png" style="width:25px!important;")
-					a.item( data-bind = "css:{ active: MenuItems() [1]}, click: function(){ return menuClick (1, false )}")
+					a.item( data-bind = "css:{ active: MenuItems() [1]}, click: () => { return menuClick (1, false )}")
 						.menuItem
 							i.icon.privacy.large.green
 					//-		IMAP account
-					a.item( data-bind = "css:{ active: MenuItems() [2]}, click: function(){ return menuClick (2, true )}, visible: imapInputFormActive()")
+					a.item( data-bind = "css:{ active: MenuItems() [2]}, click: () => { return menuClick (2, true )}, visible: imapInputFormActive()")
 						.menuItem
 							i.address.card.outline.icon.large.blue
 					//-		QTGate connect & region area
-					a.item( data-bind = "css:{ active: MenuItems() [3]}, click: function(){ return menuClick ( 3, true )}, visible: QTGateConnectActive() || QTGateConnectRegionActive")
+					a.item( data-bind = "css:{ active: MenuItems() [3]}, click: () => { return menuClick ( 3, true )}, visible: QTGateConnectActive() || QTGateConnectRegionActive ")
 						.menuItem
 							i.exchange.icon.large.purple
 					//-		QTGate file storage
-					a.item( data-bind = "css:{ active: MenuItems() [4]}, click: function(){ return menuClick (4, false )}, visible: true")
+					a.item( data-bind = "css:{ active: MenuItems() [4]}, click: () => { return menuClick (4, false )}, visible: false")
 						.menuItem
 							i.cloud.upload.icon.large.violet
 					//-		QTGate message
-					a.item( data-bind = "css:{ active: MenuItems() [5]}, click: function(){ return menuClick (5, false )}, visible: false")
+					a.item( data-bind = "css:{ active: MenuItems() [5]}, click: () => { return menuClick (5, false )}, visible: false")
 						.menuItem
 							i.talk.outline.icon.large.pink
-					a.item( data-bind = "css:{ active: MenuItems() [6]}, click: function(){ return menuClick (6, true )}")
+					a.item( data-bind = "css:{ active: MenuItems() [6]}, click: () => { return menuClick (6, true )}")
 						.menuItem
 							i.map.outline.icon.large.yellow
-					a.item( data-bind = "css:{ active: MenuItems() [7]}, visible: config().newVerReady,click: function(){ return menuClick (7, true )}")
+					a.item( data-bind = "css:{ active: MenuItems() [7]}, visible: config().newVerReady,click: () => { return menuClick (7, true )}")
 						.menuItem
 							i.icon.setting.big.loading.red( style = "margin-left: -6px;")
-					#feedBack
+					.feedBack
 						a( href = "#" data-bind="click: takeScreen ")
 							i.big.icons
 								i.comment.icon
@@ -135,7 +209,6 @@ block jumbotron1
 
 				.detailSegment( data-bind = " foreach: infoDefine[ languageIndex() ].QTGateInfo.detail " )
 					.ui.top.attached.header( data-bind = " visible: header && header.length " )
-						
 						h4( data-bind = " text: header, style: { color: color } " )
 						i( data-bind = " attr: { class: 'pull-right icon ' + icon }, style: { color: color }" style="margin-top: -1.7em;" )
 					.ui.attached.segment
@@ -166,13 +239,13 @@ block jumbotron1
 								i.icon.close
 								p.fg-grayLight( data-bind = "text: infoDefine [ languageIndex() ].home_index_view.KeypairLength" )
 							.ui.compact.menu.green
-								a.item( data-bind = " css: { active: keyPairLengthSelect() === '2048' }, click: function() { tileClick( '2048' )}" style = "color: rgba(0,0,0,0.5)")
+								a.item( data-bind = " css: { active: keyPairLengthSelect() === '2048' }, click: () => { tileClick( '2048' )}" style = "color: rgba(0,0,0,0.5)")
 									i.fa.fa-key
 									span 2048
-								a.item( data-bind = " css: { active: keyPairLengthSelect() === '3072' }, click: function() { tileClick( '3072' )}" style = "color: rgba(0,0,0,0.5)")
+								a.item( data-bind = " css: { active: keyPairLengthSelect() === '3072' }, click: () => { tileClick( '3072' )}" style = "color: rgba(0,0,0,0.5)")
 									i.fa.fa-key
 									span 3072
-								a.item( data-bind = " css: { active: keyPairLengthSelect() === '4096' }, click: function() { tileClick( '4096' )}" style = "color: rgba(0,0,0,0.5)")
+								a.item( data-bind = " css: { active: keyPairLengthSelect() === '4096' }, click: () => { tileClick( '4096' )}" style = "color: rgba(0,0,0,0.5)")
 									i.fa.fa-key
 									span 4096
 							i.icon.help.circle.outline.large.questionIcon( data-bind = "visible: ! keyLengthInfoShow (), click: () => { keyLengthInfoShow ( true )} " style = "color: rgba(200,150,30,0.9)" )
@@ -182,9 +255,9 @@ block jumbotron1
 						p( data-bind = "html: infoDefine [ languageIndex() ].home_index_view.GenerateKeypair ")
 						.keyPairProcessBar.ui.bottom.teal.attached.progress( data-bind = 'visible: SystemPassword_submitRunning ()')
 							.bar
-					button.ui.negative.basic.button( data-bind= " text: infoDefine [ languageIndex() ].home_index_view.cancel, click: function() { delete_btn_view ( ! delete_btn_view ()) }, visible: newKeyPairRunningCancelButtonShow() && ! delete_btn_view () ")
+					button.ui.negative.basic.button( data-bind= " text: infoDefine [ languageIndex() ].home_index_view.cancel, click: () => { delete_btn_view ( ! delete_btn_view ()) }, visible: newKeyPairRunningCancelButtonShow() && ! delete_btn_view () ")
 					.ui.buttons( data-bind = " visible: newKeyPairRunningCancelButtonShow() && delete_btn_view () ")
-						button.ui.button( data-bind = "text: infoDefine [ languageIndex() ].home_index_view.continueCreateKeyPair, click: function() { delete_btn_view ( ! delete_btn_view ()); keyPairGenerateFormActive ( false )} ")
+						button.ui.button( data-bind = "text: infoDefine [ languageIndex() ].home_index_view.continueCreateKeyPair, click: () => { delete_btn_view ( ! delete_btn_view ()); keyPairGenerateFormActive ( false )} ")
 						.or
 						button.ui.button.negative( data-bind = " text: infoDefine [ languageIndex() ].home_index_view.stopCreateKeyPair, click: CancelCreateKeyPair ")
 				.content( data-bind = " visible: showKeyPairInformation() " style = "margin-top: 5em;")
@@ -210,14 +283,14 @@ block jumbotron1
 											p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.creatDate + keyPair().createDate" )
 											p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.keyLength + keyPair().keyLength" )
 											p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.keyID + keyPair().publicKeyID" )
-										.ui.bottom.right.attached.label.background-clolr-white( data-bind = " click: function() { keyPair_delete_btn_view ( true ); showPasswordErrorMessage ( false ); showSystemError ( false )}, visible: ! keyPair_delete_btn_view()")
+										.ui.bottom.right.attached.label.background-clolr-white( data-bind = " click: () => { keyPair_delete_btn_view ( true ); showPasswordErrorMessage ( false ); showSystemError ( false )}, visible: ! keyPair_delete_btn_view()")
 											a
 												i.trash.outline.icon.large( style = " color: red;")
 									.extra.content( data-bind = "visible : keyPair_delete_btn_view() ")
 										.ui.one.column.centered.grid
 											.column.center
 												.ui.buttons
-													.ui.button( data-bind = " text: infoDefine[ languageIndex() ].home_index_view.cancel, click: function() { keyPair_delete_btn_view ( false )}")
+													.ui.button( data-bind = " text: infoDefine[ languageIndex() ].home_index_view.cancel, click: () => { keyPair_delete_btn_view ( false )}")
 													.or
 													.ui.negative.button( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.delete, click: deletePasswordNext ")
 							.field.required( data-bind = " css: { error: showPasswordErrorMessage() }")
@@ -250,7 +323,7 @@ block jumbotron1
 								.meta( data-bind = " visible: imapCheckResult() && ! imapDataEditShow()" )
 									span( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.imapResultTitle" )
 									span.ui.star.rating( data-bind = " attr: { 'data-rating': dataRating() }" data-max-rating = "3" )
-								.ui.bottom.top.left.attached.label.background-clolr-white( data-bind = " click: function() { imapDataEditShow ( true ) }, visible: !imapDataEditShow () && ! runningCheck() && canDoDelete()", style = "left: -10px!important;top: -6px!important;")
+								.ui.bottom.top.left.attached.label.background-clolr-white( data-bind = " click: () => { imapDataEditShow ( true ) }, visible: !imapDataEditShow () && ! runningCheck() && canDoDelete()", style = "left: -10px!important;top: -6px!important;")
 									a
 										i.edit.outline.icon.large.blue
 								.description
@@ -355,7 +428,7 @@ block jumbotron1
 																.field( data-bind =" css: { error: smtpServerPortNumberError() }, visible: smtpPortChecked () === 'other' ")
 																	.ui.input
 																		input( data-bind = "value : smtpServerPortNumber, attr : { 'data-content' : smtpServerPortNumberError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': smtpServerPortNumberError()} " type = "text" )
-							.ui.bottom.right.attached.label.background-clolr-white( data-bind = " visible: !imapDataEditShow() && ! showDeleteArea () && canDoDelete(), click: function() { showDeleteArea ( true ) }")
+							.ui.bottom.right.attached.label.background-clolr-white( data-bind = " visible: !imapDataEditShow() && ! showDeleteArea () && canDoDelete(), click: () => { showDeleteArea ( true ) }")
 								a
 									i.trash.outline.icon.large( style = " color: red;", data-bind = " visible: ! runningCheck ()")
 							
@@ -368,7 +441,7 @@ block jumbotron1
 								.ui.one.column.centered.grid
 										.column.center
 											.ui.buttons
-												.ui.button( data-bind = " text: infoDefine[ $root.languageIndex() ].home_index_view.cancel, click: function() { showDeleteArea ( false )}")
+												.ui.button( data-bind = " text: infoDefine[ $root.languageIndex() ].home_index_view.cancel, click: () => { showDeleteArea ( false )}")
 												.or
 												.ui.negative.button( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.deleteImap, click: deleteImap ")
 
@@ -376,7 +449,7 @@ block jumbotron1
 					.ui.fluid.card( style = "width: 36px!important;box-shadow: none!important; " data-bind = " visible: $root.showAddImapDataButton () ")
 							.insideButtom( style = "display: table;height: 100%;width: 100%;")
 								.meddle( style = "display: table-cell!important;vertical-align: middle;")
-									button.circular.ui.icon.button( data-bind= " click: function () { $root.addANewImapData( $root ) }")
+									button.circular.ui.icon.button( data-bind= " click: () => { $root.addANewImapData( $root ) }")
 										i.icon.plus( style = " color: white!important;")
 
 				//-
@@ -388,7 +461,7 @@ block jumbotron1
 							.title
 								i.icon.spy.violet
 								span( data-bind = " text: emailPool().length ? emailPool()[ qtgateImapAccount() ].emailAddress() : null" style="color:rgba(0,0,0,.5);")
-					.step( data-bind = " visible: !keyPair().verified, click: function() { if ( QTGateConnecting()) return; $('.SendToQTGateIMAPInformation').transition('slide down')}, css: { link: ! QTGateConnecting(), completed: QTGateConnecting() === 2 || QTGateConnecting() === 4, fixStepAfter: QTGateConnecting() !== 2, stepError: QTGateConnecting() === 3 }" style = "padding: 8px;")
+					.step( data-bind = " visible: !keyPair().verified, click: () => { if ( QTGateConnecting()) return; $('.SendToQTGateIMAPInformation').transition('slide down')}, css: { link: ! QTGateConnecting(), completed: QTGateConnecting() === 2 || QTGateConnecting() === 4, fixStepAfter: QTGateConnecting() !== 2, stepError: QTGateConnecting() === 3 }" style = "padding: 8px;")
 						a#QTGateSignInformationPopupa.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', attr: { 'data-html': infoDefine [ languageIndex() ].qtGateView.QTGateSign[2] }, visible: QTGateConnecting() === 2 ")
 						a#QTGateSignInformationPopupa.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', attr: { 'data-html': infoDefine [ languageIndex() ].qtGateView.QTGateSign[4] }, visible: QTGateConnecting() === 5 ")
 						.content
@@ -396,7 +469,7 @@ block jumbotron1
 								i.icon.exchange.teal
 								span( data-bind = " text: infoDefine [ languageIndex() ].qtGateView.QTGateConnectResult [ QTGateConnecting() ] " style="color:rgba(0,0,0,.5);")
 							.loader( data-bind = " css: { 'ui active': QTGateConnecting() === 1 } ")
-					.step.link( data-bind = " visible: QTGateConnecting() === 2 || QTGateConnecting() === 4 || QTGateConnecting() === 5, css: { stepError: QTGateConnecting() === 5 }, click: function (){ $('.KeypairSign').transition('slide down')}" style = "padding: 8px;")
+					.step.link( data-bind = " visible: QTGateConnecting() === 2 || QTGateConnecting() === 4 || QTGateConnecting() === 5, css: { stepError: QTGateConnecting() === 5 }, click: () => { $('.KeypairSign').transition('slide down')}" style = "padding: 8px;")
 						.content
 							.title
 								i.icon.privacy.purple
@@ -444,10 +517,10 @@ block jumbotron1
 					.SendToQTGateIMAPInformationTitle( data-bind = " css: { 'AccordionBox-shadow-delete title': QTGateConnecting()}, visible: !QTGateConnecting()")
 						p( data-bind = " html: infoDefine [ languageIndex() ].imapInformation.imapAccountConform" style=" color: rgba(255,0,0,.5)")
 						.ui.buttons
-							button.ui.button( data-bind=" text: infoDefine [ languageIndex() ].home_index_view.cancel, click: function() { $('.SendToQTGateIMAPInformation').transition('slide down')}")
+							button.ui.button( data-bind=" text: infoDefine [ languageIndex() ].home_index_view.cancel, click: () => { $('.SendToQTGateIMAPInformation').transition('slide down')}")
 							.or
 							button.ui.button.positive( data-bind = " text: infoDefine [ languageIndex() ].imapInformation.agree, click: connectQTGate ")
-			.content( data-bind = " visible: QTGateConnectRegionActive () && MenuItems()[3]" style = "margin-top: 3em;")
+			.content( data-bind = " visible: MenuItems()[3] && !ConnectGatewayShow()" style = "margin-top: 3em;")
 				h4( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.title " style="color: #a333c8;")
 				.content( data-bind = " visible: QTGateRegionInfo (), css: { active: QTGateRegionInfo ()} ")
 					.connectImformation
@@ -459,120 +532,183 @@ block jumbotron1
 						#connectImformationProcess.olive.ui.tiny.progress(style = " margin-top: 10px; ")
 							.bar
 				.ui.cards(data-bind = " visible: !QTGateRegionInfo(),foreach: QTGateRegions " )
-					.ui.card( data-bind = "attr: { style: $root.selectedQTGateRegion() === $index() ? 'width:100%;' : ''}, css: { 'raised link': available() && $root.selectedQTGateRegion() < 0, 'selected': $root.selectedQTGateRegion() === $index(), 'unavailable': ! available() }, visible: $root.selectedQTGateRegion() < 0 || $root.selectedQTGateRegion() === $index(), click: function () { if ( !available()){ return }; $root.QTGateRegionCardClick ( $index()) }")
+					.ui.card( data-bind = " css: { 'raised link': available(), 'unavailable': ! available() }, click: () => { if ( !available()){ return }; $root.QTGateRegionCardClick ( $index()) }")
 						.content
 							i( data-bind = " attr: { class: 'right floated flag ' + icon }")
 							.header.QTGateGatewayCardHeader( data-bind = " text: content[ $root.languageIndex() ], css: { active: available() } " )
 							.meta( data-bind = " text: meta [ $root.languageIndex() ] ")
 							.description
 								span( style = " color: mediumseagreen!important;" data-bind = "visible: available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.available")
-								
 								span( style = " color: palevioletred!important;" data-bind = "visible: !available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.unavailable" )
-								span( data-bind = "visible: canVoe() && ! selected() " style = " color: purple!important; font-size: small!important; margin-left: 10px!important;" ) VoE
-								span( data-bind = "visible: canVoH() && ! selected() " style = " color:rebeccapurple!important; font-size: small!important; margin-left: 10px!important;" ) VoH	
-								.ui.negative.message( data-bind=" visible: error() > -1, text: error() > -1 ?  $root.infoDefine [ $root.languageIndex() ].QTGateGateway.error[ error() ]: ''")
-								.ui.tiny.progress.purple.regionConnectProcessBar( data-bind = "visible: showRegionConnectProcessBar()")
-									.bar
-										.progress
-								.connectedArea( data-bind="visible: showConnectedArea()")
-									.ui.divider
-									p( data-bind=" text: infoDefine [ $root.languageIndex() ].QTGateGateway.userType[$root.QTTransferData().productionPackage === 'free' ? 0 : 1]")
-									.ui.grid
-										.three.wide.column
-											span( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateGateway.todaysDatatransfer " )
-										.thirteen.wide.column
-											.userDetail.ui.progress.success( data-bind="attr: { 'data-total': $root.QTTransferData().transferDayLimit / ( 1024 * 1024 ), 'data-value':( $root.QTTransferData().transferDayLimit - $root.QTTransferData().usedDayTransfer) /( 1024 * 1024 )}")
-												.bar
-													.progress
-												.label
-													span( data-bind="text: infoDefine [ $root.languageIndex() ].QTGateGateway.datatransferToday ")
-													span( data-bind=" text: $root.QTTransferData().transferDayLimit / ( 1024 * 1024 ) + ' Mbyte'")
-										.three.wide.column
-											span( data-bind = "text: infoDefine [ $root.languageIndex() ].QTGateGateway.monthDatatransfer " )
-										.thirteen.wide.column
-											.userDetail.ui.progress.success( data-bind = "attr: { 'data-total': $root.QTTransferData().transferMonthly / ( 1024 * 1024 ), 'data-value':( $root.QTTransferData().transferMonthly - $root.QTTransferData().usedMonthlyTransfer)/( 1024 * 1024 )}")
-												.bar
-													.progress
-												.label
-													span( data-bind=" text: infoDefine [ $root.languageIndex() ].QTGateGateway.datatransferMonth ")
-													span( data-bind=" text: $root.QTTransferData().transferMonthly / ( 1024 * 1024 ) + ' Mbyte'")
-									
+								span( data-bind = "visible: canVoe() && ! selected() " style = " color: purple!important; font-size: small!important; margin-left: 10px!important;" ) @OPN
+								span( data-bind = "visible: canVoH() && ! selected() " style = " color:rebeccapurple!important; font-size: small!important; margin-left: 10px!important;" ) iOPN
 
-						.extra.content( data-bind = "visible: showExtraContent()")
-							.ui.form( style = "margin-top: 0px!important;" data-bind = " visible: selected(), css:{ two: canVoe() && canVoH(), one: !canVoe() || !canVoH()} ")
-								.inline.fields
-									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.setupCardTitle " style="color:rgba(0,0,0,.8);")
-									.field.popupField( data-position="bottom left" data-bind = "attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[1]}, click: function(){ $root.QTGateConnect1('1'); error ( -1 )}" )
-										.ui.radio.checkbox
-											input( type = "radio" name="rrr" checked style="color:rgba(0,0,0,.7);" )
-											label( data-bind = " text: $root.QTGateRegionsSetup()[1].title" style="color:rgba(0,0,0,.7);" )
-									.field.popupField( data-position="bottom left" data-bind = "attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[0]}, click:function(){ $root.QTGateConnect1('2'); error ( -1 )}")
-										.ui.radio.checkbox
-											input( type = "radio" name="rrr" style="color:rgba(0,0,0,.8);" )
-											label( data-bind = " text: $root.QTGateRegionsSetup()[0].title" style="color:rgba(0,0,0,.7);" )
-									.field
-										.ui.checkbox
-											input( type="checkbox" tabindex="0" class="hidden" checked readonly style="color:rgba(0,0,0,.7);" )
-											label.popupField( data-bind = " attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[2]}, text: $root.infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDomain " data-position="top left" style="color: rgba(100,0,0,.4)!important;")
-								.inline.fields
-									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.dataTransfer " style="color:rgba(0,0,0,.8);" )
-									.field.popupField( data-position="bottom left" data-bind =" attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[3]}, click: function(){ $root.QTGateConnect2(false); error ( -1 ) }")
-										.ui.radio.checkbox
-											input( type = "radio" name="dataTransfer" checked class="hidden" style="color:rgba(0,0,0,.7);" )
-											label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.dataTransfer_datail[0]" style="color:rgba(0,0,0,.7);" )
-									.field.popupField( data-position="bottom left" data-bind =" attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[4]}, click: function(){ $root.QTGateConnect2(true); error ( -1 ) }")
-										.ui.radio.checkbox
-											input( type = "radio" name="dataTransfer" class="hidden" style="color:rgba(0,0,0,.7);" )
-											label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.dataTransfer_datail[1]" style="color:rgba(0,0,0,.7);" )
-								//-.inline.fields
-									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache " )
-									.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (6); $root.QTGateCacheUse ( false) }")
-										.ui.radio.checkbox
-											input( type = "radio" name="dataCache" checked="checked" class="hidden" )
-											label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[1]" )
-									.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (5);$root.QTGateCacheUse ( true) }")
-										.ui.radio.checkbox
-											input( type = "radio" name="dataCache" class="hidden" )
-											label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[0]" )
-									.field( data-bind =" visible: $root.QTGateCacheUse(), click: function(){ $root.QTGateConnect_SelectTech (7) } ")
-										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceholder " )
-										select.ui.compact.selection.dropdown( data-bind = "options: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceDate, optionsText: 'name', optionsValue: 'id' " )
-									.field( data-bind =" visible: $root.QTGateCacheUse()" )
-										.ui.primary.basic.button( data-bind = "visible: !$root.QTGate_showDeleteCacheButton(), click: function() { $root.QTGate_showDeleteCacheButton(true)},text: infoDefine [ $root.languageIndex() ].QTGateRegion.clearCache ")
-										.ui.buttons( data-bind = "visible: $root.QTGate_showDeleteCacheButton()")
-											button.ui.button( data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.cancel, click: function() { $root.QTGate_showDeleteCacheButton(false) } ")
-											.or
-											button.ui.positive.button( data-bind = " text: infoDefine [ $root.languageIndex() ].Home_keyPairInfo_view.delete")
-								
-								.inline.fields.popupField( data-position="right center" data-bind ="attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[8]}")
-									//-.field
-										p( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.GlobalIp " )
-										p( data-bind = " text: $root.config().serverGlobalIpAddress")
-									.field
-										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.localPort " )
-										.ui.input
-											input( data-bind = "value : $root.QTGateLocalProxyPort, attr : { 'data-content' : $root.localProxyPortError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': $root.localProxyPortError()} " style="color:rgba(0,0,0,.7);" )
-									//-.field
-										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.localPath " )
-										i.input
-											input( data-bind = "value : $root.QTGateLocalProxyPort, attr : { 'data-content' : $root.localProxyPortError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': $root.localProxyPortError()} ")
-								//-.inline.fields( data-bind ="click: function(){ $root.QTGateConnect_SelectTech (9) } ")
-									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.outDoormode " )
-									.ui.input
-									
-								.field
-									.ui.segment( data-bind = "visible: $root.QTGateConnect1()==='1' && error() === -1 " )
-										p( style="color: red;" data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.GlobalIpInfo " )
-									.ui.two.buttons
-										.ui.basic.red.button( data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.cancel, click: function() { $root.selectedQTGateRegionCancel ($index()); error(-1)}, clickBubble: false" )
-										.ui.basic.green.button( data-bind = "text: infoDefine [ $root.languageIndex() ].qtGateView.title, click: function() { $root.QTGateGatewayConnectRequest( $data, $root )}" )
 			//-
+			ConnectGateway.content( data-bind="visible: ConnectGatewayShow() && MenuItems()[3] && selectedQTGateRegion() ")
+				.ui.card( style = "width:100%;")
+					.content
+						i( data-bind = " attr: { class: 'right floated flag ' + selectedQTGateRegion().icon }")
+						.header.active.QTGateGatewayCardHeader( data-bind = " text: selectedQTGateRegion().content[ languageIndex() ]" )
+						.meta( data-bind = " text: selectedQTGateRegion().meta [ languageIndex() ] ")
+						.description
+							span( style = " color: mediumseagreen!important;" data-bind = "visible: selectedQTGateRegion().available(), text:  infoDefine [ languageIndex() ].QTGateRegion.available ")
+							
+							span( style = " color: palevioletred!important;" data-bind = "visible: !selectedQTGateRegion().available(), text:  infoDefine [ languageIndex() ].QTGateRegion.unavailable" )
+							span( data-bind = "visible: selectedQTGateRegion().canVoe() " style = " color: purple!important; font-size: small!important; margin-left: 10px!important;" ) @OPN
+							span( data-bind = "visible: selectedQTGateRegion(),canVoH() " style = " color:rebeccapurple!important; font-size: small!important; margin-left: 10px!important;" ) iOPN
+							.ui.negative.message( data-bind=" visible: selectedQTGateRegion().error() > -1, text: selectedQTGateRegion().error() > -1 ?  infoDefine [ languageIndex() ].QTGateGateway.error[ selectedQTGateRegion().error() ]: ''")
+							.ui.tiny.progress.purple.regionConnectProcessBar( data-bind = "visible: selectedQTGateRegion().showRegionConnectProcessBar()")
+								.bar
+									.progress
+						.connectedArea( data-bind="visible: selectedQTGateRegion().showConnectedArea()")
+							.ui.divider
+							p
+								i.icon.spy.grey
+								span( data-bind = " text: infoDefine [ languageIndex() ].QTGateGateway.userType [ QTTransferData().productionPackage === 'free' ? 0 : 1]" style="font-size: small;" )
+								span( data-bind = " text: QTConnectData().connectType === 2 ? 'iOPN' : '@OPN'" style="margin: 10px;font-size: small;color:darkmagenta;")
+								i.small.icon.random.grey
+								//-span( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateGateway.gatewayInfo[0] " style="margin-left: 10px;" )
+								span( data-bind = " text: QTConnectData().gateWayIpAddress" style = "color: mediumseagreen !important;")
+								i.small.icon.usb.grey( data-bind = " visible: QTConnectData().connectType === 2 " style=" margin-left: 10px;")
+								//-span( data-bind = " visible: $root.QTConnectData().connectType === 2, text: infoDefine [ $root.languageIndex() ].QTGateGateway.gatewayInfo[1]" style="margin-left: 10px;" )
+								span( data-bind = " text: QTConnectData().gateWayPort" style = "color: mediumseagreen !important;" )
+							.ui.grid
+								//-.three.wide.column( style="padding-bottom: 0px!important;")
+									span( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateGateway.todaysDatatransfer " )
+								.sixteen.wide.column( style="padding-bottom: 0px!important;")
+									.userDetail.ui.tiny.progress.success( data-bind="attr: { 'data-total': QTTransferData().transferDayLimit / ( 1024 * 1024 ), 'data-value':( QTTransferData().transferDayLimit - $root.QTTransferData().usedDayTransfer) /( 1024 * 1024 )}")
+										.bar
+											.progress
+										.label(style="margin-top: -3px;")
+											span( data-bind="text: infoDefine [ languageIndex() ].QTGateGateway.datatransferToday " style = "font-size: smaller;font-weight: lighter;")
+											span( data-bind=" text: QTTransferData().transferDayLimit / ( 1024 * 1024 ) + ' Mbyte'" style = "font-size: smaller;font-weight: lighter;")
+								//-.three.wide.column( style="padding-top: 0px!important;")
+									span( data-bind = "text: infoDefine [ $root.languageIndex() ].QTGateGateway.monthDatatransfer " )
+								.sixteen.wide.column( style="padding-top: 0px!important;")
+									.userDetail.ui.tiny.progress.success( data-bind = "attr: { 'data-total': QTTransferData().transferMonthly / ( 1024 * 1024 ), 'data-value':( QTTransferData().transferMonthly - $root.QTTransferData().usedMonthlyTransfer)/( 1024 * 1024 )}")
+										.bar
+											.progress
+										.label(style="margin-top: -3px;")
+											span( data-bind=" text: infoDefine [ languageIndex() ].QTGateGateway.datatransferMonth " style = "font-size: smaller;font-weight: lighter;")
+											span( data-bind=" text: QTTransferData().transferMonthly / ( 1024 * 1024 ) + ' Mbyte'" style = "font-size: smaller;font-weight: lighter;")
+							.ui.divider
+							.useInfo
+								.ui.grid
+									.sixteen.wide.column( style="padding-top: 5px!important;padding-bottom: 0px!important;")
+										span( data-bind="text: infoDefine[ languageIndex() ].useInfoMacOS.title" style ="color: darkmagenta;font-size: small;")
+									.sixteen.wide.column( style="padding-top: 0px!important;padding-bottom: 0px!important;font-size: small;")
+										span( data-bind="text: infoDefine[ languageIndex() ].useInfoMacOS.proxyServerIp" )
+										span( data-bind="text: QTConnectData().localServerIp + ','" style="color: darkcyan;")
+										span( data-bind="text: infoDefine[ languageIndex() ].useInfoMacOS.proxyServerPort" style="padding-left: 10px;")
+										span( data-bind="text: QTConnectData().localServerPort + ','" style="color: darkcyan;")
+										span( data-bind="text: infoDefine[ languageIndex() ].useInfoMacOS.proxyServerPassword" style="padding-left: 10px;")
+									.one.wide.column
+										a( href="#" data-bind = " click: () => { showUserInfoMacOS ( '#androidUseInfo', $root )}")
+											i.large.icon.android
+									.one.wide.column
+										a( href="#" data-bind = " click: () => { showUserInfoMacOS ( '#macOsUseInfo', $root )}")
+											i.large.icon.apple
+									.one.wide.column
+										a( href="#" data-bind = " click: () => { showUserInfoMacOS ( '#WindowsUseInfo', $root )}")
+											i.large.icon.windows
+									.one.wide.column
+										a( href="#" data-bind = " click: () => { showUserInfoMacOS ( '#firefoxUseInfo', $root )}")
+											i.large.icon.firefox
+									.one.wide.column
+										a( href="#" data-bind = " click: () => { showUserInfoMacOS ( '#iOSUseInfo', $root )}")
+											i.large.icons( style="top: -2px;")
+												i.large.icon.mobile
+												i.tiny.icon.apple( style="left: 6px;" )
+									.eleven.wide.column
+										button.ui.red.basic.button( data-bind=" click: disconnectClick, " style="float: right;")
+											span( data-bind="text: disconnecting() ? infoDefine [ languageIndex() ].QTGateGateway.disconnecting: infoDefine [ languageIndex() ].QTGateGateway.stopGatewayButton")
+											.ui.centered.small.inline.loader( data-bind=" css: { active: disconnecting()}" style="top: -20px;height: 0px;")
+					.extra.content( data-bind = " visible: selectedQTGateRegion().showExtraContent ()")
+						.ui.form( style = "margin-top: 0px!important;" data-bind = " css:{ two: selectedQTGateRegion().canVoe() && selectedQTGateRegion().canVoH(), one: !selectedQTGateRegion().canVoe() || !selectedQTGateRegion().canVoH()} ")
+							.inline.fields
+								label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.setupCardTitle " style="color:rgba(0,0,0,.8);")
+								.field( data-position = "bottom left" )
+									.ui.radio.checkbox( data-bind ="click: ()=>{QTGateConnect1('1')}")
+										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.7);" value="1" data-bind="checked: QTGateConnect1 ")
+										label( data-bind = " text: QTGateRegionsSetup()[1].title" style="color:rgba(0,0,0,.7);")
+									a( href="#" )
+										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[1]}" style="margin-left: -10px;color:yellowgreen;")
+								.field( data-position="bottom left")
+									.ui.radio.checkbox( data-bind="click: ()=>{QTGateConnect1('2')}")
+										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.8);" value="2" data-bind="checked: QTGateConnect1, attr: {'dataCheck': QTGateConnect1() } ")
+										label( data-bind = " text: QTGateRegionsSetup()[0].title" style="color:rgba(0,0,0,.7);")
+									a( href="#" )
+										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[0]}" style="margin-left: -10px;color:yellowgreen;")
+								.field
+									.ui.checkbox
+										input( type="checkbox" tabindex="0" class="hidden" checked readonly style="color:rgba(0,0,0,.7);" )
+										label.popupField( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.proxyDomain " data-position="top left" style="color: rgba(100,0,0,.4)!important;")
+									a( href="#" )
+										i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[2]}" style="margin-left: -10px;color:yellowgreen;")
+							.inline.fields
+								label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.dataTransfer " style="color:rgba(0,0,0,.8);" )
+								.field( data-position="bottom left" data-bind ="click: () => { QTGateConnect2(false); selectedQTGateRegion().error ( -1 ) }")
+									.ui.radio.checkbox
+										input( type = "radio" name="dataTransfer" checked class="hidden" style="color:rgba(0,0,0,.7);" )
+										label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.dataTransfer_datail[0]" style="color:rgba(0,0,0,.7);" )
+									a( href="#" )
+										i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[3]}" style="margin-left: -10px;color:yellowgreen;")
+								.field.popupField( data-position="bottom left" data-bind =" click: () => { QTGateConnect2(true); selectedQTGateRegion().error ( -1 ) }")
+									.ui.radio.checkbox
+										input( type = "radio" name="dataTransfer" class="hidden" style="color:rgba(0,0,0,.7);" )
+										label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.dataTransfer_datail[1]" style="color:rgba(0,0,0,.7);" )
+									a( href="#" )
+										i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[4]}" style="margin-left: -10px;color:yellowgreen;")
+							//-.inline.fields
+								label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache " )
+								.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (6); $root.QTGateCacheUse ( false) }")
+									.ui.radio.checkbox
+										input( type = "radio" name="dataCache" checked="checked" class="hidden" )
+										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[1]" )
+								.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (5);$root.QTGateCacheUse ( true) }")
+									.ui.radio.checkbox
+										input( type = "radio" name="dataCache" class="hidden" )
+										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[0]" )
+								.field( data-bind =" visible: $root.QTGateCacheUse(), click: function(){ $root.QTGateConnect_SelectTech (7) } ")
+									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceholder " )
+									select.ui.compact.selection.dropdown( data-bind = "options: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceDate, optionsText: 'name', optionsValue: 'id' " )
+								.field( data-bind =" visible: $root.QTGateCacheUse()" )
+									.ui.primary.basic.button( data-bind = "visible: !$root.QTGate_showDeleteCacheButton(), click: function() { $root.QTGate_showDeleteCacheButton(true)},text: infoDefine [ $root.languageIndex() ].QTGateRegion.clearCache ")
+									.ui.buttons( data-bind = "visible: $root.QTGate_showDeleteCacheButton()")
+										button.ui.button( data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.cancel, click: function() { $root.QTGate_showDeleteCacheButton(false) } ")
+										.or
+										button.ui.positive.button( data-bind = " text: infoDefine [ $root.languageIndex() ].Home_keyPairInfo_view.delete")
+							
+							.inline.fields
+								//-.field
+									p( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.GlobalIp " )
+									p( data-bind = " text: $root.config().serverGlobalIpAddress")
+								.field( data-bind=" css: { error: localProxyPortError () }")
+									label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.localPort " )
+									.ui.input()
+										input.popupField( data-bind = "value : $root.QTGateLocalProxyPort, css: { 'activating element': localProxyPortError()}, attr : { 'data-content' : localProxyPortError() ? infoDefine[ languageIndex() ].imapInformation.proxyPortError: null }" style="color:rgba(0,0,0,.7);" )
+									a(href="#")
+										i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[8]}" style="color:yellowgreen;")
+								//-.field
+									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.localPath " )
+									i.input
+										input( data-bind = "value : $root.QTGateLocalProxyPort, attr : { 'data-content' : $root.localProxyPortError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': $root.localProxyPortError()} ")
+							//-.inline.fields( data-bind ="click: function(){ $root.QTGateConnect_SelectTech (9) } ")
+								label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.outDoormode " )
+								.ui.input
+								
+							.field
+								.ui.segment( data-bind = "visible: QTGateConnect1()==='1'" )
+									p( style="color: red;" data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.GlobalIpInfo " )
+								.ui.two.buttons
+									.ui.basic.red.button( data-bind = " text: infoDefine [ languageIndex() ].home_index_view.cancel, click: () => { selectedQTGateRegionCancel (); selectedQTGateRegion().error(-1)}, clickBubble: false" )
+									.ui.basic.green.button( data-bind = "text: infoDefine [ languageIndex() ].qtGateView.title, click: QTGateGatewayConnectRequest " )
 			.content( data-bind="visible: MenuItems()[4]")
-				button.ui.primary.basic.button( data-bind="click: doingiOpn ") iOPN
 			.content( data-bind="visible: MenuItems()[5]")
 			.content( data-bind="visible: MenuItems()[7]")
+			
 				.ui.red.segment( style=" margin: 5em;")
-					p( data-bind="text: infoDefine[languageIndex()].home_index_view.newVersion ")
+					p( data-bind="text: infoDefine[languageIndex()].home_index_view.newVersion " )
 					button.positive.ui.button( data-bind="text: infoDefine[languageIndex()].home_index_view.clickInstall, click: newVersionInstall ")
 		
 

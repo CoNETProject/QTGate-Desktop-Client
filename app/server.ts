@@ -43,6 +43,24 @@ const saveLog = ( log: string ) => {
 		flag = 'a'
 	})
 }
+const getLocalInterface = () => {
+	const ifaces = Os.networkInterfaces()
+	const ret = []
+	Object.keys ( ifaces ).forEach ( n => {
+		let alias = 0
+		ifaces[n].forEach ( iface => {
+			
+			if ('IPv4' !== iface.family || iface.internal !== false ) {
+				// skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+				return
+			}
+			ret.push ( iface.address )
+			alias ++
+			
+		})
+	})
+	return ret
+}
 
 const findPort = ( port: number, CallBack ) => {
     return freePort.test ( port ).then ( isOpen => {
@@ -136,7 +154,9 @@ const emitConfig = ( config: install_config, passwordOK: boolean ) => {
 		QTGateConnectImapUuid: config.QTGateConnectImapUuid,
 		serverGlobalIpAddress: config.serverGlobalIpAddress,
 		serverPort: config.serverPort,
-		connectedQTGateServer: config.connectedQTGateServer
+		connectedQTGateServer: config.connectedQTGateServer,
+		localIpAddress: getLocalInterface(),
+		lastConnectType: config.lastConnectType
 	}
 	return ret
 }
@@ -244,7 +264,10 @@ const InitConfig = ( first: boolean, version, port ) => {
 		QTGateConnectImapUuid: null,
 		serverGlobalIpAddress: null,
 		serverPort: port,
-		connectedQTGateServer: false
+		connectedQTGateServer: false,
+		localIpAddress: getLocalInterface (),
+		lastConnectType: 1
+		
 	}
 	return ret
 }
@@ -367,6 +390,7 @@ export class localServer {
 	private clientIpAddress = null
 	private proxyServerWindow = null
 	private connectCommand: IConnectCommand = null
+	private proxyServer: RendererProcess = null
 	public saveConfig () {
 		Fs.writeFile ( configPath, JSON.stringify ( this.config ) , { encoding: 'utf8' }, err => {
 			if ( err )
@@ -646,11 +670,32 @@ export class localServer {
 
 		})
 
+		socket.on ( 'checkPort', ( portNum, CallBack ) => {
+			const num = parseInt ( portNum.toString())
+			if (! /^[0-9]*$/.test(portNum.toString()) || !num || num < 1000 || num > 65535 )
+				return CallBack ( true )
+			return findPort ( portNum, ( err, kk ) => {
+				saveLog( `check port [${ typeof portNum }] got back kk [${ typeof kk }]`)
+				if ( kk !== portNum ) {
+					return CallBack ( true )
+				}
+				return CallBack ( false )
+			})
+		})
+
 		socket.on ( 'QTGateGatewayConnectRequest', ( cmd: IConnectCommand, CallBack ) => {
+			saveLog ('socket.on QTGateGatewayConnectRequest')
+			//		already have proxy
+			if ( this.proxyServer ) {
+				return 
+			}
+
+			
 			return myIpServer (( err, ipAddress: string ) => {
 				if ( err ) {
 					return saveLog ( `myIpServer return error: [${ err.message }]`)
 				}
+
 				if ( cmd.connectType === 2 ) {
 					if ( ! Net.isIPv4 ( ipAddress )) {
 						ipAddress = ipAddress.split ('\n')[0]
@@ -668,31 +713,52 @@ export class localServer {
 					
 					requestSerial: Crypto1.randomBytes(8).toString('hex')
 				}
+
 				
 				return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
 					const arg: IConnectCommand = res.Args[0]
-					const connect = res.Args [1]
-					saveLog ( JSON.stringify ( arg ))
-					saveLog (`Have connect\n[${ connect }]`)
+					
 					//		no error
 					if ( arg.error < 0 ) {
 						//		@QTGate connect
 						if ( arg.connectType === 1 ) {
-	
+							return
 						}
+						//
 						//		iQTGate connect
+
+						arg.localServerIp = this.config.localIpAddress[0]
+						this.connectCommand = arg
+						saveLog ( `this.proxyServer = new RendererProcess type = [${ arg.connectType }] data = [${ JSON.stringify( arg )}]` )
+		
+						this.proxyServer = new RendererProcess ( 'iOpn', arg, false, () => {
+							saveLog (`proxyServerWindow on exit!`)
+						})
 						
 					}
 					return CallBack ( arg )
-			
+					
 				})
 				
+				
+				
+				
 			})
+			
 			
 
 		})
 
-		socket.on ( 'stopGatwayConnect', () => {
+		socket.on ( 'disconnectClick', CallBack => {
+
+			setTimeout (() => {
+				saveLog('this.proxyServer.close().')
+				this.proxyServer.cancel ()
+				this.proxyServer = null
+				this.connectCommand = null
+				saveLog('disconnectClick finished.')
+				return CallBack ()
+			}, 1000 )
 			this.stopGetwayConnect ( arg => {
 				saveLog ( `stopGatwayConnect callback Args = [${ JSON.stringify ( arg ) }]`)
 			})
@@ -802,6 +868,8 @@ export class localServer {
 				return callback ()
 			})
 
+			
+
 			socket.on ( 'NewKeyPair', ( preData: INewKeyPair ) => {
 
 				//		already have key pair
@@ -888,8 +956,11 @@ export class localServer {
 						return callBack ( false )
 					callBack ( true, this.imapDataPool )
 					this.listenAfterPassword ( socket )
-					
-					return this.emitQTGateToClient( socket, null )
+					saveLog (`this.connectCommand && this.httpServer [${ this.connectCommand && this.httpServer }]`)
+					if ( this.connectCommand && this.httpServer ) {
+						return socket.emit ( 'QTGateGatewayConnectRequest', this.connectCommand )
+					}
+					return this.emitQTGateToClient ( socket, null )
 				}
 
 				return Async.waterfall ([
@@ -932,10 +1003,6 @@ export class localServer {
 				}
 			})
 
-
-			socket.on ('iOpn', () => {
-				this.iOpnStart ()
-			})
 			/*
 			socket.on ( 'checkUpdateBack', ( jsonData: any ) => {
 				this.config.newVersionCheckFault = true
@@ -991,6 +1058,7 @@ export class localServer {
 				this.config = config
 				this.config.version = this.version
 				this.config.serverPort = this.port
+				this.config
 				if ( this.config.keypair && this.config.keypair.publicKeyID )
 					return Async.waterfall ([
 						next => {
@@ -1099,7 +1167,7 @@ export class localServer {
             this.socketConnectListen ( socket )
         })
 
-        this.httpServer.listen ( port, '127.0.0.1' )
+        this.httpServer.listen ( port )
 
 		this.checkConfig ()
 		saveLog( `Version: ${ process.version }` )
@@ -1443,7 +1511,6 @@ class ImapConnect extends Imap.imapPeer {
 	}
 
 	private commandCallBackPool: Map <string, ( err?: Error, response?: QTGateAPIRequestCommand ) => void > = new Map ()
-
 
 
 	private clearServerListenFolder () {

@@ -47,16 +47,16 @@
   },
   "homepage": "https://www.qtgate.com",
   "devDependencies": {
-    "electron": "~1.7.8",
-    "electron-builder-squirrel-windows": "^19.30.3"
+    "electron": "^1.7.8",
+    "electron-builder-squirrel-windows": "^19.34.0"
   },
   "dependencies": {
     "async": "^2.5.0",
     "cookie-parser": "^1.4.3",
-    "express": "^4.15.5",
+    "express": "^4.16.1",
     "jquery": "^3.2.1",
     "node-uuid": "^1.4.8",
-    "nodemailer": "^4.1.1",
+    "nodemailer": "^4.1.2",
     "openpgp": "^2.5.11",
     "portastic": "^1.0.1",
     "pug": "^2.0.0-rc.4",

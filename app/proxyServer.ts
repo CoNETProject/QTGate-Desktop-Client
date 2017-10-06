@@ -24,6 +24,10 @@ const { remote } = require ( "electron" )
 const whiteIpFile = 'whiteIpList.json'
 Http.globalAgent.maxSockets = 1024
 const ipConnectResetTime = 1000 * 60 * 5
+/**
+ * 			IPv6 support!
+ */
+const hostGlobalIpV6 = false
 
 const managerPagePort = 8001
 
@@ -213,7 +217,7 @@ const tryConnectHost = ( hostname: string, hostIp: domainData, port: number, dat
 	Async.someSeries ( hostIp.dns, ( n, next ) => {
 		console.log ( n )
 
-		if ( n.family === 6 && ! this.hostGlobalIpV6 ) {
+		if ( n.family === 6 && ! hostGlobalIpV6 ) {
 			return next ( null, false )
 		}
 			
@@ -511,17 +515,12 @@ const saveLog = ( log: string ) => {
 	})
 }
 
-/*
+
 remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
-	
+	console.log ( data )
 	const server = new proxyServer ([], new Map(), data.localServerPort, 'pac', data.gateWayIpAddress, data.gateWayPort, data.imapData.randomPassword,
 		 5000, 50000, data.AllDataToGateway, [] )
-		 remote.getCurrentWindow().on ('', ( data: IConnectCommand) => {
-			 
-		 })
 	
 })
 
 remote.getCurrentWindow().emit ( 'first' )
-*/
-new proxyServer ([], new Map(), 3001, 'pac', '159.203.15.123', 80, 'c04b04e9720fadcfd83f03a0156b16', 5000, 50000, true, [])

@@ -15,16 +15,20 @@ import { join } from 'path'
 import { homedir }from 'os'
 
 const MAX_INT = 9007199254740992
-const debug = false
+const debug = true
 const QTGateFolder = join ( homedir(), '.QTGate' )
 const ErrorLogFile = join ( QTGateFolder, 'imap.log' )
+let flag = 'w'
 const saveLog = ( log: string ) => {
     const Fs = require ('fs')
 	const data = `${ new Date().toUTCString () }: ${ log }\r\n`
-	Fs.appendFile ( ErrorLogFile, data, err => {})
+	Fs.appendFile ( ErrorLogFile, data, { flag: flag }, err => {
+		flag = 'a'
+	})
 }
 const debugOut = ( text: string, isIn: boolean ) => {
-    console.log ( `【${ new Date().toISOString()}】${ isIn ? '<=' : '=>'} 【${ text }】`)
+    const log = `【${ new Date().toISOString()}】${ isIn ? '<=' : '=>'} 【${ text }】`
+    saveLog ( log )
 }
 
 interface qtGateImapwriteAppendPool {
@@ -953,12 +957,12 @@ export class qtGateImapRead extends qtGateImap {
 
 export const getMailAttached = ( email: Buffer ) => {
     const attachmentStart = email.indexOf('\r\n\r\n')
-    if (attachmentStart < 0) {
+    if ( attachmentStart < 0 ) {
         console.log(`getMailAttached error! can't faind mail attahced start!`)
         return null
     }
-    const attachment = email.slice(attachmentStart + 4)
-    return Buffer.from(attachment.toString(), 'base64')
+    const attachment = email.slice( attachmentStart + 4 )
+    return Buffer.from ( attachment.toString(), 'base64' )
 }
 
 export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {

@@ -73,12 +73,7 @@ const handleSquirrelEvent = ( CallBack ) => {
         return CallBack ( true )
     }
 }
-
-
     // squirrel event handled and app will exit in 1000ms, so don't do anything else
-    
-
-
 const version = app.getVersion()
 
 const debug = false

@@ -229,9 +229,9 @@ const initialize = () => {
         if ((isSingleInstanceCheck = makeSingleInstance()))
             app.exit();
         async_1.series([
-            next => checkFolder(QTGateFolder, next),
-            next => checkFolder(QTGateLatest, next),
-            next => checkFolder(QTGateTemp, next)
+                next => checkFolder(QTGateFolder, next),
+                next => checkFolder(QTGateLatest, next),
+                next => checkFolder(QTGateTemp, next)
         ], err => {
             if (!localServer1) {
                 findPort(() => {

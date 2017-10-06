@@ -379,14 +379,16 @@ const transfer: iTransferData = {
 
 const QTGateRegionsSetup: IQTGateRegionsSetup[] = [
     {
-        title: '@QTGate'
+        title: '@OPN'
     },
     {
-        title: 'iQTGate'
+        title: 'iOPN'
     }
 ]
+
 const infoDefine = [
 	{
+        
         QTGateInfo: {
             title:'QTGate功能简介',
             version:'本机QTGate版本：v',
@@ -394,7 +396,18 @@ const infoDefine = [
                 header: '隐身匿名自由上网',
                 color: '#a333c8',
                 icon: 'exchange',
-                detail: '世界首创的＠QTGate无IP互联网通讯技术，全程使用加密Email通讯，客户端和代理服务器彼此不用知道IP地址。iQTGate是本公司独创HTTP加密代理技术，能够隐藏变换您的IP地址高速通讯。二种通讯方式都能够让您隐身安全不被检出的上网，保护您的隐私，具有超强对抗网络监控,网络限制和网络阻断。'
+                detail: 'QTGate通过使用<a onclick="return linkClick (`https://zh.wikipedia.org/wiki/%E9%AB%98%E7%BA%A7%E5%8A%A0%E5%AF%86%E6%A0%87%E5%87%86`)" href="#" target="_blank">AES256-GCM</a>和<a onclick="return linkClick (`https://zh.wikipedia.org/wiki/PGP`)" href="#" target="_blank">OpenPGP</a>加密Email通讯，创造了OPN匿名网络通讯技术，QTGate公司首创的@OPN技术，它全程使用加密Email通讯，客户端和代理服务器彼此不用交换IP地址来实现高速通讯。iOPN通讯技术是利用普通HTTP协议下的混淆流量加密技术，能够隐藏变换您的IP地址高速通讯。二种通讯方式都能够让您，隐身和安全及不被检出的上网，保护您的隐私，具有超强对抗网络监控,网络限制和网络阻断。'
+            },
+            {
+                color: 'darkcyan',
+                icon: 'spy',
+                header: '阻断间谍软件向外送信功能(下一版本)',
+                detail: 'QTGate系统连接全球DNSBL联盟数据库，用户通过订阅QTGate系统黑名单列表，并使用QTGate客户端上网，让潜伏在您电子设备内的间谍软件，它每时每刻收集的信息，不能够被送信到其信息收集服务器，能够最大限的保障您的个人隐私。'
+            },{
+                color: '#6435c9',
+                icon: 'external share',
+                header:'本地VPN服务器(下一版本)',
+                detail:'QTGate用户在户外时可以通过连接自己家里的VPN，来使用QTGate客户端隐身安全上网。'
             },{
                 color: '#6435c9',
                 icon: 'cloud upload',
@@ -456,6 +469,10 @@ const infoDefine = [
                     header: '服务的责任',
                     detail: '在法律允许的范围内，QTGate及其供应商和分销商不承担利润损失、收入损失或数据、财务损失或间接、特殊、后果性、惩戒性或惩罚性损害赔偿责任。'
                 },{
+                    header: '法律规定的贸易禁止事项',
+                    detail: '当您按下同意按钮，表示您已经确认您不属于加拿大法律所规定的禁止贸易对象的列表之中。 '
+                },
+                {
                     header: '服务的商业使用',
                     detail: '如果您代表某家企业使用我们的服务，该企业必须接受本条款。对于因使用本服务或违反本条款而导致的或与之相关的任何索赔、起诉或诉讼，包括因索赔、损失、损害赔偿、起诉、判决、诉讼费和律师费而产生的任何责任或费用，该企业应对QTGate及其关联机构、管理人员、代理机构和员工进行赔偿并使之免受损害。'
                 }, {
@@ -514,7 +531,8 @@ const infoDefine = [
             imapResultTitle:'IMAP服务器QTGate通讯评分：',
             testSuccess: 'email服务器连接试验成功！',
             exitEdit: '退出编辑Email帐户',
-            deleteImap: '删除IMAP账户'
+            deleteImap: '删除IMAP账户',
+            proxyPortError: '端口号应该是从1000-65535之间的数字，或此端口号已被其他APP所占用。请尝试其他号码。'
 
         },
 
@@ -608,8 +626,8 @@ const infoDefine = [
             unavailable: '准备中',
             proxyDomain: '域名解释全程使用QTGate代理服务器端',
             setupCardTitle: '使用连接技术:',
-            dataTransfer: '数据通讯使用QTGate代理服务器端:',
-            dataTransfer_datail: ['全程使用代理服务器','当本地不能够到达时使用'],
+            dataTransfer: '数据通讯：',
+            dataTransfer_datail: ['全程使用代理服务器','当本地不能够到达目标主机时使用'],
             proxyDataCache: '浏览数据本地缓存:',
             proxyDataCache_detail: ['本地緩存','不緩存'],
             cacheDatePlaceholder: '缓存失效时间',
@@ -625,12 +643,133 @@ const infoDefine = [
                                      '当免费用户连续24小时内没有使用客户端，您的连接会被中断。付费用户情况下QTgate系统可保持持续联机一个月。'],
             cacheDatePlaceDate: [{ name:'1小时', id: 1 }, { name:'12小时', id: 12 },{ name:'1日', id: 24 }, { name:'15日', id: 360 }, { name:'1月', id: 720 }, { name:'6月', id: 4320 }, { name:'永远', id: -1 }],
             atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用强加密Email通讯，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私功能，强抗干扰和超強防火墙穿透能力。缺点是有延迟，网络通讯响应受您所使用的email服务供应商的服务器影响，不适合游戏视频会话等通讯。',
-                            'QTGate独创HTTP强加密代理技术，能够隐藏变换您的IP地址高速通讯，隐身和保护隐私，抗干扰和超強防火墙穿透能力。缺点是需要使用您的IP来直接连结代理服务器。如果您只是需要自由访问互联网，则推荐使用本技术。',
-                            '域名解释使用QTGate代理服务器端，可以防止域名服务器缓存污染，本选项不可修改。','互联网数据全程使用QTGate代理，可以匿名上网隐藏您的互联网形踪。','只有当本地网络不能够到达时才使用QTGate代理连结目标服务区，本选项可以节省您的QTGate流量。',
+                            'QTGate独创普通HTTP混淆流量加密通讯技术，能够隐藏变换您的IP地址高速通讯，隐身和保护隐私，抗干扰和超強防火墙穿透能力。缺点是需要使用您的IP来直接连结代理服务器。如果您只是需要自由访问互联网，则推荐使用本技术。',
+                            '域名解释使用QTGate代理服务器端，可以防止域名服务器缓存污染，本选项不可修改。','互联网数据全程使用QTGate代理，可以匿名上网隐藏您的互联网形踪。','只有当您的本地网络不能够到达您希望访问的目标时，才使用QTGate代理服务器代为连结目标主机，本选项可以节省您的QTGate流量。',
                             '通过本地缓存浏览纪录，当您再次访问目标服务器时可以增加访问速度，减少网络流量，缓存浏览纪录只针对非加密技术的HTTP浏览有效。QTGate使用强加密技术缓存浏览纪录，确保您的隐私不被泄漏。','不保存缓存信息。',
                             '设置缓存有效时间，您可以及时更新服务器数据,单位为小时。','本地Proxy服务器，其他手机电脑和IPad等可通过连结此端口来使用QTGate服务。请设定为3001至65535之间的数字。',
                             '通过设置PATH链接路径可以简单给您的Proxy服务器增加安全性，拒绝没有提供PATH的访问者使用您的Proxy服务器。']
             
+        },
+
+        useInfoMacOS: {
+            title:'您的其他电子设备，可通过设置本地Proxy服务器，来使用QTGate连接互联网',
+            title1:'MacOS 本地代理服务器设定',
+            proxyServerIp:'本地代理服务器地址：',
+            proxyServerPort: '本地代理服务器端口：',
+            proxyServerPassword: '本地代理服务器登陆用户名和密码：无需设定',
+            info:[{
+                title:'打开控制面板，点击网络',
+                titleImage:'/images/macOsControl.jpg',
+                detail: '',
+                image: '/images/userInfoMacos1.jpg'
+            },{
+                title:'选择网络【高级...】',
+                titleImage:'',
+                detail:'',
+                image: '/images/macosUserInfo2.jpg'
+            },{
+                title:'代理设定',
+                titleImage:'',
+                detail:'<p>1.选勾左边 Web代理(HTTP)，并在右边Web代理服务器按图示的蓝色数字填入。</p><p>2.选勾左边 安全Web代理(HTTPS)，并在右边安全Web代理服务器，按图示的蓝色数字填入，完成按【好】结束设定。</p>',
+                image: '/images/macosUserInfo3.jpg'
+            }]
+        },
+        useInfoAndroid: {
+            title1:'安卓设备本地代理服务器设定',
+            info:[{
+                title:'打开控制面板选择WiFi',
+                titleImage:'/images/androidSetup.jpg',
+                detail: '',
+                image: '/images/android1.jpg'
+            },{
+                title:'长按当前WiFi连接名称等待菜单出现，选择菜单的修改设定',
+                titleImage:'',
+                detail:'',
+                image: '/images/android2.jpg'
+            },{
+                title:'打开显示高级选项，在代理服务器设定(Proxy)中选择手动设置',
+                titleImage:'',
+                detail:'',
+                image: '/images/android3.jpg'
+            },{
+                title:'按下列画面中蓝色的数字填入代理服务器名称和端口号，关闭窗口以完成设置',
+                titleImage:'',
+                detail:'',
+                image: '/images/android4.jpg'
+            }]
+        },
+        firefoxUseInfo:{
+            title1:'火狐浏览器它单独设定代理服务，可以不影响系统而轻松使用代理上网',
+            info:[{
+                title:'打开火狐，点击右上角工具图标，选择设定',
+                titleImage:'/images/macOsControl.jpg',
+                detail: '<p><a href="https://www.mozilla.org/zh-CN/firefox/#/" target="_blank">下载Firefox</a></p>',
+                image: '/images/firefox1.jpg'
+            },{
+                title:'选择常规后，滚动画面至最下部，在网络代理处点击详细设定',
+                titleImage:'',
+                detail:'',
+                image: '/images/firefox2.jpg'
+            },{
+                title:'选择手动设置代理服务器，按图示蓝色数字填入HTTP代理服务器名称和端口号，选勾本设定适用所有协议，点击好完成设置',
+                titleImage:'',
+                detail:'',
+                image: '/images/firefox3.jpg'
+            }]
+        },
+        useInfoiOS: {
+            title1:'iOS设备本地代理服务器设定',
+            info:[{
+                title:'打开控制面板，点击Wi-Fi',
+                titleImage:'/images/macOsControl.jpg',
+                detail: '',
+                image: '/images/iOS1.jpg'
+            },{
+                title:'选择当前WiFi的圈i符号',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS2.jpg'
+            },{
+                title:'选择底部的设置代理服务器',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS3.jpg'
+            },{
+                title:'选择手动设置，在代理服务器名称和端口号处填入对应的蓝色数字，按保存完成设置',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS4.jpg'
+            }]
+        },
+        useInfoWindows: {
+            title1:'Windows 10 代理服务器设定',
+            info:[{
+                title:'关于Windows其他版本设定',
+                titleImage:'',
+                detail: '<p>Windows其他版本的代理服务器设定请参照<a href="#" onclick="return linkClick (`https://support.microsoft.com/ja-jp/help/135982/how-to-configure-internet-explorer-to-use-a-proxy-server`)">微软公司网站</a></p><p>请按以下参数设置本地代理服务器：</p>',
+                image: ''
+            },
+                {
+                title:'启动Internet Explorer',
+                titleImage:'/images/IE10_icon.png',
+                detail: '<p>点击右上角工具图标，滑动菜单至最下部选择【设定】</p>',
+                image: '/images/windowsUseInfo1.jpg'
+            },{
+                title:'滑动菜单至最下部选择高级设定',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo2.jpg'
+            },{
+                title:'再次滑动菜单选择打开代理服务器设定',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo3.jpg'
+            },{
+                title:'选择手动设置代理服务器，按图示蓝色数字填入代理服务器地址及代理服务器端口号，然后点击保存完成设定。',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo4.jpg'
+            }]
         },
 
         QTGateGateway: {
@@ -640,11 +779,15 @@ const infoDefine = [
                     '错误：您的账号已经无可使用流量，如果您需要继续使用QTGate代理服务器，请升级您的账户类型。如果是免费用户已经使用当天100M流量，请等待到明天继续使用，如您是免费用户已经用完当月1G流量，请等待到下月继续使用。',
                     '错误：数据错误，请退出并重新启动QTGate！'],
             connected:'已连接。',
-            userType:['用户类型：免费用户','用户类型：付费用户'],
+            userType:['免费用户','付费用户'],
             datatransferToday:'每日可使用流量限额：',
             datatransferMonth:'每月可使用流量限额：',
             todaysDatatransfer: '本日可使用流量',
-            monthDatatransfer: '本月可使用流量'
+            monthDatatransfer: '本月可使用流量',
+            gatewayInfo: ['代理服务器IP地址：','代理服务器连接端口：'],
+            userInfoButton: '使用指南',
+            stopGatewayButton:'切断连接',
+            disconnecting: '正在切断中'
         },
 
         topWindow: {
@@ -678,17 +821,148 @@ const infoDefine = [
                 color: '#a333c8',
                 icon: 'exchange',
                 header: '自由匿名なインターネットへ',
-                detail: '@QTGateはQTGate社の世界初のIP不要な通信技術です、暗号化したEmailメッセージを通じたゲットウェイに接続します、iQTGateはQTGate社オリジナルHTTPゲットウェイ暗号化高速通信技術です。どちらとも身を隠して誰も知らないうちにインターネットへ、プライバシー、ネットワーク監視とアクセスを制限・遮断にうまくすり抜けることができます。'
+                detail: '@OPNは本社の世界初のIP不要な通信技術です、<a onclick="return linkClick (`https://ja.wikipedia.org/wiki/Advanced_Encryption_Standard`)" href="#" target="_blank">AES256-GCM</a>と<a onclick="return linkClick (`https://ja.wikipedia.org/wiki/Pretty_Good_Privacy`)" href="#" target="_blank">OpenPGP</a>暗号化したEmailメッセージを通じたゲットウェイに接続します、iOPNは本社の独自のHTTPゲットウェイ暗号化高速通信技術です。どちらとも身を隠して誰も知らないうちにインターネットへ、プライバシー、ネットワーク監視とアクセスを制限・遮断にうまくすり抜けることができます。'
+            },
+            {
+                color: 'darkcyan',
+                icon: 'spy',
+                header: 'スパイソフトウェア送信を切断（次のバージョンにご提供予定）',
+                detail: 'QTGateシステムはグロバルDNSBLに加入し、スパイホストダータベースを更新しています。QTGateユーザはQTGateシステムをご利用してインターネットへアクセスした場合、あなたのデバイスに闇活動しているスパイソフト、収集したあなたの個人データの送信を切断することができます。'
+            },{
+                color: '#6435c9',
+                icon: 'external share',
+                header:'ローカルVPNサーバ（次のバージョンにご提供予定）',
+                detail:'QTGateユーザは自宅のマシンにVPN接続により、外にいても楽々OPNで隠れたネットワークへご利用できます。'
             },{
                 color: '#6435c9',
                 icon: 'cloud upload',
-                header:'ファイルを匿名プライバシーストレージとシェア（次のバージョンにご提供）',
+                header:'ファイルを匿名プライバシーストレージとシェア（次のバージョンにご提供予定）',
                 detail:'一つのファイルを暗号化してからスプリットし、多数のフリーメールアカンウトに保存します。無限かつ秘密プライバシーのファイルストレージ事ができます。QTGateユーザー間のファイルシェアも可能です。'
             },{
                 color: '#e03997',
                 icon: 'talk outline',
-                header: 'QTGateのIP不要な匿名プライバシーインスタントメッセージサービス（次のバージョンにご提供）',
+                header: 'IP不要な匿名プライバシーインスタントメッセージ（次のバージョンにご提供予定）',
                 detail:'QTGateユーザー間の無IPペアーツーペアープライバシーインスタントメッセージです。それは伝統的なインスタントメッセージより匿名とプライバシーが可能です。又グループをして複数なユーザーの間でのインスタントメッセージもご利用いただけます。文字をはじめ、写真やビデオ映像、あらゆるファイルの暗号化転送も可能です。'
+            }]
+        },
+        useInfoWindows: {
+            title1:'Windows10ロカールプロキシ設定',
+            info:[{
+                title:' その他Windowsバージョンの設定について',
+                titleImage:'',
+                detail: '<p>Windowsその他バージョンの設定は<a target="_blank" href="#" onclick="return linkClick (`https://support.microsoft.com/ja-jp/help/135982/how-to-configure-internet-explorer-to-use-a-proxy-server`)">Microsoft社のページ</a>をご参照してください。</p><p>設定する際使うデータは以下です：</p>',
+                image: ''
+            },
+                {
+                title:'Internet Explorerを開く',
+                titleImage:'/images/IE10_icon.png',
+                detail: '<p>右上部のツールボタンをクリックして、メニューの一番下にある設定を選択してください。</p>',
+                image: '/images/windowsUseInfo1.jpg'
+            },{
+                title:'メニューを一番下にスクロールして高級設定をクリック',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo2.jpg'
+            },{
+                title:'再びメニューを下にスクロールして、オプンプロキシ設定をクリック',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo3.jpg'
+            },{
+                title:'手動プロキシをオンにして、アドレスとポート番号は図の提示した、ブルー色番号と同じ物入れてください。保存をクリックと設定を完了します。',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo4.jpg'
+            }]
+        },
+        useInfoMacOS: {
+            title:'他のデバイスはローカルプロキシに設定による、QTGate利用してインターネットへアクセスができます。',
+            title1:'MacOS プロキシ設定',
+            proxyServerIp:'プロキシサーバアドレス：',
+            proxyServerPort: 'サーバポート：',
+            proxyServerPassword: '登録ユーザ名とパスワード：なし',
+            info:[{
+                title:'コントロールパネルを開いて、ネットワークをクリックしてください。',
+                titleImage:'/images/macOsControl.jpg',
+                detail:'',
+                image: '/images/userInfoMacos1.jpg'
+            },{
+                title:'詳細...をクリックしてください ',
+                titleImage:'',
+                detail:'',
+                image: '/images/macosUserInfo2.jpg'
+            },{
+                title:'プロキシ設定をします',
+                titleImage:'',
+                detail:'<p>1）Webプロキシ(HTTP)をチェックして、Webプロキシサーバに図に書いているブルー色番号を入力してください。</p><p>2）Webプロキシ(HTTPS)をチェックして、Webプロキシサーバに同じく図に書いているブルー色番号を入力してください、完成したらOKボタンを押して完了です。</p>',
+                image: '/images/macosUserInfo3.jpg'
+            }]
+        },
+        firefoxUseInfo:{
+            title1:'Firefoxブラウザーは単独プロキシ設定で、システムに影響なしでプロキシをご利用してインタネットアクセスができます。',
+            info:[{
+                title:'Firefoxをオプンしてツールアイコンをクリックして、設置を選んでください。',
+                titleImage:'/images/macOsControl.jpg',
+                detail: '<p><a href="https://www.mozilla.org/ja/firefox/#" target="_blank">Firefoxダウンロード</a></p>',
+                image: '/images/firefox1.jpg'
+            },{
+                title:'一番下にスクロールしてプロキシネットワークに、詳細設定を選択します',
+                titleImage:'',
+                detail:'',
+                image: '/images/firefox2.jpg'
+            },{
+                title:'手動で設定を選んで、HTTPプロキシサーバ名とポート番号を図の様同じく入力して、オールポロトコルをチェックしてOKを押して設定を完了します。',
+                titleImage:'',
+                detail:'',
+                image: '/images/firefox3.jpg'
+            }]
+        },
+        useInfoAndroid: {
+            title1:'Androidロカールプロキシ設定',
+            info:[{
+                title:`端末の設定アプリを開きます。[Wi-Fi]をタップします`,
+                titleImage:'/images/androidSetup.jpg',
+                detail: '',
+                image: '/images/android1.jpg'
+            },{
+                title:'Wi-Fiネットワーク名を押し続けます。[ネットワークを変更]をタップします',
+                titleImage:'',
+                detail:'',
+                image: '/images/android2.jpg'
+            },{
+                title:'[詳細設定項目]の横にある下矢印をタップして、手動で設定を選択します',
+                titleImage:'',
+                detail:'',
+                image: '/images/android3.jpg'
+            },{
+                title:'プロキシホスト名とポート番号は図のブルー色数字と同じように入力してください',
+                titleImage:'',
+                detail:'',
+                image: '/images/android4.jpg'
+            }]
+        },
+        useInfoiOS: {
+            title1:'iOSロカールプロキシ設定',
+            info:[{
+                title:'コントロールパネルを開いて、WiFiをタップしてください',
+                titleImage:'/images/macOsControl.jpg',
+                detail: '',
+                image: '/images/iOS1.jpg'
+            },{
+                title:'Wi-Fiネットワーク名の右にあるまるiアイコンをタップしてください',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS2.jpg'
+            },{
+                title:'一番下のプロキシ設定をタップしてください',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS3.jpg'
+            },{
+                title:'手動で設定を選択し、プロキシサーバ名とポート番号に図のブルー色数字と同じように入力して、保存して設置を完了します。',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS4.jpg'
             }]
         },
 
@@ -747,6 +1021,10 @@ const infoDefine = [
                     header: '本サービスに対するQTGateの責任',
                     detail: '法律で認められる場合には、QTGateならびにそのサプライヤーおよびディストリビューターは、逸失利益、逸失売上もしくはデータの紛失、金銭的損失、または間接損害、特別損害、結果損害もしくは懲罰的損害について責任を負いません。'
                 }, {
+                    header: 'カナダー法律によるサービス禁止対象者',
+                    detail:　'あなたはカナダー法律によってサービス禁止対象者ではありませんと確認していた事。'
+                },
+                {
                     header: '事業者による本サービスの利用',
                     detail: '本サービスを事業者のために利用する場合、その事業者は本規約に同意するものとします。かかる事業者は、QTGateとその関連会社、役員、代理店、従業員を、本サービスの利用または本規約への違反に関連または起因するあらゆる請求申し立て、訴訟、法的措置について、請求申し立て、損失、損害、訴訟、裁判、告訴から生じる法的責任および費用、弁護士費用を含め、免責および補償するものとします。'
                 }, {
@@ -793,7 +1071,7 @@ const infoDefine = [
             Ssl: 'Ssl暗号化通信：',
             portName: '通信ポート番号',
             otherPortNumber: 'その他：',
-            Error_portNumber: '通信ポート番号は1から65535までの数字です',
+            Error_portNumber: '通信ポート番号は1から65535までの数字です。',
             smtpServer: 'SMTP設定',
             smtpServerInput: 'SMTPサーバー名又はIP',
             emailServerPassword: 'Emailパスワード(アプリパスワードお勧め)',
@@ -813,7 +1091,8 @@ const infoDefine = [
             imapResultTitle:'IMAPサーバQTGate評価：',
             testSuccess: 'emailサーバのテストが完了しました',
             exitEdit: '退出編集Emailアカンウト',
-            deleteImap: 'IMAPアカウトを削除'
+            deleteImap: 'IMAPアカウトを削除',
+            proxyPortError: 'ポート番号は1000から65535までの数字です。又はこのポート番号は他のアプリが使っています。他の番号にチェンジしてください。'
         },
 
         Home_keyPairInfo_view: {
@@ -907,15 +1186,15 @@ const infoDefine = [
             available: 'サービス中',
             unavailable: '準備しています',
             proxyDomain:'ドメイン検索はQTGateゲットウェイ側に依頼します。',
-            setupCardTitle: '使う接続技術:',
-            dataTransfer: 'データをQTGateゲットウェイにするのは:',
-            dataTransfer_datail: ['全てのデータをQTGateゲットウェイへ','ターゲットサーバが到達不能際に'],
+            setupCardTitle: '接続技術:',
+            dataTransfer: '通信データは：',
+            dataTransfer_datail: ['全てのデータをOPN経由','ターゲットサーバ到達不能時だけ'],
             proxyDataCache: 'Webキャッシュ:',
             proxyDataCache_detail: ['Yes','No'],
             clearCache: 'クリアオールキャッシュ',
             cacheDatePlaceholder: 'Webキャッシュ有効期限',
-            localPort: 'ローカルポロックシーポート番号:',
-            localPath: 'ローカルポロックシーポートPATHを指定します。',
+            localPort: 'ローカルプロキシポート番号:',
+            localPath: 'ローカルプロキシポートPATHを指定します。',
             outDoormode: '接受外網訪問',
             QTGateRegionERROR:['QTGateへ接続要請メールの送信ができなかったです。IMAPアカウントの設定を調べてください。',
             ''],
@@ -926,10 +1205,10 @@ const infoDefine = [
             cacheDatePlaceDate: [{ name:'1時間', id: 1 }, { name:'12時間', id: 12 },{ name:'一日', id: 24 }, { name:'15日', id: 360 }, { name:'1月', id: 720 }, { name:'6月', id: 4320 }, { name:'永遠', id: -1 }],
             connectQTGate:'QTGateゲットウェーエリアインフォメーションを取得しています...',
             atQTGateDetail: ['QTGateの世界初のIP不要な通信技術です。暗号化したEmailメッセージを通じたゲットウェイに接続することで、身を隠して誰も知らないうちにインターネットへ、プライバシーと強くファイヤウォールをうまくすり抜けることができます。但しお使いメールサーバの性能に次第スピードが遅くなり、長い遅延など短所があります、ゲームやビデオチャットなどに通信障害出る可能性があります。',
-                            'QTGateオリジナルHTTPゲットウェイ暗号化通信技術です。あなたのIPを使ってゲットウェイに直接接続することで、高速通信とプライバシー、強くファイヤウォールをうまくすり抜けることができます。インターネット自由アクセスのためにQTGateを使うことになら、これをおすすめです。',
+                            'QTGateオリジナル技術のトラフィックをHTTPに偽装した暗号化通信技術です。あなたのIPを使ってゲットウェイに直接接続することで、高速通信とプライバシー、強くファイヤウォールをうまくすり抜けることができます。インターネット自由アクセスのためにQTGateを使うことになら、これをおすすめです。',
                             'ドメイン検索をQTGateゲットウェイ側にすることで DNS cache pollution を防ぐことができます。この選択は必要です。','全てインターネットデータをQTGateゲットウェイに通じてすることで、匿名でインターネットアクセスします。',
                             'ローカルネットワークが目標サーバに到達不能な際に、QTGateゲットウェイ通じてします。このことでQTGateデータ通信量節約することができます。','アクセスしたWebサイトを一時ファイルに保持することで、高速レスポンスが利用可能となります、QTGateはいつも暗号化したデータを本機に保存します。但し暗号化通信には不対応です。',
-                            'キャッシュ有効期限の設定によって、いつもサーバ側の最新情報を入手することができます。単位は時間です。','ローカルポロックシーサーバーが他のデバイスをこのポートに接続によってQTGateデータの通信を利用可能です。3001から65535の間の数字を入れてください。',
+                            'キャッシュ有効期限の設定によって、いつもサーバ側の最新情報を入手することができます。単位は時間です。','ローカルプロキシサーバーが他のデバイスをこのポートに接続によってQTGateデータの通信を利用可能です。3001から65535の間の数字を入れてください。',
                             'ローカルポロックPATHを指定することで、あなたのローカルポロックサーバを簡単セキュリティを与えられます。無断使用を禁止することができます。']
         },
 
@@ -940,11 +1219,15 @@ const infoDefine = [
                     'エラー：あなたのアカンウトにQTGateゲットウェイデータ通信制限になっております。もし引き続きご利用を頂きたいなら、アカンウトをアップグレードにしてください。フリーアカウントの場合は毎日100M、毎月1GBの通信制限があります。',
                     'エラー：データフォーマットエラー、QTGateをリスタートしてください。'],
             connected:'接続しました。',
-            userType: ['ユーザータイプ：無料ユーザー','月契約ユーザー'],
+            userType: ['無料ユーザー','月契約ユーザー'],
             datatransferToday:'毎日使える通信量：',
             datatransferMonth:'毎月使える通信量：',
             todaysDatatransfer: '今日使える量',
-            monthDatatransfer: '今月使える量'
+            monthDatatransfer: '今月使える量',
+            gatewayInfo: ['ゲットウェイIPアドレス：','ゲットウェイ接続ポート番号：'],
+            userInfoButton: '使用ガイド',
+            stopGatewayButton:'ゲットウェイ接続を切る',
+            disconnecting: '接続を切っています'
         },
         
         qtGateView: {
@@ -972,7 +1255,18 @@ const infoDefine = [
                 color: '#a333c8',
                 icon: 'exchange',
                 header: 'Security anonymous free internet access',
-                detail: `The @QTGate is world's first QTGate no IP Internet communication technology, client and proxy server do not know each other IP address. The iQTGate is original encryption high speed HTTP protocol proxy technology. Both doing hide your IP address high-speed communication, stealth and protection of privacy, strong anti-interference, firewall transparency.`
+                detail: `The @OPN is world's first no IP Internet communication technology, client and proxy server do not know each other IP address. The iOPN is QTGate original technogy that disguise the traffic looks like normal HTTP protocol,. Both doing hide your IP address high-speed communication, stealth and protection of privacy via encrypt with <a onclick="return linkClick ('https://en.wikipedia.org/wiki/Advanced_Encryption_Standard')" href="#" target="_blank">AES256-GCM</a> and <a onclick="return linkClick ('https://en.wikipedia.org/wiki/Pretty_Good_Privacy')" href="#" target="_blank">OpenPGP</a>, strong anti-interference, firewall transparency.`
+            },
+            {
+                color: 'darkcyan',
+                icon: 'spy',
+                header: 'Spy softwear ( Next version. )',
+                detail: 'The QTGate system subscribe the global DNSBL database. QTGate user may stop spy softwear send your information to spy host when user doing internet via a QTGate client soft. Even you do need know the spy softwear running in background at device.'
+            },{
+                color: '#6435c9',
+                icon: 'external share',
+                header:'Local VPN server. ( Next version. )',
+                detail:'QTGate user may keep use OPN security network at out door via VPN connect to home network.'
             },{
                 color: '#6435c9',
                 icon: 'cloud upload',
@@ -985,11 +1279,129 @@ const infoDefine = [
                 detail:'QTGate provide Instant messaging service via email system. It is peer to peer, no need IP address, security transfer message, pictures, video and any kind files, also support group chart with multiple users.'
             }]
         },
-
+        firefoxUseInfo:{
+            title1:'Firefox browser it set up a separate proxy service, you can easy to use proxy access Internet without touch system setup.',
+            info:[{
+                title:'Click Firefox tool icon. Select Preferences.',
+                titleImage:'/images/macOsControl.jpg',
+                detail: '<p><a href="https://www.mozilla.org/en-US/firefox/#" target="_blank">Download Firefox.</a></p>',
+                image: '/images/firefox1.jpg'
+            },{
+                title:'Click General, scroll to buttom, click the settings... at Net Working.',
+                titleImage:'',
+                detail:'',
+                image: '/images/firefox2.jpg'
+            },{
+                title:'Chooess Manual proxy configuration, fill HTTP proxy and Port same as the blue in the picture. Check Use this proxy server for all protocols. Click OK to finish setup.',
+                titleImage:'',
+                detail:'',
+                image: '/images/firefox3.jpg'
+            }]
+        },
         cover: {
             firstTitle1: 'Protect Your Personal Privacy Online',
             firstTitle2: 'Achieve a Secure and Open Internet Experience',
             start: 'TRY NOW'
+        },
+        useInfoiOS: {
+            title1:'iOS device local proxy setup.',
+            info:[{
+                title:'Open the control panel. Type the WiFi.',
+                titleImage:'/images/macOsControl.jpg',
+                detail: '',
+                image: '/images/iOS1.jpg'
+            },{
+                title:'Type the icon of the Wifi name right side that is connect now.',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS2.jpg'
+            },{
+                title:'Type Proxy ',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS3.jpg'
+            },{
+                title:'Check Manual then fill Proxy host name and port number follow the blue number that in the picture. type Save to finish setup.',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS4.jpg'
+            }]
+        },
+        useInfoAndroid: {
+            title1:'Android device local proxy setup.',
+            info:[{
+                title:`Open your device’s Settings app. Tap Network & Internet and then Wi-Fi.`,
+                titleImage:'/images/androidSetup.jpg',
+                detail: '',
+                image: '/images/android1.jpg'
+            },{
+                title:'Touch and hold the Wi-Fi network name until a popup menu come. Then tap Modify network from the menu',
+                titleImage:'',
+                detail:'',
+                image: '/images/android2.jpg'
+            },{
+                title:'Tap the Down arrow at Advanced options. Pick the Manual.',
+                titleImage:'',
+                detail:'',
+                image: '/images/android3.jpg'
+            },{
+                title:'Enter the proxy server details follow the blue text in picture.',
+                titleImage:'',
+                detail:'',
+                image: '/images/android4.jpg'
+            }]
+        },
+        useInfoWindows: {
+            title1:'Windows 10 proxy setup',
+            info:[{
+                title:'About all other Windows version.',
+                titleImage:'',
+                detail: '<p>All other Windows version proxy setup please visit <a href="#" target="_blank" onclick="return linkClick (`https://support.microsoft.com/en-us/help/135982/how-to-configure-internet-explorer-to-use-a-proxy-server`)">Microsoftweb side.</a></p><p>This is the data for setup proxy server:</p>',
+                image: ''
+            },{
+                title:'Open Internet Explorer',
+                titleImage:'/images/IE10_icon.png',
+                detail: '<p>Click the tool icon at the top of right, scroll menu down to bottom select Settings.</p>',
+                image: '/images/windowsUseInfo1.jpg'
+            },{
+                title:'Scroll menu to bottom and click View advanced settings.',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo2.jpg'
+            },{
+                title:'Scroll menu again click Open proxy settings.',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo3.jpg'
+            },{
+                title:'Open Use a proxy server, fill Address and Port that same as blue number in the picture. Then cliek save to finish.',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo4.jpg'
+            }]
+        },
+        useInfoMacOS: {
+            proxyServerIp:'Proxy server address:',
+            proxyServerPort: 'Server port:',
+            proxyServerPassword: 'Proxy server login username and password: none',
+            title:'All other devices can doing internet via local proxy setup use the QTGate system.',
+            title1:'MacOS proxy setup',
+            info:[{
+                title:'Open the control panel, click the network.',
+                titleImage:'/images/macOsControl.jpg',
+                detail:'',
+                image: '/images/userInfoMacos1.jpg'
+            },{
+                title:'click The Advanced... ',
+                titleImage:'',
+                detail:'',
+                image: '/images/macosUserInfo2.jpg'
+            },{
+                title:'Setup Proxies.',
+                titleImage:'',
+                detail:'<p>1. Check the Web Proxy(HTTP) on the lift side, then fill the number to the Web Proxy Server on right side with the blue number in image.</p><p>2. Check the Secure Web Proxy (HTTPS) on the lift side, then fill the same number to the Secure Web Proxy Server on right side with the the blue number in image. And click OK to finish.</p>',
+                image: '/images/macosUserInfo3.jpg'
+            }]
         },
 
         topWindow: {
@@ -1092,7 +1504,8 @@ const infoDefine = [
             imapResultTitle: 'IMAP Server QTGate Communication Rating: ',
             testSuccess: 'Email server setup success!',
             exitEdit: 'Exit edit email account',
-            deleteImap: 'Delete IMAP account.'
+            deleteImap: 'Delete IMAP account.',
+            proxyPortError: 'Port number should be Numbers from 1000 to 65535. Or this port is using by another process. please try other number.'
         },
 
         Home_keyPairInfo_view: {
@@ -1184,10 +1597,10 @@ const infoDefine = [
             available: 'Available',
             unavailable: 'Unavailable',
             proxyDomain:'Domain lookup via QTGate gateway side.',
-            setupCardTitle: 'connecting with technology:',
+            setupCardTitle: 'connecting with:',
             dataViaGateway:'All internet data transfer via QTGate gateway.',
-            dataTransfer: 'Data transfer via QTGate gateway:',
-            dataTransfer_datail: ['All data to QTGate gateway.',`When cann't connect target server only.`],
+            dataTransfer: 'Data:',
+            dataTransfer_datail: ['All data via QTGate gateway.',`When can not connect to target server only.`],
             proxyDataCache: 'Web cache:',
             proxyDataCache_detail: ['Yes','No'],
             clearCache: 'Delete all cache now',
@@ -1202,7 +1615,7 @@ const infoDefine = [
                                     'Free user connect will be down when user had not use QTGate last 24 hours. QTGate system keep connection 1 month for paid user.'],
             cacheDatePlaceDate:[{ name:'1 hour', id: 1 }, { name:'12 hour', id: 12 },{ name:'1 day', id: 24 }, { name:'15 days', id: 360 }, { name:'1 month', id: 720 }, { name:'6 months', id: 4320 }, { name:'forever', id: -1 }],
             atQTGateDetail: [`The world's first QTGate no IP Internet communication technology, client and proxy server do not know each other IP address, security and reliability, firewall transparency. The network communication response by the email service provider you use the impact of the server, not suitable for video games and video chat.`,
-                            'QTGate original encryption HTTP protocol proxy technology, to hide your IP address high-speed communication, stealth and protection of privacy, strong anti-interference, firewall transparency. You need to use your IP to connect proxy server. This is best chooses If you just want freedom of internet.',
+                            'QTGate original encryption technogy it can disguise the traffic looks like normal HTTP protocol, to hide your IP address high-speed communication, stealth and protection of privacy, strong anti-interference, firewall transparency. You need to use your IP to connect proxy server. This is best chooses If you just want freedom of internet.',
                             'Use QTGate gateway side domain lookup can always get right IP address from DNS cache pollution. This is the default.','All internet data transfer via QTGate gateway dose anonymity network.',
                             'When target server can not connect then data transfer via QTGate gateway. This chooese will save your QTGate data transfer.',
                             'Web cache (or HTTP cache) is an information technology for the temporary storage (caching) of web documents, to reduce bandwidth usage, server load, and perceived lag. QTGate always crypto all web cache data. This is not working for HTTPS connect.', 'Do not use web cache.',
@@ -1218,11 +1631,15 @@ const infoDefine = [
                     'Error: Bandwidt maximum. If you want to continue using it, please upgrade your account. Free account have bandwidth is maximum of 100MB each day, 1 GB every month.',
                     'Error: Data format error. Please restart QTGate.'],
             connected:'connected.',
-            userType:['User type：free', 'User type：Subscript'],
+            userType:['free', 'Subscript'],
             datatransferToday:'The limit of bandwidth each day.：',
             datatransferMonth:'The limit of bandwidth each month.：',
             todaysDatatransfer: 'Available today.',
-            monthDatatransfer: 'Available month.'
+            monthDatatransfer: 'Available month.',
+            gatewayInfo: ['Gateway Ip address：','Gateway connect port：'],
+            userInfoButton: 'How to use?',
+            stopGatewayButton:'Disconnect',
+            disconnecting: 'Disconnecting'
         },
         
         qtGateView: {
@@ -1245,6 +1662,126 @@ const infoDefine = [
         },
 
 	}, {
+        useInfoiOS: {
+            title1:'iOS設備本地代理伺服器設定',
+            info:[{
+                title:'打開控制面板，點擊Wi-Fi',
+                titleImage:'/images/macOsControl.jpg',
+                detail: '',
+                image: '/images/iOS1.jpg'
+            },{
+                title:'選擇當前WiFi的圈i符號',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS2.jpg'
+            },{
+                title:'選擇底部的設置代理伺服器',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS3.jpg'
+            },{
+                title:'選擇手動設置，在代理伺服器名稱和端口號處填入對應的藍色數字，按保存完成設置',
+                titleImage:'',
+                detail:'',
+                image: '/images/iOS4.jpg'
+            }]
+        },
+        firefoxUseInfo:{
+            title1:'火狐瀏覽器它單獨設定代理服務，可以不影響系統而輕鬆使用代理上網',
+            info:[{
+                title:'打開火狐，點擊右上角工具圖標，選擇設定',
+                titleImage:'/images/macOsControl.jpg',
+                detail: '<p><a href="https://www.mozilla.org/zh-TW/firefox/#" target="_blank">下载Firefox</a></p>',
+                image: '/images/firefox1.jpg'
+            },{
+                title:'選擇常規項，滾動畫面至最下部，在網絡代理處，點擊詳細設定',
+                titleImage:'',
+                detail:'',
+                image: '/images/firefox2.jpg'
+            },{
+                title:'選擇手動設置代理伺服器，按圖示藍色數字填入HTTP代理伺服器名稱和端口號，選勾本設定適用所有協議，點擊好完成設置',
+                titleImage:'',
+                detail:'',
+                image: '/images/firefox3.jpg'
+            }]
+        },
+        useInfoWindows: {
+            title1:'Windows10本地代理伺服器設定',
+            info:[{
+                title:'關於Windows其他版本',
+                titleImage:'',
+                detail: '<p>Windows其他版本的代理伺服器設定請參照<a target="_blank" href="#" onclick="return linkClick (`https://support.microsoft.com/ja-jp/help/135982/how-to-configure-internet-explorer-to-use-a-proxy-server`)">微軟公司網站</a></p><p>请按以下参数设置本地代理伺服器：</p>',
+                image: ''
+            },{
+                title:'啟動Internet Explorer',
+                titleImage:'/images/IE10_icon.png',
+                detail:'<p>點擊右上角工具圖標，滑動設定菜單至最下部選擇【設定】</p>',
+                image:'/images/windowsUseInfo1.jpg'
+            },{
+                title:'滑動菜單至最下部點擊高級設定',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo2.jpg'
+            },{
+                title:'再次滑動菜單，點擊打開代理伺服器設定',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo3.jpg'
+            },{
+                title:'選擇手動設置代理伺服器，按圖示藍色數字填入伺服器地址及伺服器端口號，然後點擊保存完成設定。',
+                titleImage:'',
+                detail:'',
+                image: '/images/windowsUseInfo4.jpg'
+            }]
+        },
+        useInfoAndroid: {
+            title1:'安卓設備本地代理伺服器設定',
+            info:[{
+                title:'打开控制面板，选择Wi-Fi设定',
+                titleImage:'/images/androidSetup.jpg',
+                detail: '',
+                image: '/images/android1.jpg'
+            },{
+                title:'長按當前WiFi連接名稱等待菜單出現，選擇菜單的修改設定',
+                titleImage:'',
+                detail:'',
+                image: '/images/android2.jpg'
+            },{
+                title:'打開顯示高級選項，在代理伺服器設定(Proxy)中選擇手動設置',
+                titleImage:'',
+                detail:'',
+                image: '/images/android3.jpg'
+            },{
+                title:'按下列畫面中藍色的數字填入代理伺服器名稱和端口號，關閉窗口以完成設置',
+                titleImage:'',
+                detail:'',
+                image: '/images/android4.jpg'
+            }]
+        },
+        useInfoMacOS: {
+            title:'您的其他電子設備，可通過設置本地Proxy伺服器，來使用QTGate連接到互聯網',
+            title1:'MacOS 本地代理伺服器設定',
+            proxyServerIp:'本地代理伺服器地址：',
+            proxyServerPort: '本地代理伺服器端口：',
+            proxyServerPassword: '本地代理伺服器登陸用戶名和密碼：無需設定',
+            info:[{
+                
+                title:'打開控制面板，點擊【網絡】',
+                titleImage:'/images/macOsControl.jpg',
+                detail:'',
+                image: '/images/userInfoMacos1.jpg'
+            },{
+                title:'選擇網絡【高級...】',
+                titleImage:'',
+                detail:'',
+                image: '/images/macosUserInfo2.jpg'
+            },{
+                title:'代理伺服器設定',
+                titleImage:'',
+                detail:'<p>1. 選勾左邊 網頁代理伺服器(HTTP)，並在右邊代理伺服器填入圖示藍色數字</p><p>2. 選勾左邊 安全網頁代理伺服器(HTTPS)，在右端安全代理伺服器，相同地填入圖示藍色數字，按【好】結束設定</p>',
+                image: '/images/macosUserInfo3.jpg'
+            }]
+        },
         QTGateInfo: {
             title:'QTGate功能簡介',
             version:'本機安裝的QTGate版本：v',
@@ -1252,7 +1789,18 @@ const infoDefine = [
                 color: '#a333c8',
                 icon: 'exchange',
                 header: '隱身匿名自由上網',
-                detail: '世界首創的＠QTGate無IP互聯網通訊技術，全程使用加密Email通訊，客戶端和代理服務器彼此不用知道IP地址。 iQTGate是本公司獨創HTTP加密代理技術，能夠隱藏變換您的IP地址高速通訊。二種通訊方式都能夠讓您隱身安全不被檢出的上網，保護您的隱私，具有超強對抗網絡監控,網絡限制和網絡阻斷。'
+                detail: 'QTGate通過使用<a href="https://zh.wikipedia.org/wiki/%E9%AB%98%E7%BA%A7%E5%8A%A0%E5%AF%86%E6%A0%87%E5%87%86" target="_blank">AES256-GCM</a>和<a href="https://zh.wikipedia.org/wiki/PGP" target="_blank">OpenPGP</a >加密Email通訊，創造了OPN匿名網絡通訊技術，QTGate公司首創的@OPN技術，它全程使用加密Email通訊，客戶端和代理伺服器彼此之間不用交換IP地址，實現高速網絡通訊。iOPN通訊技術是一種HTTP協議下的加密混淆代理技術，能夠隱藏變換您的IP地址高速通訊。二種通訊方式都能夠讓您，隱身和安全及不被檢出的上網，保護您的隱私，具有超強對抗網絡監控,網絡限制和網絡阻斷。'
+            },
+            {
+                color: 'darkcyan',
+                icon: 'spy',
+                header: '阻斷間諜軟件（下一版本）',
+                detail: 'QTGate系統連接全球DNSBL聯盟數據庫，用戶通過訂閱QTGate系統黑名單列表，並使用QTGate客戶端上網，讓潛伏在您電子設備內的間諜軟件，它每時每刻收集的信息，不能夠被送信到其信息收集伺服器，能夠最大限的保障您的個人隱私。'
+            },{
+                color: '#6435c9',
+                icon: 'external share',
+                header:'本地VPN伺服器(下一版本)',
+                detail:'QTGate用戶在戶外時可以通過連接自己家裡的VPN，來使用QTGate客戶端隱身安全上網。'
             },{
                 color: '#6435c9',
                 icon: 'cloud upload',
@@ -1314,6 +1862,9 @@ const infoDefine = [
                     header: '服務的責任',
                     detail: '在法律允許的範圍內，QTGate及其供應商和分銷商不承擔利潤損失、收入損失或數據、財務損失或間接、特殊、後果性、懲戒性或懲罰性損害賠償責任。'
                 }, {
+                    header: '法律規定的貿易禁止事項',
+                    detail: '當您按下同意按鈕，表示您已經確認您不屬於加拿大法律所規定的禁止貿易對象的列表之中。'
+                }, {
                     header: '服務的商業使用',
                     detail: '如果您代表某家企業使用我們的服務，該企業必須接受本條款。對於因使用本服務或違反本條款而導致的或與之相關的任何索賠、起訴或訴訟，包括因索賠、損失、損害賠償、起訴、判決、訴訟費和律師費而產生的任何責任或費用，該企業應對QTGate及其關聯機構、管理人員、代理機構和員工進行賠償並使之免受損害。'
                 }, {
@@ -1370,9 +1921,10 @@ const infoDefine = [
             imapItemTitle: '通訊用郵箱詳細信息',
             imapCheckingStep: ['正在嘗試連接email伺服器','IMAP成功登陸email伺服器','SMTP成功登陸email伺服器'],
             imapResultTitle: 'IMAP伺服器QTGate通訊評分：',
-            testSuccess: '電子郵件服務器連接試驗成功！',
+            testSuccess: '電子郵件伺服器連接試驗成功！',
             exitEdit: '退出編輯Email帳戶',
-            deleteImap: '刪除IMAP帳戶'
+            deleteImap: '刪除IMAP帳戶',
+            proxyPortError: '端口號應該是從1000-65535之間的數字，或此端口已被其他APP所占用，請再嘗試其他號碼。'
         },
 
         Home_keyPairInfo_view: {
@@ -1423,7 +1975,7 @@ const infoDefine = [
             Success: '完成',
             localServerError: '本地伺服器錯誤，請重新啟動QTGate！',
             required: '請填寫此字段',
-            EmailAddress: ['請按照下列格式輸入你的電子郵件地址: someone@example.com.', '您已有相同的Email賬戶','此類Email服務器暫時QTGate技術不能對應,請選擇Apple公司，微軟Outlook, Yahoo公司的Email服務。'],
+            EmailAddress: ['請按照下列格式輸入你的電子郵件地址: someone@example.com.', '您已有相同的Email賬戶','此類Email伺服器暫時QTGate技術不能對應,請選擇Apple公司，微軟Outlook, Yahoo公司的Email服務。'],
             PasswordLengthError: '密碼必須設定為5個字符以上。',
             finishedKeyPair: '密鑰對創建完成',
             doCancel: '終止生成',
@@ -1459,17 +2011,17 @@ const infoDefine = [
         },
 
         QTGateRegion: {
-            title: 'QTGate代理服務器區域',
+            title: 'QTGate代理伺服器區域',
             available: '服務中',
             unavailable: '準備中',
-            proxyDomain: '域名解釋全程使用QTGate代理服務器端',
+            proxyDomain: '域名解釋全程使用QTGate代理伺服器端',
             setupCardTitle: '使用連接技術:',
-            connectQTGate:'正在獲得代理服務器區域信息...',
-            dataTransfer: '數據通訊使用QTGate代理服務器端:',
-            dataTransfer_datail: ['全程使用QTGate代理服務器','當本地不能夠到達時使用'],
+            connectQTGate:'正在獲得代理伺服器區域信息...',
+            dataTransfer: '數據通訊:',
+            dataTransfer_datail: ['全程使用QTGate代理伺服器','當本地不能夠到達目標伺服器時使用'],
             proxyDataCache: '瀏覽數據本地緩存:',
             proxyDataCache_detail: ['本地緩存','不緩存'],
-            dataViaGateway: '全部互聯網數據通過QTGate代理服務器',
+            dataViaGateway: '全部互聯網數據通過QTGate代理伺服器',
             cacheDatePlaceholder: '緩存失效時間',
             clearCache: '立即清除所有緩存',
             GlobalIp: '本機互聯網IP地址:',
@@ -1479,26 +2031,30 @@ const infoDefine = [
                                      '當免費用戶連續24小時內沒有使用客戶端，您的連接會被中斷。付費用戶情況下QTgate系統可保持持續聯機一個月。 '],
             
             GlobalIpInfo:'注意：當您按下【QTGate連結】時您會把您的本機互聯網IP提供給QTGate系統，如果您不願意，請選擇【@QTGate】技術來使用QTGate服務！',
-            localPort: '本地代理服務器端口號:',
+            localPort: '本地代理伺服器端口號:',
             cacheDatePlaceDate: [{ name:'1小时', id: 1 }, { name:'12小时', id: 12 },{ name:'1日', id: 24 }, { name:'15日', id: 360 }, { name:'1月', id: 720 }, { name:'6月', id: 4320 }, { name:'永遠', id: -1 }],
-            atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用強加密Email通訊，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私，超強防火牆穿透能力。缺点是有延遲，网络通讯响应受您所使用的email服务供应商的服务器影响，不適合遊戲視頻會話等通訊。',
-                            'QTGate獨創HTTP強加密代理技術，能夠隱藏變換您的IP地址高速通訊，隐身和保护隐私，抗干擾超強防火牆穿透能力。缺點是需要使用您的IP來直接連結代理服務器。如果您只是需要自由訪問互聯網，則推薦使用本技術。',
-                            '域名解釋使用QTGate代理服務器端，可以防止域名服務器緩存污染，本選擇不可修改。','互聯網數據全程使用QTGate代理，可以匿名上網隱藏您的互聯網形踪。','只有當本地網絡不能夠到達時才使用QTGate代理連結目標服務區，本選項可以節省您的QTGate流量。',
-                            '通過本地緩存瀏覽紀錄，當您再次訪問目標服務器時可以增加訪問速度，減少網絡流量，緩存瀏覽記錄只針對非加密技術的HTTP瀏覽有效。QTGate使用強加密技術緩存瀏覽紀錄，確保您的隱私不被洩漏','不保存緩存信息。',
-                            '設置緩存有效時間，您可以及時更新服務器數據，單位為小時。','本地Proxy服务器，其他手机电脑和IPad等可通過连结此端口來使用QTGate服务。請設定為3001至65535之間的數字','通過設置PATH鏈接路徑可以簡單給您的Proxy服務器增加安全性，拒絕沒有提供PATH的訪問者使用您的Proxy服務器。']
+            atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用強加密Email通訊，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私，超強防火牆穿透能力。缺点是有延遲，网络通讯响应受您所使用的email服务供应商的伺服器影响，不適合遊戲視頻會話等通訊。',
+                            'QTGate獨創HTTP強加密混淆流量代理技術，能夠隱藏變換您的IP地址高速通訊，隐身和保护隐私，抗干擾超強防火牆穿透能力。缺點是需要使用您的IP來直接連結代理伺服器。如果您只是需要自由訪問互聯網，則推薦使用本技術。',
+                            '域名解釋使用QTGate代理伺服器端，可以防止域名伺服器緩存污染，本選擇不可修改。','互聯網數據全程使用QTGate代理，可以匿名上網隱藏您的互聯網形踪。','只有當本地網絡不能夠到達您希望訪問的目標時，才使用QTGate代為您連結目標伺服器，本選項可以節省您的QTGate流量。',
+                            '通過本地緩存瀏覽紀錄，當您再次訪問目標伺服器時可以增加訪問速度，減少網絡流量，緩存瀏覽記錄只針對非加密技術的HTTP瀏覽有效。QTGate使用強加密技術緩存瀏覽紀錄，確保您的隱私不被洩漏','不保存緩存信息。',
+                            '設置緩存有效時間，您可以及時更新伺服器數據，單位為小時。','本地Proxy服务器，其他手机电脑和IPad等可通過连结此端口來使用QTGate服务。請設定為3001至65535之間的數字','通過設置PATH鏈接路徑可以簡單給您的Proxy伺服器增加安全性，拒絕沒有提供PATH的訪問者使用您的Proxy伺服器。']
         },
 
         QTGateGateway: {
             title: 'QTGate服務使用詳細',
             processing: '正在嘗試连接QTGate代理服务器...',
-            error: ['錯誤：您的賬號下已經有一個正在使用QTGate代理服務器的連接，請先把它斷開後再嘗試連接。', '錯誤：您的賬號已經無可使用流量，如果您需要繼續使用QTGate代理服務器，請升級您的賬戶類型。如果是免費用戶已經使用當天100M流量，請等待到明天繼續使用，如您是免費用戶已經用完當月1G流量，請等待到下月繼續使用。',
+            error: ['錯誤：您的賬號下已經有一個正在使用QTGate代理伺服器的連接，請先把它斷開後再嘗試連接。', '錯誤：您的賬號已經無可使用流量，如果您需要繼續使用QTGate代理伺服器，請升級您的賬戶類型。如果是免費用戶已經使用當天100M流量，請等待到明天繼續使用，如您是免費用戶已經用完當月1G流量，請等待到下月繼續使用。',
                     '錯誤：數據錯誤，請退出並重新啟動QTGate！'],
             connected:'已連接。',
-            userType:['用戶類型：免費用戶','用戶類型：付費用戶'],
+            userType:['免費用戶','付費用戶'],
             datatransferToday:'當日可使用流量限額：',
             datatransferMonth:'本月可使用流量限額：',
             todaysDatatransfer: '本日可使用流量',
-            monthDatatransfer: '本月可使用流量'
+            monthDatatransfer: '本月可使用流量',
+            gatewayInfo: ['代理伺服器IP地址：','代理伺服器連接端口：'],
+            userInfoButton: '使用指南',
+            stopGatewayButton:'切斷連接',
+            disconnecting: '正在切斷中'
         },
         
         qtGateView: {
@@ -1543,7 +2099,7 @@ const _QTGateRegions: QTGateRegions[] = [
         content: ['班加罗尔','バンガロール','Bangalore','班加羅爾'],
         meta: ['亚洲・印度','アジア・インド','India. Asia.','亞洲・印度'],
         description: ['','','',''],
-        canVoe: ko.observable(false),
+        canVoe: ko.observable(true),
         canVoH: ko.observable(true),
         available: ko.observable(false),
         selected: ko.observable ( false ),
@@ -2281,7 +2837,7 @@ module view_layout {
             public showAddImapDataButton = ko.observable ( false )
             public QTGateRegions = ko.observableArray ( _QTGateRegions )
             public QTGateRegionsSetup = ko.observableArray ( QTGateRegionsSetup )
-            public selectedQTGateRegion = ko.observable ( -1 )
+            public selectedQTGateRegion: KnockoutObservable <QTGateRegions> = ko.observable (this.QTGateRegions()[0])
             public showSystemError = ko.observable ( false )
             public feed = ko.observableArray ([])
 
@@ -2338,8 +2894,13 @@ module view_layout {
             public QTGateGatewayActiveProcess = ko.observable ( false )
             public QTGateGatewayError = ko.observable ( -1 )
             public QTTransferData = ko.observable ( transfer )
+            public QTConnectData = ko.observable ({gateWayIpAddress: null, gateWayPort: null})
             public MenuItems = ko.observable ([false, true, false, false, false])
             public showKeyPairPorcess = ko.observable ( false )
+            public showDisconnectbutton = ko.observable ( true )
+            public ConnectGatewayShow = ko.observable ( false )
+            public portNumberError = ko.observable ( false )
+
         //-
         public config: KnockoutObservable < install_config> = ko.observable ({
             firstRun: true,
@@ -2357,20 +2918,27 @@ module view_layout {
             QTGateConnectImapUuid: null,
             serverGlobalIpAddress: null,
             serverPort: null,
-            connectedQTGateServer: false
+            connectedQTGateServer: false,
+            localIpAddress: null,
+            lastConnectType: 1
         })
 
 		constructor () {
             this.QTGateLocalProxyPort.subscribe ( newValue => {
                 this.localProxyPortError ( false )
-                const num = parseInt ( newValue.toString() )
-                if (! /^[0-9]*$/.test(newValue.toString()) || !num || num < 1 || num > 65535 || num === 3000 ) {
+                const num = parseInt ( newValue.toString())
+                if (! /^[0-9]*$/.test(newValue.toString()) || !num || num < 1000 || num > 65535 ) {
                     this.localProxyPortError ( true )
-                    return $('.activating.element').popup({
+                    return $( '.activating.element').popup({
                         on: 'focus',
                         movePopup: false
                     })
                 }
+                return socketIo.emit ( 'checkPort', newValue, err => {
+
+                    return this.localProxyPortError ( err )
+
+                })
             })
 
             socketIo.emit ( 'init', ( err: Error, data: install_config ) => {
@@ -2380,6 +2948,7 @@ module view_layout {
                     this.keyPairGenerateFormActive ( true )
                 else
                     this.showKeyPairInformation ( true )
+                this.QTGateConnect1 ( data.lastConnectType ? data.lastConnectType.toString() : '1' )
                 this.keyPair ( data.keypair )
                 
                 return $( '.activating.element' ).popup({
@@ -2643,6 +3212,10 @@ module view_layout {
                 return this.QTGateConnectActive( false )
             })
 
+            socketIo.on ( 'QTGateGatewayConnectRequest', data => {
+                this.QTGateGatewayConnectRequestCallBack ( this, data )
+            })
+
         }
         public sendConnectRequestMail = ko.observable (false)
         public QTGateRegionERROR = ko.observable (-1 )
@@ -2717,8 +3290,9 @@ module view_layout {
             this.overflowShow ( true )
         }
 
-        public returnMainWin () {
-            $( '#feedBackView').hide()
+        public returnMainWin ( winName: string ) {
+            $( winName ).hide()
+            
             $( '.mainScreen').animate({
                 opacity: "show"
               }, 800 )
@@ -2728,6 +3302,15 @@ module view_layout {
             })
 
         }
+        public showUserInfoMacOS ( view: string, _self: view ) {
+            $('.mainScreen').hide ()
+            $( view).animate({
+                opacity: "show"
+              }, 800 )
+            _self.showMainScreenBackOverflowShow = _self.overflowShow()
+            _self.overflowShow ( true )
+        }
+        
         public feedBackAttachImg = ko.observable ('')
         public feedBackAttachImgPath = ko.observable ('')
         public attachedLog = ko.observable ('')
@@ -2782,7 +3365,7 @@ module view_layout {
         public feedBackTextArea = ko.observable ('')
 
         public feedBackSuccess () {
-            this.returnMainWin ()
+            this.returnMainWin ('#feedBackView')
             const Fs = require ('fs')
             const Os = require ('os')
             const path = require ( 'path' )
@@ -3077,22 +3660,29 @@ module view_layout {
         }
 
         public QTGateRegionCardClick ( index: number ) {
-            if ( this.selectedQTGateRegion() === index )
-                return
+
             const uu = this.QTGateRegions()[ index ]
             uu.selected ( true )
-            this.selectedQTGateRegion ( index )
+            this.selectedQTGateRegion ( uu )
             uu.showExtraContent ( true )
+            this.ConnectGatewayShow ( true )
+            const body = $( "html, body" )
+            body.stop().animate({ scrollTop: 0 }, 100, 'swing', () => { 
+                return this.overflowShow ( false )
+            })
             return $('.popupField').popup({
-                on:'click'
+                on:'click',
+                position: 'bottom center',
             })
         }
 
-        public selectedQTGateRegionCancel ( index: number ) {
-            const uu = this.QTGateRegions()[ index ]
-            uu.selected ( false )
-            uu.showExtraContent ( false )
-            this.selectedQTGateRegion ( -1 )
+        public selectedQTGateRegionCancel () {
+
+            this.selectedQTGateRegion().selected ( false )
+            this.selectedQTGateRegion().showExtraContent ( false )
+            this.ConnectGatewayShow ( false )
+            this.QTGateConnectRegionActive( true )
+            this.menuClick ( 3, true )
             return false
         }
 
@@ -3100,72 +3690,120 @@ module view_layout {
             const uu = new Array (8).fill ( false )
             uu[index] = true
             this.MenuItems ( uu )
-            const body = $("html, body")
+            const body = $( "html, body" )
             return body.stop().animate({ scrollTop: 0 }, 100, 'swing', () => { 
                 return this.overflowShow ( scroll )
             })
            
         }
 
-        public QTGateGatewayConnectRequest( data: QTGateRegions, root: this ) {
+        public QTGateConnect1Click (em) {
+            const uu = $(em).val ()
+            this.QTGateConnect1 (uu.toString ())
+        }
 
-            const connect: IConnectCommand = {
-                account: this.config().account,
-                imapData: this.emailPool()[0].GetImapData(),
-                gateWayIpAddress: null,
-                region: data.qtRegion,
-                connectType: this.QTGateConnect1() === '1' ? 2 : 1,
-                localServerPort: this.QTGateLocalProxyPort(),
-                AllDataToGateway: !this.QTGateConnect2 (),
-                error: null,
-                fingerprint: null
-            }
-            data.error ( -1 )
-            //root.QTGateConnectRegionActive ( false )
-            //root.QTGateGatewayActiveProcess ( true )
-            const process = $('.regionConnectProcessBar').progress('reset')
-            let doingProcessBarTime = null
-            let percent = 0
-            const doingProcessBar = () => {
-                clearTimeout(doingProcessBarTime)
-                doingProcessBarTime = setTimeout(() => {
-                    process.progress({
-                        percent: ++percent
-                    })
-                    if ( percent < 100 )
-                        return doingProcessBar()
-                }, 1000 )
-            }
-
-            doingProcessBar()
-            data.showExtraContent ( false )
-            data.showRegionConnectProcessBar ( true )
-            
-            socketIo.emit( 'QTGateGatewayConnectRequest', connect, _data => {
-                clearTimeout ( doingProcessBarTime )
-                data.showRegionConnectProcessBar ( false )
-                if ( _data.error > -1 ) {
-                    data.showExtraContent ( true )
-                    //this.QTGateConnectRegionActive ( true )
-                    //this.QTGateGatewayActiveProcess ( false )
-                    return data.error ( _data.error )
+        public QTGateGatewayConnectRequest () {
+            const data = this.selectedQTGateRegion()
+            return socketIo.emit ('checkPort', this.QTGateLocalProxyPort(), err => {
+                if ( err ) {
+                    return this.localProxyPortError ( err )
                 }
-
-                root.QTTransferData ( _data.transferData )
-                $('.userDetail').progress()
-                return data.showConnectedArea( true )
-
+                const connect: IConnectCommand = {
+                    account: this.config().account,
+                    imapData: this.emailPool()[0].GetImapData(),
+                    gateWayIpAddress: null,
+                    region: data.qtRegion,
+                    connectType: this.QTGateConnect1() === '1' ? 2 : 1,
+                    localServerPort: this.QTGateLocalProxyPort(),
+                    AllDataToGateway: !this.QTGateConnect2 (),
+                    error: null,
+                    fingerprint: null,
+                    localServerIp: null
+                    
+                }
+                
+                data.error ( -1 )
+                //root.QTGateConnectRegionActive ( false )
+                //root.QTGateGatewayActiveProcess ( true )
+    
+                const process = $('.regionConnectProcessBar').progress('reset')
+                let doingProcessBarTime = null
+                let percent = 0
+                const doingProcessBar = () => {
+                    clearTimeout ( doingProcessBarTime )
+                    doingProcessBarTime = setTimeout(() => {
+                        process.progress ({
+                            percent: ++percent
+                        })
+                        if ( percent < 100 )
+                            return doingProcessBar()
+                    }, 1000 )
+                }
+    
+                doingProcessBar()
+                data.showExtraContent ( false )
+                data.showRegionConnectProcessBar ( true )
+                
+                socketIo.emit( 'QTGateGatewayConnectRequest', connect, _data => {
+                    clearTimeout ( doingProcessBarTime )
+                    data.showRegionConnectProcessBar ( false )
+                    if ( _data.error > -1 ) {
+                        data.showExtraContent ( true )
+                        //this.QTGateConnectRegionActive ( true )
+                        //this.QTGateGatewayActiveProcess ( false )
+                        return data.error ( _data.error )
+                    }
+                    return this.QTGateGatewayConnectRequestCallBack ( this, _data  )
+                    
+                })
+                
+                return false
             })
-            return false
+            
+
         }
 
-        public doingiOpn () {
-            socketIo.emit ( 'iOpn' )
+        private QTGateGatewayConnectRequestCallBack ( _self: view, _data: IConnectCommand ) {
+            const self = _self|| this
+            self.QTTransferData ( _data.transferData )
+            self.QTConnectData ( _data )
+            $( '.userDetail' ).progress()
+            const index = self.QTGateRegions().findIndex (( n: QTGateRegions ) => { return n.qtRegion === _data.region })
+            if ( index < 0 ) {
+                return
+            }
+
+            const data = self.QTGateRegions()[ index ]
+            this.QTGateConnectRegionActive ( true )
+            this.menuClick ( 3, false )
+            this.selectedQTGateRegion ( data )
+            data.selected ( true )
+            data.showExtraContent ( false )
+            data.available ( true )
+            this.ConnectGatewayShow ( true )
+            return data.showConnectedArea ( true )
+
         }
+        public disconnecting = ko.observable ( false )
+        public disconnectClick () {
+            
+            this.disconnecting ( true )
+            socketIo.emit ( 'disconnectClick', () => {
+                this.selectedQTGateRegion().showConnectedArea( false )
+                this.ConnectGatewayShow ( false )
+                this.selectedQTGateRegionCancel () 
+                this.disconnecting ( false )
+            })
+        }
+
 
 	}
 }
-
+const linkClick = ( url: string ) => {
+    const { shell } = require ( 'electron' )
+    event.preventDefault ()
+    shell.openExternal ( url )
+}
 const view = new view_layout.view ()
 ko.applyBindings ( view , document.getElementById ( 'body' ))
 const u = '.' + view.tLang()
@@ -3181,6 +3819,6 @@ $('.activating.element').popup({
 })
 $('.mainAccordion').accordion({
 })
-
+$('.useInfoView').hide ()
 $( '.mainScreen1' ).hide()
 $( '#feedBackView').hide ()

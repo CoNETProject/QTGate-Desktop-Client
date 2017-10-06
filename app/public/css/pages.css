@@ -454,14 +454,113 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   height: 600px;
   transition: opacity 0.4s ease-out;
 }
-#feedBack {
+.useInfoView {
+  position: relative;
+}
+.feedBack {
   position: fixed;
   z-index: 100;
   top: 0.6em;
   right: 1.1em;
   opacity: 0.5;
 }
-#feedBack:hover{
+.localIP {
+  position: absolute;
+  left: 18em;
+  color: blue;
+
+}
+.WindowsUseInfoLocalServerIp {
+  position: absolute;
+  left: 13.9em;
+  top: 27.2em;
+  color: blue;
+}
+.firefoxUseLocalIp{
+  position: absolute;
+  left: 12em;
+  top: 16.8em;
+  color: blue;
+}
+.firefoxUseLocalPort{
+  position: absolute;
+  left: 28em;
+  top: 16.8em;
+  color: blue;
+}
+.firefoxUseLocalIp1{
+  position: absolute;
+  left: 12em;
+  top: 20.1em;
+  color: rgba(0, 0, 0, 0.199)
+}
+.firefoxUseLocalPort1{
+  position: absolute;
+  left: 28em;
+  top: 20.1em;
+  color: rgba(0, 0, 0, 0.199)
+}
+.firefoxUseLocalIp2{
+  position: absolute;
+  left: 12em;
+  top: 21.9em;
+  color: rgba(0, 0, 0, 0.199)
+}
+.firefoxUseLocalPort2{
+  position: absolute;
+  left: 28em;
+  top: 21.9em;
+  color: rgba(0, 0, 0, 0.199)
+}
+.firefoxUseLocalIp3{
+  position: absolute;
+  left: 12em;
+  top: 23.7em;
+  color: rgba(0, 0, 0, 0.199)
+}
+.firefoxUseLocalPort3{
+  position: absolute;
+  left: 28em;
+  top: 23.7em;
+  color: rgba(0, 0, 0, 0.199)
+}
+.WindowsUseInfoPort{
+  position: absolute;
+  left: 21.4em;
+  top: 27.2em;
+  color: blue;
+}
+.iOSUseInfoLocalServerIp{
+  position: absolute;
+  left: 4em;
+  top: 14.1em;
+  color: blue;
+}
+.iOSUseInfoPort{
+  position: absolute;
+  left: 4em;
+  top: 16.1em;
+  color: blue;
+}
+.androidUseInfoLocalServerIp{
+  position: absolute;
+  left: 7em;
+  top: 10em;
+  color: blue;
+}
+.androidUseInfoPort{
+  position: absolute;
+  left: 7em;
+  top: 14.5em;
+  color: blue;
+}
+.localIPPort {
+  position: absolute;
+  left: 30.7em;
+  color: blue;
+
+}
+.feedBack:hover{
   opacity: 0.8;
 }
 #languageArea {
@@ -586,11 +685,11 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   margin: auto!important;
 }
 .ui.popup {
-  background-color: rgba(200,128,128, 0.9);
+  background-color: rgba(0,128,128, 0.8);
   color: white;
 }
 .ui.popup:before {
-  background-color: rgba(200,128,128, 0.8)!important;
+  background-color: rgba(0,128,128, 0.8)!important;
   
 }
 .cardImageSetup {

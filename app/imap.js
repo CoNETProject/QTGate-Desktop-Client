@@ -15,16 +15,20 @@ const crypto = require("crypto");
 const path_1 = require("path");
 const os_1 = require("os");
 const MAX_INT = 9007199254740992;
-const debug = false;
+const debug = true;
 const QTGateFolder = path_1.join(os_1.homedir(), '.QTGate');
 const ErrorLogFile = path_1.join(QTGateFolder, 'imap.log');
+let flag = 'w';
 const saveLog = (log) => {
     const Fs = require('fs');
     const data = `${new Date().toUTCString()}: ${log}\r\n`;
-    Fs.appendFile(ErrorLogFile, data, err => { });
+    Fs.appendFile(ErrorLogFile, data, { flag: flag }, err => {
+        flag = 'a';
+    });
 };
 const debugOut = (text, isIn) => {
-    console.log(`【${new Date().toISOString()}】${isIn ? '<=' : '=>'} 【${text}】`);
+    const log = `【${new Date().toISOString()}】${isIn ? '<=' : '=>'} 【${text}】`;
+    saveLog(log);
 };
 const idleInterval = 1000 * 60; // 3 mins
 const noopInterval = 1000;
@@ -259,12 +263,12 @@ class ImapServerSwitchStream extends Stream.Transform {
                 }
                 let haveMoreNewMail = false;
                 return Async.waterfall([
-                    next => this.fetch(newMailIds, next),
+                        next => this.fetch(newMailIds, next),
                     (_moreNew, next) => {
                         haveMoreNewMail = _moreNew;
                         this.flagsDeleted(newMailIds, next);
                     },
-                    next => this.expunge(next)
+                        next => this.expunge(next)
                 ], err => {
                     this.runningCommand = null;
                     if (err)
@@ -650,8 +654,8 @@ class ImapServerSwitchStream extends Stream.Transform {
         const doLogout = () => {
             if (this.imapServer.listenFolder && this.imapServer.deleteBoxWhenEnd) {
                 return Async.series([
-                    next => this.deleteBox(next),
-                    next => this._logout(next)
+                        next => this.deleteBox(next),
+                        next => this._logout(next)
                 ], callback);
             }
             return this._logout(callback);
@@ -1068,7 +1072,7 @@ class imapPeer extends Event.EventEmitter {
     }
     sendDone() {
         return Async.waterfall([
-            next => this.enCrypto(JSON.stringify({ done: new Date().toISOString() }), next),
+                next => this.enCrypto(JSON.stringify({ done: new Date().toISOString() }), next),
             (data, next) => this.sendToRemote(Buffer.from(data), next)
         ], err => {
             if (err)
