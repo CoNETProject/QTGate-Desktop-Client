@@ -2325,6 +2325,13 @@ const _QTGateRegions: QTGateRegions[] = [
     }
 ]
 const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.com$|imap\.mail\.me\.com$|imap\.mail\.yahoo\.co\.jp$/i
+const dummyIConnectCommand: IConnectCommand = {
+    connectPeer: null,
+    connectType: null,
+    localServerIp: null,
+    localServerPort: null
+}
+
 module view_layout {
     export class emailPoolData {
         public GetImapData () {
@@ -2882,20 +2889,20 @@ module view_layout {
 
             public QTGateConnect_SelectTech = ko.observable(-1)
             public QTGateConnect1 = ko.observable ('')
-            public QTGateConnect2 = ko.observable (false)
+            public QTGateConnect2 = ko.observable ( false )
             public QTGateAllData = ko.observable ( false )
             public QTGateCacheUse = ko.observable ( false )
             public QTGate_CacheTime = ko.observable (0)
             public QTGate_showDeleteCacheButton = ko.observable ( false )
             public QTGateLocalProxyPort = ko.observable (3001)
-            public QTGateLoacalProxyPath = ko.observable ( (Math.random() * 100000).toString() )
+            public QTGateLoacalProxyPath = ko.observable (( Math.random() * 100000 ).toString() )
             public localProxyPortError = ko.observable ( false )
             public QTGateGatewayActive = ko.observable ( false )
             public QTGateGatewayActiveProcess = ko.observable ( false )
             public QTGateGatewayError = ko.observable ( -1 )
             public QTTransferData = ko.observable ( transfer )
-            public QTConnectData = ko.observable ({gateWayIpAddress: null, gateWayPort: null})
-            public MenuItems = ko.observable ([false, true, false, false, false])
+            public QTConnectData = ko.observable ( dummyIConnectCommand )
+            public MenuItems = ko.observable ([ false, true, false, false, false ])
             public showKeyPairPorcess = ko.observable ( false )
             public showDisconnectbutton = ko.observable ( true )
             public ConnectGatewayShow = ko.observable ( false )

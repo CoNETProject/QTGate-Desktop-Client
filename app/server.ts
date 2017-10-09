@@ -603,10 +603,14 @@ export class localServer {
 				requestSerial: Crypto1.randomBytes(8).toString('hex')
 			}
 			
-			return this.QTClass.request(com, (err: number, res: QTGateAPIRequestCommand) => {
-				saveLog ( JSON.stringify ( res.Args ))
-				CallBack( res.Args )
+			return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
 
+				saveLog ( JSON.stringify ( res.Args ))
+				CallBack( res.Args[0] )
+				//		Have gateway connect!
+				if ( res.Args[1]) {
+					
+				}
 			})
 		})
 
@@ -700,11 +704,11 @@ export class localServer {
 					if ( ! Net.isIPv4 ( ipAddress )) {
 						ipAddress = ipAddress.split ('\n')[0]
 					}
+					cmd.imapData.clientIpAddress = ipAddress
 				}
-				cmd.imapData.clientIpAddress = ipAddress
+				
 				cmd.imapData.randomPassword = Crypto1.randomBytes (15).toString('hex')
 				saveLog (`ipAddress = [${ ipAddress }] Buffer [] = ${ Buffer.from ( ipAddress ).toString ('hex')}`)
-
 				
 				const com: QTGateAPIRequestCommand = {
 					command: 'connectRequest',
@@ -713,25 +717,27 @@ export class localServer {
 					
 					requestSerial: Crypto1.randomBytes(8).toString('hex')
 				}
-
+				
 				
 				return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
 					const arg: IConnectCommand = res.Args[0]
-					
+					arg.localServerIp = this.config.localIpAddress[0]
+					this.connectCommand = arg
+					saveLog ( `this.proxyServer = new RendererProcess type = [${ arg.connectType }] data = [${ JSON.stringify( arg )}]` )
 					//		no error
+					CallBack ( arg )
 					if ( arg.error < 0 ) {
 						//		@QTGate connect
 						if ( arg.connectType === 1 ) {
-							return
+							return this.proxyServer = new RendererProcess ( '@Opn', arg, true, () => {
+								saveLog ( `proxyServerWindow on exit!`)
+							})
+							
 						}
 						//
 						//		iQTGate connect
-
-						arg.localServerIp = this.config.localIpAddress[0]
-						this.connectCommand = arg
-						saveLog ( `this.proxyServer = new RendererProcess type = [${ arg.connectType }] data = [${ JSON.stringify( arg )}]` )
 		
-						this.proxyServer = new RendererProcess ( 'iOpn', arg, false, () => {
+						return this.proxyServer = new RendererProcess ( 'iOpn', arg, true, () => {
 							saveLog (`proxyServerWindow on exit!`)
 						})
 						
@@ -739,9 +745,6 @@ export class localServer {
 					return CallBack ( arg )
 					
 				})
-				
-				
-				
 				
 			})
 			

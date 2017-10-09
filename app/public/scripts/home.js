@@ -2192,6 +2192,12 @@ const _QTGateRegions = [
     }
 ];
 const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.com$|imap\.mail\.me\.com$|imap\.mail\.yahoo\.co\.jp$/i;
+const dummyIConnectCommand = {
+    connectPeer: null,
+    connectType: null,
+    localServerIp: null,
+    localServerPort: null
+};
 var view_layout;
 (function (view_layout) {
     class emailPoolData {
@@ -2683,7 +2689,7 @@ var view_layout;
             this.QTGateGatewayActiveProcess = ko.observable(false);
             this.QTGateGatewayError = ko.observable(-1);
             this.QTTransferData = ko.observable(transfer);
-            this.QTConnectData = ko.observable({ gateWayIpAddress: null, gateWayPort: null });
+            this.QTConnectData = ko.observable(dummyIConnectCommand);
             this.MenuItems = ko.observable([false, true, false, false, false]);
             this.showKeyPairPorcess = ko.observable(false);
             this.showDisconnectbutton = ko.observable(true);

@@ -9,6 +9,8 @@ import * as Rfc1928 from './Rfc1928'
 import * as res from './res'
 import * as Async from 'async'
 import * as imapClass from './imapClass'
+const { remote } = require ( "electron" )
+
 interface dnsAddress {
 	address: string
 	family: number
@@ -369,4 +371,15 @@ export default class imapProxyServer {
 }
 
 const checkAgainTimeOut = 1000 * 60 * 5
-//new imapProxyServer ([],new Map(), 3001, 'pac', checkAgainTimeOut, imapData, 2000, true, [] )
+const whiteList = []
+const domainBlackList = []
+const domainListPool = new Map ()
+const socketPath = 'pac'
+
+remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
+	console.log ( data )
+	const server = new imapProxyServer ( whiteList, domainListPool, data.localServerPort, socketPath, checkAgainTimeOut, data.imapData, 5000, data.AllDataToGateway, domainBlackList )
+	
+})
+
+remote.getCurrentWindow().emit ( 'first' )

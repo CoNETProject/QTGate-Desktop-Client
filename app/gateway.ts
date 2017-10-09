@@ -24,6 +24,7 @@ const otherRequestForNet = ( path: string, host: string, port: number, UserAgent
 class hostLookupResponse extends Stream.Writable {
 	constructor ( private CallBack: ( err?: Error, dns?: domainData ) => void ) { super ()}
 	public _write ( chunk: Buffer, enc, next ) {
+		console.log ( `hostLookupResponse _write come [${ chunk.toString()}]`)
 		const ns = chunk.toString ( 'utf8' )
 		try {
 			const _ret = JSON.parse ( ns )
@@ -58,26 +59,34 @@ export default class gateWay {
 		
 		const encrypt = new Compress.encryptStream ( this.password, 0, ( str: string ) => {
 			return this.request ( str )
-		}, err => {
-			if ( err ) {
-				return CallBack ( err )
-			}
-			const finish = new hostLookupResponse ( CallBack )
-			const httpBlock = new Compress.getDecryptClientStreamFromHttp ()
-			const decrypt = new Compress.decryptStream ( this.password )
-			
-
-			const _socket = Net.connect ({ port: this.serverPort, host: this.serverIp }, () => {
-				httpBlock.on ( 'error', err => {
-					_socket.end ( res._HTTP_502 )
-					return CallBack ( err )
-				})
-				encrypt.pipe ( _socket ).pipe ( httpBlock ).pipe ( decrypt ).pipe ( finish )
-				encrypt.write ( _data )
-				console.log (`send data to remote!`)
-				console.log(`*************\n${_data.toString ()}\n*********`)
-			})
 		})
+		
+		const finish = new hostLookupResponse ( CallBack )
+		const httpBlock = new Compress.getDecryptClientStreamFromHttp ()
+		const decrypt = new Compress.decryptStream ( this.password )
+		
+
+		const _socket = Net.createConnection ({ port: this.serverPort, host: this.serverIp }, () => {
+			encrypt.write ( _data )
+			console.log (`send data to remote!`)
+			console.log(`*************\n${_data.toString ()}\n*********`)
+		})
+
+		_socket.once ( 'end', () => {
+			console.log (`_socket.once end!`)
+		})
+
+		httpBlock.once ( 'error', err => {
+			console.log (`httpBlock.on error`, err )
+			_socket.end ( res._HTTP_502 )
+			return CallBack ( err )
+		})
+
+		decrypt.once ( 'err', err=> {
+
+		} )
+		encrypt.pipe ( _socket ).pipe ( httpBlock ).pipe ( decrypt ).pipe ( finish )
+		
 		
 	}
 
@@ -86,25 +95,18 @@ export default class gateWay {
 		const decrypt = new Compress.decryptStream ( this.password )
 		const encrypt = new Compress.encryptStream ( this.password, 0, ( str: string ) => {
 			return this.request ( str )
-		}, err => {
-
-			if ( err ) {
-				return console.log ( 'requestGetWay new Compress.encryptStream got ERROR: ', err.message )
-			}
-
-			const httpBlock = new Compress.getDecryptClientStreamFromHttp ()
-			httpBlock.once ( 'error', err => {
-				socket.end ( res._HTTP_404 )
-			})
-			const _socket = Net.connect ({ port: this.serverPort, host: this.serverIp }, () => {
-				console.log ( 'requestGetWay connect:', uuuu.host, uuuu.port )
-				encrypt.pipe ( _socket ).pipe ( httpBlock ).pipe ( decrypt ).pipe ( socket ).pipe ( encrypt )
-				encrypt.write ( Buffer.from ( JSON.stringify ( uuuu ), 'utf8' ))
-			})
-		
 		})
-		
-		
+		const httpBlock = new Compress.getDecryptClientStreamFromHttp ()
+		httpBlock.once ( 'error', err => {
+			socket.end ( res._HTTP_404 )
+		})
+		const _socket = Net.createConnection ({ port: this.serverPort, host: this.serverIp }, () => {
+			console.log ( 'requestGetWay connect:', uuuu.host, uuuu.port )
+			
+			encrypt.write ( Buffer.from ( JSON.stringify ( uuuu ), 'utf8' ))
+		})
+		encrypt.pipe ( _socket ).pipe ( httpBlock ).pipe ( decrypt ).pipe ( socket ).pipe ( encrypt )
+
 	}
 
 	public requestGetWayTest ( id: string, uuuu: VE_IPptpStream, userAgent: string, socket: Net.Socket ) {

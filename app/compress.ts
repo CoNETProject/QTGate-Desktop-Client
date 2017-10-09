@@ -143,10 +143,8 @@ export class encryptStream extends Stream.Transform {
 	private BlockBuffer ( _buf: Buffer ) {
 		return Buffer.from( _buf.length.toString( 16 ).toUpperCase() + '\r\n', 'utf8' )
 	}
-
-	constructor ( private password: string, private random: number, private httpHeader : ( str: string ) => Buffer, CallBack ) {
-		super ()
-		Async.waterfall ([
+	private init ( callback ) {
+		return Async.waterfall ([
 			next => crypto.randomBytes ( 64, next ),
 			( _salt, next ) => {
 				this.salt = _salt
@@ -154,18 +152,25 @@ export class encryptStream extends Stream.Transform {
 			},
 			( _iv, next ) => {
 				this.iv = _iv
-				console.log (password)
-				crypto.pbkdf2 ( password, this.salt, 2145, 32, 'sha512', next )
+				crypto.pbkdf2 ( this.password, this.salt, 2145, 32, 'sha512', next )
 			}
 		], ( err, derivedKey ) => {
 			
 			this.derivedKey = derivedKey
-			return CallBack ( err )
+			return callback ( err )
 		})
+	}
+
+	constructor ( private password: string, private random: number, private httpHeader : ( str: string ) => Buffer ) {
+		super ()
 	}
 	
 	public _transform ( chunk: Buffer, encode, cb ) {
-
+		if ( !this.derivedKey) {
+			return this.init (() => {
+				return this._transform ( chunk, encode, cb )
+			})
+		}
 		const cipher = crypto.createCipheriv ( 'aes-256-gcm', this.derivedKey, this.iv )
 
 		let _text = Buffer.concat ([ Buffer.alloc ( 4, 0 ) , chunk ])
@@ -201,7 +206,6 @@ export class encryptStream extends Stream.Transform {
 }
 
 export class decryptStream extends Stream.Transform {
-	private first = true
 	private salt: Buffer
 	private iv: Buffer
 	private bufferLength = 8196
@@ -213,21 +217,20 @@ export class decryptStream extends Stream.Transform {
 		decipher.setAuthTag ( _text.slice ( 0, 16 ))
 		try {
 			const _buf = Buffer.concat ([ decipher.update ( _text.slice ( 16 )), decipher.final () ])
-
-			const leng = _buf.slice( 4, 4 + _buf.readUInt32BE ( 0 ))
+			
+			const leng = _buf.slice ( 4, 4 + _buf.readUInt32BE ( 0 ))
 			if ( leng && leng.length ) {
 				return leng
 			}
-				
+			
 			return Buffer.allocUnsafe ( 0 )
 		} catch ( e ) {
-			console.log ('class decryptStream _decrypt error:', e.message )
+			console.log ( 'class decryptStream _decrypt error:', e.message )
 			return Buffer.allocUnsafe ( 0 )
 		}
 	}
 
 	public _First (  chunk: Buffer, CallBack: ( err?: Error, text?: Buffer ) => void ) {
-		this.first = false
 		this.salt = chunk.slice ( 0, 64 );
 		this.iv = chunk.slice ( 64, 76 );
 		return crypto.pbkdf2 ( this.password, this.salt , 2145, 32, 'sha512', ( err, derivedKey ) => {
@@ -247,27 +250,17 @@ export class decryptStream extends Stream.Transform {
 		super ()
 	}
 
-	private blockData ( chunk: Buffer, cb ) {
-		this.push ( chunk )
-		cb ()
-	}
 	
 	public _transform ( chunk: Buffer, encode, cb ) {
-
-		let first = 0
-		if ( this.first ) {
-			return this._First ( chunk, ( err, text ) => {
-				if ( err )
-					return cb ( err )
-				return this.blockData ( text, cb )
-				
-			})
+		
+		if ( !this.derivedKey ) {
+			return this._First ( chunk, cb )
 		}
 
-		const text = this._decrypt ( chunk.slice ( 0 ))
+		const text = this._decrypt ( chunk )
 		if ( ! text.length )
 			return cb ( new Error ( 'lenth = 0'))
-		return this.blockData ( text, cb )
+		return cb ( null, text )
 		
 	}
 }

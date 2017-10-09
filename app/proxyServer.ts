@@ -490,8 +490,9 @@ export default class proxyServer {
 		})
 
 		server.listen ( port, () => {
-			console.log ( '****************************************' )
+			console.log (`remote server: [${ serverIp }]:[${ serverPort }]`)
 			return console.log ( 'proxy start success on port :', port, 'security path = ', securityPath )
+
 		})
 
 	}

@@ -15,7 +15,7 @@ import { join } from 'path'
 import { homedir }from 'os'
 
 const MAX_INT = 9007199254740992
-const debug = true
+const debug = false
 const QTGateFolder = join ( homedir(), '.QTGate' )
 const ErrorLogFile = join ( QTGateFolder, 'imap.log' )
 let flag = 'w'
@@ -67,20 +67,22 @@ class ImapServerSwitchStream extends Stream.Transform {
 
     constructor ( public imapServer: qtGateImap, private eachMail: boolean, private exitWithDeleteBox: boolean, private debug: boolean ) {
         super ()
-
-        this.imapServer.on ( 'nextNewMail', () => {
-            this.nextRead = true
-            if (this.runningCommand!= 'idle')
-                return
-            if (this.imapServer.idleSupport) {
-                return this.idleStop ()
-            }
-
-        })
+        if ( eachMail ) {
+            this.imapServer.on ( 'nextNewMail', () => {
+                this.nextRead = true
+                if ( this.runningCommand !== 'idle' )
+                    return
+                if ( this.imapServer.idleSupport ) {
+                    return this.idleStop ()
+                }
+    
+            })
+        }
+        
     }
 
     public idleStop () {
-        if ( !this.imapServer.idleSupport || this.runningCommand !== 'idle') {
+        if ( !this.imapServer.idleSupport || this.runningCommand !== 'idle' ) {
             return 
         }
 
@@ -233,8 +235,9 @@ class ImapServerSwitchStream extends Stream.Transform {
                 console.log ( _buf1.length )
                 console.log ( _buf1.toString ())
                 */
-                this.nextRead = false
-                this.imapServer.newMail(_buf1)
+                if ( this.eachMail )
+                    this.nextRead = false
+                this.imapServer.newMail ( _buf1 )
                 
             }
             return __CallBack ()
@@ -301,7 +304,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                 if ( err ) {
                     return this.imapServer.destroyAll ( err )
                 }
-                if (! newMailIds || !newMailIds.length || !this.nextRead ) {
+                if (! newMailIds || ! newMailIds.length || ! this.nextRead ) {
                     this.runningCommand = null
                     return this.idleNoop()
                 }
@@ -314,11 +317,11 @@ class ImapServerSwitchStream extends Stream.Transform {
                         this.flagsDeleted ( newMailIds, next )
                     },
                     next => this.expunge ( next )
-                ], err => {
+                ], ( err, newMail ) => {
                     this.runningCommand = null
                     if ( err )
                         return this.imapServer.destroyAll ( err )
-                    if ( this.nextRead && ( haveMoreNewMail || havemore ))
+                    if ( this.nextRead && ( haveMoreNewMail || havemore || newMail ))
                         return this.doNewMail ()
                     return this.idleNoop ()
                 })
@@ -330,9 +333,13 @@ class ImapServerSwitchStream extends Stream.Transform {
     }
 
     private checkLogout ( CallBack ) {
+
         if ( this.waitLogout ) {
-            if ( ! this.canDoLogout )
+
+            if ( ! this.canDoLogout ) {
                 return this.logout_process ( CallBack )
+            }
+                
             if ( this.exitWithDeleteBox ) {
                 return this.deleteBox (() => {
                     return this.logout_process ( CallBack )
@@ -729,17 +736,22 @@ class ImapServerSwitchStream extends Stream.Transform {
         return this.imapServer.destroyAll ( null )
     }
 
-    public logout ( callback ) {
+    public logout ( callback: () => void ) {
+        if ( this.waitLogout )
+            return callback
         this.waitLogout = true
-        this.waitLogoutCallBack = callback
         this.checkLogout ( callback )
     }
 
     private logout_process ( callback ) {
-
-        if ( ! this.writable )
+        console.log (`logout_process typeof callback = [${ typeof callback}]`)
+        if ( ! this.writable ) {
+            console.log (`logout_process [! this.writable] run return callback ()`)
             return callback ()
+        }
+            
         const doLogout = () => {
+            console.log (`logout_process doLogout()`)
             if ( this.imapServer.listenFolder && this.imapServer.deleteBoxWhenEnd ) {
                 return Async.series ([
                     next => this.deleteBox ( next ),
@@ -749,7 +761,7 @@ class ImapServerSwitchStream extends Stream.Transform {
             return this._logout ( callback )
         }
         if ( this.imapServer.listenFolder && this.runningCommand ) {
-
+            console.log (`logout_process [this.imapServer.listenFolder && this.runningCommand], doing this.idleStop ()`)
             this.idleCallBack = doLogout
             return this.idleStop ()
         }
@@ -780,7 +792,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         this.commandProcess = ( text: string, cmdArray: string[], next , _callback ) => {
             switch ( cmdArray[0] ) {
                 case '*': {
-                    if ( /^RECENT$/i.test ( cmdArray [2])) {
+                    if ( /^EXPUNGE$/i.test ( cmdArray [2])) {
                         if ( parseInt ( cmdArray[1])) {
                             newSwitchRet = true
                         }
@@ -800,6 +812,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         return this.imapServer.destroyAll ( null )
     }
 }
+
 
 export class qtGateImap extends Event.EventEmitter {
     public socket: Net.Socket
