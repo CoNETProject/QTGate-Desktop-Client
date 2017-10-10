@@ -775,7 +775,7 @@ const infoDefine = [
         QTGateGateway: {
             title: 'QTGate服务使用详细',
             processing: '正在尝试连接QTGate代理服务器...',
-            error: ['错误：您的账号下已经有一个正在使用QTGate代理服务器的连接，请先把它断开后再尝试连接。',
+            error: [ '错误：您的账号下已经有一个正在使用QTGate代理服务器的连接，请先把它断开后再尝试连接。',
                     '错误：您的账号已经无可使用流量，如果您需要继续使用QTGate代理服务器，请升级您的账户类型。如果是免费用户已经使用当天100M流量，请等待到明天继续使用，如您是免费用户已经用完当月1G流量，请等待到下月继续使用。',
                     '错误：数据错误，请退出并重新启动QTGate！'],
             connected:'已连接。',
@@ -3751,7 +3751,7 @@ module view_layout {
                 data.showExtraContent ( false )
                 data.showRegionConnectProcessBar ( true )
                 
-                socketIo.emit( 'QTGateGatewayConnectRequest', connect, _data => {
+                socketIo.emit( 'QTGateGatewayConnectRequest', connect, ( _data: QTGateAPIRequestCommand ) => {
                     clearTimeout ( doingProcessBarTime )
                     data.showRegionConnectProcessBar ( false )
                     if ( _data.error > -1 ) {
@@ -3760,7 +3760,8 @@ module view_layout {
                         //this.QTGateGatewayActiveProcess ( false )
                         return data.error ( _data.error )
                     }
-                    return this.QTGateGatewayConnectRequestCallBack ( this, _data  )
+                    const data1 = _data.Args[0]
+                    return this.QTGateGatewayConnectRequestCallBack ( this, data1  )
                     
                 })
                 
@@ -3771,7 +3772,7 @@ module view_layout {
         }
 
         private QTGateGatewayConnectRequestCallBack ( _self: view, _data: IConnectCommand ) {
-            const self = _self|| this
+            const self = _self || this
             self.QTTransferData ( _data.transferData )
             self.QTConnectData ( _data )
             $( '.userDetail' ).progress()

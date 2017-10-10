@@ -3424,7 +3424,7 @@ var view_layout;
                 doingProcessBar();
                 data.showExtraContent(false);
                 data.showRegionConnectProcessBar(true);
-                socketIo.emit('QTGateGatewayConnectRequest', connect, _data => {
+                socketIo.emit('QTGateGatewayConnectRequest', connect, (_data) => {
                     clearTimeout(doingProcessBarTime);
                     data.showRegionConnectProcessBar(false);
                     if (_data.error > -1) {
@@ -3433,7 +3433,8 @@ var view_layout;
                         //this.QTGateGatewayActiveProcess ( false )
                         return data.error(_data.error);
                     }
-                    return this.QTGateGatewayConnectRequestCallBack(this, _data);
+                    const data1 = _data.Args[0];
+                    return this.QTGateGatewayConnectRequestCallBack(this, data1);
                 });
                 return false;
             });

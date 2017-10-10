@@ -12,32 +12,37 @@ import { format } from 'url'
 import { spawn } from 'child_process'
 const { app, BrowserWindow, Tray, Menu, dialog, remote } = require ( 'electron' )
 
-const handleSquirrelEvent = ( CallBack ) => {
+
+  
+  function handleSquirrelEvent() {
     if ( process.argv.length === 1 || process.platform !== 'win32') {
-      return CallBack ( false )
+      return false;
     }
   
-    const appFolder = resolve ( process.execPath, '..')
-    const rootAtomFolder = resolve ( appFolder, '..')
-    const updateDotExe = resolve ( join ( rootAtomFolder, 'Update.exe' ))
-    const exeName = basename ( process.execPath )
+    const ChildProcess = require('child_process');
+    const path = require('path');
   
-    const _spawn = ( command, args ) => {
-      let spawnedProcess, error
+    const appFolder = path.resolve(process.execPath, '..');
+    const rootAtomFolder = path.resolve(appFolder, '..');
+    const updateDotExe = path.resolve(path.join(rootAtomFolder, 'Update.exe'));
+    const exeName = path.basename(process.execPath);
+  
+    const spawn = function(command, args) {
+      let spawnedProcess, error;
   
       try {
-        spawnedProcess = spawn ( command, args, { detached: true })
-      } catch ( error ) {}
+        spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
+      } catch (error) {}
   
-      return spawnedProcess
-    }
+      return spawnedProcess;
+    };
   
-    const spawnUpdate = args => {
-      return _spawn ( updateDotExe, args )
-    }
+    const spawnUpdate = function(args) {
+      return spawn(updateDotExe, args);
+    };
   
-    const squirrelEvent = process.argv[1]
-    switch ( squirrelEvent ) {
+    const squirrelEvent = process.argv[1];
+    switch (squirrelEvent) {
       case '--squirrel-install':
       case '--squirrel-updated':
         // Optionally do things such as:
@@ -46,33 +51,34 @@ const handleSquirrelEvent = ( CallBack ) => {
         //   explorer context menus
   
         // Install desktop and start menu shortcuts
-        spawnUpdate([ '--createShortcut', exeName ])
+        spawnUpdate(['--createShortcut', exeName]);
   
-        return setTimeout (() => {
-            return CallBack ( true )
-        }, 1000 )
-        
+        setTimeout(app.quit, 1000);
+        return true;
   
       case '--squirrel-uninstall':
         // Undo anything you did in the --squirrel-install and
         // --squirrel-updated handlers
   
         // Remove desktop and start menu shortcuts
-        spawnUpdate(['--removeShortcut', exeName])
+        spawnUpdate(['--removeShortcut', exeName]);
   
-        return setTimeout (() => {
-            return CallBack ( true )
-        }, 1000 )
-
+        setTimeout(app.quit, 1000);
+        return true;
   
       case '--squirrel-obsolete':
         // This is called on the outgoing version of your app before
         // we update to the new version - it's the opposite of
         // --squirrel-updated
   
-        return CallBack ( true )
+        app.quit();
+        return true;
     }
-}
+  }
+  if (handleSquirrelEvent()) {
+    // squirrel event handled and app will exit in 1000ms, so don't do anything else
+    return
+  }
     // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion()
 
@@ -313,9 +319,4 @@ const initialize = () => {
 
 
 
-handleSquirrelEvent( isReset => {
-    if ( isReset ) {
-        return app.quit ()
-    }
-    initialize()
-})
+initialize()

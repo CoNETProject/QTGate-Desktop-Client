@@ -585,6 +585,19 @@ class localServer {
                 CallBack(res.Args[0]);
                 //		Have gateway connect!
                 if (res.Args[1]) {
+                    const uu = res.Args[1];
+                    if (!this.connectCommand) {
+                        this.connectCommand = uu;
+                    }
+                    if (!this.proxyServer) {
+                        const runCom = uu.connectType === 1 ? '@Opn' : 'iOpn';
+                        this.proxyServer = new RendererProcess(runCom, uu, true, () => {
+                            saveLog(`proxyServerWindow on exit!`);
+                            this.proxyServer = null;
+                            this.connectCommand = null;
+                        });
+                    }
+                    return socket.emit('QTGateGatewayConnectRequest', this.connectCommand);
                 }
             });
         });
@@ -649,7 +662,6 @@ class localServer {
             });
         });
         socket.on('QTGateGatewayConnectRequest', (cmd, CallBack) => {
-            saveLog('socket.on QTGateGatewayConnectRequest');
             //		already have proxy
             if (this.proxyServer) {
                 return;
@@ -675,24 +687,19 @@ class localServer {
                 return this.QTClass.request(com, (err, res) => {
                     const arg = res.Args[0];
                     arg.localServerIp = this.config.localIpAddress[0];
-                    this.connectCommand = arg;
                     saveLog(`this.proxyServer = new RendererProcess type = [${arg.connectType}] data = [${JSON.stringify(arg)}]`);
                     //		no error
-                    CallBack(arg);
-                    if (arg.error < 0) {
-                        //		@QTGate connect
-                        if (arg.connectType === 1) {
-                            return this.proxyServer = new RendererProcess('@Opn', arg, true, () => {
-                                saveLog(`proxyServerWindow on exit!`);
-                            });
-                        }
-                        //
-                        //		iQTGate connect
-                        return this.proxyServer = new RendererProcess('iOpn', arg, true, () => {
+                    CallBack(res);
+                    if (res.error < 0) {
+                        this.connectCommand = arg;
+                        const runCom = arg.connectType === 1 ? '@Opn' : 'iOpn';
+                        return this.proxyServer = new RendererProcess(runCom, arg, false, () => {
                             saveLog(`proxyServerWindow on exit!`);
+                            this.proxyServer = null;
+                            this.connectCommand = null;
                         });
                     }
-                    return CallBack(arg);
+                    saveLog(`res.error [${res.error}]`);
                 });
             });
         });
