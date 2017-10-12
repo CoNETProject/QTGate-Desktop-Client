@@ -51,7 +51,6 @@
   },
   "dependencies": {
     "async": "^2.5.0",
-    "nuts-serve": "^3.1.1",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
     "jquery": "^3.2.1",
