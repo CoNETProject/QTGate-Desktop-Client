@@ -454,7 +454,7 @@ block jumbotron1
 
 				//-
 			#QTGateConnectContent.content( data-bind = "  visible: QTGateConnectActive() && MenuItems()[3] && showActiveMail () " style = "margin-top: 3em;")
-				#QTGateConnecting.ui.tiny.steps.top.attached.hideArea( data-bind = "css: { 'two': QTGateConnecting() < 2, 'three': QTGateConnecting () === 2 || QTGateConnecting () > 3 && QTGateConnecting() < 6}, visible: QTGateConnecting() < 6 ")
+				#QTGateConnecting.ui.tiny.steps.top.attached.hideArea( data-bind = "css: { 'two': QTGateConnecting() < 2, 'three': QTGateConnecting () === 2 || QTGateConnecting () > 3 && QTGateConnecting() < 6 }, visible: QTGateConnecting () < 6 ")
 					.step.completed( style = "padding: 8px;")
 						a.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', visible: QTGateConnecting() === 3, attr: { 'data-html': infoDefine[ languageIndex() ].error_message.imapErrorMessage [ QTGateConnectError() ]}")
 						.content
@@ -478,7 +478,8 @@ block jumbotron1
 							//-.description
 								span( data-bind = " text: infoDefine [ languageIndex() ].qtGateView.QTGateSign [ QTGateConnecting() === 2 ? 1: QTGateConnecting() === 5 ? 5 : 3 ] " style="color:rgba(0,0,0,.5);")
 							.loader( data-bind = " css: { 'ui active': QTGateConnecting() === 4 } ")
-
+				.LongTimeWaitting.ui.segment( data-bind = "visible: connectQTGateShow()")
+					span( data-bind=" text: infoDefine [ languageIndex() ].qtGateView.QTGateConnectResultWaiting " style = "color:red;")
 				.KeypairSign.ui.attached.segment( data-bind = " visible: QTGateConnecting() === 2" )
 					.KeypairSignTitle.AccordionBox-shadow-delete.title( data-bind = " visible: QTGateConnecting() === 2" )
 						span( data-bind = " text: infoDefine [ $root.languageIndex() ].emailConform.info1_1 " style="color:rgba(0,0,0,.5);")

@@ -742,6 +742,7 @@ const infoDefine = [
             title: 'QTGate连接',
             mainImapAccount: 'QTGate通讯用邮箱',
             QTGateConnectStatus: 'QTGate连接状态',
+            QTGateConnectResultWaiting: '已向QTGate系统发送连接请求Email。由于是首次连接QTGate系统，系统需要几分钟时间来完成与您的对接，请耐心等待。',
             QTGateSignButton: '',
             QTGateConnectError: ['给QTGate发送连接请求Email出现发送错误，请检查IMAP邮件帐户的SMTP设定！'],
             QTGateConnectResult: ['QTGate未联机，请点击连接QTGate！', '正在和QTGate联机中', '已经连接QTGate', '连接QTGate时发生错误，请修改IMAP账号设定', '已经连接QTGate'],
@@ -1158,6 +1159,7 @@ const infoDefine = [
         },
         qtGateView: {
             title: 'QTGates接続',
+            QTGateConnectResultWaiting: 'QTGateシステムへ接続請求メールを送信しました。初めてのQTGateシステムへ接続請求ですから、接続完成したまで数分かかる場合もあるかもしれませんが、暫くお待ちをください。',
             mainImapAccount: 'QTGateへ情報交換用Emailアカンウト',
             QTGateConnectError: ['QTG'],
             QTGateConnectStatus: 'QTGate接続状態',
@@ -1556,6 +1558,7 @@ const infoDefine = [
             disconnecting: 'Disconnecting'
         },
         qtGateView: {
+            QTGateConnectResultWaiting: 'It will take a few minutes to response to your connection request via QTGATE System. Please keep waiting.',
             title: 'QTGate connect',
             mainImapAccount: 'Email account for communicate with QTGate',
             QTGateConnectStatus: 'Status of QTGate connect',
@@ -1954,6 +1957,7 @@ const infoDefine = [
         },
         qtGateView: {
             title: 'QTGate連接',
+            QTGateConnectResultWaiting: '已向QTGate系統發送連接請求Email。由於是首次連接QTGate系統，系統需要幾分鐘時間來完成與您的對接，請耐心等待。',
             mainImapAccount: 'QTGate通訊用郵箱',
             QTGateConnectStatus: 'QTGate連接狀態',
             QTGateConnectResult: ['QTGate未聯機，請點擊連接QTGate！', '正在和QTGate聯機中', '已經連接QTGate', '連接QTGate時發生錯誤，請修改IMAP賬號設定',
@@ -2774,6 +2778,7 @@ var view_layout;
                 }
                 return (check);
             });
+            this.connectQTGateShow = ko.observable(false);
             this.disconnecting = ko.observable(false);
             this.newVersionInstallLoading = ko.observable(false);
             this.QTGateLocalProxyPort.subscribe(newValue => {
@@ -2942,6 +2947,9 @@ var view_layout;
                     this.QTGateConnectActive(true);
                     this.QTGateConnectError(data.error);
                     //      connected to QTGate system
+                    if (data.qtGateConnecting > 1) {
+                        this.connectQTGateShow(false);
+                    }
                     if (data.qtGateConnecting === 2) {
                         return $('.activating.element').popup({
                             on: 'click',
@@ -3380,6 +3388,7 @@ var view_layout;
             return socketIo.emit('checkActiveEmailSubmit', this.conformText());
         }
         connectQTGate() {
+            this.connectQTGateShow(true);
             this.emailPool()[this.qtgateImapAccount()];
             socketIo.emit('connectQTGate', this.emailPool()[this.qtgateImapAccount()].uuid);
         }
