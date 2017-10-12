@@ -10,9 +10,7 @@ import { series } from 'async'
 import * as freePort from 'portastic'
 import { format } from 'url'
 import { spawn } from 'child_process'
-const { app, BrowserWindow, Tray, Menu, dialog, remote } = require ( 'electron' )
-
-
+const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater } = require ( 'electron' )
   
   function handleSquirrelEvent() {
     if ( process.argv.length === 1 || process.platform !== 'win32') {
@@ -91,8 +89,120 @@ let isSingleInstanceCheck = true
 let localServer1 = null
 let tray = null
 let mainWindow = null
-let updateWin = null
+const ErrorLogFile = join ( QTGateFolder, 'indexError.log' )
 export let port = 3000 + Math.round ( 10000 * Math.random ())
+const hideWindowDownload = ( downloadUrl, saveFilePath, Callback ) => {
+    let _err = null
+    if ( !downloadUrl ) {
+        return Callback ( new Error ( 'no url' )) 
+    }
+    Fs.access ( saveFilePath, err => {
+        if ( ! err ) {
+            return Callback ()
+        }
+        
+        let win = new BrowserWindow ({ show: false })
+        //win.webContents.openDevTools()
+        //win.maximize ()
+        //win.setIgnoreMouseEvents ( true )
+
+        let startTime = 0
+        let downloadBytes = 0
+    
+        win.webContents.session.once ( 'will-download', ( event, item, webContents ) => {
+
+            item.setSavePath ( saveFilePath )
+            //startTime = new Date ().getTime ()
+            console.log ( `start download file from [${ downloadUrl }]\r\n saveTo [${ saveFilePath }]`)
+            /*
+            const DEBUG = true
+                item.on ( 'updated', ( event, state ) => {
+                    if ( state === 'interrupted') {
+                        if ( DEBUG )
+                            console.log ( 'hideWindowDownload: Download is interrupted but can be resumed' + item.getURL() )
+                        return
+                    }
+    
+                    if ( item.isPaused ()) {
+                        if ( DEBUG )
+                            console.log ( 'hideWindowDownload: Download is interrupted but can be resumed' + item.getURL())
+                        return
+                    }
+                    downloadBytes = item.getReceivedBytes()
+                    if ( DEBUG )
+                        console.log ( `${item.getFilename()} Received bytes: ${item.getReceivedBytes()}`)
+                    return 
+                })
+            */
+            item.once ( 'done', ( event, state ) => {
+                if ( state === 'completed' ) {
+                    console.log ( `download [${ saveFilePath }] success!`)
+
+                    return win.close ()
+                }
+
+                return Fs.unlink ( saveFilePath, err => {
+                    _err = new Error ( state )
+                    console.log ( `Download failed: ${state}` )
+                    return win.close ()
+                })
+                
+            })
+        })
+        win.once ( 'closed', () => {
+            
+            win = null
+            if ( _err )
+                return Callback ( _err )
+            return Callback ()
+        })
+        return win.loadURL ( downloadUrl )
+    })
+}
+const saveLog = ( log: string ) => {
+	const data = `${ new Date().toUTCString () }: ${ log }\r\n`
+	Fs.appendFile ( ErrorLogFile, data, err => {
+		
+	})
+}
+const _doUpdate = ( tag_name: string, _port ) => {
+	let url = null
+	
+    if ( process.platform === 'darwin' ) {
+        url = `http://127.0.0.1:${ _port }/update/mac?ver=${ tag_name }`
+    } else 
+    if ( process.platform === 'win32' ) {
+        url = `http://127.0.0.1:${ _port }/latest/${ tag_name }/`
+    } else {
+        console.log (`process.platform === linux`)
+		return
+	}
+    saveLog (`start update with url [${ url }] [${ tag_name }] [${ Buffer.from (tag_name).toString('hex')}]`)
+    autoUpdater.on ( 'update-availabe', () => {
+        saveLog ( 'update available' )
+    })
+
+    autoUpdater.on ( 'error', err => {
+        saveLog ( 'systemError autoUpdater.on error ' + err.message )
+    })
+
+    autoUpdater.on('checking-for-update', () => {
+        saveLog ( `checking-for-update [${ url }]` )
+    })
+
+    autoUpdater.on( 'update-not-available', () => {
+        saveLog ( 'update-not-available' )
+    })
+
+    autoUpdater.on( 'update-downloaded', e => {
+        saveLog ( "Install?" )
+        autoUpdater.quitAndInstall ()
+    })
+
+    autoUpdater.setFeedURL ( url )
+    autoUpdater.checkForUpdates ()
+}
+
 const dirTitleErr = [
     [
         '文件夹创建错误',
@@ -109,7 +219,7 @@ const dirTitleErr = [
 ]
 
 const createWindow = () => {
-    if ( mainWindow ) {
+    if ( mainWindow && typeof mainWindow.isMinimized === 'function') {
         if ( mainWindow.isMinimized() )
             mainWindow.restore ()
         return mainWindow.focus ()
@@ -120,6 +230,7 @@ const createWindow = () => {
         minWidth: 850,
         minHeight: 480,
         resizable: debug,
+        show: false,
         backgroundColor: '#ffffff',
         icon: process.platform === 'linux' ? join ( __dirname, 'app/public/assets/images/512x512.png' ) : join ( __dirname, 'app/qtgate.icns' )
     })
@@ -127,17 +238,21 @@ const createWindow = () => {
     if ( debug ) {
         mainWindow.webContents.openDevTools()
         mainWindow.maximize()
-        require('devtron').install()
     }
     
     mainWindow.once ( 'closed', () => {
         mainWindow = null
     })
+    mainWindow.once ('ready-to-show', () => {
+        mainWindow.show()
+    })
+
 }
 
 const data11 = [
     {
         tray: [
+            
             {
                 label: '打开',
                 click: createWindow
@@ -249,7 +364,18 @@ const findPort = ( CallBack ) => {
         return findPort ( CallBack )
     })
 }
-
+const template = [
+    {
+        label: 'Edit',
+        submenu: [
+          {role: 'undo'},
+          {role: 'redo'},
+          {role: 'cut'},
+          {role: 'copy'},
+          {role: 'paste'}
+        ]
+    }
+]
 const initialize = () => {
 
     app.once ( 'ready', () => {
@@ -260,42 +386,47 @@ const initialize = () => {
             next => checkFolder ( QTGateLatest, next ),
             next => checkFolder ( QTGateTemp, next )
         ], err => {
-
+            const menu = Menu.buildFromTemplate(template)
+            Menu.setApplicationMenu(menu)
             if ( ! localServer1 ) {
                 findPort(() => {
-                    localServer1 = new BrowserWindow ({ show: false })
-                    localServer1.setIgnoreMouseEvents ( true )
+                    localServer1 = new BrowserWindow ({ show: debug })
+                    localServer1.setIgnoreMouseEvents ( !debug )
                     localServer1.rendererSidePort = port
-                    localServer1.rendererCreateWindow = createWindow
-                    //localServer1.webContents.openDevTools()
+                    localServer1._doUpdate = _doUpdate
+                    debug ? localServer1.webContents.openDevTools() : null
                     //localServer1.maximize ()
                     localServer1.loadURL ( format ({
                         pathname: join( __dirname, 'index.html'),
                         protocol: 'file:',
                         slashes: true
                     }))
+                    
+                    setTimeout (() => {
+                        const checkUpload = new BrowserWindow ({ show: debug })
+                        checkUpload.rendererSidePort = port
+                        checkUpload.hideWindowDownload = hideWindowDownload
+                        debug ? checkUpload.webContents.openDevTools() : null
+                        checkUpload.loadURL ( format ({
+                            pathname: join ( __dirname, 'app/update.html'),
+                            protocol: 'file:',
+                            slashes: true
+                        }))
+                    }, 5000 )
+                    
+                    
                 })
             }
     
             if ( !tray ) {
-                tray = new Tray ( join ( __dirname, 'app/16x16.png' ))
+                tray = new Tray ( join ( __dirname, '16x16.png' ))
                 const contextMenu = Menu.buildFromTemplate ( data11 [ localLanguage ].tray )
                 contextMenu.items[1].checked = false
                 tray.setContextMenu ( contextMenu )
             }
 
-            if ( ! updateWin ) {
-                updateWin = new BrowserWindow ({ show: false })
-                //updateWin.webContents.openDevTools()
-                updateWin.setIgnoreMouseEvents ( true )
-                updateWin.rendererSidePort = port
-                updateWin.loadURL ( format ({
-                    pathname: join( __dirname, 'app/update.html'),
-                    protocol: 'file:',
-                    slashes: true
-                }))
-            }
-
+            
+ 
         })
         
     })
@@ -316,7 +447,5 @@ const initialize = () => {
     })
 
 }
-
-
 
 initialize()

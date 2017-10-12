@@ -453,7 +453,7 @@ block jumbotron1
 										i.icon.plus( style = " color: white!important;")
 
 				//-
-			#QTGateConnectContent.content( data-bind = "  visible: QTGateConnectActive() && MenuItems()[3] && ! keyPair().verified " style = "margin-top: 3em;")
+			#QTGateConnectContent.content( data-bind = "  visible: QTGateConnectActive() && MenuItems()[3] && showActiveMail () " style = "margin-top: 3em;")
 				#QTGateConnecting.ui.tiny.steps.top.attached.hideArea( data-bind = "css: { 'two': QTGateConnecting() < 2, 'three': QTGateConnecting () === 2 || QTGateConnecting () > 3 && QTGateConnecting() < 6}, visible: QTGateConnecting() < 6 ")
 					.step.completed( style = "padding: 8px;")
 						a.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', visible: QTGateConnecting() === 3, attr: { 'data-html': infoDefine[ languageIndex() ].error_message.imapErrorMessage [ QTGateConnectError() ]}")
@@ -520,7 +520,7 @@ block jumbotron1
 							button.ui.button( data-bind=" text: infoDefine [ languageIndex() ].home_index_view.cancel, click: () => { $('.SendToQTGateIMAPInformation').transition('slide down')}")
 							.or
 							button.ui.button.positive( data-bind = " text: infoDefine [ languageIndex() ].imapInformation.agree, click: connectQTGate ")
-			.content( data-bind = " visible: MenuItems()[3] && !ConnectGatewayShow()" style = "margin-top: 3em;")
+			.content( data-bind = " visible: MenuItems()[3] && !showActiveMail() && !ConnectGatewayShow()" style = "margin-top: 3em;")
 				h4( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.title " style="color: #a333c8;")
 				.content( data-bind = " visible: QTGateRegionInfo (), css: { active: QTGateRegionInfo ()} ")
 					.connectImformation
@@ -708,8 +708,8 @@ block jumbotron1
 			.content( data-bind="visible: MenuItems()[7]")
 			
 				.ui.red.segment( style=" margin: 5em;")
-					p( data-bind="text: infoDefine[languageIndex()].home_index_view.newVersion " )
-					button.positive.ui.button( data-bind="text: infoDefine[languageIndex()].home_index_view.clickInstall, click: newVersionInstall ")
+					p( data-bind="text:  newVersionInstallLoading() ? infoDefine[languageIndex()].home_index_view.newVersionInstallLoading : infoDefine[languageIndex()].home_index_view.newVersion " )
+					button.positive.ui.button( data-bind="visible: !newVersionInstallLoading(), text: infoDefine[languageIndex()].home_index_view.clickInstall, click: newVersionInstall ")
 		
 
 				

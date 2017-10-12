@@ -7,71 +7,17 @@ const Async = require("async");
 const $ = require('jquery');
 const { autoUpdater, remote } = require("electron");
 const preQTGateFolder = Path.join(Os.homedir(), '.QTGate');
-const QTGateFolder = Path.join(Os.homedir(), '.QTGate/latest');
-const ErrorLogFile = Path.join(preQTGateFolder, 'systemError.log');
+const QTGateFolder = Path.join(preQTGateFolder, 'latest');
+const ErrorLogFile = Path.join(preQTGateFolder, 'update.log');
+let flag = 'a';
 const saveLog = (log) => {
     const data = `${new Date().toUTCString()}: ${log}\r\n`;
-    Fs.appendFile(ErrorLogFile, data, { encoding: 'utf8' }, err => { });
+    Fs.appendFile(ErrorLogFile, data, { flag: flag }, err => {
+        flag = 'a';
+    });
 };
 const hideWindowDownload = (downloadUrl, saveFilePath, Callback) => {
-    if (!downloadUrl) {
-        saveLog(`hideWindowDownload downloadUrl string null error! downloadUrl = [${downloadUrl}], saveFilePath = [${saveFilePath}]`);
-        return Callback(new Error('no url'));
-    }
-    Fs.access(saveFilePath, err => {
-        if (!err) {
-            saveLog(`[${saveFilePath}] already have skip!`);
-            return Callback();
-        }
-        let win = new remote.BrowserWindow({ visible: false });
-        win.setIgnoreMouseEvents(true);
-        let startTime = 0;
-        let downloadBytes = 0;
-        win.webContents.session.once('will-download', (event, item, webContents) => {
-            item.setSavePath(saveFilePath);
-            startTime = new Date().getTime();
-            //console.log ( `start download file from [${ downloadUrl }]\r\n saveTo [${ saveFilePath }]`)
-            /*
-            const DEBUG = true
-                item.on ( 'updated', ( event, state ) => {
-                    if ( state === 'interrupted') {
-                        if ( DEBUG )
-                            console.log ( 'hideWindowDownload: Download is interrupted but can be resumed' + item.getURL() )
-                        return
-                    }
-    
-                    if ( item.isPaused ()) {
-                        if ( DEBUG )
-                            console.log ( 'hideWindowDownload: Download is interrupted but can be resumed' + item.getURL())
-                        return
-                    }
-                    downloadBytes = item.getReceivedBytes()
-                    if ( DEBUG )
-                        console.log ( `${item.getFilename()} Received bytes: ${item.getReceivedBytes()}`)
-                    return
-                })
-            */
-            item.once('done', (event, state) => {
-                win.close();
-                const stopTime = new Date().getTime();
-                if (state === 'completed') {
-                    const fileLength = Math.round(downloadBytes / 1024);
-                    const speed = fileLength / ((stopTime - startTime) / 1000);
-                    saveLog(`hideWindowDownload: success: [${item.getFilename()}] totalBytes[${fileLength}] KBytes speed[${speed}]Kb/s`);
-                    return Callback();
-                }
-                saveLog(`${downloadUrl} Download failed: ${state}`);
-                return Fs.unlink(saveFilePath, err => {
-                    return Callback(new Error(state));
-                });
-            });
-        });
-        win.once('closed', () => {
-            saveLog(`${downloadUrl} on closed, windows = [${remote.BrowserWindow.getAllWindows().length}]`);
-            win = null;
-        });
-        return win.loadURL(downloadUrl);
-    });
+    return remote.getCurrentWindow().hideWindowDownload(downloadUrl, saveFilePath, Callback);
 };
 const checkUpdateFolder = (updateFolder, CallBack) => {
     return Fs.readdir(updateFolder, (err, files) => {
@@ -99,7 +45,7 @@ const getUrlFromAssets = (fileName, assets) => {
 const getDownloadFiles = (name, assets, CallBack) => {
     const updateFolder = Path.join(QTGateFolder, name);
     const verName = name.substr(1);
-    checkUpdateFolder(updateFolder, err => {
+    return checkUpdateFolder(updateFolder, err => {
         if (err) {
             return saveLog(`checkUpdateFolder got error! stop getDownloadFiles [${JSON.stringify(err)}]`);
         }
@@ -124,7 +70,7 @@ const getDownloadFiles = (name, assets, CallBack) => {
         }
         saveLog(`downloadFiles = ${downloadFiles} `);
         return Async.eachSeries(downloadFiles, (n, next) => {
-            hideWindowDownload(getUrlFromAssets(n, assets), Path.join(updateFolder, n), next);
+            return hideWindowDownload(getUrlFromAssets(n, assets), Path.join(updateFolder, n), next);
         }, CallBack);
     });
 };
@@ -147,7 +93,7 @@ $(document).ready(() => {
                 saveLog(`getDownloadFiles tag_name = [${json.tag_name}], assets = [${json.assets}] got error! [${err}]`);
                 return remote.getCurrentWindow().close();
             }
-            const url = `http://127.0.0.1:${remote.getCurrentWindow().rendererSidePort}/doingUpdate?ver='${json.tag_name}'`;
+            const url = `http://127.0.0.1:${remote.getCurrentWindow().rendererSidePort}/doingUpdate?ver=${json.tag_name}`;
             $.ajax({
                 type: 'GET',
                 url: url,

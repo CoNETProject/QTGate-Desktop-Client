@@ -29,8 +29,33 @@ const myIpServerUrl = ['https://ipinfo.io/ip', 'https://icanhazip.com/', 'https:
 const keyServer = 'https://pgp.mit.edu';
 const QTGatePongReplyTime = 1000 * 30;
 const version = remote.app.getVersion();
+let mainWindow = null;
+const debug = false;
 const createWindow = () => {
-    remote.getCurrentWindow().rendererCreateWindow();
+    mainWindow = new remote.BrowserWindow({
+        width: 850,
+        height: 480,
+        minWidth: 850,
+        minHeight: 480,
+        show: false,
+        backgroundColor: '#ffffff',
+        icon: process.platform === 'linux' ? Path.join(__dirname, 'app/public/assets/images/512x512.png') : Path.join(__dirname, 'app/qtgate.icns')
+    });
+    mainWindow.loadURL(`http://127.0.0.1:${port}/`);
+    if (debug) {
+        mainWindow.webContents.openDevTools();
+        mainWindow.maximize();
+    }
+    mainWindow.once('closed', () => {
+        mainWindow = null;
+    });
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
+    });
+};
+const _doUpdate = (tag) => {
+    saveLog(`_doUpdate tag = [${tag}]`);
+    remote.getCurrentWindow()._doUpdate(tag, port);
 };
 let flag = 'w';
 const saveLog = (log) => {
@@ -360,19 +385,19 @@ class localServer {
             res.render('home', { title: 'home' });
         });
         this.ex_app.get('/doingUpdate', (req, res) => {
+            res.json();
             const { ver } = req.query;
+            saveLog(`/doingUpdate res.query = [${ver}]`);
             this.config.newVersion = ver;
             this.config.newVerReady = true;
-            this.saveConfig();
-            saveLog(`this.ex_app.get ( '/doingUpdate' ) get ver = [${req.query}]`);
-            return res.end();
+            return this.saveConfig();
         });
         this.ex_app.get('/update/mac', (req, res) => {
             if (!this.config.newVerReady) {
                 return res.status(204).end();
             }
             const { ver } = req.query;
-            return res.json({ url: `http://127.0.0.1:3000/latest/${ver}/qtgate-${ver.substr(1)}-mac.zip` });
+            return res.status(200).json({ url: `http://127.0.0.1:${this.port}/latest/${ver}/qtgate-${ver.substr(1)}-mac.zip`, version: `${ver}`, releaseDate: new Date().toISOString() });
         });
         this.ex_app.get('/linuxUpdate', (req, res) => {
             res.render('home/linuxUpdate', req.query);
@@ -382,9 +407,6 @@ class localServer {
         });
         this.ex_app.get('/feedBack', (req, res) => {
             res.render('home/feedback', { imagFile: req.query });
-        });
-        this.ex_app.get('/iOpn', (req, res) => {
-            res.render('home/iOpn');
         });
         this.ex_app.use((req, res, next) => {
             saveLog('ex_app.use 404:' + req.url);
@@ -397,7 +419,6 @@ class localServer {
         });
         this.httpServer.listen(port);
         this.checkConfig();
-        saveLog(`Version: ${process.version}`);
     }
     saveConfig() {
         Fs.writeFile(configPath, JSON.stringify(this.config), { encoding: 'utf8' }, err => {
@@ -591,7 +612,7 @@ class localServer {
                     }
                     if (!this.proxyServer) {
                         const runCom = uu.connectType === 1 ? '@Opn' : 'iOpn';
-                        this.proxyServer = new RendererProcess(runCom, uu, true, () => {
+                        this.proxyServer = new RendererProcess(runCom, uu, false, () => {
                             saveLog(`proxyServerWindow on exit!`);
                             this.proxyServer = null;
                             this.connectCommand = null;
@@ -704,18 +725,19 @@ class localServer {
             });
         });
         socket.on('disconnectClick', CallBack => {
-            setTimeout(() => {
-                saveLog('this.proxyServer.close().');
-                this.proxyServer.cancel();
-                this.proxyServer = null;
-                this.connectCommand = null;
-                saveLog('disconnectClick finished.');
-                return CallBack();
-            }, 1000);
+            this.disConnectGateway();
             this.stopGetwayConnect(arg => {
                 saveLog(`stopGatwayConnect callback Args = [${JSON.stringify(arg)}]`);
+                CallBack();
             });
         });
+    }
+    disConnectGateway() {
+        saveLog('disConnectGateway.');
+        this.proxyServer.cancel();
+        this.socketServer.emit('disconnect');
+        this.proxyServer = null;
+        this.connectCommand = null;
     }
     stopGetwayConnect(CallBack) {
         const com = {
@@ -862,7 +884,7 @@ class localServer {
         });
         socket.once('newVersionInstall', (CallBack) => {
             if (this.config.newVerReady)
-                return process.send(`checkVersion: ${this.config.newVersion}`);
+                return _doUpdate(this.config.newVersion);
         });
         socket.on('checkPemPassword', (password, callBack) => {
             let keyPair = null;
@@ -1332,8 +1354,17 @@ class ImapConnect extends Imap.imapPeer {
             });
         });
         this.newMail = (ret) => {
+            //		have not requestSerial that may from system infomation
             if (!ret || !ret.requestSerial) {
-                return saveLog('QTGateAPIRequestCommand have not requestSerial! ');
+                switch (ret.command) {
+                    case 'containerStop': {
+                        saveLog(`QTGateAPIRequestCommand on containerStop! doing disConnectGateway()`);
+                        localServer.disConnectGateway();
+                    }
+                    default: {
+                        return saveLog(`QTGateAPIRequestCommand have not requestSerial!, 【${JSON.stringify(ret)}】`);
+                    }
+                }
             }
             const CallBack = this.commandCallBackPool.get(ret.requestSerial);
             if (!CallBack || typeof CallBack !== 'function') {
@@ -1401,19 +1432,13 @@ class ImapConnect extends Imap.imapPeer {
     }
 }
 const port = remote.getCurrentWindow().rendererSidePort;
-const server = new localServer(version, port);
-saveLog(`
-*************************** QTGate [ ${version} ] server start up on [ ${port} ] *****************************
-OS: ${process.platform}, ver: ${Os.release()}, cpus: ${Os.cpus().length}, model: ${Os.cpus()[0].model}
-Memory: ${Os.totalmem() / (1024 * 1024)} MB, free memory: ${Math.round(Os.freemem() / (1024 * 1024))} MB
-**************************************************************************************************`);
-const _doUpdate = (tag_name) => {
+const _doUpdate1 = (tag_name, port) => {
     let url = null;
     if (process.platform === 'darwin') {
-        url = `http://127.0.0.1:3000/update/mac?ver=${tag_name}`;
+        url = `http://127.0.0.1:${port}/update/mac?ver=${tag_name}`;
     }
     else if (process.platform === 'win32') {
-        url = `http://127.0.0.1:3000/latest/${tag_name}/`;
+        url = `http://127.0.0.1:${port}/latest/${tag_name}/`;
     }
     else {
         return;
@@ -1485,3 +1510,10 @@ const makeFeedbackData = (request, CallBack) => {
         }
     });
 };
+const server = new localServer(version, port);
+saveLog(`
+*************************** QTGate [ ${version} ] server start up on [ ${port} ] *****************************
+OS: ${process.platform}, ver: ${Os.release()}, cpus: ${Os.cpus().length}, model: ${Os.cpus()[0].model}
+Memory: ${Os.totalmem() / (1024 * 1024)} MB, free memory: ${Math.round(Os.freemem() / (1024 * 1024))} MB
+**************************************************************************************************`);
+saveLog('startup');

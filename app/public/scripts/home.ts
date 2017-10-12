@@ -553,6 +553,7 @@ const infoDefine = [
             cancel: '放弃操作',
             stopCreateKeyPair: '停止生成密钥对',
             continueCreateKeyPair: '继续生成',
+            newVersionInstallLoading:'更新中请稍候',
             KeypairLength: '请选择加密通讯用密钥对长度：这个数字越大，通讯越难被破解，但会增加通讯量和运算时间。',
             GenerateKeypair: '<em>系统正在生成用于通讯和签名的RSA加密密钥对，计算机需要运行产生大量的随机数字有，可能需要几分钟时间，尤其是长度为4096的密钥对，需要特别长的时间，请耐心等待。关于RSA加密算法的机制和原理，您可以访问维基百科：' +
                 `<a href='https://zh.wikipedia.org/wiki/RSA加密演算法' target="_blank" onclick="return linkClick ('https://zh.wikipedia.org/wiki/RSA加密演算法')" >https://zh.wikipedia.org/wiki/RSA加密演算法</a></em>`,
@@ -777,7 +778,7 @@ const infoDefine = [
             processing: '正在尝试连接QTGate代理服务器...',
             error: [ '错误：您的账号下已经有一个正在使用QTGate代理服务器的连接，请先把它断开后再尝试连接。',
                     '错误：您的账号已经无可使用流量，如果您需要继续使用QTGate代理服务器，请升级您的账户类型。如果是免费用户已经使用当天100M流量，请等待到明天继续使用，如您是免费用户已经用完当月1G流量，请等待到下月继续使用。',
-                    '错误：数据错误，请退出并重新启动QTGate！'],
+                    '错误：数据错误，请退出并重新启动QTGate！','非常抱歉，您请求的代理区域无资源，请选择其他区域或稍后再试','对不起，您所请求连接的区域不支持这样的连接技术，请换其他连接方法或选择其他区域连接'],
             connected:'已连接。',
             userType:['免费用户','付费用户'],
             datatransferToday:'每日可使用流量限额：',
@@ -1115,6 +1116,7 @@ const infoDefine = [
 
 		home_index_view: {
             newVersion: '新たなパージョンが用意しましたのでインストールをください。',
+            newVersionInstallLoading:'更新中お待ちください',
             localIpAddress: 'ローカル',
             clickInstall:'インストール',
             internetLable: 'Internet',
@@ -1217,7 +1219,8 @@ const infoDefine = [
             processing: 'QTGateゲットウェイへ接続中...',
             error: ['エラー：あなたのアカンウトに既にQTGateゲットウェイに接続しているクライアントがありますが、その接続を退出してからもう一度接続してください。',
                     'エラー：あなたのアカンウトにQTGateゲットウェイデータ通信制限になっております。もし引き続きご利用を頂きたいなら、アカンウトをアップグレードにしてください。フリーアカウントの場合は毎日100M、毎月1GBの通信制限があります。',
-                    'エラー：データフォーマットエラー、QTGateをリスタートしてください。'],
+                    'エラー：データフォーマットエラー、QTGateをリスタートしてください。','ごめんなさい、ご請求したゲットウェイエリアは準備中です。そのたのエリアを選ぶか、後ほど接続をしてください。',
+                    'エラー：請求した接続方法はこのエリアに対応しておりません、他のエリアに変更するか他の接続方法へください。'],
             connected:'接続しました。',
             userType: ['無料ユーザー','月契約ユーザー'],
             datatransferToday:'毎日使える通信量：',
@@ -1511,6 +1514,7 @@ const infoDefine = [
         Home_keyPairInfo_view: {
             
             title: 'Key pair information',
+
             emailNotVerifi: 'Keypair does not signed by QTGate yet.',
             emailVerified: 'Keypair has signed by QTGate.',
             NickName: 'Nick name：',
@@ -1528,6 +1532,7 @@ const infoDefine = [
 
 		home_index_view: {
             newVersion: 'A new version is ready to install.',
+            newVersionInstallLoading:'Updateing...',
             localIpAddress: 'Local',
             internetLable: 'Internet',
             gateWayName:'Gateway',
@@ -1629,7 +1634,8 @@ const infoDefine = [
             processing: 'Try to connecting QTGate gateway...',
             error: ['Error: Your account has a connection that is using the QTGate proxy server. Please disconnect it before attempting to connect again.',
                     'Error: Bandwidt maximum. If you want to continue using it, please upgrade your account. Free account have bandwidth is maximum of 100MB each day, 1 GB every month.',
-                    'Error: Data format error. Please restart QTGate.'],
+                    'Error: Data format error. Please restart QTGate.','Error: This area have not resource. Please select other area or connect again late.',
+                    'Error: This area have not support this technogly. Please select other area, or change other connect type.'],
             connected:'connected.',
             userType:['free', 'Subscript'],
             datatransferToday:'The limit of bandwidth each day.：',
@@ -1947,6 +1953,7 @@ const infoDefine = [
 
 		home_index_view: {
             newVersion: '新版本準備就緒，請安裝！',
+            newVersionInstallLoading:'更新中請稍候',
             localIpAddress: '本機',
             clickInstall: '點擊安裝新版本',
             internetLable: '互聯網',
@@ -1963,8 +1970,8 @@ const infoDefine = [
             SystemAdministratorNickName: '暱稱或組織名(必填)',
             KeypairLength: '請選擇加密通訊用密鑰對長度：這個數字越大，通訊越難被破解，但會增加通訊量和運算時間。',
             systemAdministratorEmail:'RSA密鑰生成',
-            GenerateKeypair: '<em>系統正在生成用於通訊和簽名的RSA加密密鑰對，計算機需要運行產生大量的隨機數字有，可能需要幾分鐘時間，尤其是長度為4096的密鑰對，需要特別長的時間，請耐心等待。關於RSA加密算法的機制和原理，您可以訪問維基百科：' +
-                `<a href='https://zh.wikipedia.org/wiki/RSA加密演算法' target="_blank" onclick="return linkClick ('https://zh.wikipedia.org/wiki/RSA加密演算法')">https://zh.wikipedia.org/wiki/RSA加密演算法</a></em>`,
+            GenerateKeypair: '<em>系統正在生成用於通訊和簽名的RSA加密密鑰對，計算機需要運行產生大量的隨機數字，可能需要幾分鐘時間，尤其是長度為4096的密鑰對，需要特別長的時間，請耐心等待。關於RSA加密算法的機制和原理，您可以訪問維基百科：' +
+                `<a href='#' target="_blank" onclick="return linkClick ('https://zh.wikipedia.org/wiki/RSA加密演算法')">https://zh.wikipedia.org/wiki/RSA加密演算法</a></em>`,
             inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密鑰對, 它是您的系統信息加密，身份認證及和QTGate通訊使用的重要工具。 RSA密鑰對的密碼請妥善保存，Email地址欄應填入您的常用Email地址, 它將被用作您的QTGate賬號。<em style="color:red;">需注意的是QTGate.com域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区email服务，您将不能够完成设定QTGate设定。</em>',
             accountEmailInfo: `由於QTGate域名在某些國家和地區被防火牆屏蔽，而不能正常收發QTGate的Email，如果您是處於防火牆內的用戶，建議使用防火牆外部的郵件服務商。`
         },
@@ -2044,7 +2051,7 @@ const infoDefine = [
             title: 'QTGate服務使用詳細',
             processing: '正在嘗試连接QTGate代理服务器...',
             error: ['錯誤：您的賬號下已經有一個正在使用QTGate代理伺服器的連接，請先把它斷開後再嘗試連接。', '錯誤：您的賬號已經無可使用流量，如果您需要繼續使用QTGate代理伺服器，請升級您的賬戶類型。如果是免費用戶已經使用當天100M流量，請等待到明天繼續使用，如您是免費用戶已經用完當月1G流量，請等待到下月繼續使用。',
-                    '錯誤：數據錯誤，請退出並重新啟動QTGate！'],
+                    '錯誤：數據錯誤，請退出並重新啟動QTGate！','非常抱歉，您請求的代理區域無資源，請選擇其他區域或稍後再試','對不起，您所請求連接的區域不支持這樣的連接技術，請換其他連接方法或選擇其他區域連接'],
             connected:'已連接。',
             userType:['免費用戶','付費用戶'],
             datatransferToday:'當日可使用流量限額：',
@@ -2808,6 +2815,7 @@ module view_layout {
         public topWindow = ko.observable ( true )
 
         public newVersionInstall () {
+            this.newVersionInstallLoading ( true )
             return socketIo.emit ( 'newVersionInstall' )
         }
 
@@ -3068,6 +3076,10 @@ module view_layout {
                 this.showConformMailForm ( false )
                 return this.showKeyPairInformation ( false )
             })
+            socketIo.on ( 'config', config => {
+                this.config( config ) 
+            })
+
 
             socketIo.on ( 'checkActiveEmailError', ( err, status ) => {
                 if ( err !== null && err > -1 ) {
@@ -3115,6 +3127,7 @@ module view_layout {
                 */
                 
                 if ( !this.keyPair().verified ) {
+                    this.showActiveMail ( true )
 
                     const uu = this.emailPool().findIndex ( n => { return n.uuid === data.qtgateConnectImapAccount })
                     
@@ -3164,7 +3177,7 @@ module view_layout {
                     $('.QTGateConnect').accordion ( 'refresh' )
                     return $('#QTGateConnecting').removeClass( 'transition hidden' )
                 }
-
+                this.showActiveMail( false )
                 const process = $ ( '#connectImformationProcess' )
                 let percent = 0
                 const doingProcessBar = () => {
@@ -3204,11 +3217,19 @@ module view_layout {
                 if ( data.qtGateConnecting === 2 ) {
                     
                     socketIo.emit ( 'getAvaliableRegion', ( region: string [] ) => {
-                        _QTGateRegions.forEach ( n => {
+                        this.QTGateRegions().forEach( n => {
                             const index = region.findIndex ( nn => { return nn === n.qtRegion })
                             if ( index < 0 )
                                 return n.available( false )
                             return n.available ( true )
+                        })
+                        this.QTGateRegions.sort (( a, b ) => { 
+                            if ( a.available() === b.available() )  
+                                return 0
+                            if ( b.available() && !a.available() ) {
+                                return 1
+                            }
+                            return -1
                         })
                     })
                 }
@@ -3219,14 +3240,28 @@ module view_layout {
                 return this.QTGateConnectActive( false )
             })
 
+            //          gateway disconnect!
+            socketIo.on ( 'disconnect', () => {
+                this.disconnecting ( true )
+                if ( this.selectedQTGateRegion()) {
+                    this.selectedQTGateRegion().showConnectedArea( false )
+                    this.ConnectGatewayShow ( false )
+                    this.disconnecting ( false )
+                    this.selectedQTGateRegionCancel () 
+                }
+
+            })
+
             socketIo.on ( 'QTGateGatewayConnectRequest', data => {
                 this.QTGateGatewayConnectRequestCallBack ( this, data )
             })
 
         }
+
         public sendConnectRequestMail = ko.observable (false)
         public QTGateRegionERROR = ko.observable (-1 )
         public LocalLanguage = 'up'
+        public showActiveMail = ko.observable ( false )
 
 		public selectItem = ( that: any, site: () => number ) => {
 
@@ -3309,6 +3344,7 @@ module view_layout {
             })
 
         }
+
         public showUserInfoMacOS ( view: string, _self: view ) {
             $('.mainScreen').hide ()
             $( view).animate({
@@ -3792,7 +3828,10 @@ module view_layout {
             return data.showConnectedArea ( true )
 
         }
+
         public disconnecting = ko.observable ( false )
+
+
         public disconnectClick () {
             
             this.disconnecting ( true )
@@ -3803,6 +3842,8 @@ module view_layout {
                 this.disconnecting ( false )
             })
         }
+
+        public newVersionInstallLoading = ko.observable ( false )
 
 
 	}
