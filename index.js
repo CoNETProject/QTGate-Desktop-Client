@@ -65,7 +65,7 @@ if (handleSquirrelEvent()) {
 }
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion();
-const debug = false;
+const debug = true;
 var lang;
 (function (lang) {
     lang[lang["zh"] = 0] = "zh";

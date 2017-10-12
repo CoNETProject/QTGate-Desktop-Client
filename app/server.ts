@@ -35,7 +35,7 @@ const QTGatePongReplyTime = 1000 * 30
 
 const version = remote.app.getVersion ()
 let mainWindow = null
-const debug = false
+const debug = true
 const createWindow = () => {
 
     mainWindow = new remote.BrowserWindow ({
@@ -646,7 +646,7 @@ export class localServer {
 					}
 					if ( ! this.proxyServer ) {
 						const runCom = uu.connectType === 1 ? '@Opn' : 'iOpn'
-						this.proxyServer = new RendererProcess ( runCom, uu, false, () => {
+						this.proxyServer = new RendererProcess ( runCom, uu, true, () => {
 							saveLog ( `proxyServerWindow on exit!`)
 							this.proxyServer = null
 							this.connectCommand = null
@@ -751,6 +751,7 @@ export class localServer {
 				}
 				
 				cmd.imapData.randomPassword = Crypto1.randomBytes (15).toString('hex')
+				cmd.account = this.config.keypair.email.toLocaleLowerCase()
 				saveLog (`ipAddress = [${ ipAddress }] Buffer [] = ${ Buffer.from ( ipAddress ).toString ('hex')}`)
 				
 				const com: QTGateAPIRequestCommand = {
