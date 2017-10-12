@@ -35,7 +35,7 @@ const QTGatePongReplyTime = 1000 * 30
 
 const version = remote.app.getVersion ()
 let mainWindow = null
-const debug = true
+const debug = false
 const createWindow = () => {
 
     mainWindow = new remote.BrowserWindow ({
@@ -646,7 +646,7 @@ export class localServer {
 					}
 					if ( ! this.proxyServer ) {
 						const runCom = uu.connectType === 1 ? '@Opn' : 'iOpn'
-						this.proxyServer = new RendererProcess ( runCom, uu, true, () => {
+						this.proxyServer = new RendererProcess ( runCom, uu, false, () => {
 							saveLog ( `proxyServerWindow on exit!`)
 							this.proxyServer = null
 							this.connectCommand = null
@@ -886,12 +886,6 @@ export class localServer {
 
 		// -
 		return index
-	}
-
-	private iOpnStart () {
-		this.proxyServerWindow = new RendererProcess ( 'iOpn', this.connectCommand, true, () => {
-			saveLog (`proxyServerWindow on exit!`)
-		})
 	}
 
 

@@ -30,7 +30,7 @@ const keyServer = 'https://pgp.mit.edu';
 const QTGatePongReplyTime = 1000 * 30;
 const version = remote.app.getVersion();
 let mainWindow = null;
-const debug = true;
+const debug = false;
 const createWindow = () => {
     mainWindow = new remote.BrowserWindow({
         width: 850,
@@ -612,7 +612,7 @@ class localServer {
                     }
                     if (!this.proxyServer) {
                         const runCom = uu.connectType === 1 ? '@Opn' : 'iOpn';
-                        this.proxyServer = new RendererProcess(runCom, uu, true, () => {
+                        this.proxyServer = new RendererProcess(runCom, uu, false, () => {
                             saveLog(`proxyServerWindow on exit!`);
                             this.proxyServer = null;
                             this.connectCommand = null;
@@ -813,11 +813,6 @@ class localServer {
         data.smtpUserPassword = imapData.smtpUserPassword;
         // -
         return index;
-    }
-    iOpnStart() {
-        this.proxyServerWindow = new RendererProcess('iOpn', this.connectCommand, true, () => {
-            saveLog(`proxyServerWindow on exit!`);
-        });
     }
     //- socket server 
     socketConnectListen(socket) {

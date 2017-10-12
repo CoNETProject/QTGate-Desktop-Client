@@ -79,7 +79,7 @@ const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater } = require ( 'elect
     // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion()
 
-const debug = true
+const debug = false
 enum lang { 'zh', 'ja', 'en', 'tw' }
 const QTGateFolder = join ( Os.homedir(), '.QTGate' )
 const QTGateLatest = join ( QTGateFolder, 'latest' )
