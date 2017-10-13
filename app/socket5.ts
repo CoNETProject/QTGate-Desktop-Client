@@ -1,5 +1,5 @@
 import * as Net from 'net'
-import * as Rfc1928 from './Rfc1928'
+import * as Rfc1928 from './rfc1928'
 import * as res from './res'
 import * as os from 'os'
 //	socks 5 headers

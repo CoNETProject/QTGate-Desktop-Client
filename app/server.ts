@@ -22,7 +22,7 @@ const Nodemailer = require ( 'nodemailer' )
 const Uuid: uuid.UUID = require ( 'node-uuid' )
 const { remote } = require ( 'electron' )
 
-const DEBUG = true
+const DEBUG = false
 const QTGateFolder = Path.join ( Os.homedir(), '.QTGate' )
 const QTGateSignKeyID = /3acbe3cbd3c1caa9/i
 const configPath = Path.join ( QTGateFolder, 'config.json' )
@@ -37,7 +37,8 @@ const version = remote.app.getVersion ()
 let mainWindow = null
 const debug = false
 const createWindow = () => {
-
+	remote.getCurrentWindow().createWindow ()
+	/*
     mainWindow = new remote.BrowserWindow ({
         width: 850,
         height: 480,
@@ -46,7 +47,8 @@ const createWindow = () => {
         show: false,
         backgroundColor: '#ffffff',
         icon: process.platform === 'linux' ? Path.join ( __dirname, 'app/public/assets/images/512x512.png' ) : Path.join ( __dirname, 'app/qtgate.icns' )
-    })
+	})
+	
     mainWindow.loadURL ( `http://127.0.0.1:${ port }/` )
     if ( debug ) {
         mainWindow.webContents.openDevTools()
@@ -58,7 +60,8 @@ const createWindow = () => {
     })
     mainWindow.once ('ready-to-show', () => {
         mainWindow.show()
-    })
+	})
+	*/
 }
 
 const _doUpdate = ( tag: string  ) => {
@@ -73,8 +76,9 @@ const saveLog = ( log: string ) => {
 		flag = 'a'
 	})
 }
-const getLocalInterface = () => {
+export const getLocalInterface = () => {
 	const ifaces = Os.networkInterfaces()
+	console.log (ifaces)
 	const ret = []
 	Object.keys ( ifaces ).forEach ( n => {
 		let alias = 0
@@ -646,7 +650,8 @@ export class localServer {
 					}
 					if ( ! this.proxyServer ) {
 						const runCom = uu.connectType === 1 ? '@Opn' : 'iOpn'
-						this.proxyServer = new RendererProcess ( runCom, uu, false, () => {
+						uu.localServerIp = getLocalInterface ()[0]
+						this.proxyServer = new RendererProcess ( runCom, uu, debug, () => {
 							saveLog ( `proxyServerWindow on exit!`)
 							this.proxyServer = null
 							this.connectCommand = null
@@ -765,7 +770,7 @@ export class localServer {
 				
 				return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
 					const arg: IConnectCommand = res.Args[0]
-					arg.localServerIp = this.config.localIpAddress[0]
+					arg.localServerIp = getLocalInterface ()[0]
 					
 					saveLog ( `this.proxyServer = new RendererProcess type = [${ arg.connectType }] data = [${ JSON.stringify( arg )}]` )
 					//		no error
@@ -774,7 +779,7 @@ export class localServer {
 					if ( res.error < 0 ) {
 						this.connectCommand = arg
 						const runCom = arg.connectType === 1 ? '@Opn' : 'iOpn'
-						return this.proxyServer = new RendererProcess ( runCom, arg, false, () => {
+						return this.proxyServer = new RendererProcess ( runCom, arg, debug, () => {
 							saveLog ( `proxyServerWindow on exit!`)
 							this.proxyServer = null
 							this.connectCommand = null
@@ -1779,5 +1784,3 @@ saveLog ( `
 OS: ${ process.platform }, ver: ${ Os.release() }, cpus: ${ Os.cpus().length }, model: ${ Os.cpus()[0].model }
 Memory: ${ Os.totalmem()/( 1024 * 1024 ) } MB, free memory: ${ Math.round ( Os.freemem() / ( 1024 * 1024 )) } MB
 **************************************************************************************************`)
-
-saveLog ('startup')

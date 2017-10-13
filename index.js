@@ -12,7 +12,7 @@ const async_1 = require("async");
 const freePort = require("portastic");
 const url_1 = require("url");
 const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater } = require('electron');
-function handleSquirrelEvent() {
+const handleSquirrelEvent = () => {
     if (process.argv.length === 1 || process.platform !== 'win32') {
         return false;
     }
@@ -59,9 +59,20 @@ function handleSquirrelEvent() {
             app.quit();
             return true;
     }
-}
+};
 if (handleSquirrelEvent()) {
     // squirrel event handled and app will exit in 1000ms, so don't do anything else
+}
+const makeSingleInstance = () => {
+    //  For Mac App Store build
+    if (process.mas)
+        return false;
+    return app.makeSingleInstance(() => {
+        createWindow();
+    });
+};
+if (makeSingleInstance()) {
+    app.quit();
 }
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion();
@@ -80,6 +91,7 @@ let isSingleInstanceCheck = true;
 let localServer1 = null;
 let tray = null;
 let mainWindow = null;
+let doReady = false;
 const ErrorLogFile = path_1.join(QTGateFolder, 'indexError.log');
 exports.port = 3000 + Math.round(10000 * Math.random());
 const hideWindowDownload = (downloadUrl, saveFilePath, Callback) => {
@@ -91,8 +103,8 @@ const hideWindowDownload = (downloadUrl, saveFilePath, Callback) => {
         if (!err) {
             return Callback();
         }
-        let win = new BrowserWindow({ show: false });
-        //win.webContents.openDevTools()
+        let win = new BrowserWindow({ show: debug });
+        debug ? win.webContents.openDevTools() : null;
         //win.maximize ()
         //win.setIgnoreMouseEvents ( true )
         let startTime = 0;
@@ -197,8 +209,11 @@ const createWindow = () => {
     if (mainWindow && typeof mainWindow.isMinimized === 'function') {
         if (mainWindow.isMinimized())
             mainWindow.restore();
-        return mainWindow.focus();
+        mainWindow.focus();
+        saveLog('createWindow have mainWindow');
+        return;
     }
+    saveLog('createWindow have not mainWindow');
     mainWindow = new BrowserWindow({
         width: 850,
         height: 480,
@@ -215,10 +230,12 @@ const createWindow = () => {
         mainWindow.maximize();
     }
     mainWindow.once('closed', () => {
-        mainWindow = null;
+        if (process.platform === 'win32' || process.platform === 'darwin')
+            return mainWindow = null;
+        return app.quit();
     });
     mainWindow.once('ready-to-show', () => {
-        mainWindow.show();
+        return mainWindow.show();
     });
 };
 const data11 = [
@@ -299,26 +316,6 @@ const checkFolder = (folder, CallBack) => {
         return CallBack();
     });
 };
-const makeSingleInstance = () => {
-    //  For Mac App Store build
-    if (process.mas)
-        return false;
-    return app.makeSingleInstance(() => {
-        return createWindow();
-    });
-};
-const sendFromServer = message => {
-    if (typeof message === 'string') {
-        switch (message) {
-            case 'createWindow': {
-                return createWindow();
-            }
-            default: {
-                return;
-            }
-        }
-    }
-};
 const findPort = (CallBack) => {
     return freePort.test(exports.port).then(isOpen => {
         if (isOpen)
@@ -331,69 +328,78 @@ const template = [
     {
         label: 'Edit',
         submenu: [
-            { role: 'undo' },
-            { role: 'redo' },
-            { role: 'cut' },
             { role: 'copy' },
-            { role: 'paste' }
+            { role: 'paste' },
+            { role: 'quit' }
         ]
     }
 ];
-const initialize = () => {
-    app.once('ready', () => {
-        if ((isSingleInstanceCheck = makeSingleInstance()))
-            app.exit();
-        async_1.series([
-                next => checkFolder(QTGateFolder, next),
-                next => checkFolder(QTGateLatest, next),
-                next => checkFolder(QTGateTemp, next)
-        ], err => {
-            const menu = Menu.buildFromTemplate(template);
-            Menu.setApplicationMenu(menu);
-            if (!localServer1) {
-                findPort(() => {
-                    localServer1 = new BrowserWindow({ show: debug });
-                    localServer1.setIgnoreMouseEvents(!debug);
-                    localServer1.rendererSidePort = exports.port;
-                    localServer1._doUpdate = _doUpdate;
-                    debug ? localServer1.webContents.openDevTools() : null;
-                    //localServer1.maximize ()
-                    localServer1.loadURL(url_1.format({
-                        pathname: path_1.join(__dirname, 'index.html'),
+const appReady = () => {
+    async_1.series([
+            next => checkFolder(QTGateFolder, next),
+            next => checkFolder(QTGateLatest, next),
+            next => checkFolder(QTGateTemp, next)
+    ], err => {
+        const menu = Menu.buildFromTemplate(template);
+        Menu.setApplicationMenu(menu);
+        if (!localServer1) {
+            findPort(() => {
+                localServer1 = new BrowserWindow({ show: debug });
+                localServer1.setIgnoreMouseEvents(!debug);
+                localServer1.rendererSidePort = exports.port;
+                localServer1.createWindow = createWindow;
+                localServer1._doUpdate = _doUpdate;
+                debug ? localServer1.webContents.openDevTools() : null;
+                //localServer1.maximize ()
+                localServer1.loadURL(url_1.format({
+                    pathname: path_1.join(__dirname, 'index.html'),
+                    protocol: 'file:',
+                    slashes: true
+                }));
+                setTimeout(() => {
+                    const checkUpload = new BrowserWindow({ show: debug });
+                    checkUpload.rendererSidePort = exports.port;
+                    checkUpload.hideWindowDownload = hideWindowDownload;
+                    debug ? checkUpload.webContents.openDevTools() : null;
+                    checkUpload.loadURL(url_1.format({
+                        pathname: path_1.join(__dirname, 'app/update.html'),
                         protocol: 'file:',
                         slashes: true
                     }));
-                    setTimeout(() => {
-                        const checkUpload = new BrowserWindow({ show: debug });
-                        checkUpload.rendererSidePort = exports.port;
-                        checkUpload.hideWindowDownload = hideWindowDownload;
-                        debug ? checkUpload.webContents.openDevTools() : null;
-                        checkUpload.loadURL(url_1.format({
-                            pathname: path_1.join(__dirname, 'app/update.html'),
-                            protocol: 'file:',
-                            slashes: true
-                        }));
-                    }, 5000);
-                });
-            }
-            if (!tray) {
-                tray = new Tray(path_1.join(__dirname, '16x16.png'));
-                const contextMenu = Menu.buildFromTemplate(data11[localLanguage].tray);
-                contextMenu.items[1].checked = false;
-                tray.setContextMenu(contextMenu);
-            }
-        });
+                }, 5000);
+            });
+        }
+        else {
+            saveLog(`app.once ( 'ready') have localServer1 & createWindow()`);
+            createWindow();
+        }
+        if (!tray) {
+            tray = new Tray(path_1.join(__dirname, '16x16.png'));
+            tray.on('click', () => {
+                saveLog(`tray.on( 'click') `);
+                return createWindow();
+            });
+            const contextMenu = Menu.buildFromTemplate(data11[localLanguage].tray);
+            tray.setContextMenu(contextMenu);
+        }
+    });
+};
+const initialize = () => {
+    app.once('ready', () => {
+        if (doReady)
+            return;
+        doReady = true;
+        saveLog(`app.once ( 'ready')`);
+        return appReady();
+    });
+    app.once('will-finish-launching', () => {
+        if (doReady)
+            return;
+        doReady = true;
+        saveLog(`app.once ('will-finish-launching')`);
+        return appReady();
     });
     app.on('window-all-closed', () => {
-        mainWindow = null;
-    });
-    app.on('activate', () => {
-        createWindow();
-    });
-    app.once('quit', () => {
-        if (localServer1) {
-            localServer1 = null;
-        }
         app.quit();
     });
 };

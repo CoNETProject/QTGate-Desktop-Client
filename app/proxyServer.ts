@@ -17,7 +17,7 @@ import * as Stream from 'stream'
 import * as Fs from 'fs'
 import * as Path from 'path'
 import socket5 from './socket5'
-import gateWay from './gateWay'
+import gateWay from './gateway'
 import * as Os from 'os'
 const { remote } = require ( "electron" )
 

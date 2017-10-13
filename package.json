@@ -1,6 +1,6 @@
 {
   "name": "qtgate",
-  "version": "0.8.10",
+  "version": "0.8.11",
   "license": "MIT",
   "description": "QTGate desktop client",
   "scripts": {
