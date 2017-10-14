@@ -2775,7 +2775,7 @@ var view_layout;
                 const text = this.conformText();
                 if (!text.length)
                     return;
-                const check = /^-----BEGIN PGP MESSAGE-----(\r)?\n(.+)((\r)?\n)/.test(text) && /(\r)?\n-----END PGP MESSAGE-----((\r)?\n)?/.test(text);
+                const check = /^-----BEGIN PGP MESSAGE-----/.test(text);
                 this.conformTextErrorNumber(0);
                 if (!check) {
                     this.conformTextError(true);

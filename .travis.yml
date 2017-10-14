@@ -7,3 +7,4 @@ os:
 before_install:
   - nvm install 8.7.0
   - nvm use 8.7.0
+  - npm i electron-builder

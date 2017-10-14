@@ -752,10 +752,12 @@ class qtGateImap extends Event.EventEmitter {
         this.port = parseInt(this.IMapConnect.imapPortNumber);
         this.connectTimeOut = null;
         this.connect();
-        process.once('uncaughtException', err => {
-            console.log(err);
-            this.destroyAll(err);
-        });
+        /*
+        process.once ( 'uncaughtException', err => {
+            console.log ( err )
+            this.destroyAll ( err )
+        })
+        */
     }
     get TagCount() {
         if (++this.tagcount < MAX_INT)

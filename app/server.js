@@ -492,6 +492,7 @@ class localServer {
                 this.bufferPassword = data.toString('hex');
                 options.message = openpgp.message.readArmored(text);
                 openpgp.decrypt(options).then(plaintext => {
+                    console.log(`openpgp.decrypt success!`, plaintext);
                     try {
                         const data = JSON.parse(plaintext.data);
                         return next(null, data);
@@ -500,6 +501,7 @@ class localServer {
                         return next(new Error('readImapData try SON.parse ( plaintext.data ) catch ERROR:' + e.message));
                     }
                 }).catch(err => {
+                    console.log(`openpgp.decrypt ERROR: `, err);
                     next(err);
                 });
             }
@@ -645,10 +647,12 @@ class localServer {
             });
         });
         socket.on('checkActiveEmailSubmit', (text) => {
-            if (!text || !text.length || !/^-----BEGIN PGP MESSAGE-----(\r)?\n(.+)((\r)?\n)/.test(text) || !/(\r)?\n-----END PGP MESSAGE-----((\r)?\n)?/.test(text)) {
-                socket.emit('checkActiveEmailError', 0);
-                return saveLog(`checkActiveEmailSubmit, no text.length !`);
+            /*
+            if ( ! text || ! text.length || !/^-----BEGIN PGP MESSAGE-----/.test ( text )) {
+                socket.emit ( 'checkActiveEmailError', 0 )
+                return saveLog ( `checkActiveEmailSubmit, no text.length !` )
             }
+            */
             if (!this.QTClass) {
                 socket.emit('checkActiveEmailError', 2);
                 return saveLog(`checkActiveEmailSubmit, have no this.QTClass!`);

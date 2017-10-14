@@ -493,12 +493,13 @@ export class localServer {
 			( next: any ) => this.getPbkdf2 ( this.savedPasswrod, next ),
 			( data: Buffer, next: any ) => {
 				if ( ! options.privateKey.decrypt ( data.toString( 'hex' ))) {
+					
 					return next ( new Error ('saveImapData key password error!' ))
 				}
 				this.bufferPassword = data.toString( 'hex' )
 				options.message = openpgp.message.readArmored ( text )
 				openpgp.decrypt ( options ).then ( plaintext => {
-					
+					console.log ( `openpgp.decrypt success!`, plaintext )
 					try {
 						const data = JSON.parse ( plaintext.data )
 						return next ( null, data )
@@ -508,6 +509,7 @@ export class localServer {
 					}
 
 				}).catch ( err => {
+					console.log ( `openpgp.decrypt ERROR: `, err )
 					next ( err )
 				})
 			}
@@ -679,12 +681,12 @@ export class localServer {
 		})
 
 		socket.on ( 'checkActiveEmailSubmit', ( text: string ) => {
-
-			if ( ! text || ! text.length || !/^-----BEGIN PGP MESSAGE-----(\r)?\n(.+)((\r)?\n)/.test ( text ) || ! /(\r)?\n-----END PGP MESSAGE-----((\r)?\n)?/.test ( text )) {
+			/*
+			if ( ! text || ! text.length || !/^-----BEGIN PGP MESSAGE-----/.test ( text )) {
 				socket.emit ( 'checkActiveEmailError', 0 )
 				return saveLog ( `checkActiveEmailSubmit, no text.length !` )
 			}
-			
+			*/
 			if ( ! this.QTClass ) {
 				socket.emit ( 'checkActiveEmailError', 2 )
 				return saveLog ( `checkActiveEmailSubmit, have no this.QTClass!` )

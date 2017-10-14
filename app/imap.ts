@@ -907,10 +907,12 @@ export class qtGateImap extends Event.EventEmitter {
     constructor ( public IMapConnect: imapConnect, public listenFolder: string, private isEachMail: boolean, public deleteBoxWhenEnd: boolean, public writeFolder: string, private debug: boolean, public newMail: ( mail ) => void ) {
         super ()
         this.connect ()
+        /*
         process.once ( 'uncaughtException', err => {
             console.log ( err )
             this.destroyAll ( err )
         })
+        */
     }
 
     public destroyAll ( err: Error ) {
