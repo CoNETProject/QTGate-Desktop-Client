@@ -50,7 +50,8 @@
   },
   "homepage": "https://www.qtgate.com",
   "devDependencies": {
-    "electron-builder-squirrel-windows": "^19.37.0"
+    "electron-builder-squirrel-windows": "^19.37.0",
+    "electron":"^1.7.9"
   },
   "dependencies": {
     "async": "^2.5.0",
