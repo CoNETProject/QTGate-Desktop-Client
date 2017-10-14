@@ -1,4 +1,20 @@
 "use strict";
+/*!
+ * Copyright 2017 QTGate systems Inc. All Rights Reserved.
+ *
+ * QTGate systems Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 const socketIo = require("socket.io");
 const Path = require("path");
@@ -18,7 +34,7 @@ const cookieParser = require('cookie-parser');
 const Nodemailer = require('nodemailer');
 const Uuid = require('node-uuid');
 const { remote } = require('electron');
-const DEBUG = false;
+const DEBUG = true;
 const QTGateFolder = Path.join(Os.homedir(), '.QTGate');
 const QTGateSignKeyID = /3acbe3cbd3c1caa9/i;
 const configPath = Path.join(QTGateFolder, 'config.json');
@@ -384,7 +400,6 @@ class localServer {
         this.ex_app.set('views', Path.join(__dirname, 'views'));
         this.ex_app.set('view engine', 'pug');
         this.ex_app.use(cookieParser());
-        this.ex_app.use(require('stylus').middleware(Path.join(__dirname, 'public')));
         this.ex_app.use(Express.static(QTGateFolder));
         this.ex_app.use(Express.static(Path.join(__dirname, 'public')));
         this.ex_app.get('/', (req, res) => {

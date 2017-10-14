@@ -1,5 +1,5 @@
 # QTGATE client - Open Source
-
+[![Build Status](https://travis-ci.org/QTGate/vscode.svg?branch=master)](https://travis-ci.org/QTGate/QTGate-Desktop-Client)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/QTGate/Lobby)
 
 ## Description 概要

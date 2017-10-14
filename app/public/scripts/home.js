@@ -1,7 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) QTGate System Inc. All rights reserved.
- *  Licensed under the MIT License. See License in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+/*!
+ * Copyright 2017 QTGate systems Inc. All Rights Reserved.
+ *
+ * QTGate systems Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 const animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
 const uuid_generate = () => {
     let lut = [];
@@ -1064,7 +1076,7 @@ const infoDefine = [
             systemAdministratorEmail: 'RSA暗号鍵ペア生成',
             GenerateKeypair: '<em>強秘匿性通信するのために、RSA暗号鍵ペアを生成中、大量なランダム数字が発生し、数分かかる場合もあります、4096ビットの場合、特に時間がかかります、しばらくお待ち下さい。RSA暗号技術について、ウィキペディア百科辞典を参考してください：' +
                 `<a href='https://ja.wikipedia.org/wiki/RSA暗号' target="_blank" onclick="return linkClick ('https://ja.wikipedia.org/wiki/RSA暗号')">https://ja.wikipedia.org/wiki/RSA暗号</a></em>`,
-            inputEmail: 'お疲れ様です、最後の設定をしましょう。このRSA暗号鍵ペアは本システムに重要な存在です、ユーザーのQTGateへ身元証明、本システムデータを秘密化、QTGateシステムとデータ通信時この暗号鍵ペアを使います。パースワードはQTGateへ保存しませんですから、大事にメモしてください。<em style="color:red;">QTGateはネットワークの制限があるアリアにブラックリスト入っております、そのアリアにあるemailアカウントを使うのは遠慮してください。</em>',
+            inputEmail: 'お疲れ様です、最後の設定をしましょう。このRSA暗号鍵ペアは本システムに重要な存在です、ユーザーのQTGateへ身元証明、本システムデータを秘密化、QTGateシステムとデータ通信時この暗号鍵ペアを使います。パースワードはQTGateへ保存しませんですから、大事にメモしてください。<em style="color:red;">QTGateはネットワークの制限があるエリアにブラックリスト入っております、そのエリアにあるemailアカウントを使うのは遠慮してください。</em>',
             accountEmailInfo: 'QTGateドメイン名は、ファイヤウォールがある場合はブラックリストに入っている可能性がありますから、QTGateシステムへ登録完了することができません。その場合はファイヤウォール外側のEmailシステムを利用してください。'
         },
         error_message: {

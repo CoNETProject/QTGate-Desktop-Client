@@ -1,10 +1,21 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-/**
+/*!
+ * Copyright 2017 QTGate systems Inc. All Rights Reserved.
  *
+ * QTGate systems Inc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+Object.defineProperty(exports, "__esModule", { value: true });
 const Fs = require("fs");
 const Os = require("os");
 const path_1 = require("path");
@@ -76,7 +87,7 @@ if (makeSingleInstance()) {
 }
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion();
-const debug = false;
+const debug = true;
 var lang;
 (function (lang) {
     lang[lang["zh"] = 0] = "zh";
