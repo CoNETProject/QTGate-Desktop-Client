@@ -2,7 +2,6 @@
   "name": "qtgate",
   "version": "0.8.12",
   "license": "MIT",
-  
   "description": "QTGate desktop client",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
@@ -51,7 +50,7 @@
   "homepage": "https://www.qtgate.com",
   "devDependencies": {
     "electron-builder-squirrel-windows": "^19.37.0",
-    "electron":"^1.7.9"
+    "electron": "^1.7.9"
   },
   "dependencies": {
     "async": "^2.5.0",
