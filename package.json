@@ -45,7 +45,8 @@
     "url": "git+https://github.com/QTGate/QTGate-Desktop-Client.git"
   },
   "author": {
-    "name": "QTGate systems Inc."
+    "name": "QTGate systems Inc.",
+    "email": "info@QTGate.com"
   },
   "bugs": {
     "url": "https://github.com/QTGate/QTGate-Desktop-Client/issues"
