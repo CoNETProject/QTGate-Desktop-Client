@@ -13,6 +13,9 @@
     "pre": "electron-builder install-app-deps",
     "release": "electron-builder --win && electron-builder --mac && electron-builder --linux"
   },
+  "engines": {
+    "node": ">=50.9"
+  },
   "build": {
     "squirrelWindows": {
       "remoteReleases": "https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v0.8.5/"
