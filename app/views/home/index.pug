@@ -454,7 +454,7 @@ block jumbotron1
 
 				//-
 			#QTGateConnectContent.content( data-bind = "  visible: QTGateConnectActive() && MenuItems()[3] && showActiveMail () " style = "margin-top: 3em;")
-				#QTGateConnecting.ui.tiny.steps.top.attached.hideArea( data-bind = "css: { 'two': QTGateConnecting() < 2, 'three': QTGateConnecting () === 2 || QTGateConnecting () > 3 && QTGateConnecting() < 6 }, visible: QTGateConnecting () < 6 ")
+				#QTGateConnecting.ui.tiny.steps.top.attached.hideArea( data-bind = "css: { 'two': QTGateConnecting() < 2, 'three': QTGateConnecting () === 2 || QTGateConnecting () > 3 && QTGateConnecting() < 6 }")
 					.step.completed( style = "padding: 8px;")
 						a.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', visible: QTGateConnecting() === 3, attr: { 'data-html': infoDefine[ languageIndex() ].error_message.imapErrorMessage [ QTGateConnectError() ]}")
 						.content
@@ -712,6 +712,12 @@ block jumbotron1
 					p( data-bind="text:  newVersionInstallLoading() ? infoDefine[languageIndex()].home_index_view.newVersionInstallLoading : infoDefine[languageIndex()].home_index_view.newVersion " )
 					button.positive.ui.button( data-bind="visible: !newVersionInstallLoading(), text: infoDefine[languageIndex()].home_index_view.clickInstall, click: newVersionInstall ")
 		
-
+	.ui.basic.modal
+		.ui.icon.header
+			i.heartbeat.icon( data-bind="text: infoDefine [ languageIndex() ].error_message.title ")
+		.content
+			p( data-bind = " text: modalContent ")
+		.actions
+			.ui.red.ok.inverted.button( data-bind=" text: infoDefine [ languageIndex() ].linuxUpdate.exit, click: exit ")
 				
 

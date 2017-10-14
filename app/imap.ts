@@ -1162,7 +1162,7 @@ export class imapPeer extends Event.EventEmitter {
         this.wImap = new qtGateImapwrite ( this.imapData, this.writeBox )
 
         this.wImap.once ( 'end', err => {
-            saveLog ( `this.wImap.once end ! [${ err.message }]` )
+            saveLog ( `this.wImap.once end ! [${ err && err.message ? err.message : null }]` )
             this.wImap = null
             if ( ! this.doingDestroy )
                 return this.newWriteImap ()

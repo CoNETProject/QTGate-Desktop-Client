@@ -34,7 +34,7 @@ const cookieParser = require('cookie-parser');
 const Nodemailer = require('nodemailer');
 const Uuid = require('node-uuid');
 const { remote } = require('electron');
-const DEBUG = true;
+const DEBUG = false;
 const QTGateFolder = Path.join(Os.homedir(), '.QTGate');
 const QTGateSignKeyID = /3acbe3cbd3c1caa9/i;
 const configPath = Path.join(QTGateFolder, 'config.json');
@@ -646,7 +646,11 @@ class localServer {
                 }
             });
         });
+        socket.once('exit', () => {
+            remote.app.exit();
+        });
         socket.on('checkActiveEmailSubmit', (text) => {
+            console.log(`checkActiveEmailSubmit!`);
             /*
             if ( ! text || ! text.length || !/^-----BEGIN PGP MESSAGE-----/.test ( text )) {
                 socket.emit ( 'checkActiveEmailError', 0 )
@@ -668,7 +672,9 @@ class localServer {
                     error: null,
                     requestSerial: Crypto1.randomBytes(8).toString('hex')
                 };
+                console.log(`QTClass.request!`);
                 this.QTClass.request(com, (err, res) => {
+                    console.log(res);
                     if (err) {
                         return socket.emit('qtGateConnect', 5);
                     }

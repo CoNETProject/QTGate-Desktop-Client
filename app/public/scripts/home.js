@@ -569,8 +569,11 @@ const infoDefine = [
             conformButtom: '验 证',
             formatError: ['内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。',
                 '提供的内容不能被解密，请确认这是在您收到的最后一封从QTGate发送过来的激活信。如果还是没法完成激活，请删除您的密钥重新生成和设定。',
-                'QTGate未连接错误，请退出QTGate重新启动！', '无效激活码！系统已经重新发送新的激活Email，请检查邮箱重做激活。', '您的QTGate看上去有问题, 请删除您的密钥，重新设置您的QTGate！',
-                'QTGate系统故障，请稍后再试。', '您当天的数据通讯量达到上限，请等待明天再试或升级用户类型', '用来通讯的Email设定有错误，请检查IMAP设定后重试，或此Email类型QTGate不支持',
+                'QTGate未连接错误，请退出QTGate重新启动！',
+                '无效激活码！QTGate系统已重新发送新的激活Email，并斷開與您的連接。请退出QTGate重新啟動QTGate後，检查您的邮箱重做激活。',
+                '您的QTGate看上去有问题, 请删除您的密钥，重新设置您的QTGate！',
+                'QTGate系统故障，请稍后再试。',
+                '您当天的数据通讯量达到上限，请等待明天再试或升级用户类型', '用来通讯的Email设定有错误，请检查IMAP设定后重试，或此Email类型QTGate不支持',
                 '您所选区域不能够连结，请稍候再试'],
             activeing: '正在通讯中'
         },
@@ -1114,7 +1117,8 @@ const infoDefine = [
             conformButtom: '検 証',
             formatError: ['フォーマットエラー、コピーするのは「-----BEGIN PGP MESSAGE-----」から「-----END PGP MESSAGE-----」まで全ての内容をしてください。',
                 'この内容で暗号化解除ができませんでした。鍵ペアEmailアカンウトメールボックス再検査し、QTGateから最後のを選んでください。または鍵ペアを削除して、鍵ペア再発行してください。',
-                'QTGateに接続していません、QTGateを退出してもう一回起動してください。', '検証できません！QTGate新たな検証をQTGateアカンウトメールボックスに届きますので、再検証をください。',
+                'QTGateに接続していません、QTGateを退出してもう一回起動してください。',
+                '検証できません！QTGateシステムは接続を切断しました、新たな検証をQTGateアカンウトメールボックスに届きます、まずQTGate再起動してから、再検証をください。',
                 'あなたのQTGateは問題があります、鍵ペアを削除して一から再セットアップしてください。', 'QTGateシステムは故障があります、後からもう一度試しにしてください',
                 'あなたの今日データ通信はリミットになっていますので、明日まで待ってください。またはユーザー種類をアップグレードをしてください',
                 '通信用IMAPの設定にエラーがあるか又はそのタープのIMAPアカンウトがQTGateサポートしません。よくチェックしてもう一回試しにしてください。',
@@ -1514,7 +1518,8 @@ const infoDefine = [
             conformButtom: 'Conform',
             formatError: ['Format error! Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
                 'Oops. This may not decrypt. Find the lasest mail from QTGate in your key pair email mailbox. Or delete this key pair and rebuild new key pair please.',
-                'QTGate disconnect error!. Please exit and restart QTGate.', 'This secret verification code was invalid. A new verification email was sent to your mail box. Please check your email.',
+                'QTGate disconnect error!. Please exit and restart QTGate.',
+                'This secret verification code was invalid. QTGate disconnected. A new verification email was sent to your mail box. Please restart QTGate and check your email. Do validate again!',
                 'Your QTGate looks have problem, Please delete your key pair and do setup again from first!', 'QTGate system looks have problem, Please try again late.',
                 `Your data transfer is limit today, please try again tomorrow or upgrade your user type.`,
                 'Selected region has unavailable, try again later.'],
@@ -1916,10 +1921,13 @@ const infoDefine = [
             bottom1_1: '此致',
             bottom1_2: 'QTGate團隊',
             conformButtom: '驗 證',
-            formatError: ['內容格式錯誤。複制內容從“-----BEGIN PGP MESSAGE----- （ 開始，一直到 ）----- END PGP MESSAGE-----” 結束的完整內容，粘貼到此輸入框中',
-                '提供的內容不能被解密，請確認這是在您收到的最後一封從QTGate發送過來的激活信。如果還是沒法完成激活，請刪除您的密鑰重新生成和設定。',
-                'QTGate未連接錯誤，請退出QTGate重新啟動！', '無效激活碼！系統已經重新發送新的激活Email，請檢查郵箱重做激活。', '您的QTGate看上去有問題, 請刪除您的密鑰，重新設置您的QTGate！',
-                'QTGate系統故障，請稍後再試。', '您當天的數據通信量達到上限,請等待明天再試或升級用戶類型', '用來通訊的Email設定有錯誤，請檢查IMAP設定後重試，或此Email類型不被QTGate支持',
+            formatError: ['內容格式錯誤，請複制從“-----BEGIN PGP MESSAGE----- （開始，一直到）-----END PGP MESSAGE-----” 結束的完整內容，粘貼在此輸入框中。 ',
+                '提供的內容不能被解密，請確認這是在您收到的最後一封從QTGate發送過來的激活信。如果還是沒法完成激活，請刪除您的密鑰重新生成和設定。 ',
+                'QTGate未連接錯誤，請退出QTGate重新啟動！ ',
+                '無效激活碼！ QTGate系統已重新發送新的激活Email，並斷開與您的連接。請退出QTGate重新啟動QTGate後，檢查您的郵箱重做激活。 ',
+                '您的QTGate看上去有問題, 請刪除您的密鑰，重新設置您的QTGate！ ',
+                'QTGate系統故障，請稍後再試。 ',
+                '您當天的數據通訊量達到上限，請等待明天再試或升級用戶類型', '用來通訊的Email設定有錯誤，請檢查IMAP設定後重試，或此Email類型QTGate不支持',
                 '您所選區域不能夠連結，請稍候再試'],
             activeing: '正在通訊中'
         },
@@ -2623,6 +2631,7 @@ var view_layout;
         constructor() {
             this.overflowShow = ko.observable(false);
             this.CancelCreateKeyPairSent = false;
+            this.modalContent = ko.observable('');
             this.menu = Menu;
             this.infoDefine = infoDefine;
             this.documentReady = ko.observable(false);
@@ -2909,8 +2918,12 @@ var view_layout;
             socketIo.on('config', config => {
                 this.config(config);
             });
-            socketIo.on('checkActiveEmailError', (err, status) => {
+            socketIo.on('checkActiveEmailError', err => {
                 if (err !== null && err > -1) {
+                    if (err === 3 || err === 4) {
+                        this.modalContent(infoDefine[this.languageIndex()].emailConform.formatError[err]);
+                        return $('.ui.basic.modal').modal('show');
+                    }
                     this.conformTextError(true);
                     this.conformTextErrorNumber(err);
                     this.QTGateConnecting(2);
@@ -2952,6 +2965,9 @@ var view_layout;
                 }
                 */
                 if (!this.keyPair().verified) {
+                    if (data.qtGateConnecting === 6) {
+                        return this.connectQTGateShow(true);
+                    }
                     this.showActiveMail(true);
                     const uu = this.emailPool().findIndex(n => { return n.uuid === data.qtgateConnectImapAccount; });
                     this.qtgateImapAccount(uu);
@@ -3397,7 +3413,16 @@ var view_layout;
             this.checkActiveEmailError(false);
             this.checkingActiveEmail(true);
             this.QTGateConnecting(4);
-            return socketIo.emit('checkActiveEmailSubmit', this.conformText());
+            const u = Buffer.from(this.conformText());
+            let text = this.conformText();
+            //      Outlook Mail 
+            if (u.indexOf('-----BEGIN PGP MESSAGE----- Version: GnuPG v1 ') > -1) {
+                text = text.replace(/-----BEGIN PGP MESSAGE----- Version: GnuPG v1 /, '-----BEGIN__PGP__MESSAGE-----\r\nVersion:__GnuPG__v1\r\n\r\n');
+                text = text.replace(/-----END PGP MESSAGE-----/, '-----END__PGP__MESSAGE-----');
+                text = text.replace(/ /g, '\r\n');
+                text = text.replace(/__/g, ' ');
+            }
+            return socketIo.emit('checkActiveEmailSubmit', text);
         }
         connectQTGate() {
             this.connectQTGateShow(true);
@@ -3519,6 +3544,9 @@ var view_layout;
                 this.selectedQTGateRegionCancel();
                 this.disconnecting(false);
             });
+        }
+        exit() {
+            socketIo.emit('exit');
         }
     }
     view_layout.view = view;
