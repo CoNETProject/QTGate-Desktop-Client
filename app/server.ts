@@ -1118,12 +1118,17 @@ export class localServer {
 				return this.config = InitConfig ( true, this.version, this.port )
 			}
 			try {
-				const config = require ( configPath )
+				const config: install_config = require ( configPath )
 				config.salt = Buffer.from ( config.salt.data )
 				this.config = config
-				this.config.version = this.version
+				//		update?
+				if ( config.newVersion === this.version ) {
+					this.config.version = this.version
+					this.config.newVerReady = false
+					this.config.newVersion = null
+				}
 				this.config.serverPort = this.port
-				this.config
+				
 				if ( this.config.keypair && this.config.keypair.publicKeyID )
 					return Async.waterfall ([
 						next => {
