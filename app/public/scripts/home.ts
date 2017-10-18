@@ -34,8 +34,8 @@ interface systemViewStatus {
 const uuid_generate = () => {
     let lut: Array < string > = [];
     for ( let i = 0; i < 256; i++ ) {
-            lut [i] = ( i < 16 ? '0' : '') + ( i ).toString ( 16 );
-        }
+        lut [i] = ( i < 16 ? '0' : '') + ( i ).toString ( 16 );
+    }
     let d0 = Math.random () * 0xffffffff | 0;
     let d1 = Math.random () * 0xffffffff | 0;
     let d2 = Math.random () * 0xffffffff | 0;
@@ -570,7 +570,7 @@ const infoDefine = [
             KeypairLength: '请选择加密通讯用密钥对长度：这个数字越大，通讯越难被破解，但会增加通讯量和运算时间。',
             GenerateKeypair: '<em>系统正在生成用于通讯和签名的RSA加密密钥对，计算机需要运行产生大量的随机数字有，可能需要几分钟时间，尤其是长度为4096的密钥对，需要特别长的时间，请耐心等待。关于RSA加密算法的机制和原理，您可以访问维基百科：' +
                 `<a href='https://zh.wikipedia.org/wiki/RSA加密演算法' target="_blank" onclick="return linkClick ('https://zh.wikipedia.org/wiki/RSA加密演算法')" >https://zh.wikipedia.org/wiki/RSA加密演算法</a></em>`,
-            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密钥对, 它是您的系统信息加密，身份认证及和QTGate通讯使用的重要工具。 RSA密钥对的密码请妥善保存，Email地址栏应填入您的常用Email地址, 它将被用作您的QTGate账号。<em style="color:red;">需注意的是QTGate.com域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区email服务，您将不能够完成设定QTGate设定。</em>',
+            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密钥对, 它是您的系统信息加密，身份认证及和QTGate通讯使用的重要工具。 RSA密钥对的密码请妥善保存，Email地址栏应填入您的常用Email地址, 它将被用作您的QTGate账号。<em style="color:red;">需注意的是QTGate.com域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区email服务，您有可能接收不到由QTGate发回的账号确认Email，以完成QTGate设定。</em>',
             accountEmailInfo: '由于QTGate域名在某些国家和地区被防火墙屏蔽，而不能正常收发Email，如果您是处于防火墙内的用户，建议使用防火墙外部的邮件服务商。'
         },
 
@@ -669,7 +669,7 @@ const infoDefine = [
         },
 
         useInfoMacOS: {
-            title:'您的其他电子设备，可通过设置本地Proxy服务器，来使用QTGate连接互联网',
+            title:'<p>本地代理服务器已在后台运行，MacOS和Windows用户可以关闭本窗口。</p>您的其他电子设备，可通过设置本地Proxy伺服器，来使用QTGate连接到互联网',
             title1:'MacOS 本地代理服务器设定',
             proxyServerIp:'本地代理服务器地址：',
             proxyServerPort: '本地代理服务器端口：',
@@ -894,7 +894,7 @@ const infoDefine = [
             }]
         },
         useInfoMacOS: {
-            title:'他のデバイスはローカルプロキシに設定による、QTGate利用してインターネットへアクセスができます。',
+            title:'ローカルプロキシサーバはバックグランドで実行しています。MacoSとWindowsユーザーはこのウィンドウを閉じても構わないです。他のデバイスはローカルプロキシに設定による、QTGate利用してインターネットへアクセスができます。',
             title1:'MacOS プロキシ設定',
             proxyServerIp:'プロキシサーバアドレス：',
             proxyServerPort: 'サーバポート：',
@@ -1152,7 +1152,7 @@ const infoDefine = [
             systemAdministratorEmail: 'RSA暗号鍵ペア生成',
             GenerateKeypair: '<em>強秘匿性通信するのために、RSA暗号鍵ペアを生成中、大量なランダム数字が発生し、数分かかる場合もあります、4096ビットの場合、特に時間がかかります、しばらくお待ち下さい。RSA暗号技術について、ウィキペディア百科辞典を参考してください：' +
                 `<a href='https://ja.wikipedia.org/wiki/RSA暗号' target="_blank" onclick="return linkClick ('https://ja.wikipedia.org/wiki/RSA暗号')">https://ja.wikipedia.org/wiki/RSA暗号</a></em>`,
-            inputEmail: 'お疲れ様です、最後の設定をしましょう。このRSA暗号鍵ペアは本システムに重要な存在です、ユーザーのQTGateへ身元証明、本システムデータを秘密化、QTGateシステムとデータ通信時この暗号鍵ペアを使います。パースワードはQTGateへ保存しませんですから、大事にメモしてください。<em style="color:red;">QTGateはネットワークの制限があるエリアにブラックリスト入っております、そのエリアにあるemailアカウントを使うのは遠慮してください。</em>',
+            inputEmail: 'お疲れ様です、最後の設定をしましょう。このRSA暗号鍵ペアは本システムに重要な存在です、ユーザーのQTGateへ身元証明、本システムデータを秘密化、QTGateシステムとデータ通信時この暗号鍵ペアを使います。パースワードはQTGateへ保存しませんですから、大事にメモしてください。<em style="color:red;">QTGateはネットワークの制限があるエリアにブラックリスト入っております、あなたはQTGateからのemailは受信不能になりますから、QTGateユーザへ登録完了することができない恐れがございます。</em>',
             accountEmailInfo:'QTGateドメイン名は、ファイヤウォールがある場合はブラックリストに入っている可能性がありますから、QTGateシステムへ登録完了することができません。その場合はファイヤウォール外側のEmailシステムを利用してください。'
         },
 
@@ -1406,7 +1406,7 @@ const infoDefine = [
             proxyServerIp:'Proxy server address:',
             proxyServerPort: 'Server port:',
             proxyServerPassword: 'Proxy server login username and password: none',
-            title:'All other devices can doing internet via local proxy setup use the QTGate system.',
+            title:'Local proxy server is running at background. MacOS and windows user may close this window. All other devices can doing internet via local proxy setup use the QTGate system.',
             title1:'MacOS proxy setup',
             info:[{
                 title:'Open the control panel, click the network.',
@@ -1786,7 +1786,7 @@ const infoDefine = [
             }]
         },
         useInfoMacOS: {
-            title:'您的其他電子設備，可通過設置本地Proxy伺服器，來使用QTGate連接到互聯網',
+            title:'本地代理伺服器已在後台運行，MacOS和Windows用戶可以關閉本窗口。您的其他電子設備，可通過設置本地Proxy伺服器，來使用QTGate連接到互聯網',
             title1:'MacOS 本地代理伺服器設定',
             proxyServerIp:'本地代理伺服器地址：',
             proxyServerPort: '本地代理伺服器端口：',
@@ -1993,7 +1993,7 @@ const infoDefine = [
             systemAdministratorEmail:'RSA密鑰生成',
             GenerateKeypair: '<em>系統正在生成用於通訊和簽名的RSA加密密鑰對，計算機需要運行產生大量的隨機數字，可能需要幾分鐘時間，尤其是長度為4096的密鑰對，需要特別長的時間，請耐心等待。關於RSA加密算法的機制和原理，您可以訪問維基百科：' +
                 `<a href='#' target="_blank" onclick="return linkClick ('https://zh.wikipedia.org/wiki/RSA加密演算法')">https://zh.wikipedia.org/wiki/RSA加密演算法</a></em>`,
-            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密鑰對, 它是您的系統信息加密，身份認證及和QTGate通訊使用的重要工具。 RSA密鑰對的密碼請妥善保存，Email地址欄應填入您的常用Email地址, 它將被用作您的QTGate賬號。<em style="color:red;">需注意的是QTGate.com域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区email服务，您将不能够完成设定QTGate设定。</em>',
+            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密鑰對, 它是您的系統信息加密，身份認證及和QTGate通訊使用的重要工具。 RSA密鑰對的密碼請妥善保存，Email地址欄應填入您的常用Email地址, 它將被用作您的QTGate賬號。<em style="color:red;">需注意的是QTGate.com域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区email服务，您將有可能接收不到由QTGate發回的賬號確認Email，以完成QTGate設定。</em>',
             accountEmailInfo: `由於QTGate域名在某些國家和地區被防火牆屏蔽，而不能正常收發QTGate的Email，如果您是處於防火牆內的用戶，建議使用防火牆外部的郵件服務商。`
         },
         
@@ -2968,7 +2968,7 @@ module view_layout {
             this.QTGateLocalProxyPort.subscribe ( newValue => {
                 this.localProxyPortError ( false )
                 const num = parseInt ( newValue.toString())
-                if (! /^[0-9]*$/.test(newValue.toString()) || !num || num < 1000 || num > 65535 ) {
+                if (! /^[0-9]*$/.test ( newValue.toString()) || !num || num < 1000 || num > 65535 ) {
                     this.localProxyPortError ( true )
                     return $( '.activating.element').popup({
                         on: 'focus',
@@ -3055,21 +3055,18 @@ module view_layout {
                         return this.CancelCreateKeyPairSent = false
                     return this.MakeErrorNotify ( 'errorKeyPair', null )
                 }
-                
                 this.keyPair ( data )
+                this.showAddImapDataButton ( false )
+                this.passwordError ( false )
+                this.SystemPassword_submitRunning ( false )
+                this.keyPair_delete_btn_view ( false )
+                this.newKeyPairRunningCancelButtonShow ( false )
+                this.showKeyPairPorcess ( false )
+                this.showKeyPairInformation ( true )
+                this.emailPool ( [ new emailPoolData ( this )] )
+                this.imapInputFormActive ( true )
+                return this.MenuItems ([ false, false, true, false, false ])
                 
-                if ( ! this.emailPool() || ! this.emailPool().length ) {
-                    this.showAddImapDataButton ( false )
-                    this.passwordError ( false )
-                    this.SystemPassword_submitRunning ( false )
-                    this.keyPair_delete_btn_view ( false )
-                    this.newKeyPairRunningCancelButtonShow ( false )
-                    this.showKeyPairPorcess ( false )
-                    this.showKeyPairInformation ( true )
-                    this.emailPool ( [ new emailPoolData ( this )] )
-                    this.imapInputFormActive ( true )
-                    return this.MenuItems ([false, false, true, false, false ])
-                }
             })
 
             socketIo.on ( 'ImapData', ( data: IinputData[]) => {
@@ -3111,7 +3108,7 @@ module view_layout {
                 if ( err !== null && err > -1 ) {
                     if ( err === 3 ||  err === 4 ) {
                         this.modalContent ( infoDefine[ this.languageIndex() ].emailConform.formatError[err] )
-                        return $('.ui.basic.modal').modal('show')
+                        return $( '.ui.basic.modal').modal ( 'show' )
                     }
                     this.conformTextError ( true )
                     this.conformTextErrorNumber ( err )
@@ -3887,6 +3884,22 @@ module view_layout {
                 this.ConnectGatewayShow ( false )
                 this.selectedQTGateRegionCancel () 
                 this.disconnecting ( false )
+                socketIo.emit ( 'getAvaliableRegion', ( region: string [] ) => {
+                    this.QTGateRegions().forEach( n => {
+                        const index = region.findIndex ( nn => { return nn === n.qtRegion })
+                        if ( index < 0 )
+                            return n.available( false )
+                        return n.available ( true )
+                    })
+                    this.QTGateRegions.sort (( a, b ) => { 
+                        if ( a.available() === b.available() )  
+                            return 0
+                        if ( b.available() && !a.available() ) {
+                            return 1
+                        }
+                        return -1
+                    })
+                })
             })
         }
 

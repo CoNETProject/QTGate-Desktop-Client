@@ -103,7 +103,7 @@ if ( makeSingleInstance ()) {
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion()
 
-const debug = false
+const DEBUG = false
 enum lang { 'zh', 'ja', 'en', 'tw' }
 const QTGateFolder = join ( Os.homedir(), '.QTGate' )
 const QTGateLatest = join ( QTGateFolder, 'latest' )
@@ -111,6 +111,7 @@ const QTGateTemp = join ( QTGateFolder, 'tempfile' )
 
 let isSingleInstanceCheck = true
 let localServer1 = null
+
 let tray = null
 let mainWindow = null
 let doReady = false
@@ -126,8 +127,8 @@ const hideWindowDownload = ( downloadUrl, saveFilePath, Callback ) => {
             return Callback ()
         }
         
-        let win = new BrowserWindow ({ show: debug })
-        debug ? win.webContents.openDevTools() : null
+        let win = new BrowserWindow ({ show: DEBUG })
+        DEBUG ? win.webContents.openDevTools() : null
         //win.maximize ()
         //win.setIgnoreMouseEvents ( true )
 
@@ -257,13 +258,13 @@ const createWindow = () => {
         height: 480,
         minWidth: 850,
         minHeight: 480,
-        resizable: debug,
+        resizable: DEBUG,
         show: false,
         backgroundColor: '#ffffff',
         icon: process.platform === 'linux' ? join ( __dirname, 'app/public/assets/images/512x512.png' ) : join ( __dirname, 'app/qtgate.icns' )
     })
     mainWindow.loadURL ( `http://127.0.0.1:${ port }/` )
-    if ( debug ) {
+    if ( DEBUG ) {
         mainWindow.webContents.openDevTools()
         mainWindow.maximize()
     }
@@ -394,12 +395,12 @@ const appReady = () => {
         Menu.setApplicationMenu(menu)
         if ( ! localServer1 ) {
             findPort(() => {
-                localServer1 = new BrowserWindow ({ show: debug })
-                localServer1.setIgnoreMouseEvents ( !debug )
+                localServer1 = new BrowserWindow ({ show: DEBUG })
+                localServer1.setIgnoreMouseEvents ( !DEBUG )
                 localServer1.rendererSidePort = port
                 localServer1.createWindow = createWindow
                 localServer1._doUpdate = _doUpdate
-                debug ? localServer1.webContents.openDevTools() : null
+                DEBUG ? localServer1.webContents.openDevTools() : null
                 //localServer1.maximize ()
                 localServer1.loadURL ( format ({
                     pathname: join( __dirname, 'index.html'),
@@ -408,10 +409,10 @@ const appReady = () => {
                 }))
 
                 setTimeout (() => {
-                    const checkUpload = new BrowserWindow ({ show: debug })
+                    const checkUpload = new BrowserWindow ({ show: DEBUG })
                     checkUpload.rendererSidePort = port
                     checkUpload.hideWindowDownload = hideWindowDownload
-                    debug ? checkUpload.webContents.openDevTools() : null
+                    DEBUG ? checkUpload.webContents.openDevTools() : null
                     checkUpload.loadURL ( format ({
                         pathname: join ( __dirname, 'app/update.html'),
                         protocol: 'file:',

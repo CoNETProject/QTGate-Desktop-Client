@@ -87,7 +87,7 @@ if (makeSingleInstance()) {
 }
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion();
-const debug = false;
+const DEBUG = false;
 var lang;
 (function (lang) {
     lang[lang["zh"] = 0] = "zh";
@@ -114,8 +114,8 @@ const hideWindowDownload = (downloadUrl, saveFilePath, Callback) => {
         if (!err) {
             return Callback();
         }
-        let win = new BrowserWindow({ show: debug });
-        debug ? win.webContents.openDevTools() : null;
+        let win = new BrowserWindow({ show: DEBUG });
+        DEBUG ? win.webContents.openDevTools() : null;
         //win.maximize ()
         //win.setIgnoreMouseEvents ( true )
         let startTime = 0;
@@ -230,13 +230,13 @@ const createWindow = () => {
         height: 480,
         minWidth: 850,
         minHeight: 480,
-        resizable: debug,
+        resizable: DEBUG,
         show: false,
         backgroundColor: '#ffffff',
         icon: process.platform === 'linux' ? path_1.join(__dirname, 'app/public/assets/images/512x512.png') : path_1.join(__dirname, 'app/qtgate.icns')
     });
     mainWindow.loadURL(`http://127.0.0.1:${exports.port}/`);
-    if (debug) {
+    if (DEBUG) {
         mainWindow.webContents.openDevTools();
         mainWindow.maximize();
     }
@@ -355,12 +355,12 @@ const appReady = () => {
         Menu.setApplicationMenu(menu);
         if (!localServer1) {
             findPort(() => {
-                localServer1 = new BrowserWindow({ show: debug });
-                localServer1.setIgnoreMouseEvents(!debug);
+                localServer1 = new BrowserWindow({ show: DEBUG });
+                localServer1.setIgnoreMouseEvents(!DEBUG);
                 localServer1.rendererSidePort = exports.port;
                 localServer1.createWindow = createWindow;
                 localServer1._doUpdate = _doUpdate;
-                debug ? localServer1.webContents.openDevTools() : null;
+                DEBUG ? localServer1.webContents.openDevTools() : null;
                 //localServer1.maximize ()
                 localServer1.loadURL(url_1.format({
                     pathname: path_1.join(__dirname, 'index.html'),
@@ -368,10 +368,10 @@ const appReady = () => {
                     slashes: true
                 }));
                 setTimeout(() => {
-                    const checkUpload = new BrowserWindow({ show: debug });
+                    const checkUpload = new BrowserWindow({ show: DEBUG });
                     checkUpload.rendererSidePort = exports.port;
                     checkUpload.hideWindowDownload = hideWindowDownload;
-                    debug ? checkUpload.webContents.openDevTools() : null;
+                    DEBUG ? checkUpload.webContents.openDevTools() : null;
                     checkUpload.loadURL(url_1.format({
                         pathname: path_1.join(__dirname, 'app/update.html'),
                         protocol: 'file:',

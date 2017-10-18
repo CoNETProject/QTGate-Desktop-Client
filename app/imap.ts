@@ -28,7 +28,7 @@ import { join } from 'path'
 import { homedir }from 'os'
 
 const MAX_INT = 9007199254740992
-const debug = false
+const debug = true
 const QTGateFolder = join ( homedir(), '.QTGate' )
 const ErrorLogFile = join ( QTGateFolder, 'imap.log' )
 let flag = 'w'
@@ -1072,10 +1072,10 @@ export class imapPeer extends Event.EventEmitter {
     private mail ( email: Buffer ) {
 
         const attr = getMailAttached (  email ).toString ()
+
         this.deCrypto ( attr, ( err, data ) => {
             if ( err )
                 return saveLog ( `deCrypto GOT ERROR! [${ err.message }]` )
-
             try {
                 const uu = JSON.parse ( data )
 
@@ -1109,9 +1109,9 @@ export class imapPeer extends Event.EventEmitter {
 
     }
 
-    private sendToRemote(text: Buffer, CallBack) {
+    private sendToRemote ( text: Buffer, CallBack) {
         if ( this.wImap )
-            return this.wImap.append(text.toString('base64'), CallBack)
+            return this.wImap.append ( text.toString ( 'base64' ), CallBack )
     }
 
     private replyPing (uu) {
@@ -1125,7 +1125,7 @@ export class imapPeer extends Event.EventEmitter {
         saveLog ( 'doing ping!' )
         if ( !this.wImapReady || this.pingUuid !== null )
             return saveLog ( `Ping do nothing : this.wImapReady [${ this.wImapReady }] || this.pingUuid [${ this.pingUuid }]`)
-        this.pingUuid = Uuid.v4()
+        this.pingUuid = Uuid.v4 ()
         return this.enCrypto ( JSON.stringify ({ ping: this.pingUuid }), ( err, data ) => {
             if ( err )
                 return saveLog ( `Ping enCrypto error! [${ err.message }]`)
@@ -1206,7 +1206,7 @@ export class imapPeer extends Event.EventEmitter {
 
         })
         this.rImap.once ( 'end', err => {
-            saveLog ( `this.rImap.once end ! [${ err.message }]` )
+            
             this.rImap = null
             if ( !this.doingDestroy )
                 return this.newReadImap ()

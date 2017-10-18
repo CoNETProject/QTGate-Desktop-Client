@@ -49,9 +49,9 @@ const myIpServerUrl = [ 'https://ipinfo.io/ip', 'https://icanhazip.com/', 'https
 const keyServer = 'https://pgp.mit.edu'
 const QTGatePongReplyTime = 1000 * 30
 
-const version = remote.app.getVersion ()
+
 let mainWindow = null
-const debug = false
+
 const createWindow = () => {
 	remote.getCurrentWindow().createWindow ()
 	/*
@@ -436,7 +436,7 @@ export class localServer {
 	private CreateKeyPairProcess: RendererProcess = null
 	private QTGateConnectImap: number = -1
 	private sendRequestToQTGate = false
-	private qtGateConnectEmitData: IQtgateConnect = null
+	public qtGateConnectEmitData: IQtgateConnect = null
 	private bufferPassword = null
 	private clientIpAddress = null
 	private proxyServerWindow = null
@@ -669,7 +669,7 @@ export class localServer {
 					if ( ! this.proxyServer ) {
 						const runCom = uu.connectType === 1 ? '@Opn' : 'iOpn'
 						uu.localServerIp = getLocalInterface ()[0]
-						this.proxyServer = new RendererProcess ( runCom, uu, debug, () => {
+						this.proxyServer = new RendererProcess ( runCom, uu, DEBUG, () => {
 							saveLog ( `proxyServerWindow on exit!`)
 							this.proxyServer = null
 							this.connectCommand = null
@@ -803,7 +803,7 @@ export class localServer {
 					if ( res.error < 0 ) {
 						this.connectCommand = arg
 						const runCom = arg.connectType === 1 ? '@Opn' : 'iOpn'
-						return this.proxyServer = new RendererProcess ( runCom, arg, debug, () => {
+						return this.proxyServer = new RendererProcess ( runCom, arg, DEBUG, () => {
 							saveLog ( `proxyServerWindow on exit!`)
 							this.proxyServer = null
 							this.connectCommand = null
@@ -818,10 +818,8 @@ export class localServer {
 
 		socket.on ( 'disconnectClick', CallBack => {
 			this.disConnectGateway ()
-			this.stopGetwayConnect ( arg => {
-				saveLog ( `stopGatwayConnect callback Args = [${ JSON.stringify ( arg ) }]`)
-				CallBack ()
-			})
+			this.stopGetwayConnect ()
+			CallBack ()
 		})
 	}
 
@@ -836,7 +834,7 @@ export class localServer {
 
 
 
-	private stopGetwayConnect ( CallBack ) {
+	private stopGetwayConnect () {
 		const com: QTGateAPIRequestCommand = {
 			command: 'stopGetwayConnect',
 			Args: null,
@@ -852,12 +850,10 @@ export class localServer {
 			if ( arg.error < 0 ) {
 				//		@QTGate connect
 				if ( arg.connectType === 1 ) {
-
 				}
 				//		iQTGate connect
 				
 			}
-			return CallBack ( arg )
 	
 		})
 	}
@@ -939,7 +935,6 @@ export class localServer {
 
 				//		already have key pair
 				if ( this.config.keypair.createDate ) {
-
 					return socket.emit ( 'newKeyPairCallBack', this.config.keypair )
 				}
 				this.savedPasswrod = preData.password
@@ -947,25 +942,28 @@ export class localServer {
 				return this.getPbkdf2 ( this.savedPasswrod, ( err, Pbkdf2Password: Buffer ) => {
 
 					preData.password = Pbkdf2Password.toString ( 'hex' )
-					this.CreateKeyPairProcess = new RendererProcess ( 'newKeyPair', preData, false, retData => {
+					return this.CreateKeyPairProcess = new RendererProcess ( 'newKeyPair', preData, false, retData => {
 						this.CreateKeyPairProcess = null
 						if ( !retData ) {
-							 saveLog (`CreateKeyPairProcess ON FINISHED! HAVE NO newKeyPair DATA BACK!`)
+							 saveLog ( `CreateKeyPairProcess ON FINISHED! HAVE NO newKeyPair DATA BACK!`)
 							return this.socketServer.emit ( 'newKeyPairCallBack', null )
 						}
 							
-						saveLog (`RendererProcess finished [${ retData }]` )
+						saveLog ( `RendererProcess finished [${ retData }]` )
 						return getKeyPairInfo ( retData.publicKey, retData.privateKey, preData.password, ( err1?: Error, keyPairInfoData?: keypair ) => {
 							
 							if ( err1 ) {
 								saveLog ( 'server.js getKeyPairInfo ERROR: ' + err1.message + '\r\n' + JSON.stringify ( err ))
 								return this.socketServer.emit ( 'newKeyPairCallBack', null )
 							}
+							
 							this.config.keypair = keyPairInfoData
+							
 							this.config.account = keyPairInfoData.email
 							this.saveConfig ()
 							
 							const ret = KeyPairDeleteKeyDetail ( this.config.keypair, true )
+							saveLog ( `socketServer.emit newKeyPairCallBack [${ JSON.stringify ( keyPairInfoData)}]`)
 							return this.socketServer.emit ( 'newKeyPairCallBack', keyPairInfoData )
 		
 						})
@@ -989,14 +987,10 @@ export class localServer {
 
 				this.saveConfig ()
 				if ( this.QTClass ) {
-					this.QTClass.destroy (1)
+					this.QTClass.doingDisconnect ()
 					this.QTClass = null
 				}
 				socket.emit ( 'ImapData', [] )
-				if ( this.QTClass ) {
-					this.QTClass.destroy ( null )
-					this.QTClass = null
-				}
 				return socket.emit ( 'deleteKeyPair' )
 
 			})
@@ -1122,11 +1116,11 @@ export class localServer {
 				config.salt = Buffer.from ( config.salt.data )
 				this.config = config
 				//		update?
-				if ( config.newVersion === this.version ) {
-					this.config.version = this.version
-					this.config.newVerReady = false
-					this.config.newVersion = null
-				}
+
+				this.config.version = this.version
+				this.config.newVerReady = false
+				this.config.newVersion = null
+				
 				this.config.serverPort = this.port
 				
 				if ( this.config.keypair && this.config.keypair.publicKeyID )
@@ -1391,7 +1385,7 @@ export class localServer {
 	private emitQTGateToClient ( socket: SocketIO.Socket, _imapUuid: string ) {
 		
 		let sendWhenTimeOut = true
-		if ( this.qtGateConnectEmitData && this.qtGateConnectEmitData.qtGateConnecting ) {
+		if ( this.qtGateConnectEmitData && this.qtGateConnectEmitData.qtGateConnecting && this.QTClass && typeof this.QTClass.checkConnect === 'function') {
 			this.qtGateConnectEmitData.qtGateConnecting = 1
 			socket.emit ( 'qtGateConnect', this.qtGateConnectEmitData )
 			return this.QTClass.checkConnect ( err => {
@@ -1695,6 +1689,11 @@ class ImapConnect extends Imap.imapPeer {
 		
 	}
 
+	public doingDisconnect () {
+		this.destroy (1)
+		this.localServer.qtGateConnectEmitData = null
+	}
+
 	public checkConnect ( CallBack ) {
 		
 		const time = setTimeout (() => {
@@ -1717,7 +1716,7 @@ class ImapConnect extends Imap.imapPeer {
  	
 }
 
-const port = remote.getCurrentWindow().rendererSidePort
+
 
 const _doUpdate1 = ( tag_name: string, port: number ) => {
 	let url = null
@@ -1806,7 +1805,10 @@ const makeFeedbackData = ( request: ( command: QTGateAPIRequestCommand, callback
 	})
 }
 
-const server = new localServer ( version, port )
+	const port = remote.getCurrentWindow().rendererSidePort
+	const version = remote.app.getVersion ()
+	const server = new localServer ( version, port )
+
 saveLog ( `
 *************************** QTGate [ ${ version } ] server start up on [ ${ port } ] *****************************
 OS: ${ process.platform }, ver: ${ Os.release() }, cpus: ${ Os.cpus().length }, model: ${ Os.cpus()[0].model }

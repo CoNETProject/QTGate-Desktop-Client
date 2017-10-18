@@ -44,9 +44,7 @@ const imapDataFileName = Path.join(QTGateFolder, 'imapData.pem');
 const myIpServerUrl = ['https://ipinfo.io/ip', 'https://icanhazip.com/', 'https://diagnostic.opendns.com/myip', 'http://ipecho.net/plain', 'https://www.trackip.net/ip'];
 const keyServer = 'https://pgp.mit.edu';
 const QTGatePongReplyTime = 1000 * 30;
-const version = remote.app.getVersion();
 let mainWindow = null;
-const debug = false;
 const createWindow = () => {
     remote.getCurrentWindow().createWindow();
     /*
@@ -636,7 +634,7 @@ class localServer {
                     if (!this.proxyServer) {
                         const runCom = uu.connectType === 1 ? '@Opn' : 'iOpn';
                         uu.localServerIp = exports.getLocalInterface()[0];
-                        this.proxyServer = new RendererProcess(runCom, uu, debug, () => {
+                        this.proxyServer = new RendererProcess(runCom, uu, DEBUG, () => {
                             saveLog(`proxyServerWindow on exit!`);
                             this.proxyServer = null;
                             this.connectCommand = null;
@@ -747,7 +745,7 @@ class localServer {
                     if (res.error < 0) {
                         this.connectCommand = arg;
                         const runCom = arg.connectType === 1 ? '@Opn' : 'iOpn';
-                        return this.proxyServer = new RendererProcess(runCom, arg, debug, () => {
+                        return this.proxyServer = new RendererProcess(runCom, arg, DEBUG, () => {
                             saveLog(`proxyServerWindow on exit!`);
                             this.proxyServer = null;
                             this.connectCommand = null;
@@ -759,10 +757,8 @@ class localServer {
         });
         socket.on('disconnectClick', CallBack => {
             this.disConnectGateway();
-            this.stopGetwayConnect(arg => {
-                saveLog(`stopGatwayConnect callback Args = [${JSON.stringify(arg)}]`);
-                CallBack();
-            });
+            this.stopGetwayConnect();
+            CallBack();
         });
     }
     disConnectGateway() {
@@ -772,7 +768,7 @@ class localServer {
         this.proxyServer = null;
         this.connectCommand = null;
     }
-    stopGetwayConnect(CallBack) {
+    stopGetwayConnect() {
         const com = {
             command: 'stopGetwayConnect',
             Args: null,
@@ -791,7 +787,6 @@ class localServer {
                 }
                 //		iQTGate connect
             }
-            return CallBack(arg);
         });
     }
     addInImapData(imapData) {
@@ -867,7 +862,7 @@ class localServer {
             this.listenAfterPassword(socket);
             return this.getPbkdf2(this.savedPasswrod, (err, Pbkdf2Password) => {
                 preData.password = Pbkdf2Password.toString('hex');
-                this.CreateKeyPairProcess = new RendererProcess('newKeyPair', preData, false, retData => {
+                return this.CreateKeyPairProcess = new RendererProcess('newKeyPair', preData, false, retData => {
                     this.CreateKeyPairProcess = null;
                     if (!retData) {
                         saveLog(`CreateKeyPairProcess ON FINISHED! HAVE NO newKeyPair DATA BACK!`);
@@ -883,6 +878,7 @@ class localServer {
                         this.config.account = keyPairInfoData.email;
                         this.saveConfig();
                         const ret = KeyPairDeleteKeyDetail(this.config.keypair, true);
+                        saveLog(`socketServer.emit newKeyPairCallBack [${JSON.stringify(keyPairInfoData)}]`);
                         return this.socketServer.emit('newKeyPairCallBack', keyPairInfoData);
                     });
                 });
@@ -900,14 +896,10 @@ class localServer {
             this.saveImapData();
             this.saveConfig();
             if (this.QTClass) {
-                this.QTClass.destroy(1);
+                this.QTClass.doingDisconnect();
                 this.QTClass = null;
             }
             socket.emit('ImapData', []);
-            if (this.QTClass) {
-                this.QTClass.destroy(null);
-                this.QTClass = null;
-            }
             return socket.emit('deleteKeyPair');
         });
         socket.once('newVersionInstall', (CallBack) => {
@@ -1015,11 +1007,9 @@ class localServer {
                 config.salt = Buffer.from(config.salt.data);
                 this.config = config;
                 //		update?
-                if (config.newVersion === this.version) {
-                    this.config.version = this.version;
-                    this.config.newVerReady = false;
-                    this.config.newVersion = null;
-                }
+                this.config.version = this.version;
+                this.config.newVerReady = false;
+                this.config.newVersion = null;
                 this.config.serverPort = this.port;
                 if (this.config.keypair && this.config.keypair.publicKeyID)
                     return Async.waterfall([
@@ -1193,7 +1183,7 @@ class localServer {
     }
     emitQTGateToClient(socket, _imapUuid) {
         let sendWhenTimeOut = true;
-        if (this.qtGateConnectEmitData && this.qtGateConnectEmitData.qtGateConnecting) {
+        if (this.qtGateConnectEmitData && this.qtGateConnectEmitData.qtGateConnecting && this.QTClass && typeof this.QTClass.checkConnect === 'function') {
             this.qtGateConnectEmitData.qtGateConnecting = 1;
             socket.emit('qtGateConnect', this.qtGateConnectEmitData);
             return this.QTClass.checkConnect(err => {
@@ -1448,6 +1438,10 @@ class ImapConnect extends Imap.imapPeer {
             saveLog(`do request command [${command.command}] finished and wait server responsr!`);
         });
     }
+    doingDisconnect() {
+        this.destroy(1);
+        this.localServer.qtGateConnectEmitData = null;
+    }
     checkConnect(CallBack) {
         const time = setTimeout(() => {
             this.localServer.sendEmailTest(this.imapData, err => {
@@ -1463,7 +1457,6 @@ class ImapConnect extends Imap.imapPeer {
         this.Ping();
     }
 }
-const port = remote.getCurrentWindow().rendererSidePort;
 const _doUpdate1 = (tag_name, port) => {
     let url = null;
     if (process.platform === 'darwin') {
@@ -1542,6 +1535,8 @@ const makeFeedbackData = (request, CallBack) => {
         }
     });
 };
+const port = remote.getCurrentWindow().rendererSidePort;
+const version = remote.app.getVersion();
 const server = new localServer(version, port);
 saveLog(`
 *************************** QTGate [ ${version} ] server start up on [ ${port} ] *****************************

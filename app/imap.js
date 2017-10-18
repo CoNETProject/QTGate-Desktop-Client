@@ -27,7 +27,7 @@ const crypto = require("crypto");
 const path_1 = require("path");
 const os_1 = require("os");
 const MAX_INT = 9007199254740992;
-const debug = false;
+const debug = true;
 const QTGateFolder = path_1.join(os_1.homedir(), '.QTGate');
 const ErrorLogFile = path_1.join(QTGateFolder, 'imap.log');
 let flag = 'w';
@@ -1065,7 +1065,6 @@ class imapPeer extends Event.EventEmitter {
             this.rImap.destroyAll(null);
         });
         this.rImap.once('end', err => {
-            saveLog(`this.rImap.once end ! [${err.message}]`);
             this.rImap = null;
             if (!this.doingDestroy)
                 return this.newReadImap();
