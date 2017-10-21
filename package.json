@@ -17,7 +17,7 @@
   },
   "build": {
     "squirrelWindows": {
-      "remoteReleases": "https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v0.8.5/"
+      "remoteReleases": "https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v0.8.10/"
     },
     "appId": "com.qtgate.client",
     "win": {
