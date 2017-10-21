@@ -266,6 +266,8 @@ class ImapServerSwitchStream extends Stream.Transform {
     doNewMail() {
         this.canDoLogout = true;
         this.checkLogout(() => {
+            if (/LOGOUT/.test(this.cmd))
+                return;
             this.canDoLogout = false;
             this.runningCommand = 'doNewMail';
             this.seachUnseen((err, newMailIds, havemore) => {
@@ -312,6 +314,8 @@ class ImapServerSwitchStream extends Stream.Transform {
     idleNoop() {
         this.canDoLogout = true;
         this.checkLogout(() => {
+            if (/LOGOUT/.test(this.cmd))
+                return;
             let newSwitchRet = false;
             this.runningCommand = 'idle';
             if (!this.ready) {
@@ -490,9 +494,11 @@ class ImapServerSwitchStream extends Stream.Transform {
             return this.logout_process(this.waitLogoutCallBack);
         }
         this.canDoLogout = false;
-        this.doCommandCallback = () => {
+        this.doCommandCallback = err => {
             this.canDoLogout = true;
-            this.checkLogout(CallBack);
+            this.checkLogout(() => {
+                CallBack(err);
+            });
         };
         let out = `Content-Type: application/octet-stream\r\nContent-Disposition: attachment\r\nMessage-ID:<${Uuid.v4()}@>${this.imapServer.domainName}\r\nContent-Transfer-Encoding: base64\r\nMIME-Version: 1.0\r\n\r\n${text}`;
         this.commandProcess = (text1, cmdArray, next, _callback) => {
@@ -902,6 +908,7 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
         rImap.logout();
         rImap = null;
         const attach = exports.getMailAttached(mail);
+        console.log(`rImap on new mail!`, attach);
         if (!attach && !callbackCall) {
             return doCallBack(new Error(`imapAccountTest ERROR: can't read attachment!`), null);
         }
@@ -911,10 +918,18 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
         return doCallBack(null, new Date().getTime() - startTime);
     });
     rImap.once('ready', () => {
+        console.log(`rImap.once ( 'ready' )`);
         wImap = new qtGateImapwrite(IMapConnect, listenFolder);
         wImap.once('ready', () => {
+            console.log(`wImap.once ( 'ready' )`);
             startTime = new Date().getTime();
-            wImap.append(ramdomText.toString('base64'), () => {
+            wImap.append(ramdomText.toString('base64'), err => {
+                if (err) {
+                    console.log(`wImap.append err`, err);
+                }
+                else {
+                    console.log(`wImap.append success`);
+                }
                 wImap.logout();
                 wImap = null;
             });
@@ -946,6 +961,7 @@ class imapPeer extends Event.EventEmitter {
         this.doingDestroy = false;
         this.wImapReady = false;
         this.peerReady = false;
+        this.sendFirstPing = false;
         this.rImap = null;
         this.sendMailPool = [];
         this.wImap = null;
@@ -961,14 +977,24 @@ class imapPeer extends Event.EventEmitter {
                 const uu = JSON.parse(data);
                 if (uu.ping && uu.ping.length) {
                     saveLog('GOT PING REPLY PONG!');
-                    if (this.wImapReady)
-                        this.replyPing(uu);
                     if (!this.peerReady) {
+                        if (/outlook\.com/i.test(this.imapData.imapServer)) {
+                            saveLog(`doing outlook server support!`);
+                            return setTimeout(() => {
+                                saveLog(`outlook replyPing ()`);
+                                this.pingUuid = null;
+                                if (this.wImapReady)
+                                    this.replyPing(uu);
+                                return this.Ping();
+                            }, 5000);
+                        }
+                        if (this.wImapReady)
+                            this.replyPing(uu);
                         saveLog(`THIS peerConnect have not ready send ping!`);
                         this.pingUuid = null;
                         return this.Ping();
                     }
-                    return;
+                    return this.replyPing(uu);
                 }
                 if (uu.pong && uu.pong.length) {
                     if (!this.pingUuid && this.pingUuid !== uu.ping)
@@ -995,18 +1021,26 @@ class imapPeer extends Event.EventEmitter {
         });
     }
     Ping() {
-        saveLog('doing ping!');
         if (!this.wImapReady || this.pingUuid !== null)
             return saveLog(`Ping do nothing : this.wImapReady [${this.wImapReady}] || this.pingUuid [${this.pingUuid}]`);
         this.pingUuid = Uuid.v4();
         return this.enCrypto(JSON.stringify({ ping: this.pingUuid }), (err, data) => {
-            if (err)
-                return saveLog(`Ping enCrypto error! [${err.message}]`);
-            return this.append(data);
+            if (err) {
+                return saveLog(`Ping enCrypto error: [${err.message}]`);
+            }
+            const doSend = () => {
+                this.sendToRemote(Buffer.from(data), err => {
+                    if (err) {
+                        this.emit('wFolder');
+                        return saveLog(`Ping doSend error! [${err.message}]`);
+                    }
+                    saveLog(`PING success!`);
+                });
+            };
+            doSend();
         });
     }
     sendAllMail() {
-        saveLog(`sendAllMail `);
         if (!this.sendMailPool.length || !this.wImapReady)
             return saveLog(`sendAllMail do nothing! sendMailPool.length [${this.sendMailPool.length}] wImapReady [${this.wImapReady}]`);
         const uu = Buffer.from(this.sendMailPool.pop());
@@ -1014,11 +1048,8 @@ class imapPeer extends Event.EventEmitter {
             return saveLog(`sendAllMail this.sendMailPool.pop () got nothing!`);
         this.sendToRemote(uu, err => {
             if (err) {
-                saveLog(`this.wImap.append error [${err.message}] and do again! `);
+                saveLog(`this.wImap.append error [${err.message}]! `);
                 this.sendMailPool.push();
-                setTimeout(() => {
-                    return this.sendAllMail();
-                }, 500);
             }
             saveLog(`sendAllMail sendToRemote success!`);
         });
@@ -1031,7 +1062,7 @@ class imapPeer extends Event.EventEmitter {
             if (!this.doingDestroy)
                 return this.newWriteImap();
         });
-        this.wImap.on('error', err => {
+        this.wImap.once('error', err => {
             if (err && err.message && /AUTH|certificate/i.test(err.message)) {
                 return this.destroy(1);
             }
@@ -1040,8 +1071,19 @@ class imapPeer extends Event.EventEmitter {
         });
         this.wImap.once('ready', () => {
             this.wImapReady = true;
-            saveLog(`this.wImap.once on ready! send ping`);
-            this.Ping();
+            if (this.sendFirstPing) {
+                this.sendAllMail();
+                return saveLog(`this.wImap.once on ready! already sent ping`);
+            }
+            this.sendFirstPing = true;
+            if (/outlook\.com/i.test(this.imapData.imapServer)) {
+                saveLog(`outlook support!`);
+                this.once('wFolder', () => {
+                    saveLog(`this.once ( 'wFolder') do makeWriteFolder!`);
+                    return this.makeWriteFolder();
+                });
+            }
+            return this.Ping();
         });
     }
     newReadImap() {
@@ -1068,6 +1110,22 @@ class imapPeer extends Event.EventEmitter {
             this.rImap = null;
             if (!this.doingDestroy)
                 return this.newReadImap();
+        });
+    }
+    makeWriteFolder() {
+        let uu = new qtGateImapRead(this.imapData, this.writeBox, false, false, email => { });
+        uu.once('ready', () => {
+            uu.destroyAll(null);
+            this.pingUuid = null;
+            this.wImap.destroyAll(null);
+        });
+        uu.once('error', err => {
+            saveLog(`makeWriteFolder error! do again!`);
+            uu = null;
+            return this.makeWriteFolder();
+        });
+        uu.once('end', () => {
+            uu = null;
         });
     }
     destroy(err) {

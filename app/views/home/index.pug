@@ -305,7 +305,7 @@ block jumbotron1
 								.ui.negative.message( data-bind = "visible: showSystemError(), animate:{ animation: 'pulse', state: languageIndex() + 1} ")
 									p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.systemError")
 			.content( data-bind = "visible: MenuItems()[2] && imapInputFormActive()" style = "margin-top: 3em;")
-				.ui.info.message.hideArea( data-bind = " visible: !emailPool().length || !emailPool()[ emailPool().length - 1 ].emailAddress().length, css: { 'accordion AccordionBox-shadow-delete': emailPool().length && emailPool()[emailPool().length - 1].emailAddress().length } ")
+				.ui.warning.message.hideArea( data-bind = " visible: !emailPool().length || !emailPool()[ emailPool().length - 1 ].emailAddress().length, css: { 'accordion AccordionBox-shadow-delete': emailPool().length && emailPool()[emailPool().length - 1].emailAddress().length } ")
 					.area( data-bind = "visible: !emailPool().length || !emailPool()[ emailPool().length - 1 ].emailAddress().length, css: { 'AccordionBox-shadow-delete title': emailPool().length && emailPool()[ emailPool().length - 1].emailAddress().length } ")
 						a.ui.top.right.attached.label.background-clolr-white
 							i.icon.close
@@ -323,7 +323,7 @@ block jumbotron1
 								.meta( data-bind = " visible: imapCheckResult() && ! imapDataEditShow()" )
 									span( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.imapResultTitle" )
 									span.ui.star.rating( data-bind = " attr: { 'data-rating': dataRating() }" data-max-rating = "3" )
-								.ui.bottom.top.left.attached.label.background-clolr-white( data-bind = " click: () => { imapDataEditShow ( true ) }, visible: !imapDataEditShow () && ! runningCheck() && canDoDelete()", style = "left: -10px!important;top: -6px!important;")
+								.ui.bottom.top.left.attached.label.background-clolr-white( data-bind = " click: () => { imapDataEditShow ( true ) }", style = "left: -10px!important;top: -6px!important;")
 									a
 										i.edit.outline.icon.large.blue
 								.description
@@ -629,14 +629,14 @@ block jumbotron1
 							.inline.fields
 								label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.setupCardTitle " style="color:rgba(0,0,0,.8);")
 								.field( data-position = "bottom left" )
-									.ui.radio.checkbox( data-bind ="click: ()=>{QTGateConnect1('1')}")
+									.ui.radio.checkbox( data-bind ="click: () => { QTGateConnect1('1')}")
 										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.7);" value="1" data-bind="checked: QTGateConnect1 ")
 										label( data-bind = " text: QTGateRegionsSetup()[1].title" style="color:rgba(0,0,0,.7);")
 									a( href="#" )
 										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[1]}" style="margin-left: -10px;color:yellowgreen;")
 								.field( data-position="bottom left")
-									.ui.radio.checkbox( data-bind="click: ()=>{QTGateConnect1('2')}")
-										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.8);" value="2" data-bind="checked: QTGateConnect1, attr: {'dataCheck': QTGateConnect1() } ")
+									.ui.radio.checkbox( data-bind=" css: { disabled: !canDoAtEmail() }, click: () => { QTGateConnect1('2')} ")
+										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.8);" value="2" data-bind="checked: QTGateConnect1, attr: {'dataCheck': QTGateConnect1(), disabled: !canDoAtEmail()} ")
 										label( data-bind = " text: QTGateRegionsSetup()[0].title" style="color:rgba(0,0,0,.7);")
 									a( href="#" )
 										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[0]}" style="margin-left: -10px;color:yellowgreen;")

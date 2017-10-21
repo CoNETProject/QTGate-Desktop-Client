@@ -400,16 +400,19 @@ const infoDefine = [
                 }, {
                     header: null,
                     detail: '使用我们的服务并不让您拥有我们的服务或您所访问的内容的任何知识产权。除非您获得相关内容所有者的许可或通过其他方式获得法律的许可，否则您不得使用服务中的任何内容。本条款并未授予您使用我们服务中所用的任何商标或标志的权利。请勿删除、隐藏或更改我们服务上显示的或随服务一同显示的任何法律声明。'
+                }, {
+                    header: '关于OPN无IP通讯技术和隐私保护的局限性',
+                    detail: 'OPN是QTGate世界首创的使用Email的IMAP协议建造一个无IP通讯环境，在您利用QTGate进行通讯过程中，QTGate无法获得您目前所使用的IP地址（使用iOPN来连结QTGate代理服务器时，您需要向QTGate系统提供您当前的IP地址），可以最大限度的保障您的个人隐私。但是这项技术并不能够保证您的信息绝对的不被泄露，因为您的IP地址有可能被记录在您所使用的Email服务供应商，如果持有加拿大法院令寻求QTGate的Log公开，再和Email服务供应商的Log合并分析，可能会最终得到您的信息。 QTGate并不能够绝对保障您的隐私。 '
                 },
                 {
                     header: '关于个人隐私保护，系统日志和接收QTGate传送的信息',
                     detail: '在您使用服务的过程中，我们可能会向您发送服务公告、管理消息和其他信息。您可以选择不接收上述某些信息。'
                 }, {
                     header: null,
-                    detail: '当您使用我们的服务时，我们为了计费处理会自动收集非常有限的数据流量信息，并存储到服务器日志中。数据流量信息仅用于计算客户应支付通讯费用而收集的，它收集的数据是：日期，用户帐号，数据包大小，下载或上传。例如：'
+                    detail: '当您使用我们的服务时，我们为了计费处理会自动收集非常有限的数据流量信息，并存储到服务器日志中。数据流量信息仅用于计算客户应支付通讯费用而收集的，它收集的数据是：日期，用户帐号，所使用的代理区域和代理服务器IP，数据包大小，下载或上传。例如：'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 },
                 {
                     header: null,
@@ -464,7 +467,7 @@ const infoDefine = [
         },
         imapInformation: {
             title: '通讯专用Email邮箱设置',
-            infomation: '请设置QTGate通讯专用Email邮箱信息。由于此账户的用户名和密码信息会提交给QTGate系统，为了防止您的个人信息被泄漏，请新申请一个临时Email账户。目前QTGate技术只对应<span style="color: red;">苹果公司Email，微软OUTLOOK，雅虎公司Email三家，QTGate强力推荐使用苹果公司的Email可以达到最佳速度。</span>，请在以上三家公司申请一个新的免费邮箱。关于密码，推荐使用Email服务商的<a href="https://tw.help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick (`https://tw.help.yahoo.com/kb/SLN15241.html`)">应用密码</a>',
+            infomation: `请设置QTGate通讯专用Email邮箱信息。由于此账户的用户名和密码信息会提交给QTGate系统，为了防止您的个人信息被泄漏，请新申请一个临时Email账户。目前QTGate技术对应<a href="#" onclick="return linkClick ('https://www.icloud.com/')">苹果iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/')">微软OUTLOOK</a>，<a href="#" onclick="return linkClick ('https://tw.mail.yahoo.com/')">雅虎邮箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄罗斯ZOHO邮箱</a>，<a href="#" onclick=" return linkClick ('https://gmail.com')">Google邮箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1 -2')">美国在线GMX邮箱</a>，QTGate强力推荐使用苹果公司的Email可以达到最佳速度(@OPN无IP连结技术只对应苹果公司iCloud邮箱)。密码推荐使用Email服务商的<a href="#" target="_blank" onclick="return linkClick ('https://tw.help. yahoo.com/kb/SLN15241.html')">应用密码</a>`,
             serverDetail: '详细设定：',
             imapServer: 'IMAP服务器设定',
             imapServerInput: 'IMAP服务器IP或域名',
@@ -550,7 +553,7 @@ const infoDefine = [
             finishedDeleteKeyPair: '密钥对完成删除!',
             offlineError: '您的电脑未连接到互联网，请检查网络后再次尝试！',
             imapErrorMessage: ['', '数据格式错误，请重试', '您的电脑未连接到互联网，请检查网络后再次尝试！', 'email服务器提示用户名或密码错！',
-                'Email伺服器的指定端口號連結失敗，請檢查您的IMAP端口號設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他端口號！<a href="data-html"></a>',
+                'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！<a href="data-html"></a>',
                 '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在IMAP详细设定中选择忽略证书错误。', '无法获得Email服务器域名信息，请检查您的Email服务器设定！',
                 '此Email伺服器不能使用QTGate通訊技术。请选择其他email服务供应商！', 'email服务器提示SMTP用户名或密码错！ ',
                 '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在SMTP详细设定中选择忽略证书错误。 ', 'SMTP连结提示未知错误', '存在相同Email账号']
@@ -567,14 +570,18 @@ const infoDefine = [
             bottom1_1: '此致',
             buttom1_2: 'QTGate团队',
             conformButtom: '验 证',
-            formatError: ['内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。',
+            formatError: [
+                '内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。',
                 '提供的内容不能被解密，请确认这是在您收到的最后一封从QTGate发送过来的激活信。如果还是没法完成激活，请删除您的密钥重新生成和设定。',
-                'QTGate未连接错误，请退出QTGate重新启动！',
+                '和QTGate连接发生错误，请退出重新尝试！ ',
                 '无效激活码！QTGate系统已重新发送新的激活Email，并斷開與您的連接。请退出QTGate重新啟動QTGate後，检查您的邮箱重做激活。',
                 '您的QTGate看上去有问题, 请删除您的密钥，重新设置您的QTGate！',
                 'QTGate系统故障，请稍后再试。',
                 '您当天的数据通讯量达到上限，请等待明天再试或升级用户类型', '用来通讯的Email设定有错误，请检查IMAP设定后重试，或此Email类型QTGate不支持',
-                '您所选区域不能够连结，请稍候再试'],
+                '用来通讯的Email设定有错误，请检查IMAP设定后重试，或QTGate不支持此Email类型',
+                '您所选区域不能够连结，请稍候再试',
+                '您的IMAP邮箱发信发生错误。请退出QTGate重试。如果持续发生此故障，您的IMAP帐号有可能被锁住，需要登陆您的IMAP邮箱网站解锁操作。'
+            ],
             activeing: '正在通讯中'
         },
         QTGateRegion: {
@@ -601,7 +608,7 @@ const infoDefine = [
             sendConnectRequestMail: ['您的QTGate客户端没有和QTgate系统联机，客户端已向QTgate系统重新发出联机请求Email。和QTgate系统联机需要额外的时间，请耐心等待。',
                 '当免费用户连续24小时内没有使用客户端，您的连接会被中断。付费用户情况下QTgate系统可保持持续联机一个月。'],
             cacheDatePlaceDate: [{ name: '1小时', id: 1 }, { name: '12小时', id: 12 }, { name: '1日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永远', id: -1 }],
-            atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用强加密Email通讯，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私功能，强抗干扰和超強防火墙穿透能力。缺点是有延迟，网络通讯响应受您所使用的email服务供应商的服务器影响，不适合游戏视频会话等通讯。',
+            atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用强加密Email通讯，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私功能，强抗干扰和超強防火墙穿透能力。缺点是有延迟，网络通讯响应受您所使用的email服务供应商的服务器影响，不适合游戏视频会话等通讯。目前该技术只支持iCloud邮箱。',
                 'QTGate独创普通HTTP混淆流量加密通讯技术，能够隐藏变换您的IP地址高速通讯，隐身和保护隐私，抗干扰和超強防火墙穿透能力。缺点是需要使用您的IP来直接连结代理服务器。如果您只是需要自由访问互联网，则推荐使用本技术。',
                 '域名解释使用QTGate代理服务器端，可以防止域名服务器缓存污染，本选项不可修改。', '互联网数据全程使用QTGate代理，可以匿名上网隐藏您的互联网形踪。', '只有当您的本地网络不能够到达您希望访问的目标时，才使用QTGate代理服务器代为连结目标主机，本选项可以节省您的QTGate流量。',
                 '通过本地缓存浏览纪录，当您再次访问目标服务器时可以增加访问速度，减少网络流量，缓存浏览纪录只针对非加密技术的HTTP浏览有效。QTGate使用强加密技术缓存浏览纪录，确保您的隐私不被泄漏。', '不保存缓存信息。',
@@ -932,6 +939,9 @@ const infoDefine = [
                 }, {
                     header: null,
                     detail: 'ユーザーは、法律（輸出、再輸出に関して適用される法規制を含みます）で認められている場合に限り、本サービスを利用することができます。ユーザーがQTGateの規約やポリシーを遵守しない場合、またはQTGateが不正行為と疑う行為について調査を行う場合に、QTGateはユーザーに対する本サービスの提供を一時停止または停止することができます。'
+                }, {
+                    header: '無IP通信技術OPNネットワークはプライベートに限界があります',
+                    detail: 'OPN無IP通信は弊社の革新的技術であります。あなたはQTGate端末ソフトを使ってQTGateシステムとのコミニュケーションはお客さんが無IPでプライベートな通信を行います。（但しiOPN技術を選択してゲットウェーに接続した場合は、お客さんのIPアドレスをQTGateシステムに提示するのが必要です。）でもお客さんのIPアドレスはeメールプロバイダーのログに記録していたかもしれません。裁判所命令を持つカナダの法執行機関はQTGateのログを得て、eメールプロバイダーのログと合併して、お客さんのプライベートインフォメーションを入手することも可能です。'
                 },
                 {
                     header: null,
@@ -942,10 +952,10 @@ const infoDefine = [
                     detail: '本サービスの利用に関して、QTGateはユーザーに対してサービスの告知、管理上のメッセージ、およびその他の情報を送信することができます。ユーザーは、これらの通知について、受け取らないことを選択できる場合があります。'
                 }, {
                     header: null,
-                    detail: 'お客様がQTGateサービスをご利用になる際に、お客様のデータ通信料計算のために、ご利用データ量が自動的に収集および保存されます。限られたログは以下のようです。日付、お客様アカウント、データ量、アップ又はダウンロード。例：'
+                    detail: 'お客様がQTGateサービスをご利用になる際に、お客様のデータ通信料計算のために、ご利用データ量が自動的に収集および保存されます。限られたログは以下のようです。日付、お客様アカウント、ご利用ゲットウェーエリアとゲットウェーIPアドレス、データ量、アップ又はダウンロード。例：'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 }, {
                     header: null,
                     detail: 'QTGateは以上の情報以外には保存することしません。QTGateは以上の情報をカナダーの裁判所命令を持つカナダの法執行機関に協力することがありえます。カナダ以外のこのログ情報を協力する要請のあなたは、まずカナダ外務省までお問い合わせ下さい：'
@@ -1010,7 +1020,7 @@ const infoDefine = [
         },
         imapInformation: {
             title: '通信専用Emailアカーンドを登録',
-            infomation: 'QTGate通信専用emailアカンウトを設定します。このemailアカウントはあなたとQTGateお互い情報交換するのために、ユーザ名とパスワードをQTGateシステムへ提供します。個人情報漏洩の恐れ、一時的なemailアカウントを新たにつくてください。<span style="color: red;">QTGate技術は只今APPLEメール、マイクロソフトOutlookとYahooしか対応しておりません、APPLEメールサービスを使うお勧めです。</span>メールアカウントのパスワードについて、<a href="https://support.google.com/accounts/answer/185833?hl=ja" target="_blank" onclick="return linkClick (`https://support.google.com/accounts/answer/185833?hl=ja`)">アプリパスワード</a>の利用をお勧めです',
+            infomation: 'QTGate通信専用emailアカンウトを設定します。このemailアカウントはあなたとQTGateお互い情報交換するのために、ユーザ名とパスワードをQTGateシステムへ提供します。個人情報漏洩の恐れ、一時的なemailアカウントを新たにつくてください。QTGate技術は只今<a href="#" onclick="return linkClick (`https://icloud.com`)">Apple iCloud</a>、<a href="#" onclick="return linkClick (`https://www.microsoft.com/ja-jp/outlook-com/`)">Outlook</a>、<a href="#" onclick="return linkClick (`https://login.yahoo.co.jp/config/login?.src=ym&.done=https%3A%2F%2Fmail.yahoo.co.jp%2F`)">Yahoo Mail</a>、<a href="#" onclick="return linkClick (`https://gmail.com`)">GMAIL</a>、<a href="#" onclick="return linkClick (`https://www.gmx.com/mail/#.1559516-header-nav1-2`)">GMX</a>、<a href="#" onclick="return linkClick (`https://www.zoho.com/mail/`)">HOZO</a>対応しております、APPLEのiCloudを使うお勧めです。（@OPN IPなし通信技術はiCloudのみ対応しております）</span>メールアカウントのパスワードについて、<a href="#" onclick="return linkClick (`https://support.google.com/accounts/answer/185833?hl=ja`)">アプリパスワード</a>の利用をお勧めです',
             serverDetail: '詳細設定：',
             imapServer: 'IMAP設定',
             imapServerInput: 'IMAPサーバー名又はIP',
@@ -1115,14 +1125,18 @@ const infoDefine = [
             bottom1_1: '以上',
             bottom1_2: 'QTGateチームより',
             conformButtom: '検 証',
-            formatError: ['フォーマットエラー、コピーするのは「-----BEGIN PGP MESSAGE-----」から「-----END PGP MESSAGE-----」まで全ての内容をしてください。',
+            formatError: [
+                'フォーマットエラー、コピーするのは「-----BEGIN PGP MESSAGE-----」から「-----END PGP MESSAGE-----」まで全ての内容をしてください。',
                 'この内容で暗号化解除ができませんでした。鍵ペアEmailアカンウトメールボックス再検査し、QTGateから最後のを選んでください。または鍵ペアを削除して、鍵ペア再発行してください。',
-                'QTGateに接続していません、QTGateを退出してもう一回起動してください。',
+                'QTGateに接続するのはエラーが発生した、一回退出し、再起動して接続をしてください。',
                 '検証できません！QTGateシステムは接続を切断しました、新たな検証をQTGateアカンウトメールボックスに届きます、まずQTGate再起動してから、再検証をください。',
-                'あなたのQTGateは問題があります、鍵ペアを削除して一から再セットアップしてください。', 'QTGateシステムは故障があります、後からもう一度試しにしてください',
+                'あなたのQTGateは問題があります、鍵ペアを削除して一から再セットアップしてください。',
+                'QTGateシステムは故障があります、後からもう一度試しにしてください',
                 'あなたの今日データ通信はリミットになっていますので、明日まで待ってください。またはユーザー種類をアップグレードをしてください',
                 '通信用IMAPの設定にエラーがあるか又はそのタープのIMAPアカンウトがQTGateサポートしません。よくチェックしてもう一回試しにしてください。',
-                '選択していたゲットウェーエリアは只今接続不能になっております、後ほどもう一度試しにしてください。'],
+                '選択していたゲットウェーエリアは只今接続不能になっております、後ほどもう一度試しにしてください。',
+                'IMAPアカウトでEMAIL送信する際エラーが発生しました、一回退出し、起動して見てくださいね。重複発生した場合はIMAPアカウトのウェーブページでアカウトをアンロック操作を必要かもしれない。'
+            ],
             activeing: '通信中'
         },
         QTGateRegion: {
@@ -1148,7 +1162,7 @@ const infoDefine = [
             GlobalIpInfo: '要注意：【QTGate接続】をおすとあなたのグロバールIPアドレスをQTGateシステムに送信しますので、それを遠慮すれば【@QTGate】接続を選んでください。',
             cacheDatePlaceDate: [{ name: '1時間', id: 1 }, { name: '12時間', id: 12 }, { name: '一日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永遠', id: -1 }],
             connectQTGate: 'QTGateゲットウェーエリアインフォメーションを取得しています...',
-            atQTGateDetail: ['QTGateの世界初のIP不要な通信技術です。暗号化したEmailメッセージを通じたゲットウェイに接続することで、身を隠して誰も知らないうちにインターネットへ、プライバシーと強くファイヤウォールをうまくすり抜けることができます。但しお使いメールサーバの性能に次第スピードが遅くなり、長い遅延など短所があります、ゲームやビデオチャットなどに通信障害出る可能性があります。',
+            atQTGateDetail: ['QTGateの世界初のIP不要な通信技術です。暗号化したEmailメッセージを通じたゲットウェイに接続することで、身を隠して誰も知らないうちにインターネットへ、プライバシーと強くファイヤウォールをうまくすり抜けることができます。但しお使いメールサーバの性能に次第スピードが遅くなり、長い遅延など短所があります、ゲームやビデオチャットなどに通信障害出る可能性があります。この技術はiCloudアカンウトのみ対応です',
                 'QTGateオリジナル技術のトラフィックをHTTPに偽装した暗号化通信技術です。あなたのIPを使ってゲットウェイに直接接続することで、高速通信とプライバシー、強くファイヤウォールをうまくすり抜けることができます。インターネット自由アクセスのためにQTGateを使うことになら、これをおすすめです。',
                 'ドメイン検索をQTGateゲットウェイ側にすることで DNS cache pollution を防ぐことができます。この選択は必要です。', '全てインターネットデータをQTGateゲットウェイに通じてすることで、匿名でインターネットアクセスします。',
                 'ローカルネットワークが目標サーバに到達不能な際に、QTGateゲットウェイ通じてします。このことでQTGateデータ通信量節約することができます。', 'アクセスしたWebサイトを一時ファイルに保持することで、高速レスポンスが利用可能となります、QTGateはいつも暗号化したデータを本機に保存します。但し暗号化通信には不対応です。',
@@ -1360,10 +1374,10 @@ const infoDefine = [
                     detail: 'We may suspend or stop providing our Services to you if you do not comply with our terms or policies or if we are investigating suspected misconduct. Using our Services does not give you ownership of any intellectual property rights in our Services or the content you access. You may not use content from our Services unless you obtain permission from its owner or are otherwise permitted by law. These terms do not grant you the right to use any branding or logos used in our Services. Don’t remove, obscure, or alter any legal notices displayed in or along with our Services.'
                 }, {
                     header: 'Privacy Policy and Information we collect',
-                    detail: 'In connection with your use of the Services, we may send you service announcements, administrative messages, and other information. You may opt out of some of those communications. When you use our services, for calculating communication charges we automatically collect and store communication data in server logs. The logs will limited as: Date footprinting, user account, package byte, Ingress or Egress. For example:'
+                    detail: 'In connection with your use of the Services, we may send you service announcements, administrative messages, and other information. You may opt out of some of those communications. When you use our services, for calculating communication charges we automatically collect and store communication data in server logs. The logs will limited as: Date footprinting, user account, used gateway region, used gateway ip address, package byte, Ingress or Egress. For example:'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 },
                 {
                     header: null,
@@ -1413,7 +1427,7 @@ const infoDefine = [
         },
         imapInformation: {
             title: 'Transfer email account setup.',
-            infomation: 'The IMAP email account will use for communicate between QTGate system and you. You may provide the account name and password to QTGate system. For your personal information privacy, please register a new free email account.<span style="color: red;"> QTGate system support Apple mail, Yahoo mail and Microsoft Outlook mail only. The best one is Apple mail. </span> About password we recommand use <a href="https://help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick (`https://help.yahoo.com/kb/SLN15241.html`)">third-party app passwords.</a>',
+            infomation: `The IMAP email account will use for communicate between QTGate system and you. You may provide the account name and password to QTGate system. For your personal information privacy, please register a new free email account. QTGate system support <a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>, <a href="#" onclick="return linkClick ('https://outlook.live.com/owa/?WT.mc_id=O16_BingHP?mkt=en-us')">Outlook</a>, <a href="#" onclick="return linkClick ('https://login.yahoo.com/?.src=ym&.intl=us&.done=https%3A%2F%2Fmail.yahoo.com%2F')">Yahoo Mail</a>, <a href="#" onclick="return linkClick ('https://gmail.com')">GMAIL</a>, <a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">GMX</a>, <a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">ZOHO</a>. We recommand use Aplle iCloud. ( The none IP internet technolgy @OPN support icloud mail only.) </span> About password we recommand use <a href="#" onclick="return linkClick ('https://help.yahoo.com/kb/SLN15241.html')">third-party app passwords.</a>`,
             serverDetail: 'settings:',
             imapServer: 'IMAP server setup',
             imapServerInput: 'IMAP server name or IP address',
@@ -1516,13 +1530,18 @@ const infoDefine = [
             bottom1_1: 'Best regards,',
             bottom1_2: 'The QTGate team',
             conformButtom: 'Conform',
-            formatError: ['Format error! Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
+            formatError: [
+                'Format error! Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
                 'Oops. This may not decrypt. Find the lasest mail from QTGate in your key pair email mailbox. Or delete this key pair and rebuild new key pair please.',
-                'QTGate disconnect error!. Please exit and restart QTGate.',
+                'Connect to QTGate had error!. Please exit and restart QTGate.',
                 'This secret verification code was invalid. QTGate disconnected. A new verification email was sent to your mail box. Please restart QTGate and check your email. Do validate again!',
-                'Your QTGate looks have problem, Please delete your key pair and do setup again from first!', 'QTGate system looks have problem, Please try again late.',
+                'Your QTGate looks have problem, Please delete your key pair and do setup again from first!',
+                'QTGate system looks have problem, Please try again late.',
                 `Your data transfer is limit today, please try again tomorrow or upgrade your user type.`,
-                'Selected region has unavailable, try again later.'],
+                'Your transfer email account looks not working, check the IMAP account please. Or your IMAP accout have not support with QTGate system.',
+                'Selected region has unavailable, try again later.',
+                'Your IMAP account got end mail error. Please exit QTGate and start up QTGate try again. If that have not be fixed, You may login to your IMAP account web side do unluck.'
+            ],
             activeing: 'sending...'
         },
         QTGateRegion: {
@@ -1547,7 +1566,7 @@ const infoDefine = [
             sendConnectRequestMail: ['QTGate connect looks down. A connect request mail was sent to QTGate system. Please wait for a moment.',
                 'Free user connect will be down when user had not use QTGate last 24 hours. QTGate system keep connection 1 month for paid user.'],
             cacheDatePlaceDate: [{ name: '1 hour', id: 1 }, { name: '12 hour', id: 12 }, { name: '1 day', id: 24 }, { name: '15 days', id: 360 }, { name: '1 month', id: 720 }, { name: '6 months', id: 4320 }, { name: 'forever', id: -1 }],
-            atQTGateDetail: [`The world's first QTGate no IP Internet communication technology, client and proxy server do not know each other IP address, security and reliability, firewall transparency. The network communication response by the email service provider you use the impact of the server, not suitable for video games and video chat.`,
+            atQTGateDetail: [`The world's first QTGate no IP Internet communication technology, client and proxy server do not know each other IP address, security and reliability, firewall transparency. The network communication response by the email service provider you use the impact of the server, not suitable for video games and video chat. iCloud mail support only.`,
                 'QTGate original encryption technogy it can disguise the traffic looks like normal HTTP protocol, to hide your IP address high-speed communication, stealth and protection of privacy, strong anti-interference, firewall transparency. You need to use your IP to connect proxy server. This is best chooses If you just want freedom of internet.',
                 'Use QTGate gateway side domain lookup can always get right IP address from DNS cache pollution. This is the default.', 'All internet data transfer via QTGate gateway dose anonymity network.',
                 'When target server can not connect then data transfer via QTGate gateway. This chooese will save your QTGate data transfer.',
@@ -1611,7 +1630,7 @@ const infoDefine = [
                     detail: '',
                     image: '/images/iOS3.jpg'
                 }, {
-                    title: '選擇手動設置，在代理伺服器名稱和端口號處填入對應的藍色數字，按保存完成設置',
+                    title: '選擇手動設置，在代理伺服器名稱和連接埠處填入對應的藍色數字，按保存完成設置',
                     titleImage: '',
                     detail: '',
                     image: '/images/iOS4.jpg'
@@ -1630,7 +1649,7 @@ const infoDefine = [
                     detail: '',
                     image: '/images/firefox2.jpg'
                 }, {
-                    title: '選擇手動設置代理伺服器，按圖示藍色數字填入HTTP代理伺服器名稱和端口號，選勾本設定適用所有協議，點擊好完成設置',
+                    title: '選擇手動設置代理伺服器，按圖示藍色數字填入HTTP代理伺服器名稱和連接埠，選勾本設定適用所有協議，點擊好完成設置',
                     titleImage: '',
                     detail: '',
                     image: '/images/firefox3.jpg'
@@ -1659,7 +1678,7 @@ const infoDefine = [
                     detail: '',
                     image: '/images/windowsUseInfo3.jpg'
                 }, {
-                    title: '選擇手動設置代理伺服器，按圖示藍色數字填入伺服器地址及伺服器端口號，然後點擊保存完成設定。',
+                    title: '選擇手動設置代理伺服器，按圖示藍色數字填入伺服器地址及伺服器連接埠，然後點擊保存完成設定。',
                     titleImage: '',
                     detail: '',
                     image: '/images/windowsUseInfo4.jpg'
@@ -1683,7 +1702,7 @@ const infoDefine = [
                     detail: '',
                     image: '/images/android3.jpg'
                 }, {
-                    title: '按下列畫面中藍色的數字填入代理伺服器名稱和端口號，關閉窗口以完成設置',
+                    title: '按下列畫面中藍色的數字填入代理伺服器名稱和連接埠，關閉窗口以完成設置',
                     titleImage: '',
                     detail: '',
                     image: '/images/android4.jpg'
@@ -1762,14 +1781,17 @@ const infoDefine = [
                     header: null,
                     detail: '使用我們的服務並不讓您擁有我們的服務或您所訪問的內容的任何知識產權。除非您獲得相關內容所有者的許可或通過其他方式獲得法律的許可，否則您不得使用服務中的任何內容。本條款並未授予您使用我們服務中所用的任何商標或標誌的權利。請勿刪除、隱藏或更改我們服務上顯示的或隨服務一同顯示的任何法律聲明。'
                 }, {
+                    header: '關於OPN無IP通訊技術和隱私保護的局限性',
+                    detail: 'OPN是QTGate世界首創的使用Email的IMAP協議建造一個無IP通訊環境，在您利用QTGate進行通訊過程中，QTGate無法獲得您目前所使用的IP地址（使用iOPN來連結QTGate代理服務器時，您需要向QTGate系統提供您當前的IP地址），可以最大限度的保障您的個人隱私。但是這項技術並不能夠保證您的信息絕對的不被洩露，因為您的IP地址有可能被記錄在您所使用的Email服務供應商，如果持有加拿大法院令尋求QTGate的Log公開，再和Email服務供應商的Log合併分析，可能會最終得到您的信息。QTGate並不能夠絕對保障您的隱私。'
+                }, {
                     header: '關於個人隱私保護，系統日誌和接收QTGate傳送的信息',
                     detail: '在您使用服務的過程中，我們可能會向您發送服務公告、管理消息和其他信息。您可以選擇不接收上述某些信息。'
                 }, {
                     header: null,
-                    detail: '當您使用我們的服務時，我們為了計費處理會自動收集非常有限的數據流量信息，並存儲到伺服器日誌中。數據流量信息僅用於計算客戶應支付通訊費用而收集的，它收集的數據是：日期，用戶帳號，數據包大小，下載或上傳。例如：'
+                    detail: '當您使用我們的服務時，我們為了計費處理會自動收集非常有限的數據流量信息，並存儲到伺服器日誌中。數據流量信息僅用於計算客戶應支付通訊費用而收集的，它收集的數據是：日期，用戶帳號，所使用的代理服務區域和代理伺服器IP，數據包大小，下載或上傳。例如：'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 }, {
                     header: null,
                     detail: 'QTGate沒有保存除了以上信息以外的任何其他信息。我們會配合並向持有加拿大法院令的執法機構提供此日誌文件。如果您是加拿大以外地區的執法機構，有這方面信息披露的需求，請通過加拿大外交部來聯繫我們：'
@@ -1818,21 +1840,21 @@ const infoDefine = [
         },
         imapInformation: {
             title: '通訊專用Email郵箱設置',
-            infomation: '請設置QTGate通訊專用Email郵箱信息。由於此賬戶的用戶名和密碼信息會提交給QTGate系統，為了防止您的個人信息被洩漏，請新申請一個臨時Email賬戶。目前QTGate技術只對應<span style="color: red;">蘋果公司Email，微軟OUTLOOK，雅虎公司Email三家，QTGate強力推薦使用蘋果公司的Email可以達到最佳速度。</span>密碼推薦使用Email服務商的<a href="https://tw.help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick (`https://tw.help.yahoo.com/kb/SLN15241.html`)">應用密碼</a>',
+            infomation: `請設置QTGate通訊專用Email郵箱信息。由於此賬戶的用戶名和密碼信息會提交給QTGate系統，為了防止您的個人信息被洩漏，請新申請一個臨時Email賬戶。目前QTGate技術對應<a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/mobile/?WT.mc_id=mscom')">微軟OUTLOOK</a>，<a href="#" onclick="return linkClick ('http://tw.mail.yahoo.com/')">雅虎郵箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄羅斯ZOHO郵箱</a>，<a href="#" onclick="return linkClick ('https://gmail.com')">Google郵箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美國在線GMX郵箱</a>，QTGate強力推薦使用蘋果公司的Email可以達到最佳速度(@OPN無IP連結技術只對應蘋果公司iCloud郵箱)。密碼推薦使用Email服務商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">應用密碼</a>`,
             serverDetail: '詳細設定：',
             imapServer: 'IMAP伺服器設定',
             UserName: '登陸用戶名稱',
             Ssl: '使用Ssl加密信息傳輸：',
             imapServerInput: 'IMAP伺服器IP或域名',
-            portName: '通訊端口號：',
+            portName: '通訊連接埠：',
             otherPortNumber: '其他號碼：',
             smtpServer: 'SMTP伺服器設定',
             smtpServerInput: 'SMTP伺服器設定',
-            Error_portNumber: '端口號應該是從1-65535之間的數字',
+            Error_portNumber: '連接埠應該是從1-65535之間的數字',
             emailServerPassword: '郵箱密碼(推薦使用應用專用密碼)',
             imapAccountConform: '<p><dt>警告：</dt></p>當您按下提交按鈕時，意味著您已經確認：這個郵箱並不是您常用的郵箱，這是為了使用QTGate系統而特別申請的臨時郵箱，您同意承擔由此帶來的風險，並授權QTGate系統可以使用這個Email郵箱傳輸信息!',
             agree: '我已經了解風險，並願意繼續',
-            imapOtherCheckError: '不能連接到Email伺服器，有可能您設定的伺服器名稱或IP，通訊端口號有誤，請檢查您的伺服器詳細設定！',
+            imapOtherCheckError: '不能連接到Email伺服器，有可能您設定的伺服器名稱或IP，通訊連接埠有誤，請檢查您的伺服器詳細設定！',
             CertificateError: 'Email伺服器提示的證書不能被系統信任！您的Email伺服器有可能是一個仿冒的，您如果想繼續，請在詳細設定裡選擇【允許連接到不被信任證書的Email伺服器】，但您的Email登陸信息有可能洩漏給此伺服器！',
             IgnoreCertificate: '允許連接到不被信任證書的Email伺服器',
             Certificat: '如果您不確定請別選擇這項，這個選擇是非常危險，因為它允許連接上一個仿冒的伺服器，可能洩露您的用戶名和密碼。',
@@ -1847,7 +1869,7 @@ const infoDefine = [
             testSuccess: '電子郵件伺服器連接試驗成功！',
             exitEdit: '退出編輯Email帳戶',
             deleteImap: '刪除IMAP帳戶',
-            proxyPortError: '端口號應該是從1000-65535之間的數字，或此端口已被其他APP所占用，請再嘗試其他號碼。'
+            proxyPortError: '連接埠應該是從1000-65535之間的數字，或此端口已被其他APP所占用，請再嘗試其他號碼。'
         },
         Home_keyPairInfo_view: {
             title: '密鑰信息',
@@ -1904,7 +1926,7 @@ const infoDefine = [
             finishedDeleteKeyPair: '密鑰對完成刪除!',
             offlineError: '您的電腦視乎未連結到互聯網，請檢查網路連結',
             imapErrorMessage: ['', '數據格式錯誤，請重試', '您的電腦未連接到互聯網，請檢查網絡後再次嘗試！', 'email伺服器提示IMAP用戶名或密碼錯！',
-                'Email伺服器的指定端口號連結失敗，請檢查您的IMAP端口號設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他端口號！',
+                'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！',
                 '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在IMAP詳細設定中選擇忽略證書錯誤。',
                 '無法獲得Email伺服器域名信息，請檢查您的Email伺服器設定！', '此Email伺服器不能使用QTGate通訊技术。请选择其他email服务供应商！',
                 'email伺服器提示SMTP用戶名或密碼錯！', '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在SMTP詳細設定中選擇忽略證書錯誤。', 'SMTP連結提示未知錯誤', '您已有相同的Email賬戶']
@@ -1921,14 +1943,17 @@ const infoDefine = [
             bottom1_1: '此致',
             bottom1_2: 'QTGate團隊',
             conformButtom: '驗 證',
-            formatError: ['內容格式錯誤，請複制從“-----BEGIN PGP MESSAGE----- （開始，一直到）-----END PGP MESSAGE-----” 結束的完整內容，粘貼在此輸入框中。 ',
-                '提供的內容不能被解密，請確認這是在您收到的最後一封從QTGate發送過來的激活信。如果還是沒法完成激活，請刪除您的密鑰重新生成和設定。 ',
-                'QTGate未連接錯誤，請退出QTGate重新啟動！ ',
-                '無效激活碼！ QTGate系統已重新發送新的激活Email，並斷開與您的連接。請退出QTGate重新啟動QTGate後，檢查您的郵箱重做激活。 ',
-                '您的QTGate看上去有問題, 請刪除您的密鑰，重新設置您的QTGate！ ',
+            formatError: ['內容格式錯誤，請複制從“-----BEGIN PGP MESSAGE----- （開始，一直到）-----END PGP MESSAGE-----” 結束的完整內容，粘貼在此輸入框中。',
+                '提供的內容不能被解密，請確認這是在您收到的最後一封從QTGate發送過來的激活信。如果還是沒法完成激活，請刪除您的密鑰重新生成和設定。',
+                '和QTGate連接發生錯誤，請退出重新嘗試！',
+                '無效激活碼！ QTGate系統已重新發送新的激活Email，並斷開與您的連接。請退出QTGate重新啟動QTGate後，檢查您的郵箱重做激活。',
+                '您的QTGate看上去有問題, 請刪除您的密鑰，重新設置您的QTGate！',
                 'QTGate系統故障，請稍後再試。 ',
-                '您當天的數據通訊量達到上限，請等待明天再試或升級用戶類型', '用來通訊的Email設定有錯誤，請檢查IMAP設定後重試，或此Email類型QTGate不支持',
-                '您所選區域不能夠連結，請稍候再試'],
+                '您當天的數據通訊量達到上限，請等待明天再試或升級用戶類型',
+                '用來通訊的Email設定有錯誤，請檢查IMAP設定後重試，或QTGate不支持此Email類型',
+                '您所選區域不能夠連結，請稍候再試',
+                '您的IMAP郵箱發信發生錯誤。請退出QTGate重試。如果持續發生此故障，您的IMAP帳號有可能被鎖住，需要登陸您的IMAP郵箱網站解鎖操作。'
+            ],
             activeing: '正在通訊中'
         },
         QTGateRegion: {
@@ -1951,9 +1976,9 @@ const infoDefine = [
             sendConnectRequestMail: ['您的QTGate客戶端沒有和QTgate系統聯機，客戶端已向QTgate系統重新發出聯機請求Email。和QTgate系統聯機需要額外的時間，請耐心等待。 ',
                 '當免費用戶連續24小時內沒有使用客戶端，您的連接會被中斷。付費用戶情況下QTgate系統可保持持續聯機一個月。 '],
             GlobalIpInfo: '注意：當您按下【QTGate連結】時您會把您的本機互聯網IP提供給QTGate系統，如果您不願意，請選擇【@QTGate】技術來使用QTGate服務！',
-            localPort: '本地代理伺服器端口號:',
+            localPort: '本地代理伺服器連接埠:',
             cacheDatePlaceDate: [{ name: '1小时', id: 1 }, { name: '12小时', id: 12 }, { name: '1日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永遠', id: -1 }],
-            atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用強加密Email通訊，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私，超強防火牆穿透能力。缺点是有延遲，网络通讯响应受您所使用的email服务供应商的伺服器影响，不適合遊戲視頻會話等通訊。',
+            atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用強加密Email通訊，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私，超強防火牆穿透能力。缺点是有延遲，网络通讯响应受您所使用的email服务供应商的伺服器影响，不適合遊戲視頻會話等通訊。目前該技術只支持iCloud郵箱。',
                 'QTGate獨創HTTP強加密混淆流量代理技術，能夠隱藏變換您的IP地址高速通訊，隐身和保护隐私，抗干擾超強防火牆穿透能力。缺點是需要使用您的IP來直接連結代理伺服器。如果您只是需要自由訪問互聯網，則推薦使用本技術。',
                 '域名解釋使用QTGate代理伺服器端，可以防止域名伺服器緩存污染，本選擇不可修改。', '互聯網數據全程使用QTGate代理，可以匿名上網隱藏您的互聯網形踪。', '只有當本地網絡不能夠到達您希望訪問的目標時，才使用QTGate代為您連結目標伺服器，本選項可以節省您的QTGate流量。',
                 '通過本地緩存瀏覽紀錄，當您再次訪問目標伺服器時可以增加訪問速度，減少網絡流量，緩存瀏覽記錄只針對非加密技術的HTTP瀏覽有效。QTGate使用強加密技術緩存瀏覽紀錄，確保您的隱私不被洩漏', '不保存緩存信息。',
@@ -2221,7 +2246,7 @@ const _QTGateRegions = [
         showConnectedArea: ko.observable(false)
     }
 ];
-const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.com$|imap\.mail\.me\.com$|imap\.mail\.yahoo\.co\.jp$/i;
+const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.com$|imap\.mail\.me\.com$|imap\.mail\.yahoo\.co\.jp$|imap\.gmail\.com$|gmx\.com$|zoho\.com$/i;
 const dummyIConnectCommand = {
     connectPeer: null,
     connectType: null,
@@ -2726,6 +2751,7 @@ var view_layout;
             this.showDisconnectbutton = ko.observable(true);
             this.ConnectGatewayShow = ko.observable(false);
             this.portNumberError = ko.observable(false);
+            this.canDoAtEmail = ko.observable(false);
             //-
             this.config = ko.observable({
                 firstRun: true,
@@ -2815,6 +2841,10 @@ var view_layout;
                 return socketIo.emit('checkPort', newValue, err => {
                     return this.localProxyPortError(err);
                 });
+            });
+            this.QTGateConnect1.subscribe(newValue => {
+                if (newValue == '1') {
+                }
             });
             socketIo.emit('init', (err, data) => {
                 this.config(data);
@@ -2918,7 +2948,10 @@ var view_layout;
             });
             socketIo.on('checkActiveEmailError', err => {
                 if (err !== null && err > -1) {
-                    if (err === 3 || err === 4) {
+                    if (err === 3 || err === 4 || err === 2 || err === 9) {
+                        //      err = 3     password have not match from QTGate system
+                        //      err = 4     unformat data from QTGate system
+                        //      err = 6     QTGate connect pair timeout from server.js
                         this.modalContent(infoDefine[this.languageIndex()].emailConform.formatError[err]);
                         return $('.ui.basic.modal').modal('show');
                     }
@@ -3058,6 +3091,8 @@ var view_layout;
                             }
                             return -1;
                         });
+                        const imapServer = this.emailPool()[0].iMapServerName();
+                        this.canDoAtEmail(/imap\.mail\.me\.com$/.test(imapServer));
                     });
                 }
                 this.QTGateRegionInfo(false);
