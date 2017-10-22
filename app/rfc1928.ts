@@ -151,7 +151,7 @@
               if ( this.ATYP !== ATYP.IP_V4 )
                   return
               const y = n.split ('.')
-              const ret = new Buffer ('00000000','hex')
+              const ret = new Buffer ( '00000000','hex' )
               for ( let i = 0; i < 4; i ++ ) {
                   const k = parseInt (y[i])
                   if ( !k || k < 0 || k > 255 )
@@ -170,5 +170,50 @@
           }
       
           
+      }
+
+      export class socket4Requests {
+        constructor ( public buffer: Buffer ) {}
+        public get socketVersion () {
+            return this.buffer.readUInt8 ( 0 )
+        }
+        public get IsSocket4 () {
+            return this.buffer.readUInt8 ( 0 ) === 0x04
+        }
+        public get cmd () {
+            return this.buffer.readUInt8 ( 1 )
+        }
+        public get port () {
+            return this.buffer.readUInt16BE ( 2 )
+        }
+        public get targetIp () {
+            const uu = `${ this.buffer.readUInt8 (4).toString() }.${ this.buffer.readUInt8 (5).toString() }.${ this.buffer.readUInt8 (6).toString() }.${ this.buffer.readUInt8 (7).toString() }`
+            if ( /^0.0.0/.test (uu))
+                return null
+            return uu
+        }
+        public get domainName () {
+            if ( ! this.targetIp ) {
+                return this.buffer.slice (9).toString ()
+            }
+            return null
+        }
+
+        public request_granted ( targetIp: string, targetPort: number) {
+            if ( !targetIp )
+                return Buffer.from ('005a0000000000','hex')
+            const ret = Buffer.from ('005a000000000000','hex')
+            ret.writeUInt16BE ( targetPort, 2 )
+            const u = targetIp.split ('.')
+            for ( let i = 4, l = 0; i < 8; i ++, l ++ ) {
+
+                ret.writeUInt8 ( parseInt (u[l]), i )
+            }
+            return ret
+        }
+        public get request_failed () {
+            return Buffer.from ('005b000000','hex')
+        }
+
       }
       

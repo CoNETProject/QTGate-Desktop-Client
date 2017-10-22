@@ -85,12 +85,12 @@ export default class gateWay {
 
 		const _socket = Net.createConnection ({ port: this.serverPort, host: this.serverIp }, () => {
 			encrypt.write ( _data )
-			console.log (`send data to remote!`)
-			console.log(`*************\n${_data.toString ()}\n*********`)
+			console.log ( `send data to remote!` )
+			console.log ( `*************\n${_data.toString ()}\n*********`)
 		})
 
 		_socket.once ( 'end', () => {
-			console.log (`_socket.once end!`)
+			console.log ( `_socket.once end!` )
 		})
 
 		httpBlock.once ( 'error', err => {
@@ -103,8 +103,7 @@ export default class gateWay {
 
 		} )
 		encrypt.pipe ( _socket ).pipe ( httpBlock ).pipe ( decrypt ).pipe ( finish )
-		
-		
+
 	}
 
 	public requestGetWay ( id: string, uuuu: VE_IPptpStream, userAgent: string, socket: Net.Socket ) {

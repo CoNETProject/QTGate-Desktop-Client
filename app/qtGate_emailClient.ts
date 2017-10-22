@@ -19,7 +19,7 @@ import * as Fs from 'fs'
 import * as Path from 'path'
 import * as Dns from 'dns'
 import * as Net from 'net'
-import socks5 from './socket5'
+//import socks5 from './socket5'
 import * as Crypto from 'crypto'
 import HttpProxyHeader from './httpProxy'
 import * as Rfc1928 from './rfc1928'
@@ -361,7 +361,7 @@ export default class imapProxyServer {
 						return console.log ( 'SOCK4 connect' )
 					case 0x5:
 						console.log ( 'socks5 connect' )
-						return new socks5 ( socket )
+						return //new socks5 ( socket )
 					default:
 						return httpImapProxy ( this.imapClass, socket, data, useGatWay, this.hostGlobalIpV6 ? true : false,  connectHostTimeOut,
 							domainListPool, checkAgainTimeOut, domainBlackList )

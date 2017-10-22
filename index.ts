@@ -103,7 +103,7 @@ if ( makeSingleInstance ()) {
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion()
 
-const DEBUG = false
+const DEBUG = true
 enum lang { 'zh', 'ja', 'en', 'tw' }
 const QTGateFolder = join ( Os.homedir(), '.QTGate' )
 const QTGateLatest = join ( QTGateFolder, 'latest' )

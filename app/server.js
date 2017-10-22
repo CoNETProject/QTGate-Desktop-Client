@@ -34,7 +34,7 @@ const Express = require('express');
 const cookieParser = require('cookie-parser');
 const Uuid = require('node-uuid');
 const { remote } = require('electron');
-const DEBUG = false;
+const DEBUG = true;
 const QTGateFolder = Path.join(Os.homedir(), '.QTGate');
 const QTGateSignKeyID = /3acbe3cbd3c1caa9/i;
 const configPath = Path.join(QTGateFolder, 'config.json');
@@ -48,30 +48,6 @@ const QTGatePongReplyTime = 1000 * 30;
 let mainWindow = null;
 const createWindow = () => {
     remote.getCurrentWindow().createWindow();
-    /*
-    mainWindow = new remote.BrowserWindow ({
-        width: 850,
-        height: 480,
-        minWidth: 850,
-        minHeight: 480,
-        show: false,
-        backgroundColor: '#ffffff',
-        icon: process.platform === 'linux' ? Path.join ( __dirname, 'app/public/assets/images/512x512.png' ) : Path.join ( __dirname, 'app/qtgate.icns' )
-    })
-    
-    mainWindow.loadURL ( `http://127.0.0.1:${ port }/` )
-    if ( debug ) {
-        mainWindow.webContents.openDevTools()
-        mainWindow.maximize()
-    }
-    
-    mainWindow.once ( 'closed', () => {
-        mainWindow = null
-    })
-    mainWindow.once ('ready-to-show', () => {
-        mainWindow.show()
-    })
-    */
 };
 const _doUpdate = (tag) => {
     saveLog(`_doUpdate tag = [${tag}]`);

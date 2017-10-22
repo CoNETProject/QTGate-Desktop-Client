@@ -29,7 +29,7 @@ import * as res from './res'
 import * as Stream from 'stream'
 import * as Fs from 'fs'
 import * as Path from 'path'
-import socket5 from './socket5'
+import * as Socks from './socket5ForiOpn'
 import gateWay from './gateway'
 import * as Os from 'os'
 const { remote } = require ( "electron" )
@@ -54,7 +54,7 @@ const IsSslConnect = ( buffer: Buffer ) => {
 	return /^1603(01|02|03|00)|^80..0103|^(14|15|17)03(00|01)/.test (kk)
 }
 
-const checkDomainInBlackList = ( BlackLisk: string[], domain: string, CallBack ) => {
+export const checkDomainInBlackList = ( BlackLisk: string[], domain: string, CallBack ) => {
 
 	if ( Net.isIP ( domain )) {
 		return CallBack ( null, BlackLisk.find ( n => { return n === domain }) ? true : false )
@@ -140,7 +140,7 @@ const closeClientSocket = ( socket: Net.Socket, status: number, body: string ) =
 const _connect = ( hostname: string, hostIp: string, port: number, clientSocket: Net.Socket, data: Buffer, connectHostTimeOut: number,  CallBack ) => {
 	console.log (`direct _connect!`)
 	const socket = new Net.Socket()
-	const ip = clientSocket.remoteAddress.split (':')[3]
+	const ip = clientSocket.remoteAddress.split (':')[3]|| clientSocket.remoteAddress
 	let err = null
 	const id = `[${ ip }] => [${ hostname }:${ port }] `
 	const hostInfo = `{${ hostIp }:${ port }}`
@@ -160,7 +160,7 @@ const _connect = ( hostname: string, hostIp: string, port: number, clientSocket:
 	}
 
 	socket.on ( 'connect', () => {
-		console.log (`${ id } socket.on connect!`)
+		console.log ( `${ id } socket.on connect!`)
 
 		clearTimeout ( timeout )
 
@@ -208,7 +208,7 @@ const _connect = ( hostname: string, hostIp: string, port: number, clientSocket:
 	return socket.connect ( port, hostIp )
 }
 
-const tryConnectHost = ( hostname: string, hostIp: domainData, port: number, data: Buffer, clientSocket: Net.Socket, isSSLConnect: boolean, 
+export const tryConnectHost = ( hostname: string, hostIp: domainData, port: number, data: Buffer, clientSocket: Net.Socket, isSSLConnect: boolean, 
 	checkAgainTimeOut: number, connectTimeOut: number, gateway: boolean, CallBack ) => {
 
 	if ( isSSLConnect ) {
@@ -264,7 +264,7 @@ const tryConnectHost = ( hostname: string, hostIp: domainData, port: number, dat
 	
 }
 
-const isAllBlackedByFireWall = ( hostName: string, ip6: boolean, checkAgainTime: number, gatway: gateWay, userAgent: string, domainListPool: Map < string, domainData >,
+export const isAllBlackedByFireWall = ( hostName: string, ip6: boolean, gatway: gateWay, userAgent: string, domainListPool: Map < string, domainData >,
 	CallBack: ( err?: Error, hostIp?: domainData ) => void ) => {
 
 	const hostIp = domainListPool.get ( hostName )
@@ -276,7 +276,13 @@ const isAllBlackedByFireWall = ( hostName: string, ip6: boolean, checkAgainTime:
 	return CallBack ( null, hostIp )
 }
 
-
+const isSslFromBuffer = ( buffer ) => {
+	console.log ( buffer.toString ('hex'))
+	const ret = /^\x16[\x2c-\xff]\x01\x00[\x00-\x05].[\x00-\x09][\x00-\x1f]|^\x80[\x0f-\xff]\x01[\x00-\x09][\x00-\x1f][\x00-\x05].\x00.\x00./.test ( buffer )
+	
+	console.log ( `ret [${ ret }]`)
+	return ret
+}
 const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean, ip6: boolean, connectTimeOut: number,  
 	domainListPool: Map < string, domainData >, gatway: gateWay, checkAgainTime: number, blackDomainList: string[] ) => {
 
@@ -285,7 +291,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 	const userAgent = httpHead.headers [ 'user-agent' ]
 
 	const CallBack = ( err?: Error, _data?: Buffer ) => {
-
+		console.log ( `tryConnectHost callback err [${ err }], _data[${ _data }]`)
 		if ( err ) {
 			
 			if ( useGatWay && _data && _data.length && clientSocket.writable ) {
@@ -296,7 +302,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 					cmd: Rfc1928.CMD.CONNECT,
 					ATYP: Rfc1928.ATYP.IP_V4,
 					port: parseInt ( httpHead.Url.port || httpHead.isHttps ? '443' : '80' ),
-					ssl: httpHead.isHttps
+					ssl: isSslFromBuffer ( _data )
 				}
 
 				const id = `[${ clientSocket.remoteAddress.split(':')[3] }:${ clientSocket.remotePort }][${ uuuu.uuid }] `
@@ -322,7 +328,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
         
         if ( ! hostIp ) {
 			console.log ( `domain connect to [${ hostName }]`)
-			return isAllBlackedByFireWall ( hostName,  ip6, checkAgainTime, gatway, userAgent, domainListPool, ( err, _hostIp ) => {
+			return isAllBlackedByFireWall ( hostName,  ip6, gatway, userAgent, domainListPool, ( err, _hostIp ) => {
 				if ( err ) {
 					console.log ( `[${ hostName }] Blocked!`)
 					return closeClientSocket ( clientSocket, 504, null )
@@ -344,60 +350,8 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 	})
 
 }
-/*
-const httpProxyTest = ( socket: Net.Socket, data: Buffer,  gateway: gateWay ) => {
-	const httpHead = new HttpProxyHeader ( data )
-	const port = parseInt ( httpHead.Url.port ||  httpHead.isHttps ? '443' : '80' )
-	const hostName = httpHead.Url.hostname
-	const userAgent = httpHead.headers [ 'user-agent' ]
-	let first = true
 
-	const localrequest = ( buf: Buffer ) => {
-		if ( httpHead.isHttps && first ) {
-			first = false
-			console.log ('https connect!')
-			socket.once ( 'data', _data => {
-				return localrequest ( _data )
-			})
-
-			return closeClientSocket ( socket, -200, '' )
-		}
-		const net = Net.createConnection ( port, hostName, () => {
-			const ls = new Compress.printStream ('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-			const ls1 = new Compress.printStream ('<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-			net.pipe ( socket ).pipe( ls ).pipe ( net )
-			net.write ( buf )
-		})
-
-	}
-
-	const connectTestPort = ( buf: Buffer ) => {
-		if ( httpHead.isHttps && first ) {
-			first = false
-			console.log ('https connect!')
-			socket.once ( 'data', _data => {
-				return connectTestPort ( _data )
-			})
-
-			return closeClientSocket ( socket, -200, '' )
-		}
-		const uuuu : VE_IPptpStream = {
-			uuid: Crypto.randomBytes (10).toString ('hex'),
-			host: hostName,
-			buffer: buf.toString ( 'base64' ),
-			cmd: Rfc1928.CMD.CONNECT,
-			ATYP: Rfc1928.ATYP.IP_V4,
-			port: port
-		}
-		const id = `[${ socket.remoteAddress.split(':')[3] }:${ socket.remotePort }][${ uuuu.uuid }]`
-		console.log ( uuuu.buffer )
-		return gateway.requestGetWayTest ( id, uuuu, userAgent, socket )
-	}
-
-	return connectTestPort ( data )
-}
-*/
-export default class proxyServer {
+export class proxyServer {
 
 	private hostLocalIpv4: { network: string, address: string } []= []
 	private hostLocalIpv6: string = null
@@ -405,7 +359,7 @@ export default class proxyServer {
 	private hostGlobalIpV6: string = null
 	private network = false
 	private getGlobalIpRunning = false
-
+	public gateway = new gateWay ( this.serverIp, this.serverPort, this.password )
 	private saveWhiteIpList () {
 		if ( this.whiteIpList.length > 0 )
 			Fs.writeFile ( Path.join( __dirname, whiteIpFile ), JSON.stringify( this.whiteIpList ), { encoding: 'utf8' }, err => {
@@ -456,13 +410,11 @@ export default class proxyServer {
 		return _HTTP_200 ( FindProxyForURL )
 	}
     */
-	constructor ( private whiteIpList: string[], private domainListPool: Map < string, domainData >, 
-		private port: number, private securityPath: string, private serverIp: string, private serverPort: number, private password: string, private checkAgainTimeOut: number, 
-		private connectHostTimeOut: number, useGatWay: boolean, domainBlackList: string[] ) {
-
-		const gateway = new gateWay ( serverIp, serverPort, password )
-
-		this.getGlobalIp ( gateway )
+	constructor ( public whiteIpList: string[], public domainListPool: Map < string, domainData >, 
+		private port: number, private securityPath: string, private serverIp: string, private serverPort: number, private password: string, public checkAgainTimeOut: number, 
+		public connectHostTimeOut: number, public useGatWay: boolean, public domainBlackList: string[] ) {
+		this.getGlobalIp ( this.gateway )
+		let socks = null
 		const server = Net.createServer ( socket => {
 			const ip = socket.remoteAddress
 			const isWhiteIp = this.whiteIpList.find ( n => { return n === ip }) ? true : false
@@ -483,17 +435,22 @@ export default class proxyServer {
                 */
 				switch ( data.readUInt8 ( 0 )) {
 					case 0x4:
+					socks = new Socks.sockt4 ( socket, data, this )
 						return console.log ( 'SOCK4 connect' )
 					case 0x5:
 						console.log ( 'socks5 connect' )
-						return new socket5 ( socket )
+						return socks = new Socks.socks5 ( socket, this )
 					default:
-						return httpProxy ( socket, data, useGatWay, this.hostGlobalIpV6 ? true : false, connectHostTimeOut, domainListPool, gateway, checkAgainTimeOut, domainBlackList )
+						return httpProxy ( socket, data, useGatWay, this.hostGlobalIpV6 ? true : false, connectHostTimeOut, domainListPool, this.gateway, checkAgainTimeOut, domainBlackList )
 				}
 			})
 
 			socket.on ( 'error', err => {
+					socks = null
 				console.log ( `[${ip}] socket.on error`, err.message )
+			})
+			socket.once ('end', () => {
+				socks = null
 			})
 		})
 
