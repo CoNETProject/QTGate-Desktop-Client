@@ -46,14 +46,6 @@ const managerPagePort = 8001
 
 const testGatewayDomainName = 'www.google.com'
 
-//	-
-const IsSslConnect = ( buffer: Buffer ) => {
-	
-	const kk = buffer.toString ( 'hex', 0, 4 )
-	
-	return /^1603(01|02|03|00)|^80..0103|^(14|15|17)03(00|01)/.test (kk)
-}
-
 export const checkDomainInBlackList = ( BlackLisk: string[], domain: string, CallBack ) => {
 
 	if ( Net.isIP ( domain )) {
@@ -277,10 +269,8 @@ export const isAllBlackedByFireWall = ( hostName: string, ip6: boolean, gatway: 
 }
 
 const isSslFromBuffer = ( buffer ) => {
-	console.log ( buffer.toString ('hex'))
-	const ret = /^\x16[\x2c-\xff]\x01\x00[\x00-\x05].[\x00-\x09][\x00-\x1f]|^\x80[\x0f-\xff]\x01[\x00-\x09][\x00-\x1f][\x00-\x05].\x00.\x00./.test ( buffer )
-	
-	console.log ( `ret [${ ret }]`)
+
+	const ret = /^\x16\x03|^\x80/.test ( buffer )
 	return ret
 }
 const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean, ip6: boolean, connectTimeOut: number,  
@@ -351,6 +341,14 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 
 }
 
+const getPac = ( hostIp: string, port: number ) => {
+
+	const FindProxyForURL = `function FindProxyForURL ( url, host ) { return SOCKS ${ hostIp }:${ port.toString() };}`
+	
+	return res._HTTP_200 ( FindProxyForURL )
+}
+    
+
 export class proxyServer {
 
 	private hostLocalIpv4: { network: string, address: string } []= []
@@ -399,18 +397,8 @@ export class proxyServer {
 		})
 
 	}
-    /*
-	private getPac ( remoteIp: string, port: string ) {
-
-		const ip6 = Net.isIP ( remoteIp )
-		const hostIp = Ip.isPrivate ( remoteIp ) ? ip6 === 6 ? this.hostLocalIpv6 : Nekudo.getLocalNetWorkIp ( this.hostLocalIpv4, remoteIp ) : ip6 === 6 ? this.hostGlobalIpV6: this.hostGlobalIpV4
-
-		const FindProxyForURL = `function FindProxyForURL ( url, host ) {return SOCKS5 ${ hostIp }:${ port };}`
-		
-		return _HTTP_200 ( FindProxyForURL )
-	}
-    */
-	constructor ( public whiteIpList: string[], public domainListPool: Map < string, domainData >, 
+    
+	constructor ( public whiteIpList: string[], public domainListPool: Map < string, domainData >, private localProxyServerIP: string, 
 		private port: number, private securityPath: string, private serverIp: string, private serverPort: number, private password: string, public checkAgainTimeOut: number, 
 		public connectHostTimeOut: number, public useGatWay: boolean, public domainBlackList: string[] ) {
 		this.getGlobalIp ( this.gateway )
@@ -418,21 +406,14 @@ export class proxyServer {
 		const server = Net.createServer ( socket => {
 			const ip = socket.remoteAddress
 			const isWhiteIp = this.whiteIpList.find ( n => { return n === ip }) ? true : false
-			
 			socket.once ( 'data', ( data: Buffer ) => {
-				/*
-				if ( ! isWhiteIp ) {
-					console.log ('! isWhiteIp', data.toString ('utf8'))
-					if ( testLogin ( data, this.securityPath )) {
-						
-						this.whiteIpList.push ( ip )
-						this.saveWhiteIpList ()
-						return socket.end ( this.getPac ( ip, port.toString ()))
-					}
-					
-					return socket.end ()
+				if ( /GET \/pac/.test ( data.toString())) {
+					const ret = getPac ( this.localProxyServerIP, this.port )
+					saveLog ( `/GET \/pac from :[${ socket.remoteAddress }]`)
+					return socket.end ( ret )
 				}
-                */
+				
+					
 				switch ( data.readUInt8 ( 0 )) {
 					case 0x4:
 					socks = new Socks.sockt4 ( socket, data, this )
@@ -476,6 +457,7 @@ interface proxyServerInfo {
     allToGateway: boolean
     localPort: number
 }
+
 let flag = 'w'
 const QTGateFolder = Path.join ( Os.homedir(), '.QTGate' )
 const proxyLogFile = Path.join ( QTGateFolder, 'proxy.log' )
@@ -489,7 +471,7 @@ const saveLog = ( log: string ) => {
 
 remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
 	console.log ( data )
-	const server = new proxyServer ([], new Map(), data.localServerPort, 'pac', data.gateWayIpAddress, data.gateWayPort, data.imapData.randomPassword,
+	const server = new proxyServer ([], new Map(), data.localServerIp, data.localServerPort, 'pac', data.gateWayIpAddress, data.gateWayPort, data.imapData.randomPassword,
 		 5000, 50000, data.AllDataToGateway, [] )
 	
 })

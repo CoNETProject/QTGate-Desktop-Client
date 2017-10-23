@@ -28,10 +28,8 @@ const server_res = {
 }
 
 const isSslFromBuffer = ( buffer ) => {
-	console.log ( buffer.toString ('hex'))
-	const ret = /^\x16[\x2c-\xff]\x01\x00[\x00-\x05].[\x00-\x09][\x00-\x1f]|^\x80[\x0f-\xff]\x01[\x00-\x09][\x00-\x1f][\x00-\x05].\x00.\x00./.test ( buffer )
-	
-	console.log ( `ret [${ ret }]`)
+
+	const ret = /^\x16\x03|^\x80/.test ( buffer )
 	return ret
 }
 export class socks5 {
@@ -208,11 +206,13 @@ export class sockt4 {
 				break
 			}
 			case Rfc1928.CMD.BIND: {
-				console.log ( 'Rfc1928.CMD.BIND request' )
+				console.log ( 'establish a TCP/IP port binding' )
+				console.log ( this.req.buffer.toString('hex'))
 				break
 			}
 			case Rfc1928.CMD.UDP_ASSOCIATE: {
-				console.log('Rfc1928.CMD.UDP_ASSOCIATE')
+				console.log ( 'associate a UDP port')
+				console.log ( this.req.buffer.toString('hex') )
 				break
 			}
 			default:

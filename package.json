@@ -1,6 +1,6 @@
 {
   "name": "qtgate",
-  "version": "0.8.30",
+  "version": "0.8.31",
   "license": "MIT",
   "description": "QTGate desktop client",
   "scripts": {
@@ -57,13 +57,13 @@
   "dependencies": {
     "async": "^2.5.0",
     "cookie-parser": "^1.4.3",
-    "emailjs": "^1.0.12",
     "express": "^4.16.2",
     "jquery": "^3.2.1",
     "node-uuid": "^1.4.8",
+    "nodemailer": "^4.2.0",
     "openpgp": "^2.5.12",
     "portastic": "^1.0.1",
     "pug": "^2.0.0-rc.4",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.0.4"
   }
 }

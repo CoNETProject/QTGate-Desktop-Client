@@ -59,7 +59,7 @@ const getImapSmtpHost = (email) => {
     const ret = {
         imap: 'imap.' + domain,
         smtp: 'smtp.' + domain,
-        SmtpPort: [587, 465],
+        SmtpPort: [465],
         ImapPort: 993,
         imapSsl: true,
         smtpSsl: true,
@@ -142,6 +142,7 @@ const getImapSmtpHost = (email) => {
             {
                 ret.imap = 'imap.mail.me.com';
                 ret.smtp = 'smtp.mail.me.com';
+                ret.SmtpPort = [587];
             }
             break;
         //			163.com
@@ -571,16 +572,16 @@ const infoDefine = [
             buttom1_2: 'QTGate团队',
             conformButtom: '验 证',
             formatError: [
-                '内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。',
-                '提供的内容不能被解密，请确认这是在您收到的最后一封从QTGate发送过来的激活信。如果还是没法完成激活，请删除您的密钥重新生成和设定。',
+                '内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。 ',
+                '提供的内容不能被解密，请确认这是在您收到的最后一封从QTGate发送过来的激活信。如果还是没法完成激活，请删除您的密钥重新生成和设定。 ',
                 '和QTGate连接发生错误，请退出重新尝试！ ',
-                '无效激活码！QTGate系统已重新发送新的激活Email，并斷開與您的連接。请退出QTGate重新啟動QTGate後，检查您的邮箱重做激活。',
-                '您的QTGate看上去有问题, 请删除您的密钥，重新设置您的QTGate！',
-                'QTGate系统故障，请稍后再试。',
-                '您当天的数据通讯量达到上限，请等待明天再试或升级用户类型', '用来通讯的Email设定有错误，请检查IMAP设定后重试，或此Email类型QTGate不支持',
+                '无效激活码！ QTGate系统已重新发送新的激活Email，并断开与您的连接。请退出QTGate重新启动QTGate后，检查您的邮箱重做激活。 ',
+                '您的QTGate看上去有问题, 请删除您的密钥，重新设置您的QTGate！ ',
+                'QTGate系统故障，请稍后再试。 ',
+                '您当天的数据通讯量达到上限，请等待明天再试或升级用户类型',
                 '用来通讯的Email设定有错误，请检查IMAP设定后重试，或QTGate不支持此Email类型',
                 '您所选区域不能够连结，请稍候再试',
-                '您的IMAP邮箱发信发生错误。请退出QTGate重试。如果持续发生此故障，您的IMAP帐号有可能被锁住，需要登陆您的IMAP邮箱网站解锁操作。'
+                '您的IMAP邮箱发信发生错误。请退出QTGate重试。如果持续发生此故障，您的IMAP帐号有可能被锁住，需要登陆您的IMAP邮箱网站解锁操作。 '
             ],
             activeing: '正在通讯中'
         },

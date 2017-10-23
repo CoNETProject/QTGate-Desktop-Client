@@ -87,7 +87,7 @@ if (makeSingleInstance()) {
 }
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion();
-const DEBUG = true;
+const DEBUG = false;
 var lang;
 (function (lang) {
     lang[lang["zh"] = 0] = "zh";

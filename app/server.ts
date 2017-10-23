@@ -31,14 +31,15 @@ import * as freePort from 'portastic'
 import * as prosyServer from './proxyServer'
 import * as Stream from 'stream'
 
+const DEBUG = false
 
 const openpgp = require ( 'openpgp' )
 const Express = require ( 'express' )
 const cookieParser = require ( 'cookie-parser' )
 const Uuid: uuid.UUID = require ( 'node-uuid' )
 const { remote } = require ( 'electron' )
+const Nodemailer = require ('nodemailer')
 
-const DEBUG = true
 const QTGateFolder = Path.join ( Os.homedir(), '.QTGate' )
 const QTGateSignKeyID = /3acbe3cbd3c1caa9/i
 const configPath = Path.join ( QTGateFolder, 'config.json' )
@@ -1218,45 +1219,23 @@ export class localServer {
     }
 
 	private smtpVerify ( imapData: IinputData, CallBack: ( err?: number ) => void ) {
-		const connect = {
-			host: imapData.smtpServer,
-			user: imapData.smtpUserName,
-			password: imapData.smtpUserPassword,
-			tls: /smtp\-mail\.outlook\.com/.test( imapData.smtpServer ) ? { ciphers: 'SSLv3' } : imapData.smtpSsl,
-			port: imapData.smtpPortNumber
-		}
-		const client = require ( 'emailjs' ).server.connect ( connect )
-		const message = {
-			text: 'text',
-			from: imapData.smtpUserName,
-			to: imapData.smtpUserName,
-			subject: 'test'
-		}
-		console.log ()
-		client.send ( message, ( err, mes ) => {
-			if ( err ) {
-				if ( err.code === 2 )
-					return CallBack ( 8 )
-				return CallBack ( 10 )
-			}
-			return CallBack ()
-		})
-		/*
+
 		const option = {
 			host:  Net.isIP ( imapData.smtpServer ) ? null : imapData.smtpServer,
 			hostname:  Net.isIP ( imapData.smtpServer ) ? imapData.smtpServer : null,
 			port: imapData.smtpPortNumber,
-			requireTLS: imapData.smtpSsl,
+			secure: /outlook\.com$|me\.com$/.test ( imapData.smtpServer ) ? false : imapData.smtpSsl,
 			auth: {
 				user: imapData.smtpUserName,
 				pass: imapData.smtpUserPassword
 			},
 			connectionTimeout: (1000 * 15).toString (),
-			tls: imapData.smtpIgnoreCertificate ? {
-				rejectUnauthorized: false
-			} : imapData.smtpSsl,
+			tls: {
+				rejectUnauthorized: imapData.smtpIgnoreCertificate,
+				ciphers: /outlook\.com$|me\.com$/.test (imapData.smtpServer) ? 'SSLv3' : null
+			}
 		}
-		
+		saveLog ( JSON.stringify ( option ))
 		const transporter = Nodemailer.createTransport ( option )
 		transporter.verify (( err, success ) => {
 			DEBUG ? saveLog ( `transporter.verify callback [${ JSON.stringify ( err )}] success[${ success }]` ) : null
@@ -1271,52 +1250,27 @@ export class localServer {
 
 			return CallBack()
 		})
-		*/
+		
 	}
 
 	private sendMailToQTGate ( imapData: IinputData, text: string, Callback ) {
 
-		const client = require ( 'emailjs' ).server.connect ({
-			host: imapData.smtpServer,
-			user: imapData.smtpUserName,
-			password: imapData.smtpUserPassword,
-			tls: /smtp\-mail\.outlook\.com/.test( imapData.smtpServer ) ? { ciphers: 'SSLv3' } : imapData.smtpSsl,
-			port: imapData.smtpPortNumber
-		})
-
-		const message = {
-			from: imapData.smtpUserName,
-			to: 'QTGate@QTGate.com',
-			subject: 'QTGate',
-			text: '',
-			attachment: [{
-				data: text,
-				alternative: false
-			}]
-			
-		}
-		
-		client.send ( message, ( err, mes ) => {
-			if ( err ) {
-				console.log ( err )
-				console.log ( mes )
-				if ( err.code === 2 )
-					return Callback ( 8 )
-				return Callback ( 10 )
-			}
-			return Callback ()
-		})
-
-		/*
 		const option = {
-			host: imapData.smtpServer,
+			host:  Net.isIP ( imapData.smtpServer ) ? null : imapData.smtpServer,
+			hostname:  Net.isIP ( imapData.smtpServer ) ? imapData.smtpServer : null,
 			port: imapData.smtpPortNumber,
-			requireTLS: imapData.smtpSsl,
+			secure: /outlook\.com$|me\.com$/.test ( imapData.smtpServer ) ? false : imapData.smtpSsl,
 			auth: {
 				user: imapData.smtpUserName,
 				pass: imapData.smtpUserPassword
+			},
+			connectionTimeout: (1000 * 15).toString (),
+			tls: {
+				rejectUnauthorized: imapData.smtpIgnoreCertificate,
+				ciphers: /outlook\.com$|me\.com$/.test ( imapData.smtpServer ) ? 'SSLv3' : null
 			}
 		}
+
 		const transporter = Nodemailer.createTransport ( option )
 		const mailOptions = {
 			from: imapData.email,
@@ -1335,7 +1289,7 @@ export class localServer {
 			saveLog ( `transporter.sendMail success!` )
 			return Callback ()
 		})
-		*/
+		
 
 	}
 
@@ -1559,7 +1513,7 @@ export class localServer {
 	}
 	
 } 
-const sentRequestMailWaitTimeOut = 1000 * 60
+const sentRequestMailWaitTimeOut = 1000 * 60 * 1.5
 class ImapConnect extends Imap.imapPeer {
 	private QTGatePublicKey: string = null
 	private password: string = null

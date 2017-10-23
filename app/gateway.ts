@@ -41,7 +41,7 @@ const otherRequestForNet = ( path: string, host: string, port: number, UserAgent
 class hostLookupResponse extends Stream.Writable {
 	constructor ( private CallBack: ( err?: Error, dns?: domainData ) => void ) { super ()}
 	public _write ( chunk: Buffer, enc, next ) {
-		console.log ( `hostLookupResponse _write come [${ chunk.toString()}]`)
+		//console.log ( `hostLookupResponse _write come [${ chunk.toString()}]`)
 		const ns = chunk.toString ( 'utf8' )
 		try {
 			const _ret = JSON.parse ( ns )

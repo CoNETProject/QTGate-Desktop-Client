@@ -29,12 +29,13 @@ const Net = require("net");
 const Imap = require("./imap");
 const freePort = require("portastic");
 const Stream = require("stream");
+const DEBUG = false;
 const openpgp = require('openpgp');
 const Express = require('express');
 const cookieParser = require('cookie-parser');
 const Uuid = require('node-uuid');
 const { remote } = require('electron');
-const DEBUG = true;
+const Nodemailer = require('nodemailer');
 const QTGateFolder = Path.join(Os.homedir(), '.QTGate');
 const QTGateSignKeyID = /3acbe3cbd3c1caa9/i;
 const configPath = Path.join(QTGateFolder, 'config.json');
@@ -1038,118 +1039,70 @@ class localServer {
         Crypto1.pbkdf2(passwrod, this.config.salt, this.config.iterations, this.config.keylen, this.config.digest, CallBack);
     }
     smtpVerify(imapData, CallBack) {
-        const connect = {
-            host: imapData.smtpServer,
-            user: imapData.smtpUserName,
-            password: imapData.smtpUserPassword,
-            tls: /smtp\-mail\.outlook\.com/.test(imapData.smtpServer) ? { ciphers: 'SSLv3' } : imapData.smtpSsl,
-            port: imapData.smtpPortNumber
-        };
-        const client = require('emailjs').server.connect(connect);
-        const message = {
-            text: 'text',
-            from: imapData.smtpUserName,
-            to: imapData.smtpUserName,
-            subject: 'test'
-        };
-        console.log();
-        client.send(message, (err, mes) => {
-            if (err) {
-                if (err.code === 2)
-                    return CallBack(8);
-                return CallBack(10);
-            }
-            return CallBack();
-        });
-        /*
         const option = {
-            host:  Net.isIP ( imapData.smtpServer ) ? null : imapData.smtpServer,
-            hostname:  Net.isIP ( imapData.smtpServer ) ? imapData.smtpServer : null,
+            host: Net.isIP(imapData.smtpServer) ? null : imapData.smtpServer,
+            hostname: Net.isIP(imapData.smtpServer) ? imapData.smtpServer : null,
             port: imapData.smtpPortNumber,
-            requireTLS: imapData.smtpSsl,
+            secure: /outlook\.com$|me\.com$/.test(imapData.smtpServer) ? false : imapData.smtpSsl,
             auth: {
                 user: imapData.smtpUserName,
                 pass: imapData.smtpUserPassword
             },
-            connectionTimeout: (1000 * 15).toString (),
-            tls: imapData.smtpIgnoreCertificate ? {
-                rejectUnauthorized: false
-            } : imapData.smtpSsl,
-        }
-        
-        const transporter = Nodemailer.createTransport ( option )
-        transporter.verify (( err, success ) => {
-            DEBUG ? saveLog ( `transporter.verify callback [${ JSON.stringify ( err )}] success[${ success }]` ) : null
-            if ( err ) {
-                const _err = JSON.stringify ( err )
-                if ( /Invalid login|AUTH/i.test ( _err ))
-                    return CallBack ( 8 )
-                if ( /certificate/i.test ( _err ))
-                    return CallBack ( 9 )
-                return CallBack ( 10 )
+            connectionTimeout: (1000 * 15).toString(),
+            tls: {
+                rejectUnauthorized: imapData.smtpIgnoreCertificate,
+                ciphers: /outlook\.com$|me\.com$/.test(imapData.smtpServer) ? 'SSLv3' : null
             }
-
-            return CallBack()
-        })
-        */
+        };
+        saveLog(JSON.stringify(option));
+        const transporter = Nodemailer.createTransport(option);
+        transporter.verify((err, success) => {
+            DEBUG ? saveLog(`transporter.verify callback [${JSON.stringify(err)}] success[${success}]`) : null;
+            if (err) {
+                const _err = JSON.stringify(err);
+                if (/Invalid login|AUTH/i.test(_err))
+                    return CallBack(8);
+                if (/certificate/i.test(_err))
+                    return CallBack(9);
+                return CallBack(10);
+            }
+            return CallBack();
+        });
     }
     sendMailToQTGate(imapData, text, Callback) {
-        const client = require('emailjs').server.connect({
-            host: imapData.smtpServer,
-            user: imapData.smtpUserName,
-            password: imapData.smtpUserPassword,
-            tls: /smtp\-mail\.outlook\.com/.test(imapData.smtpServer) ? { ciphers: 'SSLv3' } : imapData.smtpSsl,
-            port: imapData.smtpPortNumber
-        });
-        const message = {
-            from: imapData.smtpUserName,
-            to: 'QTGate@QTGate.com',
-            subject: 'QTGate',
-            text: '',
-            attachment: [{
-                    data: text,
-                    alternative: false
-                }]
-        };
-        client.send(message, (err, mes) => {
-            if (err) {
-                console.log(err);
-                console.log(mes);
-                if (err.code === 2)
-                    return Callback(8);
-                return Callback(10);
-            }
-            return Callback();
-        });
-        /*
         const option = {
-            host: imapData.smtpServer,
+            host: Net.isIP(imapData.smtpServer) ? null : imapData.smtpServer,
+            hostname: Net.isIP(imapData.smtpServer) ? imapData.smtpServer : null,
             port: imapData.smtpPortNumber,
-            requireTLS: imapData.smtpSsl,
+            secure: /outlook\.com$|me\.com$/.test(imapData.smtpServer) ? false : imapData.smtpSsl,
             auth: {
                 user: imapData.smtpUserName,
                 pass: imapData.smtpUserPassword
+            },
+            connectionTimeout: (1000 * 15).toString(),
+            tls: {
+                rejectUnauthorized: imapData.smtpIgnoreCertificate,
+                ciphers: /outlook\.com$|me\.com$/.test(imapData.smtpServer) ? 'SSLv3' : null
             }
-        }
-        const transporter = Nodemailer.createTransport ( option )
+        };
+        const transporter = Nodemailer.createTransport(option);
         const mailOptions = {
             from: imapData.email,
             to: 'QTGate@QTGate.com',
-            subject:'QTGate',
+            subject: 'QTGate',
             attachments: [{
-                content: text
-            }]
-        }
-        transporter.sendMail ( mailOptions, ( err: Error, info: any, infoID: any ) => {
-            if ( err ) {
-                saveLog ( `transporter.sendMail got ERROR! [${ JSON.stringify ( err )}]` )
-                this.socketServer.emit ( 'checkActiveEmailError', 9 )
-                return Callback ( err )
+                    content: text
+                }]
+        };
+        transporter.sendMail(mailOptions, (err, info, infoID) => {
+            if (err) {
+                saveLog(`transporter.sendMail got ERROR! [${JSON.stringify(err)}]`);
+                this.socketServer.emit('checkActiveEmailError', 9);
+                return Callback(err);
             }
-            saveLog ( `transporter.sendMail success!` )
-            return Callback ()
-        })
-        */
+            saveLog(`transporter.sendMail success!`);
+            return Callback();
+        });
     }
     sendEmailTest(imapData, CallBack) {
         if (!this.savedPasswrod) {
@@ -1340,7 +1293,7 @@ class localServer {
     }
 }
 exports.localServer = localServer;
-const sentRequestMailWaitTimeOut = 1000 * 60;
+const sentRequestMailWaitTimeOut = 1000 * 60 * 1.5;
 class ImapConnect extends Imap.imapPeer {
     constructor(imapData, qtGateConnectEmitData, sendConnectMailWhenServerNotReady, localServer, password, exit, socket) {
         super(imapData, imapData.clientFolder, imapData.serverFolder, (text, CallBack) => {
