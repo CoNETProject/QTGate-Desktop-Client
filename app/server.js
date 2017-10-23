@@ -1043,7 +1043,7 @@ class localServer {
             host: Net.isIP(imapData.smtpServer) ? null : imapData.smtpServer,
             hostname: Net.isIP(imapData.smtpServer) ? imapData.smtpServer : null,
             port: imapData.smtpPortNumber,
-            secure: /outlook\.com$|me\.com$/.test(imapData.smtpServer) ? false : imapData.smtpSsl,
+            secure: /\.outlook\.com$|\.me\.com$/.test(imapData.smtpServer) ? false : imapData.smtpSsl,
             auth: {
                 user: imapData.smtpUserName,
                 pass: imapData.smtpUserPassword
@@ -1051,7 +1051,7 @@ class localServer {
             connectionTimeout: (1000 * 15).toString(),
             tls: {
                 rejectUnauthorized: imapData.smtpIgnoreCertificate,
-                ciphers: /outlook\.com$|me\.com$/.test(imapData.smtpServer) ? 'SSLv3' : null
+                ciphers: /\.outlook\.com$|\.me\.com$/.test(imapData.smtpServer) ? 'SSLv3' : null
             }
         };
         saveLog(JSON.stringify(option));
@@ -1074,7 +1074,7 @@ class localServer {
             host: Net.isIP(imapData.smtpServer) ? null : imapData.smtpServer,
             hostname: Net.isIP(imapData.smtpServer) ? imapData.smtpServer : null,
             port: imapData.smtpPortNumber,
-            secure: /outlook\.com$|me\.com$/.test(imapData.smtpServer) ? false : imapData.smtpSsl,
+            secure: /\.outlook\.com$|\.me\.com$/.test(imapData.smtpServer) ? false : imapData.smtpSsl,
             auth: {
                 user: imapData.smtpUserName,
                 pass: imapData.smtpUserPassword
@@ -1082,7 +1082,7 @@ class localServer {
             connectionTimeout: (1000 * 15).toString(),
             tls: {
                 rejectUnauthorized: imapData.smtpIgnoreCertificate,
-                ciphers: /outlook\.com$|me\.com$/.test(imapData.smtpServer) ? 'SSLv3' : null
+                ciphers: /\.outlook\.com$|\.me\.com$/.test(imapData.smtpServer) ? 'SSLv3' : null
             }
         };
         const transporter = Nodemailer.createTransport(option);

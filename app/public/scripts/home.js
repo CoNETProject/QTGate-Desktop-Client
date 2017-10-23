@@ -133,6 +133,7 @@ const getImapSmtpHost = (email) => {
             {
                 ret.imap = 'imap-mail.outlook.com';
                 ret.smtp = 'smtp-mail.outlook.com';
+                ret.SmtpPort = [587];
             }
             break;
         //			apple mail
