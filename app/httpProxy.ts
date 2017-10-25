@@ -88,7 +88,7 @@ export default class httpProxy {
 	}
 
 	get isConnect () {
-		console.log (`isConnect:`, this.commandWithLine)
+
 		return ( /^connect /i.test ( this.commandWithLine[0] ) )
 	}
 
@@ -169,7 +169,6 @@ export default class httpProxy {
 		const vv = this.commandWithLine[0].split(':')
 		if ( vv.length > 1 ) {
 			const kk = vv[1].split (' ')[0]
-			console.log ( `kk = [${ kk }]`)
 			return parseInt ( kk )
 		}
 

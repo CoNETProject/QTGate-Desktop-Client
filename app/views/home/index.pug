@@ -591,11 +591,14 @@ block jumbotron1
 									.sixteen.wide.column( style="padding-top: 5px!important;padding-bottom: 0px!important;")
 										span( data-bind="html: infoDefine[ languageIndex() ].useInfoMacOS.title" style ="color: darkmagenta;font-size: small;")
 									.sixteen.wide.column( style="padding-top: 0px!important;padding-bottom: 0px!important;font-size: small;")
-										span( data-bind="text: infoDefine[ languageIndex() ].useInfoMacOS.proxyServerIp" )
-										span( data-bind="text: QTConnectData().localServerIp + ','" style="color: darkcyan;")
-										span( data-bind="text: infoDefine[ languageIndex() ].useInfoMacOS.proxyServerPort" style="padding-left: 10px;")
-										span( data-bind="text: QTConnectData().localServerPort + ','" style="color: darkcyan;")
-										span( data-bind="text: infoDefine[ languageIndex() ].useInfoMacOS.proxyServerPassword" style="padding-left: 10px;")
+										span( data-bind="html: infoDefine[ languageIndex() ].useInfoMacOS.proxyServerIp" )
+									.sixteen.wide.column( style="padding-top: 0px!important;padding-bottom: 0px!important;font-size: small;")
+										span( data-bind="text: infoDefine[ languageIndex() ].useInfoMacOS.proxyServerPort")
+										span( data-bind="text: 'http://'+QTConnectData().localServerIp+':'+QTConnectData().localServerPort+'/pacHttp'" style="color: red;")
+									.sixteen.wide.column( style="padding-top: 0px!important;padding-bottom: 0px!important;font-size: small;")
+										span( data-bind="text: infoDefine[ languageIndex() ].useInfoMacOS.proxyServerPassword")
+										span( data-bind="text:'http://'+QTConnectData().localServerIp+':'+QTConnectData().localServerPort+'/pac'" style="color: red;")
+										
 									.one.wide.column
 										a( href="#" data-bind = " click: () => { showUserInfoMacOS ( '#androidUseInfo', $root )}")
 											i.large.icon.android

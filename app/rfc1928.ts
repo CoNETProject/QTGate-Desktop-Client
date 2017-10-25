@@ -207,7 +207,7 @@
 
         public request_4_granted ( targetIp: string, targetPort: number) {
             if ( !targetIp )
-                return Buffer.from ('005a0000000000','hex')
+                return Buffer.from ('005a000000000000','hex')
             const ret = Buffer.from ('005a000000000000','hex')
             ret.writeUInt16BE ( targetPort, 2 )
             const u = targetIp.split ('.')

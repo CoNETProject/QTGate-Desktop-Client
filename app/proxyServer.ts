@@ -49,7 +49,7 @@ const testGatewayDomainName = 'www.google.com'
 export const checkDomainInBlackList = ( BlackLisk: string[], domain: string, CallBack ) => {
 
 	if ( Net.isIP ( domain )) {
-		console.log ( `checkDomainInBlackList domain [${ domain }] is IP address! `)
+		
 		return CallBack ( null, BlackLisk.find ( n => { return n === domain }) ? true : false )
 	}
 
@@ -281,7 +281,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 	const userAgent = httpHead.headers [ 'user-agent' ]
 
 	const CallBack = ( err?: Error, _data?: Buffer ) => {
-		console.log ( `tryConnectHost callback err [${ err }], _data[${ _data }]`)
+
 		if ( err ) {
 			
 			if ( useGatWay && _data && _data.length && clientSocket.writable ) {
@@ -296,7 +296,6 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 				}
 
 				const id = `[${ clientSocket.remoteAddress.split(':')[3] }:${ clientSocket.remotePort }][${ uuuu.uuid }] `
-				console.log (uuuu)
 				return gatway.requestGetWay ( id, uuuu, userAgent, clientSocket )
 				
 			}
@@ -318,7 +317,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 		const hostIp: domainData = ! isIp ? domainListPool.get ( hostName ) : { dns: [{ family: isIp, address: hostName, expire: null, connect: [] }], expire: null }
         
         if ( ! hostIp ) {
-			console.log ( `domain connect to [${ hostName }]`)
+
 			return isAllBlackedByFireWall ( hostName,  ip6, gatway, userAgent, domainListPool, ( err, _hostIp ) => {
 				if ( err ) {
 					console.log ( `[${ hostName }] Blocked!`)
@@ -335,17 +334,40 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 				return tryConnectHost ( hostName, _hostIp, port, buffer, clientSocket, httpHead.isConnect, checkAgainTime, connectTimeOut, useGatWay, CallBack )
 			})
 		}
-		console.log ( `checkDomainInBlackList CallBack hostName[${ hostName }] is IP address, now do tryConnectHost `)
+
 		return tryConnectHost ( hostName, hostIp, port, buffer, clientSocket, httpHead.isConnect, checkAgainTime, connectTimeOut, useGatWay, CallBack )
 
 	})
 
 }
+/*
+declare const isInNet:( a: string, y: string, z: string ) => string
+declare const dnsResolve :( a: any ) => string
+function FindProxyForURL ( url, host )
+{
+	if ( isInNet ( dnsResolve( host ), "0.0.0.0", "255.0.0.0") ||
+		isInNet( dnsResolve( host ), "172.16.0.0", "255.240.255.0") ||
+		isInNet( dnsResolve( host ), "127.0.0.0", "255.255.255.0") ||
+		isInNet ( dnsResolve( host ), "192.168.0.0", "255.255.0.0" ) ||
+		isInNet ( dnsResolve( host ), "10.0.0.0", "255.0.0.0" )) {
+		return "DIRECT";
+	}
+	return "${ http ? 'PROXY': ( sock5 ? 'SOCKS5' : 'SOCKS' ) } ${ hostIp }:${ port.toString() }";
+}
+*/
+const getPac = ( hostIp: string, port: number, http: boolean, sock5: boolean ) => {
 
-
-const getPac = ( hostIp: string, port: number, http: boolean ) => {
-
-	const FindProxyForURL = `function FindProxyForURL ( url, host ) { return "${ http ? 'PROXY': 'SOCKS' } ${ hostIp }:${ port.toString() }";}`
+	const FindProxyForURL = `function FindProxyForURL ( url, host )
+	{
+		if ( isInNet ( dnsResolve( host ), "0.0.0.0", "255.0.0.0") ||
+		isInNet( dnsResolve( host ), "172.16.0.0", "255.240.255.0") ||
+		isInNet( dnsResolve( host ), "127.0.0.0", "255.255.255.0") ||
+		isInNet ( dnsResolve( host ), "192.168.0.0", "255.255.0.0" ) ||
+		isInNet ( dnsResolve( host ), "10.0.0.0", "255.0.0.0" )) {
+			return "DIRECT";
+		}
+	return "${ http ? 'PROXY': ( sock5 ? 'SOCKS5' : 'SOCKS' ) } ${ hostIp }:${ port.toString() }";
+	}`
 	
 	return res._HTTP_200 ( FindProxyForURL )
 }
@@ -408,22 +430,28 @@ export class proxyServer {
 		const server = Net.createServer ( socket => {
 			const ip = socket.remoteAddress
 			const isWhiteIp = this.whiteIpList.find ( n => { return n === ip }) ? true : false
-			
+			let agent = 'Mozilla/5.0'
+			console.log (`new socket!`)
 			socket.once ( 'data', ( data: Buffer ) => {
 				const dataStr = data.toString()
 				if ( /^GET \/pac/.test ( dataStr )) {
-					let ret = getPac ( this.localProxyServerIP, this.port, false )
+					const httpHead = new HttpProxyHeader ( data )
+					agent = httpHead.headers['user-agent']
+					const sock5 = /Windows NT|Darwin/i.test ( agent ) && ! /CFNetwork/i.test (agent)
+					
+					let ret = getPac ( this.localProxyServerIP, this.port, false, sock5 )
 					if ( /pacHttp/.test( dataStr ))
-						ret = getPac ( this.localProxyServerIP, this.port, true )
-					saveLog ( `/GET \/pac from :[${ socket.remoteAddress }]`)
+						ret = getPac ( this.localProxyServerIP, this.port, true, sock5 )
+					console.log ( `/GET \/pac from :[${ socket.remoteAddress }] sock5 [${ sock5 }] agent [${ agent }] httpHead.headers [${ Object.keys(httpHead.headers)}]`)
+					console.log ( dataStr )
 					return socket.end ( ret )
 				}
 
 				switch ( data.readUInt8 ( 0 )) {
 					case 0x4:
-						return socks = new Socks.sockt4 ( socket, data, this )
+						return socks = new Socks.sockt4 ( socket, data, agent, this )
 					case 0x5:
-						return socks = new Socks.socks5 ( socket, this )
+						return socks = new Socks.socks5 ( socket, agent, this )
 					default:
 						return httpProxy ( socket, data, useGatWay, this.hostGlobalIpV6 ? true : false, connectHostTimeOut, domainListPool, this.gateway, checkAgainTimeOut, domainBlackList )
 				}

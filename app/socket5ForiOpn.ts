@@ -75,7 +75,7 @@ export class socks5 {
 	
 					const id = `[${ this.clientIP }:${ this.port }][${ Util.inspect(uuuu) }] `
 					
-					return this.proxyServer.gateway.requestGetWay ( id, uuuu, 'Mozilla/5.0', this.socket )
+					return this.proxyServer.gateway.requestGetWay ( id, uuuu, this.agent, this.socket )
 					
 				}
 				
@@ -108,7 +108,7 @@ export class socks5 {
 				return this.closeSocks5 ( retBuffer.buffer )
 			}
 			if ( this.host ) {
-				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, 'Mozilla/5.0', this.proxyServer.domainListPool, ( err, _hostIp ) => {
+				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.agent, this.proxyServer.domainListPool, ( err, _hostIp ) => {
 					if ( err ) {
 						console.log ( `[${ this.host }] Blocked!`)
 						retBuffer.REP = Rfc1928.Replies.CONNECTION_NOT_ALLOWED_BY_RULESET
@@ -150,10 +150,11 @@ export class socks5 {
 		//.serverIP = this.socket.localAddress.split (':')[3]
 
 		//		IPv6 not support!
-		console.log ( this.cmd )
+		
 		switch ( this.cmd ) {
 
 			case Rfc1928.CMD.CONNECT: {
+				console.log (`sock5 [${ this.host }]`)
 				this.keep = true
 				break
 			}
@@ -183,7 +184,7 @@ export class socks5 {
 		return this.connectStat2_after ( req )
 	}
 
-	constructor ( private socket: Net.Socket, private proxyServer: proxyServer.proxyServer ) {
+	constructor ( private socket: Net.Socket,private agent: string, private proxyServer: proxyServer.proxyServer ) {
 
 		this.socket.once ( 'data', ( chunk: Buffer ) => {
 			return this.connectStat2 ( chunk )
@@ -202,7 +203,7 @@ export class sockt4 {
 	private targetDomainData: domainData = null
 	private clientIP = this.socket
 	private keep = false
-	constructor ( private socket: Net.Socket, private buffer: Buffer, private proxyServer: proxyServer.proxyServer ) {
+	constructor ( private socket: Net.Socket, private buffer: Buffer, private agent: string, private proxyServer: proxyServer.proxyServer ) {
 		switch ( this.cmd ) {
 			case Rfc1928.CMD.CONNECT: {
 				this.keep = true
@@ -242,11 +243,8 @@ export class sockt4 {
 						port: this.port,
 						ssl: isSslFromBuffer ( _data )
 					}
-	
 					const id = `[${ this.clientIP }:${ this.port }][${ uuuu.uuid }] `
-					console.log ( ` ${id} [${ this.host }]`, 'try use gateway\n' )
-					return this.proxyServer.gateway.requestGetWay ( id, uuuu, 'Mozilla/5.0', this.socket )
-					
+					return this.proxyServer.gateway.requestGetWay ( id, uuuu, this.agent, this.socket )
 				}
 				
 				return this.socket.end ( res.HTTP_403 )
@@ -255,11 +253,10 @@ export class sockt4 {
 		}
 
 		this.socket.once ( 'data', ( _data: Buffer ) => {
-			console.log ( _data.toString ())
+			console.log (`connectStat2 [${ this.host||this.targetIpV4 }]get data `)
 			proxyServer.tryConnectHost ( this.host, this.targetDomainData, this.port, _data, this.socket, false, this.proxyServer.checkAgainTimeOut, 
 				this.proxyServer.connectHostTimeOut, this.proxyServer.useGatWay, CallBack )
 		})
-		console.log ( `this.socket.write ( this.req.request_granted )`)
 		const buffer = this.req.request_4_granted ( !this.host ? null: this.targetDomainData.dns[0].address, this.port )
 		this.socket.write ( buffer )
 		return this.socket.resume ()
@@ -268,15 +265,14 @@ export class sockt4 {
 		if ( this.host ) {
 			this.targetDomainData = this.proxyServer.domainListPool.get ( this.host )
 		}
-		console.log ( `connectStat1 `)
 		return proxyServer.checkDomainInBlackList ( this.proxyServer.domainBlackList, this.host || this.targetIpV4, ( err, result: boolean ) => {
 			if ( result ) {
 				console.log ( `[${ this.host }] Blocked!`)
 				return this.socket.end ( this.req.request_failed )
 			}
 			if ( this.host ) {
-				console.log ( `this.host [${ this.host }]`)
-				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, 'Mozilla/5.0', this.proxyServer.domainListPool, ( err, _hostIp ) => {
+				console.log (`socks4 host [${ this.host }]`)
+				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.agent, this.proxyServer.domainListPool, ( err, _hostIp ) => {
 					if ( err ) {
 						console.log ( `[${ this.host }] Blocked!`)
 						return this.socket.end ( this.req.request_failed )
@@ -292,6 +288,7 @@ export class sockt4 {
 					return this.connectStat2 ()
 				})
 			}
+			console.log (`socks4 ipaddress [${ this.targetIpV4 }]`)
 			return this.connectStat2 ()
 			
 		})

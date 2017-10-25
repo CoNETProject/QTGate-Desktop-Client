@@ -680,9 +680,9 @@ const infoDefine = [
         useInfoMacOS: {
             title:'<p>本地代理服务器已在后台运行，MacOS和Windows用户可以关闭本窗口。</p>您的其他电子设备，可通过设置本地Proxy伺服器，来使用QTGate连接到互联网',
             title1:'MacOS 本地代理服务器设定',
-            proxyServerIp:'本地代理服务器地址：',
-            proxyServerPort: '本地代理服务器端口：',
-            proxyServerPassword: '本地代理服务器登陆用户名和密码：无需设定',
+            proxyServerIp:'<p>代理设置选择：<span style="color: red;">自动代理设置</p>',
+            proxyServerPort: 'HTTP和HTTPS代理设定：',
+            proxyServerPassword: 'SOCKS代理设定：',
             info:[{
                 title:'打开控制面板，点击网络',
                 titleImage:'/images/macOsControl.jpg',
@@ -900,9 +900,9 @@ const infoDefine = [
         useInfoMacOS: {
             title:'ローカルプロキシサーバはバックグランドで実行しています。MacoSとWindowsユーザーはこのウィンドウを閉じても構わないです。他のデバイスはローカルプロキシに設定による、QTGate利用してインターネットへアクセスができます。',
             title1:'MacOS プロキシ設定',
-            proxyServerIp:'プロキシサーバアドレス：',
-            proxyServerPort: 'サーバポート：',
-            proxyServerPassword: '登録ユーザ名とパスワード：なし',
+            proxyServerIp:'<p>プロキシの設定に：<span style="color:red;">自動設置</span></p>',
+            proxyServerPort: 'HTTPとHTTPSプロキシは：',
+            proxyServerPassword: 'SOCKSプロキシは：',
             info:[{
                 title:'コントロールパネルを開いて、ネットワークをクリックしてください。',
                 titleImage:'/images/macOsControl.jpg',
@@ -1404,9 +1404,9 @@ const infoDefine = [
             }]
         },
         useInfoMacOS: {
-            proxyServerIp:'Proxy server address:',
-            proxyServerPort: 'Server port:',
-            proxyServerPassword: 'Proxy server login username and password: none',
+            proxyServerIp:'<p>Proxy setup: <span style="color: red;">Automatic or Auto-Config</span></p>',
+            proxyServerPort: 'HTTP & HTTPS proxy setup:',
+            proxyServerPassword: 'SOCKS proxy setup:',
             title:'Local proxy server is running at background. MacOS and windows user may close this window. All other devices can doing internet via local proxy setup use the QTGate system.',
             title1:'MacOS proxy setup',
             info:[{
@@ -1788,9 +1788,9 @@ const infoDefine = [
         useInfoMacOS: {
             title:'本地代理伺服器已在後台運行，MacOS和Windows用戶可以關閉本窗口。您的其他電子設備，可通過設置本地Proxy伺服器，來使用QTGate連接到互聯網',
             title1:'MacOS 本地代理伺服器設定',
-            proxyServerIp:'本地代理伺服器地址：',
-            proxyServerPort: '本地代理伺服器端口：',
-            proxyServerPassword: '本地代理伺服器登陸用戶名和密碼：無需設定',
+            proxyServerIp:'<p>代理設定選擇：<span style="color: red;">自動設定</p>',
+            proxyServerPort: 'HTTP和HTTPS代理的設定為：',
+            proxyServerPassword: 'SOCKS代理的設定為：',
             info:[{
                 
                 title:'打開控制面板，點擊【網絡】',
