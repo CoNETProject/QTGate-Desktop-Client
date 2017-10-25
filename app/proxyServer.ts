@@ -49,8 +49,10 @@ const testGatewayDomainName = 'www.google.com'
 export const checkDomainInBlackList = ( BlackLisk: string[], domain: string, CallBack ) => {
 
 	if ( Net.isIP ( domain )) {
+		console.log ( `checkDomainInBlackList domain [${ domain }] is IP address! `)
 		return CallBack ( null, BlackLisk.find ( n => { return n === domain }) ? true : false )
 	}
+
 	const domainS = domain.split ('.')
 	return Async.some ( BlackLisk, ( n, next ) => {
 		const nS = n.split ('.')
@@ -216,9 +218,6 @@ export const tryConnectHost = ( hostname: string, hostIp: domainData, port: numb
 
 	const now = new Date ().getTime ()
 
-	console.log ( 'tryConnectHost do Async.someSeries hostIp:' )
-	console.log ( hostIp )
-
 	Async.someSeries ( hostIp.dns, ( n, next ) => {
 		console.log ( n )
 
@@ -273,6 +272,7 @@ const isSslFromBuffer = ( buffer ) => {
 	const ret = /^\x16\x03|^\x80/.test ( buffer )
 	return ret
 }
+
 const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean, ip6: boolean, connectTimeOut: number,  
 	domainListPool: Map < string, domainData >, gatway: gateWay, checkAgainTime: number, blackDomainList: string[] ) => {
 
@@ -291,12 +291,12 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 					buffer: _data.toString ( 'base64' ),
 					cmd: Rfc1928.CMD.CONNECT,
 					ATYP: Rfc1928.ATYP.IP_V4,
-					port: parseInt ( httpHead.Url.port || httpHead.isHttps ? '443' : '80' ),
+					port: httpHead.Port,
 					ssl: isSslFromBuffer ( _data )
 				}
 
 				const id = `[${ clientSocket.remoteAddress.split(':')[3] }:${ clientSocket.remotePort }][${ uuuu.uuid }] `
-				console.log ( ` ${id} [${ hostName }]`, 'try use gateway\n' )
+				console.log (uuuu)
 				return gatway.requestGetWay ( id, uuuu, userAgent, clientSocket )
 				
 			}
@@ -307,11 +307,12 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 	}
 
 	return checkDomainInBlackList ( blackDomainList, hostName, ( err, result: boolean ) => {
-
+		
 		if ( result ) {
+			console.log (`checkDomainInBlackList CallBack result === true`)
 			return clientSocket.end ( res.HTTP_403 )
 		}
-
+		
 		const port = parseInt ( httpHead.Url.port ||  httpHead.isHttps ? '443' : '80' )
 		const isIp = Net.isIP ( hostName )
 		const hostIp: domainData = ! isIp ? domainListPool.get ( hostName ) : { dns: [{ family: isIp, address: hostName, expire: null, connect: [] }], expire: null }
@@ -334,23 +335,25 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 				return tryConnectHost ( hostName, _hostIp, port, buffer, clientSocket, httpHead.isConnect, checkAgainTime, connectTimeOut, useGatWay, CallBack )
 			})
 		}
-
+		console.log ( `checkDomainInBlackList CallBack hostName[${ hostName }] is IP address, now do tryConnectHost `)
 		return tryConnectHost ( hostName, hostIp, port, buffer, clientSocket, httpHead.isConnect, checkAgainTime, connectTimeOut, useGatWay, CallBack )
 
 	})
 
 }
 
-const getPac = ( hostIp: string, port: number ) => {
 
-	const FindProxyForURL = `function FindProxyForURL ( url, host ) { return SOCKS ${ hostIp }:${ port.toString() };}`
+const getPac = ( hostIp: string, port: number, http: boolean ) => {
+
+	const FindProxyForURL = `function FindProxyForURL ( url, host ) { return "${ http ? 'PROXY': 'SOCKS' } ${ hostIp }:${ port.toString() }";}`
 	
 	return res._HTTP_200 ( FindProxyForURL )
 }
-    
+
+
 
 export class proxyServer {
-
+	public UdpServer = new Socks.UdpDgram ()
 	private hostLocalIpv4: { network: string, address: string } []= []
 	private hostLocalIpv6: string = null
 	private hostGlobalIpV4: string = null
@@ -366,7 +369,6 @@ export class proxyServer {
 				}
 			})
 	}
-
 
 	private getGlobalIp = ( gateWay: gateWay ) => {
 		if ( this.getGlobalIpRunning )
@@ -406,20 +408,21 @@ export class proxyServer {
 		const server = Net.createServer ( socket => {
 			const ip = socket.remoteAddress
 			const isWhiteIp = this.whiteIpList.find ( n => { return n === ip }) ? true : false
+			
 			socket.once ( 'data', ( data: Buffer ) => {
-				if ( /GET \/pac/.test ( data.toString())) {
-					const ret = getPac ( this.localProxyServerIP, this.port )
+				const dataStr = data.toString()
+				if ( /^GET \/pac/.test ( dataStr )) {
+					let ret = getPac ( this.localProxyServerIP, this.port, false )
+					if ( /pacHttp/.test( dataStr ))
+						ret = getPac ( this.localProxyServerIP, this.port, true )
 					saveLog ( `/GET \/pac from :[${ socket.remoteAddress }]`)
 					return socket.end ( ret )
 				}
-				
-					
+
 				switch ( data.readUInt8 ( 0 )) {
 					case 0x4:
-					socks = new Socks.sockt4 ( socket, data, this )
-						return console.log ( 'SOCK4 connect' )
+						return socks = new Socks.sockt4 ( socket, data, this )
 					case 0x5:
-						console.log ( 'socks5 connect' )
 						return socks = new Socks.socks5 ( socket, this )
 					default:
 						return httpProxy ( socket, data, useGatWay, this.hostGlobalIpV6 ? true : false, connectHostTimeOut, domainListPool, this.gateway, checkAgainTimeOut, domainBlackList )
@@ -445,6 +448,8 @@ export class proxyServer {
 			return console.log ( 'proxy start success on port :', port, 'security path = ', securityPath )
 
 		})
+
+
 
 	}
 

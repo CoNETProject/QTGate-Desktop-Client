@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const DEBUG = false
 
 import * as Fs from 'fs'
 import * as Os from 'os'
@@ -103,7 +104,7 @@ if ( makeSingleInstance ()) {
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion()
 
-const DEBUG = false
+
 enum lang { 'zh', 'ja', 'en', 'tw' }
 const QTGateFolder = join ( Os.homedir(), '.QTGate' )
 const QTGateLatest = join ( QTGateFolder, 'latest' )
@@ -270,8 +271,10 @@ const createWindow = () => {
     }
     
     mainWindow.once ( 'closed', () => {
+        
         if ( process.platform === 'win32' || process.platform === 'darwin' )
             return mainWindow = null
+        
         return app.quit()
     })
 

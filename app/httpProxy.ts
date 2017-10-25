@@ -88,7 +88,8 @@ export default class httpProxy {
 	}
 
 	get isConnect () {
-		return /^connect /i.test ( this.commandWithLine[0] )
+		console.log (`isConnect:`, this.commandWithLine)
+		return ( /^connect /i.test ( this.commandWithLine[0] ) )
 	}
 
 	get isGet () {
@@ -147,9 +148,32 @@ export default class httpProxy {
 		return null
 		
 	}
+
 	get preBodyLength () {
 		const body = this._parts [1]
 		return body.length
+	}
+
+	get Port () {
+		console.log ( this.commandWithLine )
+		const uu = this.commandWithLine[0].split(/\/\//)
+		if ( uu.length > 1 ) {
+			const kk = uu[1].split (':')
+			if ( kk.length > 1 ) {
+				const ret = kk[1].split (' ')[0]
+				console.log ( `ret = [${ ret }]`)
+				return parseInt ( ret )
+			}
+			return 80
+		}
+		const vv = this.commandWithLine[0].split(':')
+		if ( vv.length > 1 ) {
+			const kk = vv[1].split (' ')[0]
+			console.log ( `kk = [${ kk }]`)
+			return parseInt ( kk )
+		}
+
+		return 443
 	}
 
 	get BodyLength () {

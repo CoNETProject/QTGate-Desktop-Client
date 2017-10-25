@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /*!
  * Copyright 2017 QTGate systems Inc. All Rights Reserved.
  *
@@ -15,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
+const DEBUG = false;
 const Fs = require("fs");
 const Os = require("os");
 const path_1 = require("path");
@@ -87,7 +88,6 @@ if (makeSingleInstance()) {
 }
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion();
-const DEBUG = false;
 var lang;
 (function (lang) {
     lang[lang["zh"] = 0] = "zh";

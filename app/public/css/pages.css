@@ -465,101 +465,70 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   opacity: 0.5;
 }
 .localIP {
-  position: absolute;
-  left: 18em;
+  position: relative;
+  left: 19em;
+  top: 7.8em;
+  color: blue;
+
+}
+.localIPPort {
+  position: relative;
+  left: 3.9em;
+  top: 8.8em;
   color: blue;
 
 }
 .WindowsUseInfoLocalServerIp {
-  position: absolute;
-  left: 13.9em;
-  top: 27.2em;
+  position: relative;
+  left: 13.2em;
+  top: 15.5em;
+  color: blue;
+}
+.WindowsUseInfoPort{
+  position: relative;
+  left: -1.9em;
+  top: 16.5em;
   color: blue;
 }
 .firefoxUseLocalIp{
-  position: absolute;
-  left: 12em;
-  top: 16.8em;
+  position: relative;
+  left: 4.5em;
+  top: 32.2em;
   color: blue;
 }
 .firefoxUseLocalPort{
-  position: absolute;
-  left: 28em;
-  top: 16.8em;
+  position: relative;
+  left: -10.6em;
+  top: 33.3em;
   color: blue;
 }
-.firefoxUseLocalIp1{
-  position: absolute;
-  left: 12em;
-  top: 20.1em;
-  color: rgba(0, 0, 0, 0.199)
-}
-.firefoxUseLocalPort1{
-  position: absolute;
-  left: 28em;
-  top: 20.1em;
-  color: rgba(0, 0, 0, 0.199)
-}
-.firefoxUseLocalIp2{
-  position: absolute;
-  left: 12em;
-  top: 21.9em;
-  color: rgba(0, 0, 0, 0.199)
-}
-.firefoxUseLocalPort2{
-  position: absolute;
-  left: 28em;
-  top: 21.9em;
-  color: rgba(0, 0, 0, 0.199)
-}
-.firefoxUseLocalIp3{
-  position: absolute;
-  left: 12em;
-  top: 23.7em;
-  color: rgba(0, 0, 0, 0.199)
-}
-.firefoxUseLocalPort3{
-  position: absolute;
-  left: 28em;
-  top: 23.7em;
-  color: rgba(0, 0, 0, 0.199)
-}
-.WindowsUseInfoPort{
-  position: absolute;
-  left: 21.4em;
-  top: 27.2em;
-  color: blue;
-}
+
+
 .iOSUseInfoLocalServerIp{
-  position: absolute;
-  left: 4em;
-  top: 14.1em;
+  position: relative;
+  left: 2em;
+  top: 12.6em;
   color: blue;
 }
 .iOSUseInfoPort{
-  position: absolute;
-  left: 4em;
-  top: 16.1em;
+  position: relative;
+  left: -13.1em;
+  top: 13.7em;
   color: blue;
 }
 .androidUseInfoLocalServerIp{
-  position: absolute;
-  left: 7em;
-  top: 10em;
+  position: relative;
+  left: 6em;
+  top: 7.7em;
   color: blue;
 }
 .androidUseInfoPort{
-  position: absolute;
-  left: 7em;
-  top: 14.5em;
+  position: relative;
+  left: -9.1em;
+  top: 8.8em;;
   color: blue;
 }
-.localIPPort {
-  position: absolute;
-  left: 30.7em;
-  color: blue;
 
-}
 .feedBack:hover{
   opacity: 0.8;
 }

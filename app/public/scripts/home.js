@@ -634,9 +634,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/macosUserInfo2.jpg'
                 }, {
-                    title: '代理设定',
+                    title: '选择代理设定，按图示选勾左边自动代理，选勾排除简单服务器名',
                     titleImage: '',
-                    detail: '<p>1.选勾左边 Web代理(HTTP)，并在右边Web代理服务器按图示的蓝色数字填入。</p><p>2.选勾左边 安全Web代理(HTTPS)，并在右边安全Web代理服务器，按图示的蓝色数字填入，完成按【好】结束设定。</p>',
+                    detail: '<p>使用HTTP和HTTPS代理请按照蓝色第一行填入，使用SOCKS代理选择蓝色第二行</p>',
                     image: '/images/macosUserInfo3.jpg'
                 }]
         },
@@ -653,15 +653,10 @@ const infoDefine = [
                     detail: '',
                     image: '/images/android2.jpg'
                 }, {
-                    title: '打开显示高级选项，在代理服务器设定(Proxy)中选择手动设置',
+                    title: '打开显示高级选项，在代理服务器设定(Proxy)中选择自动设置',
                     titleImage: '',
-                    detail: '',
+                    detail: '使用HTTP和HTTPS代理请按照蓝色第一行填入，使用SOCKS代理选择蓝色第二行',
                     image: '/images/android3.jpg'
-                }, {
-                    title: '按下列画面中蓝色的数字填入代理服务器名称和端口号，关闭窗口以完成设置',
-                    titleImage: '',
-                    detail: '',
-                    image: '/images/android4.jpg'
                 }]
         },
         firefoxUseInfo: {
@@ -677,9 +672,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/firefox2.jpg'
                 }, {
-                    title: '选择手动设置代理服务器，按图示蓝色数字填入HTTP代理服务器名称和端口号，选勾本设定适用所有协议，点击好完成设置',
+                    title: '选择自动设置，选勾域名使用SOCKS v5',
                     titleImage: '',
-                    detail: '',
+                    detail: '使用HTTP和HTTPS代理请按照蓝色第一行填入，使用SOCKS代理选择蓝色第二行',
                     image: '/images/firefox3.jpg'
                 }]
         },
@@ -701,9 +696,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/iOS3.jpg'
                 }, {
-                    title: '选择手动设置，在代理服务器名称和端口号处填入对应的蓝色数字，按保存完成设置',
+                    title: '选择自动设置',
                     titleImage: '',
-                    detail: '',
+                    detail: '<p>在URL网址处填入：使用HTTP和HTTPS代理请按照蓝色第一行填入，使用SOCKS代理选择蓝色第二行</p>',
                     image: '/images/iOS4.jpg'
                 }]
         },
@@ -731,9 +726,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/windowsUseInfo3.jpg'
                 }, {
-                    title: '选择手动设置代理服务器，按图示蓝色数字填入代理服务器地址及代理服务器端口号，然后点击保存完成设定。',
+                    title: '选择自动设置代理服务器',
                     titleImage: '',
-                    detail: '',
+                    detail: '<p>在URL网址处填入：使用HTTP和HTTPS代理请按照蓝色第一行填入，使用SOCKS代理选择蓝色第二行</p>',
                     image: '/images/windowsUseInfo4.jpg'
                 }]
         },
@@ -830,9 +825,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/windowsUseInfo3.jpg'
                 }, {
-                    title: '手動プロキシをオンにして、アドレスとポート番号は図の提示した、ブルー色番号と同じ物入れてください。保存をクリックと設定を完了します。',
+                    title: '自動プロキシをオンに',
                     titleImage: '',
-                    detail: '',
+                    detail: '<p>下の入力にHTTPとHTTPSは上のブルー行を、SOCKSは下の行を入力して保存をして終了します。</p>',
                     image: '/images/windowsUseInfo4.jpg'
                 }]
         },
@@ -853,9 +848,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/macosUserInfo2.jpg'
                 }, {
-                    title: 'プロキシ設定をします',
+                    title: 'プロキシ設定を選んで、自動設置をチェック、簡単ホストをチェック',
                     titleImage: '',
-                    detail: '<p>1）Webプロキシ(HTTP)をチェックして、Webプロキシサーバに図に書いているブルー色番号を入力してください。</p><p>2）Webプロキシ(HTTPS)をチェックして、Webプロキシサーバに同じく図に書いているブルー色番号を入力してください、完成したらOKボタンを押して完了です。</p>',
+                    detail: '<p>右の入力にHTTPとHTTPSは上のブルー行を、SOCKSは下の行を入力してください。</p>',
                     image: '/images/macosUserInfo3.jpg'
                 }]
         },
@@ -872,9 +867,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/firefox2.jpg'
                 }, {
-                    title: '手動で設定を選んで、HTTPプロキシサーバ名とポート番号を図の様同じく入力して、オールポロトコルをチェックしてOKを押して設定を完了します。',
+                    title: '自動設定を選んで、ドメインをSOCKS v5を選んで',
                     titleImage: '',
-                    detail: '',
+                    detail: 'HTTPとHTTPSは上のブルー行を、SOCKSは下の行を入力してください。',
                     image: '/images/firefox3.jpg'
                 }]
         },
@@ -891,15 +886,10 @@ const infoDefine = [
                     detail: '',
                     image: '/images/android2.jpg'
                 }, {
-                    title: '[詳細設定項目]の横にある下矢印をタップして、手動で設定を選択します',
+                    title: '[詳細設定項目]の横にある下矢印をタップして、自動設定を選択します',
                     titleImage: '',
-                    detail: '',
+                    detail: 'HTTPとHTTPSは上のブルー行を、SOCKSは下の行を入力してください。',
                     image: '/images/android3.jpg'
-                }, {
-                    title: 'プロキシホスト名とポート番号は図のブルー色数字と同じように入力してください',
-                    titleImage: '',
-                    detail: '',
-                    image: '/images/android4.jpg'
                 }]
         },
         useInfoiOS: {
@@ -920,9 +910,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/iOS3.jpg'
                 }, {
-                    title: '手動で設定を選択し、プロキシサーバ名とポート番号に図のブルー色数字と同じように入力して、保存して設置を完了します。',
+                    title: '自動設定を選択。',
                     titleImage: '',
-                    detail: '',
+                    detail: '<p>URLにHTTPとHTTPSは上のブルー行を、SOCKSは下の行を入力してください。</p>',
                     image: '/images/iOS4.jpg'
                 }]
         },
@@ -1250,9 +1240,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/firefox2.jpg'
                 }, {
-                    title: 'Chooess Manual proxy configuration, fill HTTP proxy and Port same as the blue in the picture. Check Use this proxy server for all protocols. Click OK to finish setup.',
+                    title: 'Chooses Automatic proxy configuration URL, Check Proxy DNS when using SOCKS v5.',
                     titleImage: '',
-                    detail: '',
+                    detail: 'HTTP and HTTPS proxy same as the top blue line, SOCKS is the bottom line.',
                     image: '/images/firefox3.jpg'
                 }]
         },
@@ -1279,9 +1269,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/iOS3.jpg'
                 }, {
-                    title: 'Check Manual then fill Proxy host name and port number follow the blue number that in the picture. type Save to finish setup.',
+                    title: 'Touch Automatic.',
                     titleImage: '',
-                    detail: '',
+                    detail: '<p>At URL: HTTP and HTTPS proxy same as the top blue line, SOCKS is the bottom line.</p>',
                     image: '/images/iOS4.jpg'
                 }]
         },
@@ -1298,15 +1288,10 @@ const infoDefine = [
                     detail: '',
                     image: '/images/android2.jpg'
                 }, {
-                    title: 'Tap the Down arrow at Advanced options. Pick the Manual.',
+                    title: 'Tap the Down arrow at Advanced options. Pick the Proxy Auto-Config.',
                     titleImage: '',
-                    detail: '',
+                    detail: 'HTTP and HTTPS proxy please same as the top blue line, SOCKS proxy is the bottom line.',
                     image: '/images/android3.jpg'
-                }, {
-                    title: 'Enter the proxy server details follow the blue text in picture.',
-                    titleImage: '',
-                    detail: '',
-                    image: '/images/android4.jpg'
                 }]
         },
         useInfoWindows: {
@@ -1332,9 +1317,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/windowsUseInfo3.jpg'
                 }, {
-                    title: 'Open Use a proxy server, fill Address and Port that same as blue number in the picture. Then cliek save to finish.',
+                    title: 'Open Use a proxy server, On Use setup script.',
                     titleImage: '',
-                    detail: '',
+                    detail: '<p>HTTP and HTTPS proxy please same as the top blue line, SOCKS proxy is the bottom line.</p>',
                     image: '/images/windowsUseInfo4.jpg'
                 }]
         },
@@ -1355,9 +1340,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/macosUserInfo2.jpg'
                 }, {
-                    title: 'Setup Proxies.',
+                    title: 'Select Proxies, check Automatic Proxy Configuration, check Exclude simple hostnames.',
                     titleImage: '',
-                    detail: '<p>1. Check the Web Proxy(HTTP) on the lift side, then fill the number to the Web Proxy Server on right side with the blue number in image.</p><p>2. Check the Secure Web Proxy (HTTPS) on the lift side, then fill the same number to the Secure Web Proxy Server on right side with the the blue number in image. And click OK to finish.</p>',
+                    detail: '<p>HTTP and HTTPS proxy please same as the top blue line, SOCKS proxy is the bottom line.</p>',
                     image: '/images/macosUserInfo3.jpg'
                 }]
         },
@@ -1446,7 +1431,7 @@ const infoDefine = [
             imapOtherCheckError: 'Cannot connect to email server! Server name or IP address or Port number may have mistake. Please check the detail of email setup!',
             CertificateError: 'Certificate for this email server is not trusted. Please select "Keep connect even certificate is not trusted" in settings if you still want connect. your email login information may leak to this Email server!',
             IgnoreCertificate: 'Keep connect even certificate is not trusted',
-            Certificat: 'Dangerous thing! Do not choose this if you not sure. Because you may revealed your information.',
+            Certificat: 'Dangerous thing! Do not chooses this if you not sure. Because you may revealed your information.',
             AuthenticationFailed: 'Invalid login username or password! Please check username and password.',
             addAEmail: 'Add a new Email account',
             tryAgain: 'Try again.',
@@ -1632,9 +1617,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/iOS3.jpg'
                 }, {
-                    title: '選擇手動設置，在代理伺服器名稱和連接埠處填入對應的藍色數字，按保存完成設置',
+                    title: '選擇自動設置',
                     titleImage: '',
-                    detail: '',
+                    detail: '<p>在URL網址處，HTTP和HTTPS代理按照藍色第一行填入，SOCKS代理按藍色第二行填入</p>',
                     image: '/images/iOS4.jpg'
                 }]
         },
@@ -1651,9 +1636,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/firefox2.jpg'
                 }, {
-                    title: '選擇手動設置代理伺服器，按圖示藍色數字填入HTTP代理伺服器名稱和連接埠，選勾本設定適用所有協議，點擊好完成設置',
+                    title: '選擇自動設置代理伺服器，選勾DNS使用SOCKS v5',
                     titleImage: '',
-                    detail: '',
+                    detail: 'HTTP和HTTPS代理按照藍色第一行填入，SOCKS代理按藍色第二行填入',
                     image: '/images/firefox3.jpg'
                 }]
         },
@@ -1680,9 +1665,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/windowsUseInfo3.jpg'
                 }, {
-                    title: '選擇手動設置代理伺服器，按圖示藍色數字填入伺服器地址及伺服器連接埠，然後點擊保存完成設定。',
+                    title: '選擇自動設置代理伺服器。',
                     titleImage: '',
-                    detail: '',
+                    detail: '<p>HTTP和HTTPS代理按照藍色第一行填入，SOCKS代理按藍色第二行填入</p>',
                     image: '/images/windowsUseInfo4.jpg'
                 }]
         },
@@ -1699,15 +1684,10 @@ const infoDefine = [
                     detail: '',
                     image: '/images/android2.jpg'
                 }, {
-                    title: '打開顯示高級選項，在代理伺服器設定(Proxy)中選擇手動設置',
+                    title: '打開顯示高級選項，在代理伺服器設定(Proxy)中選擇自動設置',
                     titleImage: '',
-                    detail: '',
+                    detail: 'HTTP和HTTPS代理按照藍色第一行填入，SOCKS代理按藍色第二行填入',
                     image: '/images/android3.jpg'
-                }, {
-                    title: '按下列畫面中藍色的數字填入代理伺服器名稱和連接埠，關閉窗口以完成設置',
-                    titleImage: '',
-                    detail: '',
-                    image: '/images/android4.jpg'
                 }]
         },
         useInfoMacOS: {
@@ -1727,9 +1707,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/macosUserInfo2.jpg'
                 }, {
-                    title: '代理伺服器設定',
+                    title: '點擊代理伺服器設定，選勾自動代理，選購排除簡單Host名',
                     titleImage: '',
-                    detail: '<p>1. 選勾左邊 網頁代理伺服器(HTTP)，並在右邊代理伺服器填入圖示藍色數字</p><p>2. 選勾左邊 安全網頁代理伺服器(HTTPS)，在右端安全代理伺服器，相同地填入圖示藍色數字，按【好】結束設定</p>',
+                    detail: '<p>HTTP和HTTPS代理按照藍色第一行填入，SOCKS代理按藍色第二行填入</p>',
                     image: '/images/macosUserInfo3.jpg'
                 }]
         },
@@ -2786,7 +2766,6 @@ var view_layout;
                 if (index > 3) {
                     index = 0;
                 }
-                //self.tLang ( site.LanguageJsonName )
                 self.languageIndex(index);
                 self.tLang(lang[index]);
                 $.cookie('langEH', self.tLang(), { expires: 180, path: '/' });

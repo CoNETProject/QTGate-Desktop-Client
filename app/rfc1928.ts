@@ -115,7 +115,7 @@
               return this.buffer.readInt8 ( 3 )
           }
           public set_V5 () {
-              this.buffer.writeUInt8 (0, 0x5)
+              this.buffer.writeUInt8 (5,0)
           }
           public set status ( n: number ) {
               this.buffer.writeUInt8 ( n, 1 )
@@ -147,19 +147,22 @@
               return this.buffer.readUInt8 (1)
           }
       
-          public set ATYP_IP4Address ( n: string ) {
-              if ( this.ATYP !== ATYP.IP_V4 )
-                  return
-              const y = n.split ('.')
-              const ret = new Buffer ( '00000000','hex' )
-              for ( let i = 0; i < 4; i ++ ) {
-                  const k = parseInt (y[i])
-                  if ( !k || k < 0 || k > 255 )
-                      return
-                  ret.writeUInt8 ( k, i )
-              }
-              this.buffer.fill ( ret, 4, 8 )
-          }
+        public set serverIP ( n: string ) {
+            this.buffer = Buffer.alloc ( 22 )
+            this.set_V5 ()
+            this.buffer.writeUInt8 ( 1, 3 )
+            const y = n.split ( '.' )
+            for ( let i = 0, j = 4; i < 4; i ++, j++ ) {
+                const k = parseInt ( y[i] )
+                if ( isNaN (k) || k < 0 || k > 255 ) {
+                    console.log ( `serverIP ERROR! k = [${ k }] ip[${ n }]`)
+                    break 
+                }
+                    
+                this.buffer.writeUInt8 ( k, j )
+            }
+            console.log (`setup serverIP: buffer [${ this.buffer.toString('hex')}]`)
+        }
       
           public set REP ( n: number ) {
               this.buffer.writeUInt8 ( n, 1 )
@@ -168,7 +171,10 @@
           public get host () {
               return this.ATYP_IP4Address || this.domainName || this.IPv6
           }
-      
+
+          public set port ( port: number ) {
+                this.buffer.writeUInt16BE ( port, 20 )
+          } 
           
       }
 
@@ -199,7 +205,7 @@
             return null
         }
 
-        public request_granted ( targetIp: string, targetPort: number) {
+        public request_4_granted ( targetIp: string, targetPort: number) {
             if ( !targetIp )
                 return Buffer.from ('005a0000000000','hex')
             const ret = Buffer.from ('005a000000000000','hex')

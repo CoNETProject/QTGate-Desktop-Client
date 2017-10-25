@@ -1,6 +1,6 @@
 {
   "name": "qtgate",
-  "version": "0.8.31",
+  "version": "0.8.40",
   "license": "MIT",
   "description": "QTGate desktop client",
   "scripts": {
@@ -52,7 +52,7 @@
   },
   "homepage": "https://www.qtgate.com",
   "devDependencies": {
-    "electron-builder-squirrel-windows": "^19.39.0"
+    "electron-builder-squirrel-windows": "^19.40.0"
   },
   "dependencies": {
     "async": "^2.5.0",
@@ -60,7 +60,7 @@
     "express": "^4.16.2",
     "jquery": "^3.2.1",
     "node-uuid": "^1.4.8",
-    "nodemailer": "^4.2.0",
+    "nodemailer": "^4.3.0",
     "openpgp": "^2.5.12",
     "portastic": "^1.0.1",
     "pug": "^2.0.0-rc.4",

@@ -87,8 +87,8 @@ block jumbotron1
 					img.pull-right( data-bind = "attr: { src: titleImage }, visible: titleImage" style="margin-top: -38px;")
 				.ui.attached.segment
 					span( data-bind="html: detail " style = "color: rgba(0,0,0,0.5)" )
-					span.localIP( data-bind=" text: $index() > 1 ? $root.QTConnectData().localServerIp : null, style: {'margin-top': ($index()>0 && $index()<3 ) ? '6.7em' : '7em' }")
-					span.localIPPort( data-bind = " text: $index() > 1 ? $root.QTConnectData().localServerPort : null, style: {'margin-top': ($index()>0 && $index()<3) ? '6.7em' : '7em' }")
+					span.localIP( data-bind=" text: $index() === 2 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pacHttp' : null")
+					span.localIPPort( data-bind = " text: $index() === 2 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pac' : null")
 					img( data-bind="attr: { src: image }" style ="width: 500px;")
 		#WindowsUseInfo.useInfoView
 			a.feedBack( href = "#" data-bind="click: () => { returnMainWin ( '#WindowsUseInfo' )} ")
@@ -105,8 +105,8 @@ block jumbotron1
 						span( data-bind="text: $root.QTConnectData().localServerIp + ','" style="color: darkcyan;")
 						span( data-bind="text: $root.infoDefine[ $root.languageIndex() ].useInfoMacOS.proxyServerPort" style="padding-left: 10px;color: rgba(0,0,0,0.5);")
 						span( data-bind="text: $root.QTConnectData().localServerPort + ','" style="color: darkcyan;")
-					span.WindowsUseInfoLocalServerIp( data-bind="text: $index() === 4 ? $root.QTConnectData().localServerIp : '' " )
-					span.WindowsUseInfoPort( data-bind="text: $index() === 4 ? $root.QTConnectData().localServerPort : ''" )
+					span.WindowsUseInfoLocalServerIp( data-bind="text: $index() === 4 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pacHttp' : '' " )
+					span.WindowsUseInfoPort( data-bind="text: $index() === 4 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pac' : ''" )
 					img( data-bind="attr: { src: image }, visible: image" style ="width: 500px;")
 		#iOSUseInfo.useInfoView
 			a.feedBack( href = "#" data-bind="click: () => { returnMainWin ( '#iOSUseInfo' )} ")
@@ -118,8 +118,8 @@ block jumbotron1
 					img.pull-right( data-bind = "attr: { src: titleImage }, visible: titleImage" style="margin-top: -38px;")
 				.ui.attached.segment
 					span( data-bind="html: detail " style = "color: rgba(0,0,0,0.5);" )
-					span.iOSUseInfoLocalServerIp( data-bind="text: $index() === 3 ? $root.QTConnectData().localServerIp : '' ")
-					span.iOSUseInfoPort( data-bind="text: $index() === 3 ? $root.QTConnectData().localServerPort : ''")
+					span.iOSUseInfoLocalServerIp( data-bind="text: $index() === 3 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pacHttp' : '' ")
+					span.iOSUseInfoPort( data-bind="text: $index() === 3 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pac' : ''")
 					img( data-bind="attr: { src: image }, visible: image" style ="width: 250px;")
 		#firefoxUseInfo.useInfoView
 			a.feedBack( href = "#" data-bind="click: () => { returnMainWin ( '#firefoxUseInfo' )} ")
@@ -130,16 +130,9 @@ block jumbotron1
 					h4( data-bind = "text: title" style = "color: rgba(0,0,0,0.5)")
 					img.pull-right( data-bind = "attr: { src: titleImage }, visible: titleImage" style="margin-top: -38px;")
 				.ui.attached.segment
-					span( data-bind="html: detail " style = "color: rgba(0,0,0,0.5);" )
-
-					span.firefoxUseLocalIp( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerIp : '' ")
-					span.firefoxUseLocalPort( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerPort : ''")
-					span.firefoxUseLocalIp1( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerIp : '' ")
-					span.firefoxUseLocalPort1( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerPort : ''")
-					span.firefoxUseLocalIp2( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerIp : '' ")
-					span.firefoxUseLocalPort2( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerPort : ''")
-					span.firefoxUseLocalIp3( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerIp : '' ")
-					span.firefoxUseLocalPort3( data-bind="text: $index() === 2 ? $root.QTConnectData().localServerPort : ''")
+					p( data-bind="html: detail " style = "color: rgba(0,0,0,0.5);" )
+					span.firefoxUseLocalIp( data-bind="text: $index() === 2 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pacHttp' : '' ")
+					span.firefoxUseLocalPort( data-bind="text: $index() === 2 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pac' : ''")
 					img( data-bind="attr: { src: image }, visible: image" style ="width: 500px;")
 		#androidUseInfo.useInfoView
 			a.feedBack( href = "#" data-bind="click: () => { returnMainWin ( '#androidUseInfo' )} ")
@@ -150,9 +143,9 @@ block jumbotron1
 					h4( data-bind = "text: title" style = "color: rgba(0,0,0,0.5)")
 					img.pull-right( data-bind = "attr: { src: titleImage }, visible: titleImage" style="margin-top: -38px;")
 				.ui.attached.segment
-					span( data-bind="html: detail " style = "color: rgba(0,0,0,0.5);" )
-					span.androidUseInfoLocalServerIp( data-bind="text: $index() === 3 ? $root.QTConnectData().localServerIp : '' ")
-					span.androidUseInfoPort( data-bind="text: $index() === 3 ? $root.QTConnectData().localServerPort : ''")
+					p( data-bind="html: detail " style = "color: rgba(0,0,0,0.5);" )
+					span.androidUseInfoLocalServerIp( data-bind="text: $index() === 2 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pacHttp' : '' ")
+					span.androidUseInfoPort( data-bind="text: $index() === 2 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pac' : ''")
 					img( data-bind="attr: { src: image }, visible: image" style ="width: 500px;")
 		.mainScreen
 			.mainScreen1( style = "z-index: 1020;")

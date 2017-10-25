@@ -71,7 +71,7 @@ export default class gateWay {
 
 	public hostLookup ( hostName: string, userAgent: string, CallBack: ( err?: Error, hostIp?: domainData ) => void ) {
 
-		console.log (`try get nslookup data from remote!`)
+
 		const _data = new Buffer ( JSON.stringify ({ hostName: hostName }), 'utf8' )
 		
 		const encrypt = new Compress.encryptStream ( this.password, 0, ( str: string ) => {
@@ -85,12 +85,10 @@ export default class gateWay {
 
 		const _socket = Net.createConnection ({ port: this.serverPort, host: this.serverIp }, () => {
 			encrypt.write ( _data )
-			console.log ( `send data to remote!` )
-			console.log ( `*************\n${_data.toString ()}\n*********`)
 		})
 
 		_socket.once ( 'end', () => {
-			console.log ( `_socket.once end!` )
+			//console.log ( `_socket.once end!` )
 		})
 
 		httpBlock.once ( 'error', err => {
@@ -117,7 +115,6 @@ export default class gateWay {
 			socket.end ( res._HTTP_404 )
 		})
 		const _socket = Net.createConnection ({ port: this.serverPort, host: this.serverIp }, () => {
-			console.log ( 'requestGetWay connect:', uuuu.host, uuuu.port )
 			
 			encrypt.write ( Buffer.from ( JSON.stringify ( uuuu ), 'utf8' ))
 		})
