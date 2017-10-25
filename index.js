@@ -16,7 +16,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const DEBUG = true;
+const DEBUG = false;
 const Fs = require("fs");
 const Os = require("os");
 const path_1 = require("path");
