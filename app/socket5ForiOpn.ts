@@ -22,6 +22,7 @@ import * as os from 'os'
 import * as Crypto from 'crypto'
 import * as proxyServer from './proxyServer'
 import * as Dgram from 'dgram'
+import HttpHeader from './httpProxy'
 import * as Util from 'util'
 
 //	socks 5 headers
@@ -74,8 +75,10 @@ export class socks5 {
 					}
 	
 					const id = `[${ this.clientIP }:${ this.port }][${ Util.inspect(uuuu) }] `
-					
-					return this.proxyServer.gateway.requestGetWay ( id, uuuu, this.agent, this.socket )
+					if ( !this.httpHead ) {
+						this.httpHead = new HttpHeader ( _data )
+					}
+					return this.proxyServer.gateway.requestGetWay ( id, uuuu, this.httpHead, this.socket )
 					
 				}
 				
@@ -108,7 +111,7 @@ export class socks5 {
 				return this.closeSocks5 ( retBuffer.buffer )
 			}
 			if ( this.host ) {
-				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.agent, this.proxyServer.domainListPool, ( err, _hostIp ) => {
+				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.httpHead, this.proxyServer.domainListPool, ( err, _hostIp ) => {
 					if ( err ) {
 						console.log ( `[${ this.host }] Blocked!`)
 						retBuffer.REP = Rfc1928.Replies.CONNECTION_NOT_ALLOWED_BY_RULESET
@@ -184,7 +187,7 @@ export class socks5 {
 		return this.connectStat2_after ( req )
 	}
 
-	constructor ( private socket: Net.Socket,private agent: string, private proxyServer: proxyServer.proxyServer ) {
+	constructor ( private socket: Net.Socket, private httpHead: HttpHeader = null, private proxyServer: proxyServer.proxyServer ) {
 
 		this.socket.once ( 'data', ( chunk: Buffer ) => {
 			return this.connectStat2 ( chunk )
@@ -203,7 +206,8 @@ export class sockt4 {
 	private targetDomainData: domainData = null
 	private clientIP = this.socket
 	private keep = false
-	constructor ( private socket: Net.Socket, private buffer: Buffer, private agent: string, private proxyServer: proxyServer.proxyServer ) {
+	constructor ( private socket: Net.Socket, private buffer: Buffer, private httpHeader: HttpHeader, private proxyServer: proxyServer.proxyServer ) {
+		console.log ( `new sockt4 ${ httpHeader && httpHeader.headers ? JSON.stringify ( httpHeader.headers ) : 'null' }` )
 		switch ( this.cmd ) {
 			case Rfc1928.CMD.CONNECT: {
 				this.keep = true
@@ -244,7 +248,10 @@ export class sockt4 {
 						ssl: isSslFromBuffer ( _data )
 					}
 					const id = `[${ this.clientIP }:${ this.port }][${ uuuu.uuid }] `
-					return this.proxyServer.gateway.requestGetWay ( id, uuuu, this.agent, this.socket )
+					if ( !this.httpHeader ) {
+						this.httpHeader = new HttpHeader ( _data )
+					}
+					return this.proxyServer.gateway.requestGetWay ( id, uuuu, this.httpHeader, this.socket )
 				}
 				
 				return this.socket.end ( res.HTTP_403 )
@@ -272,7 +279,7 @@ export class sockt4 {
 			}
 			if ( this.host ) {
 				console.log (`socks4 host [${ this.host }]`)
-				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.agent, this.proxyServer.domainListPool, ( err, _hostIp ) => {
+				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.httpHeader, this.proxyServer.domainListPool, ( err, _hostIp ) => {
 					if ( err ) {
 						console.log ( `[${ this.host }] Blocked!`)
 						return this.socket.end ( this.req.request_failed )
@@ -329,5 +336,3 @@ export class UdpDgram {
 		this.createDgram ()
 	}
 }
-
-const uu = new UdpDgram ()

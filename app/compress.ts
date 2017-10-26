@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-import * as crypto from 'crypto'
+import * as Crypto from 'crypto'
 import * as Async from 'async'
 import * as Stream from 'stream'
 import * as Net from 'net'
+import HttpHeader from './httpProxy'
 const EOF = Buffer.from ( '\r\n\r\n', 'utf8' )
 import * as fs from 'fs'
 export interface packetBuffer {
@@ -36,20 +37,20 @@ export interface pairConnect {
 export const encrypt = ( text: Buffer, masterkey: string, CallBack ) => {
 	let salt = null
 	Async.waterfall ([
-		next => crypto.randomBytes ( 64, next ),
+		next => Crypto.randomBytes ( 64, next ),
 		( _salt, next ) => {
 			salt = _salt
-			crypto.pbkdf2 ( masterkey, salt, 2145, 32, 'sha512', next )
+			Crypto.pbkdf2 ( masterkey, salt, 2145, 32, 'sha512', next )
 		}
 	], ( err, derivedKey ) => {
 		if ( err )
 			return CallBack ( err )
 		
-		crypto.randomBytes ( 12, ( err1, iv ) => {
+		Crypto.randomBytes ( 12, ( err1, iv ) => {
 			if ( err1 )
 				return CallBack ( err1 )
 			
-			const cipher = crypto.createCipheriv ( 'aes-256-gcm', derivedKey, iv );
+			const cipher = Crypto.createCipheriv ( 'aes-256-gcm', derivedKey, iv );
 		
 			let _text = Buffer.concat ([ Buffer.alloc ( 4, 0 ) , text ])
 			_text.writeUInt32BE ( text.length, 0 )
@@ -82,13 +83,13 @@ export const decrypt =  ( data: Buffer, masterkey, CallBack ) => {
 		const tag = data.slice ( 76, 92 );
 		const text = data.slice ( 92 );
 		// derive key using; 32 byte key length
-		crypto.pbkdf2 ( masterkey, salt , 2145, 32, 'sha512', ( err, derivedKey ) => {
+		Crypto.pbkdf2 ( masterkey, salt , 2145, 32, 'sha512', ( err, derivedKey ) => {
 			
 			if ( err )
 				return CallBack ( err )
 			// AES 256 GCM Mode
 			try {
-				const decipher = crypto.createDecipheriv ( 'aes-256-gcm', derivedKey, iv )
+				const decipher = Crypto.createDecipheriv ( 'aes-256-gcm', derivedKey, iv )
 				decipher.setAuthTag ( tag )
 				const decrypted = Buffer.concat([decipher.update ( text ), decipher.final ( )]) 
 				const leng = decrypted.slice( 4, 4 + decrypted.readUInt32BE(0))
@@ -134,6 +135,27 @@ const HTTP_HEADER = Buffer.from (
 	`HTTP/1.1 200 OK\r\nDate: ${ new Date ().toUTCString ()}\r\nContent-Type: text/html\r\nTransfer-Encoding: chunked\r\nConnection: keep-alive\r\nVary: Accept-Encoding\r\n\r\n`, 'utf8')
 const HTTP_EOF = Buffer.from ( '\r\n\r\n', 'utf8' )
 
+const getHeaderString = ( headers, host: string, port: number ) => {
+	//console.trace (`getHeaderString header[${ !headers ? 'null': Object.keys ( headers ).forEach ( n => { return `${ n }: [${ + headers [ n ]}] ` }) }]`)
+	const ret = `Host: ${ host }${ port !== 80 ? ':' + port : '' }\r\n` +
+		( headers && headers['accept'] ? headers['accept'] : 'Accept: */*') + '\r\n' +
+		( headers && headers['accept-language'] ? headers['accept-language'] : 'Accept-Language: en-ca' ) + '\r\n' +
+		( headers && headers['connection'] ? headers['Connection'] : 'Connection: keep-alive' ) + '\r\n' +
+		( headers && headers['accept-encoding'] ? headers['accept-encoding'] : 'Accept-Encoding: gzip, deflate' ) + '\r\n' +
+		( headers && headers['user-agent'] ? headers[ 'user-agent'] : 'User-Agent: Mozilla/5.0' ) + '\r\n'
+	return ret
+}
+
+export const otherRequestForNet = ( path: string, host: string, port: number, headers: HttpHeader ) => {
+	
+	if ( path.length < 2048 ) 
+		return `GET /${ path } HTTP/1.1\r\n` + getHeaderString ( headers && headers.headers ? headers: null, host, port ) + '\r\n'
+
+	return 	`POST /${ Crypto.randomBytes ( 4 + Math.random () * 100 ).toString ('base64') } HTTP/1.1\r\n` + 
+		getHeaderString ( headers && headers.headers ? headers.headers: null, host, port ) + `Content-Length: ${ path.length }\r\n\r\n` + path + '\r\n\r\n'
+}
+
+
 export class encryptStream extends Stream.Transform {
 	private salt: Buffer
 	private iv: Buffer
@@ -143,16 +165,17 @@ export class encryptStream extends Stream.Transform {
 	private BlockBuffer ( _buf: Buffer ) {
 		return Buffer.from( _buf.length.toString( 16 ).toUpperCase() + '\r\n', 'utf8' )
 	}
+
 	private init ( callback ) {
 		return Async.waterfall ([
-			next => crypto.randomBytes ( 64, next ),
+			next => Crypto.randomBytes ( 64, next ),
 			( _salt, next ) => {
 				this.salt = _salt
-				crypto.randomBytes ( 12, next )
+				Crypto.randomBytes ( 12, next )
 			},
 			( _iv, next ) => {
 				this.iv = _iv
-				crypto.pbkdf2 ( this.password, this.salt, 2145, 32, 'sha512', next )
+				Crypto.pbkdf2 ( this.password, this.salt, 2145, 32, 'sha512', next )
 			}
 		], ( err, derivedKey ) => {
 			
@@ -161,8 +184,10 @@ export class encryptStream extends Stream.Transform {
 		})
 	}
 
-	constructor ( private password: string, private random: number, private httpHeader : ( str: string ) => Buffer ) {
+	constructor ( private password: string, private random: number, private host: string, private port: number, private httpRequest: HttpHeader ) {
+		
 		super ()
+		console.trace (`new encryptStream get httpRequest [${ httpRequest && httpRequest.headers ? JSON.stringify ( httpRequest.headers ): 'null'}]`)
 	}
 	
 	public _transform ( chunk: Buffer, encode, cb ) {
@@ -171,7 +196,7 @@ export class encryptStream extends Stream.Transform {
 				return this._transform ( chunk, encode, cb )
 			})
 		}
-		const cipher = crypto.createCipheriv ( 'aes-256-gcm', this.derivedKey, this.iv )
+		const cipher = Crypto.createCipheriv ( 'aes-256-gcm', this.derivedKey, this.iv )
 
 		let _text = Buffer.concat ([ Buffer.alloc ( 4, 0 ) , chunk ])
 
@@ -186,22 +211,13 @@ export class encryptStream extends Stream.Transform {
 		if ( this.first ) {
 			this.first = false
 			const black = Buffer.concat ([ this.salt, this.iv, _buf1 ]).toString ( 'base64' )
-			if ( ! this.httpHeader ) {
-				const _buf4 = Buffer.from ( black, 'base64')
-				return cb ( null, Buffer.concat ([ HTTP_HEADER, this.BlockBuffer ( _buf4 ), _buf4, EOF ]))
-			}
-			const _buf2 = this.httpHeader ( black )
-
-			return cb ( null, _buf2 )
+			
+			otherRequestForNet ( black, this.host, this.port, this.httpRequest )
+			return cb ( null, otherRequestForNet ( black, this.host, this.port, this.httpRequest ))
 		}
 		
-		const _buf2 = _buf1.toString( 'base64' )
-
-		if ( this.httpHeader ) {
-			return cb ( null, this.httpHeader ( _buf2 ))
-		}
-		const _buf3 = Buffer.from ( _buf2, 'base64' )
-		return cb ( null, Buffer.concat ([ this.BlockBuffer ( _buf3 ), _buf3, EOF ]))
+		const _buf2 = _buf1.toString ( 'base64' )
+		return cb ( null, otherRequestForNet ( _buf2, this.host, this.port, this.httpRequest ))
 	}
 }
 
@@ -213,7 +229,7 @@ export class decryptStream extends Stream.Transform {
 	private derivedKey: Buffer = null
 	private _decrypt ( _text: Buffer ) {
 		
-		const decipher = crypto.createDecipheriv ( 'aes-256-gcm', this.derivedKey, this.iv )
+		const decipher = Crypto.createDecipheriv ( 'aes-256-gcm', this.derivedKey, this.iv )
 		decipher.setAuthTag ( _text.slice ( 0, 16 ))
 		try {
 			const _buf = Buffer.concat ([ decipher.update ( _text.slice ( 16 )), decipher.final () ])
@@ -233,7 +249,7 @@ export class decryptStream extends Stream.Transform {
 	public _First (  chunk: Buffer, CallBack: ( err?: Error, text?: Buffer ) => void ) {
 		this.salt = chunk.slice ( 0, 64 );
 		this.iv = chunk.slice ( 64, 76 );
-		return crypto.pbkdf2 ( this.password, this.salt , 2145, 32, 'sha512', ( err, derivedKey ) => {
+		return Crypto.pbkdf2 ( this.password, this.salt , 2145, 32, 'sha512', ( err, derivedKey ) => {
 			if ( err ) {
 				console.log ( `decryptStream crypto.pbkdf2 ERROR: ${ err.message }` )
 				return CallBack ( err )

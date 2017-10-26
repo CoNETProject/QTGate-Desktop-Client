@@ -710,10 +710,11 @@ block jumbotron1
 		
 	.ui.basic.modal
 		.ui.icon.header
-			i.heartbeat.icon( data-bind="text: infoDefine [ languageIndex() ].error_message.title ")
+			i.heartbeat.icon( data-bind="text: infoDefine [ languageIndex() ].error_message.title, visible: !developers() ")
+			i.spy.icon( data-bind = "visible: developers()")
 		.content
 			p( data-bind = " text: modalContent ")
 		.actions
-			.ui.red.ok.inverted.button( data-bind=" text: infoDefine [ languageIndex() ].linuxUpdate.exit, click: exit ")
+			.ui.red.inverted.button( data-bind=" text: infoDefine [ languageIndex() ].linuxUpdate.exit, click: exit ")
 				
 

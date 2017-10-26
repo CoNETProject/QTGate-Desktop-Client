@@ -29,7 +29,7 @@ const Net = require("net");
 const Imap = require("./imap");
 const freePort = require("portastic");
 const Stream = require("stream");
-const DEBUG = false;
+const DEBUG = true;
 const openpgp = require('openpgp');
 const Express = require('express');
 const cookieParser = require('cookie-parser');
@@ -748,13 +748,12 @@ class localServer {
         socket.on('disconnectClick', CallBack => {
             this.disConnectGateway();
             this.stopGetwayConnect();
-            CallBack();
+            return CallBack();
         });
     }
     disConnectGateway() {
         saveLog('disConnectGateway.');
         this.proxyServer.cancel();
-        this.socketServer.emit('disconnect');
         this.proxyServer = null;
         this.connectCommand = null;
     }

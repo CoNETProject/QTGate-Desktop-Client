@@ -31,7 +31,7 @@ import * as freePort from 'portastic'
 import * as prosyServer from './proxyServer'
 import * as Stream from 'stream'
 
-const DEBUG = false
+const DEBUG = true
 
 const openpgp = require ( 'openpgp' )
 const Express = require ( 'express' )
@@ -808,14 +808,13 @@ export class localServer {
 		socket.on ( 'disconnectClick', CallBack => {
 			this.disConnectGateway ()
 			this.stopGetwayConnect ()
-			CallBack ()
+			return CallBack ()
 		})
 	}
 
 	public disConnectGateway () {
 		saveLog ( 'disConnectGateway.')
 		this.proxyServer.cancel ()
-		this.socketServer.emit ('disconnect')
 		this.proxyServer = null
 		this.connectCommand = null
 		

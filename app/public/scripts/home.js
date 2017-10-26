@@ -402,9 +402,6 @@ const infoDefine = [
                 }, {
                     header: null,
                     detail: '使用我们的服务并不让您拥有我们的服务或您所访问的内容的任何知识产权。除非您获得相关内容所有者的许可或通过其他方式获得法律的许可，否则您不得使用服务中的任何内容。本条款并未授予您使用我们服务中所用的任何商标或标志的权利。请勿删除、隐藏或更改我们服务上显示的或随服务一同显示的任何法律声明。'
-                }, {
-                    header: '关于OPN无IP通讯技术和隐私保护的局限性',
-                    detail: 'OPN是QTGate世界首创的使用Email的IMAP协议建造一个无IP通讯环境，在您利用QTGate进行通讯过程中，QTGate无法获得您目前所使用的IP地址（使用iOPN来连结QTGate代理服务器时，您需要向QTGate系统提供您当前的IP地址），可以最大限度的保障您的个人隐私。但是这项技术并不能够保证您的信息绝对的不被泄露，因为您的IP地址有可能被记录在您所使用的Email服务供应商，如果持有加拿大法院令寻求QTGate的Log公开，再和Email服务供应商的Log合并分析，可能会最终得到您的信息。 QTGate并不能够绝对保障您的隐私。 '
                 },
                 {
                     header: '关于个人隐私保护，系统日志和接收QTGate传送的信息',
@@ -414,7 +411,7 @@ const infoDefine = [
                     detail: '当您使用我们的服务时，我们为了计费处理会自动收集非常有限的数据流量信息，并存储到服务器日志中。数据流量信息仅用于计算客户应支付通讯费用而收集的，它收集的数据是：日期，用户帐号，所使用的代理区域和代理服务器IP，数据包大小，下载或上传。例如：'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 },
                 {
                     header: null,
@@ -451,6 +448,10 @@ const infoDefine = [
                 {
                     header: null,
                     detail: '本条款约束QTGate与您之间的关系，且不创设任何第三方受益权。如果您不遵守本条款，且我们未立即采取行动，并不意味我们放弃我们可能享有的任何权利（例如，在将来采取行动）。如果某一条款不能被强制执行，这不会影响其他条款的效力。加拿大BC省的法律（不包括BC州的法律冲突规则）将适用于因本条款或服务引起的或与之相关的纠纷。因本条款或服务引起的或与之相关的所有索赔，只能向加拿大BC省法院提起诉讼，且您和QTGate同意上述法院拥有属人管辖权。'
+                },
+                {
+                    header: '关于OPN无IP通讯技术和隐私保护的局限性',
+                    detail: 'OPN是QTGate世界首创的使用Email的IMAP协议建造一个无IP通讯环境，在您利用QTGate进行通讯过程中，QTGate无法获得您目前所使用的IP地址（使用iOPN来连结QTGate代理服务器时，您需要向QTGate系统提供您当前的IP地址），可以最大限度的保障您的个人隐私。但是这项技术并不能够保证您的信息绝对的不被泄露，因为您的IP地址有可能被记录在您所使用的Email服务供应商，如果持有加拿大法院令寻求QTGate的Log公开，再和Email服务供应商的Log合并分析，可能会最终得到您的信息。 QTGate并不能够绝对保障您的隐私。'
                 }
             ],
             disagree: '不同意',
@@ -469,7 +470,7 @@ const infoDefine = [
         },
         imapInformation: {
             title: '通讯专用Email邮箱设置',
-            infomation: `请设置QTGate通讯专用Email邮箱信息。由于此账户的用户名和密码信息会提交给QTGate系统，为了防止您的个人信息被泄漏，请新申请一个临时Email账户。目前QTGate技术对应<a href="#" onclick="return linkClick ('https://www.icloud.com/')">苹果iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/')">微软OUTLOOK</a>，<a href="#" onclick="return linkClick ('https://tw.mail.yahoo.com/')">雅虎邮箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄罗斯ZOHO邮箱</a>，<a href="#" onclick=" return linkClick ('https://gmail.com')">Google邮箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1 -2')">美国在线GMX邮箱</a>，QTGate强力推荐使用苹果公司的Email可以达到最佳速度(@OPN无IP连结技术只对应苹果公司iCloud邮箱)。密码推荐使用Email服务商的<a href="#" target="_blank" onclick="return linkClick ('https://tw.help. yahoo.com/kb/SLN15241.html')">应用密码</a>`,
+            infomation: `请设置QTGate通讯专用Email邮箱信息。由于此账户的用户名和密码信息会提交给QTGate系统，为了防止您的个人信息被泄漏，请新申请一个临时Email账户。目前QTGate技术对应<a href="#" onclick="return linkClick ('https://www.icloud.com/')">苹果iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/')">微软OUTLOOK</a>，<a href="#" onclick="return linkClick ('https://tw.mail.yahoo.com/')">雅虎邮箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄罗斯ZOHO邮箱</a>，<a href="#" onclick=" return linkClick ('https://gmail.com')">Google邮箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1 -2')">美国在线GMX邮箱</a>。请使用您的所在地可以直接连接的邮件服务商，如果此邮件服务商在您的所在地不能到达，您将不能够完成QTGate设置。QTGate强力推荐使用苹果公司的Email可以达到最佳速度(@OPN无IP连结技术只对应苹果公司iCloud邮箱)。密码推荐使用Email服务商的<a href="#" target="_blank" onclick="return linkClick ('https://tw.help. yahoo.com/kb/SLN15241.html')">应用密码</a>`,
             serverDetail: '详细设定：',
             imapServer: 'IMAP服务器设定',
             imapServerInput: 'IMAP服务器IP或域名',
@@ -521,7 +522,7 @@ const infoDefine = [
             KeypairLength: '请选择加密通讯用密钥对长度：这个数字越大，通讯越难被破解，但会增加通讯量和运算时间。',
             GenerateKeypair: '<em>系统正在生成用于通讯和签名的RSA加密密钥对，计算机需要运行产生大量的随机数字有，可能需要几分钟时间，尤其是长度为4096的密钥对，需要特别长的时间，请耐心等待。关于RSA加密算法的机制和原理，您可以访问维基百科：' +
                 `<a href='https://zh.wikipedia.org/wiki/RSA加密演算法' target="_blank" onclick="return linkClick ('https://zh.wikipedia.org/wiki/RSA加密演算法')" >https://zh.wikipedia.org/wiki/RSA加密演算法</a></em>`,
-            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密钥对, 它是您的系统信息加密，身份认证及和QTGate通讯使用的重要工具。 RSA密钥对的密码请妥善保存，Email地址栏应填入您的常用Email地址, 它将被用作您的QTGate账号。<em style="color:red;">需注意的是QTGate.com域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区email服务，您有可能接收不到由QTGate发回的账号确认Email，以完成QTGate设定。</em>',
+            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密钥对, 它是您的系统信息加密，身份认证及和QTGate通讯使用的重要工具。 RSA密钥对的密码请妥善保存，Email地址栏应填入您的常用Email地址, 它将被用作您的QTGate账号。<em style="color:red;">需注意的是QTGate.com域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区email服务，您有可能接收不到由QTGate发回的账号确认Email，以完成QTGate设定，并在今后您有可能不能找回您的账户余额。</em>',
             accountEmailInfo: '由于QTGate域名在某些国家和地区被防火墙屏蔽，而不能正常收发Email，如果您是处于防火墙内的用户，建议使用防火墙外部的邮件服务商。'
         },
         Home_keyPairInfo_view: {
@@ -573,16 +574,17 @@ const infoDefine = [
             buttom1_2: 'QTGate团队',
             conformButtom: '验 证',
             formatError: [
-                '内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。 ',
-                '提供的内容不能被解密，请确认这是在您收到的最后一封从QTGate发送过来的激活信。如果还是没法完成激活，请删除您的密钥重新生成和设定。 ',
+                '内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。',
+                '提供的内容不能被解密，请确认这是在您收到的最后一封从QTGate发送过来的激活信。如果还是没法完成激活，请删除您的密钥重新生成和设定。',
                 '和QTGate连接发生错误，请退出重新尝试！ ',
-                '无效激活码！ QTGate系统已重新发送新的激活Email，并断开与您的连接。请退出QTGate重新启动QTGate后，检查您的邮箱重做激活。 ',
-                '您的QTGate看上去有问题, 请删除您的密钥，重新设置您的QTGate！ ',
-                'QTGate系统故障，请稍后再试。 ',
+                '无效激活码！ QTGate系统已重新发送新的激活Email，并断开与您的连接。请退出QTGate重新启动QTGate后，检查您的邮箱重做激活。',
+                '您的QTGate看上去有问题, 请删除您的密钥，重新设置您的QTGate！',
+                'QTGate系统故障，请稍后再试。',
                 '您当天的数据通讯量达到上限，请等待明天再试或升级用户类型',
                 '用来通讯的Email设定有错误，请检查IMAP设定后重试，或QTGate不支持此Email类型',
                 '您所选区域不能够连结，请稍候再试',
-                '您的IMAP邮箱发信发生错误。请退出QTGate重试。如果持续发生此故障，您的IMAP帐号有可能被锁住，需要登陆您的IMAP邮箱网站解锁操作。 '
+                '您的IMAP邮箱发信发生错误。请退出QTGate重试。如果持续发生此故障，您的IMAP帐号有可能被锁住，需要登陆您的IMAP邮箱网站解锁操作。',
+                '厉害高手！您看来是不用我的帮助都知道该如何的。'
             ],
             activeing: '正在通讯中'
         },
@@ -947,7 +949,7 @@ const infoDefine = [
                     detail: 'お客様がQTGateサービスをご利用になる際に、お客様のデータ通信料計算のために、ご利用データ量が自動的に収集および保存されます。限られたログは以下のようです。日付、お客様アカウント、ご利用ゲットウェーエリアとゲットウェーIPアドレス、データ量、アップ又はダウンロード。例：'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 }, {
                     header: null,
                     detail: 'QTGateは以上の情報以外には保存することしません。QTGateは以上の情報をカナダーの裁判所命令を持つカナダの法執行機関に協力することがありえます。カナダ以外のこのログ情報を協力する要請のあなたは、まずカナダ外務省までお問い合わせ下さい：'
@@ -1012,7 +1014,7 @@ const infoDefine = [
         },
         imapInformation: {
             title: '通信専用Emailアカーンドを登録',
-            infomation: 'QTGate通信専用emailアカンウトを設定します。このemailアカウントはあなたとQTGateお互い情報交換するのために、ユーザ名とパスワードをQTGateシステムへ提供します。個人情報漏洩の恐れ、一時的なemailアカウントを新たにつくてください。QTGate技術は只今<a href="#" onclick="return linkClick (`https://icloud.com`)">Apple iCloud</a>、<a href="#" onclick="return linkClick (`https://www.microsoft.com/ja-jp/outlook-com/`)">Outlook</a>、<a href="#" onclick="return linkClick (`https://login.yahoo.co.jp/config/login?.src=ym&.done=https%3A%2F%2Fmail.yahoo.co.jp%2F`)">Yahoo Mail</a>、<a href="#" onclick="return linkClick (`https://gmail.com`)">GMAIL</a>、<a href="#" onclick="return linkClick (`https://www.gmx.com/mail/#.1559516-header-nav1-2`)">GMX</a>、<a href="#" onclick="return linkClick (`https://www.zoho.com/mail/`)">HOZO</a>対応しております、APPLEのiCloudを使うお勧めです。（@OPN IPなし通信技術はiCloudのみ対応しております）</span>メールアカウントのパスワードについて、<a href="#" onclick="return linkClick (`https://support.google.com/accounts/answer/185833?hl=ja`)">アプリパスワード</a>の利用をお勧めです',
+            infomation: 'QTGate通信専用emailアカンウトを設定します。このemailアカウントはあなたとQTGateお互い情報交換するのために、ユーザ名とパスワードをQTGateシステムへ提供します。個人情報漏洩の恐れ、一時的なemailアカウントを新たにつくてください。QTGate技術は只今<a href="#" onclick="return linkClick (`https://icloud.com`)">Apple iCloud</a>、<a href="#" onclick="return linkClick (`https://www.microsoft.com/ja-jp/outlook-com/`)">Outlook</a>、<a href="#" onclick="return linkClick (`https://login.yahoo.co.jp/config/login?.src=ym&.done=https%3A%2F%2Fmail.yahoo.co.jp%2F`)">Yahoo Mail</a>、<a href="#" onclick="return linkClick (`https://gmail.com`)">GMAIL</a>、<a href="#" onclick="return linkClick (`https://www.gmx.com/mail/#.1559516-header-nav1-2`)">GMX</a>、<a href="#" onclick="return linkClick (`https://www.zoho.com/mail/`)">HOZO</a>対応しております。ご利用しているメールサービスはあなたの所在地から障害なしで、アクセスできるのを選んでください。あなたの所在地からアクセス不能のを使うとQTGateの設置は最後までできないの原因になります。QTGateはAPPLEのiCloudを使うお勧めです。（@OPN IPなし通信技術はiCloudのみ対応しております）</span>メールアカウントのパスワードについて、<a href="#" onclick="return linkClick (`https://support.google.com/accounts/answer/185833?hl=ja`)">アプリパスワード</a>の利用をお勧めです',
             serverDetail: '詳細設定：',
             imapServer: 'IMAP設定',
             imapServerInput: 'IMAPサーバー名又はIP',
@@ -1081,7 +1083,7 @@ const infoDefine = [
             systemAdministratorEmail: 'RSA暗号鍵ペア生成',
             GenerateKeypair: '<em>強秘匿性通信するのために、RSA暗号鍵ペアを生成中、大量なランダム数字が発生し、数分かかる場合もあります、4096ビットの場合、特に時間がかかります、しばらくお待ち下さい。RSA暗号技術について、ウィキペディア百科辞典を参考してください：' +
                 `<a href='https://ja.wikipedia.org/wiki/RSA暗号' target="_blank" onclick="return linkClick ('https://ja.wikipedia.org/wiki/RSA暗号')">https://ja.wikipedia.org/wiki/RSA暗号</a></em>`,
-            inputEmail: 'お疲れ様です、最後の設定をしましょう。このRSA暗号鍵ペアは本システムに重要な存在です、ユーザーのQTGateへ身元証明、本システムデータを秘密化、QTGateシステムとデータ通信時この暗号鍵ペアを使います。パースワードはQTGateへ保存しませんですから、大事にメモしてください。<em style="color:red;">QTGateはネットワークの制限があるエリアにブラックリスト入っております、あなたはQTGateからのemailは受信不能になりますから、QTGateユーザへ登録完了することができない恐れがございます。</em>',
+            inputEmail: 'お疲れ様です、最後の設定をしましょう。このRSA暗号鍵ペアは本システムに重要な存在です、ユーザーのQTGateへ身元証明、本システムデータを秘密化、QTGateシステムとデータ通信時この暗号鍵ペアを使います。パースワードはQTGateへ保存しませんですから、大事にメモしてください。<em style="color:red;">QTGateはネットワークの制限があるエリアにブラックリスト入っております、あなたはQTGateからのemailは受信不能になりますから、QTGateユーザへ登録完了することができない、あなたのアカウト戻れない恐れがございます。</em>',
             accountEmailInfo: 'QTGateドメイン名は、ファイヤウォールがある場合はブラックリストに入っている可能性がありますから、QTGateシステムへ登録完了することができません。その場合はファイヤウォール外側のEmailシステムを利用してください。'
         },
         error_message: {
@@ -1127,7 +1129,8 @@ const infoDefine = [
                 'あなたの今日データ通信はリミットになっていますので、明日まで待ってください。またはユーザー種類をアップグレードをしてください',
                 '通信用IMAPの設定にエラーがあるか又はそのタープのIMAPアカンウトがQTGateサポートしません。よくチェックしてもう一回試しにしてください。',
                 '選択していたゲットウェーエリアは只今接続不能になっております、後ほどもう一度試しにしてください。',
-                'IMAPアカウトでEMAIL送信する際エラーが発生しました、一回退出し、起動して見てくださいね。重複発生した場合はIMAPアカウトのウェーブページでアカウトをアンロック操作を必要かもしれない。'
+                'IMAPアカウトでEMAIL送信する際エラーが発生しました、一回退出し、起動して見てくださいね。重複発生した場合はIMAPアカウトのウェーブページでアカウトをアンロック操作を必要かもしれない。',
+                'あなたは達人です。そのあとはどうするのはヘルプなしで出来るでしょう。'
             ],
             activeing: '通信中'
         },
@@ -1364,7 +1367,7 @@ const infoDefine = [
                     detail: 'In connection with your use of the Services, we may send you service announcements, administrative messages, and other information. You may opt out of some of those communications. When you use our services, for calculating communication charges we automatically collect and store communication data in server logs. The logs will limited as: Date footprinting, user account, used gateway region, used gateway ip address, package byte, Ingress or Egress. For example:'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 },
                 {
                     header: null,
@@ -1414,7 +1417,7 @@ const infoDefine = [
         },
         imapInformation: {
             title: 'Transfer email account setup.',
-            infomation: `The IMAP email account will use for communicate between QTGate system and you. You may provide the account name and password to QTGate system. For your personal information privacy, please register a new free email account. QTGate system support <a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>, <a href="#" onclick="return linkClick ('https://outlook.live.com/owa/?WT.mc_id=O16_BingHP?mkt=en-us')">Outlook</a>, <a href="#" onclick="return linkClick ('https://login.yahoo.com/?.src=ym&.intl=us&.done=https%3A%2F%2Fmail.yahoo.com%2F')">Yahoo Mail</a>, <a href="#" onclick="return linkClick ('https://gmail.com')">GMAIL</a>, <a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">GMX</a>, <a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">ZOHO</a>. We recommand use Aplle iCloud. ( The none IP internet technolgy @OPN support icloud mail only.) </span> About password we recommand use <a href="#" onclick="return linkClick ('https://help.yahoo.com/kb/SLN15241.html')">third-party app passwords.</a>`,
+            infomation: `The IMAP email account will use for communicate between QTGate system and you. You may provide the account name and password to QTGate system. For your personal information privacy, please register a new free email account. QTGate system support <a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>, <a href="#" onclick="return linkClick ('https://outlook.live.com/owa/?WT.mc_id=O16_BingHP?mkt=en-us')">Outlook</a>, <a href="#" onclick="return linkClick ('https://login.yahoo.com/?.src=ym&.intl=us&.done=https%3A%2F%2Fmail.yahoo.com%2F')">Yahoo Mail</a>, <a href="#" onclick="return linkClick ('https://gmail.com')">GMAIL</a>, <a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">GMX</a>, <a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">ZOHO</a>. Please chooses the email service that can direct access from your area. It may can not finish your QTGate setup in some case because you can not make IMAP connect to email server. We recommand use Aplle iCloud. ( The none IP internet technolgy @OPN support icloud mail only.) </span> About password we recommand use <a href="#" onclick="return linkClick ('https://help.yahoo.com/kb/SLN15241.html')">third-party app passwords.</a>`,
             serverDetail: 'settings:',
             imapServer: 'IMAP server setup',
             imapServerInput: 'IMAP server name or IP address',
@@ -1482,7 +1485,7 @@ const infoDefine = [
             GenerateKeypair: '<em>Generate RSA Key pair. It may take a few minutes. It will need more long time when you chooess 4096 bit key length. About RSA keypair system can be found here: ' +
                 `<a href='hhttp://en.wikipedia.org/wiki/RSA_(cryptosystem)' target="_blank" onclick="return linkClick ('https://en.wikipedia.org/wiki/RSA_(cryptosystem)')">https://en.wikipedia.org/wiki/RSA_(cryptosystem)</a></em>`,
             systemPassword: 'Password',
-            inputEmail: `This RSA key pair will used for all data for this system and transfer data with QTGate system, also that is your proof of identity in QTGate system. The password of the key pair is not send to QTGate, this is mean you can't running QTGate system again if you lost your password. Please memo your password. <em style="color: red;">QTGate domain looks in block list at some area there have regulate the Internet domestically. Please use the email that in outside these area.</em>`,
+            inputEmail: `This RSA key pair will used for all data for this system and transfer data with QTGate system, also that is your proof of identity in QTGate system. The password of the key pair is not send to QTGate, this is mean you can't running QTGate system again if you lost your password. Please memo your password. <em style="color: red;">QTGate domain looks in block list at some area there have regulate the Internet domestically. You may can not finish QTGate setup and may lost your account if you use that kind email service. Please use the email that in outside these area.</em>`,
             accountEmailInfo: `Because QTGate looks in firewall's black list at some area. The best way is chooess your outside firewall's mail account.`
         },
         error_message: {
@@ -1527,7 +1530,8 @@ const infoDefine = [
                 `Your data transfer is limit today, please try again tomorrow or upgrade your user type.`,
                 'Your transfer email account looks not working, check the IMAP account please. Or your IMAP accout have not support with QTGate system.',
                 'Selected region has unavailable, try again later.',
-                'Your IMAP account got end mail error. Please exit QTGate and start up QTGate try again. If that have not be fixed, You may login to your IMAP account web side do unluck.'
+                'Your IMAP account got end mail error. Please exit QTGate and start up QTGate try again. If that have not be fixed, You may login to your IMAP account web side do unluck.',
+                'Ooooops. Looks you do not need I help. Have fun.'
             ],
             activeing: 'sending...'
         },
@@ -1773,7 +1777,7 @@ const infoDefine = [
                     detail: '當您使用我們的服務時，我們為了計費處理會自動收集非常有限的數據流量信息，並存儲到伺服器日誌中。數據流量信息僅用於計算客戶應支付通訊費用而收集的，它收集的數據是：日期，用戶帳號，所使用的代理服務區域和代理伺服器IP，數據包大小，下載或上傳。例如：'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 }, {
                     header: null,
                     detail: 'QTGate沒有保存除了以上信息以外的任何其他信息。我們會配合並向持有加拿大法院令的執法機構提供此日誌文件。如果您是加拿大以外地區的執法機構，有這方面信息披露的需求，請通過加拿大外交部來聯繫我們：'
@@ -1822,7 +1826,7 @@ const infoDefine = [
         },
         imapInformation: {
             title: '通訊專用Email郵箱設置',
-            infomation: `請設置QTGate通訊專用Email郵箱信息。由於此賬戶的用戶名和密碼信息會提交給QTGate系統，為了防止您的個人信息被洩漏，請新申請一個臨時Email賬戶。目前QTGate技術對應<a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/mobile/?WT.mc_id=mscom')">微軟OUTLOOK</a>，<a href="#" onclick="return linkClick ('http://tw.mail.yahoo.com/')">雅虎郵箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄羅斯ZOHO郵箱</a>，<a href="#" onclick="return linkClick ('https://gmail.com')">Google郵箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美國在線GMX郵箱</a>，QTGate強力推薦使用蘋果公司的Email可以達到最佳速度(@OPN無IP連結技術只對應蘋果公司iCloud郵箱)。密碼推薦使用Email服務商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">應用密碼</a>`,
+            infomation: `請設置QTGate通訊專用Email郵箱信息。由於此賬戶的用戶名和密碼信息會提交給QTGate系統，為了防止您的個人信息被洩漏，請新申請一個臨時Email賬戶。目前QTGate技術對應<a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/mobile/?WT.mc_id=mscom')">微軟OUTLOOK</a>，<a href="#" onclick="return linkClick ('http://tw.mail.yahoo.com/')">雅虎郵箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄羅斯ZOHO郵箱</a>，<a href="#" onclick="return linkClick ('https://gmail.com')">Google郵箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美國在線GMX郵箱</a>。請使用您的所在地可以直接連接的郵件服務商，如果此郵件服務商在您的所在地不能到達，您將不能夠完成QTGate設置。QTGate強力推薦使用蘋果公司的Email可以達到最佳速度(@OPN無IP連結技術只對應蘋果公司iCloud郵箱)。密碼推薦使用Email服務商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">應用密碼</a>`,
             serverDetail: '詳細設定：',
             imapServer: 'IMAP伺服器設定',
             UserName: '登陸用戶名稱',
@@ -1890,7 +1894,7 @@ const infoDefine = [
             systemAdministratorEmail: 'RSA密鑰生成',
             GenerateKeypair: '<em>系統正在生成用於通訊和簽名的RSA加密密鑰對，計算機需要運行產生大量的隨機數字，可能需要幾分鐘時間，尤其是長度為4096的密鑰對，需要特別長的時間，請耐心等待。關於RSA加密算法的機制和原理，您可以訪問維基百科：' +
                 `<a href='#' target="_blank" onclick="return linkClick ('https://zh.wikipedia.org/wiki/RSA加密演算法')">https://zh.wikipedia.org/wiki/RSA加密演算法</a></em>`,
-            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密鑰對, 它是您的系統信息加密，身份認證及和QTGate通訊使用的重要工具。 RSA密鑰對的密碼請妥善保存，Email地址欄應填入您的常用Email地址, 它將被用作您的QTGate賬號。<em style="color:red;">需注意的是QTGate.com域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区email服务，您將有可能接收不到由QTGate發回的賬號確認Email，以完成QTGate設定。</em>',
+            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密鑰對, 它是您的系統信息加密，身份認證及和QTGate通訊使用的重要工具。 RSA密鑰對的密碼請妥善保存，Email地址欄應填入您的常用Email地址, 它將被用作您的QTGate賬號。<em style="color:red;">需注意的是QTGate.com域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区email服务，您將有可能接收不到由QTGate發回的賬號確認Email，以完成QTGate設定，並在今後您有可能不能找回您的賬戶餘額。</em>',
             accountEmailInfo: `由於QTGate域名在某些國家和地區被防火牆屏蔽，而不能正常收發QTGate的Email，如果您是處於防火牆內的用戶，建議使用防火牆外部的郵件服務商。`
         },
         error_message: {
@@ -1934,7 +1938,8 @@ const infoDefine = [
                 '您當天的數據通訊量達到上限，請等待明天再試或升級用戶類型',
                 '用來通訊的Email設定有錯誤，請檢查IMAP設定後重試，或QTGate不支持此Email類型',
                 '您所選區域不能夠連結，請稍候再試',
-                '您的IMAP郵箱發信發生錯誤。請退出QTGate重試。如果持續發生此故障，您的IMAP帳號有可能被鎖住，需要登陸您的IMAP郵箱網站解鎖操作。'
+                '您的IMAP郵箱發信發生錯誤。請退出QTGate重試。如果持續發生此故障，您的IMAP帳號有可能被鎖住，需要登陸您的IMAP郵箱網站解鎖操作。',
+                '厲害，看來您是高手，不用我的幫助。'
             ],
             activeing: '正在通訊中'
         },
@@ -2638,6 +2643,7 @@ var view_layout;
         constructor() {
             this.overflowShow = ko.observable(false);
             this.CancelCreateKeyPairSent = false;
+            this.developers = ko.observable(false);
             this.modalContent = ko.observable('');
             this.menu = Menu;
             this.infoDefine = infoDefine;
@@ -3080,15 +3086,10 @@ var view_layout;
                 //$('.mainAccordion').accordion('refresh')
                 return this.QTGateConnectActive(false);
             });
-            //          gateway disconnect!
+            //          Server disconnect!
             socketIo.on('disconnect', () => {
-                this.disconnecting(true);
-                if (this.selectedQTGateRegion()) {
-                    this.selectedQTGateRegion().showConnectedArea(false);
-                    this.ConnectGatewayShow(false);
-                    this.disconnecting(false);
-                    this.selectedQTGateRegionCancel();
-                }
+                this.modalContent(infoDefine[this.languageIndex()].emailConform.formatError[2]);
+                return $('.ui.basic.modal').modal('show');
             });
             socketIo.on('QTGateGatewayConnectRequest', data => {
                 this.QTGateGatewayConnectRequestCallBack(this, data);
@@ -3578,7 +3579,12 @@ var view_layout;
             });
         }
         exit() {
-            socketIo.emit('exit');
+            if (typeof require === 'undefined') {
+                this.developers(true);
+                return this.modalContent(infoDefine[this.languageIndex()].emailConform.formatError[10]);
+            }
+            const { remote } = require('electron');
+            return remote.app.quit();
         }
     }
     view_layout.view = view;

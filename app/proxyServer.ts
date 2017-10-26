@@ -19,7 +19,7 @@
 import * as Net from 'net'
 import * as Http from 'http'
 import * as Dns from 'dns'
-import HttpProxyHeader from './httpProxy'
+import HttpHeader from './httpProxy'
 import * as Async from 'async'
 import * as Compress from './compress'
 import * as util from 'util'
@@ -32,7 +32,8 @@ import * as Path from 'path'
 import * as Socks from './socket5ForiOpn'
 import gateWay from './gateway'
 import * as Os from 'os'
-const { remote } = require ( "electron" )
+
+const { remote } = require ( 'electron' )
 
 const whiteIpFile = 'whiteIpList.json'
 Http.globalAgent.maxSockets = 1024
@@ -99,7 +100,7 @@ const otherRespon = ( path: string, host: string, port: number, UserAgent: strin
 
 const testLogin = ( req: Buffer, loginUserList: string ) => {
 	
-	const header = new HttpProxyHeader ( req )
+	const header = new HttpHeader ( req )
 	if ( header.isGet && header.Url.path === loginUserList )
 		return true
     
@@ -255,13 +256,13 @@ export const tryConnectHost = ( hostname: string, hostIp: domainData, port: numb
 	
 }
 
-export const isAllBlackedByFireWall = ( hostName: string, ip6: boolean, gatway: gateWay, userAgent: string, domainListPool: Map < string, domainData >,
+export const isAllBlackedByFireWall = ( hostName: string, ip6: boolean, gatway: gateWay, httpHead: HttpHeader, domainListPool: Map < string, domainData >,
 	CallBack: ( err?: Error, hostIp?: domainData ) => void ) => {
 
 	const hostIp = domainListPool.get ( hostName )
 	const now = new Date ().getTime ()
 	if ( ! hostIp || hostIp.expire < now )
-		return  gatway.hostLookup ( hostName, userAgent, ( err, ipadd ) => {
+		return  gatway.hostLookup ( hostName, ( err, ipadd ) => {
 			return CallBack ( err, ipadd )
 		})
 	return CallBack ( null, hostIp )
@@ -276,9 +277,8 @@ const isSslFromBuffer = ( buffer ) => {
 const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean, ip6: boolean, connectTimeOut: number,  
 	domainListPool: Map < string, domainData >, gatway: gateWay, checkAgainTime: number, blackDomainList: string[] ) => {
 
-	const httpHead = new HttpProxyHeader ( buffer )
+	const httpHead = new HttpHeader ( buffer )
 	const hostName = httpHead.Url.hostname
-	const userAgent = httpHead.headers [ 'user-agent' ]
 
 	const CallBack = ( err?: Error, _data?: Buffer ) => {
 
@@ -296,7 +296,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 				}
 
 				const id = `[${ clientSocket.remoteAddress.split(':')[3] }:${ clientSocket.remotePort }][${ uuuu.uuid }] `
-				return gatway.requestGetWay ( id, uuuu, userAgent, clientSocket )
+				return gatway.requestGetWay ( id, uuuu, httpHead, clientSocket )
 				
 			}
 
@@ -318,7 +318,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
         
         if ( ! hostIp ) {
 
-			return isAllBlackedByFireWall ( hostName,  ip6, gatway, userAgent, domainListPool, ( err, _hostIp ) => {
+			return isAllBlackedByFireWall ( hostName,  ip6, gatway, null, domainListPool, ( err, _hostIp ) => {
 				if ( err ) {
 					console.log ( `[${ hostName }] Blocked!`)
 					return closeClientSocket ( clientSocket, 504, null )
@@ -375,7 +375,7 @@ const getPac = ( hostIp: string, port: number, http: boolean, sock5: boolean ) =
 
 
 export class proxyServer {
-	public UdpServer = new Socks.UdpDgram ()
+	//public UdpServer = new Socks.UdpDgram ()
 	private hostLocalIpv4: { network: string, address: string } []= []
 	private hostLocalIpv6: string = null
 	private hostGlobalIpV4: string = null
@@ -397,7 +397,7 @@ export class proxyServer {
 			return 
 		this.getGlobalIpRunning = true
 
-		gateWay.hostLookup ( testGatewayDomainName, null, ( err, data ) => {
+		gateWay.hostLookup ( testGatewayDomainName, ( err, data ) => {
 			if ( err )
 				return console.log ( 'getGlobalIp ERROR:', err.message )
 			console.log ( data )
@@ -427,31 +427,30 @@ export class proxyServer {
 		public connectHostTimeOut: number, public useGatWay: boolean, public domainBlackList: string[] ) {
 		this.getGlobalIp ( this.gateway )
 		let socks = null
+		let httpHead: HttpHeader = null
 		const server = Net.createServer ( socket => {
 			const ip = socket.remoteAddress
 			const isWhiteIp = this.whiteIpList.find ( n => { return n === ip }) ? true : false
-			let agent = 'Mozilla/5.0'
-			console.log (`new socket!`)
+
 			socket.once ( 'data', ( data: Buffer ) => {
 				const dataStr = data.toString()
 				if ( /^GET \/pac/.test ( dataStr )) {
-					const httpHead = new HttpProxyHeader ( data )
-					agent = httpHead.headers['user-agent']
-					const sock5 = /Windows NT|Darwin/i.test ( agent ) && ! /CFNetwork/i.test (agent)
-					
+					httpHead = new HttpHeader ( data )
+					const agent = httpHead.headers [ 'user-agent']
+
+					const sock5 = /Windows NT|Darwin/i.test ( agent ) && ! /CFNetwork/i.test ( agent )
+					console.log (`new GET /pac\n headers[${ JSON.stringify ( httpHead.headers )}]\n sock5=[${ sock5 }]\n`)
 					let ret = getPac ( this.localProxyServerIP, this.port, false, sock5 )
 					if ( /pacHttp/.test( dataStr ))
 						ret = getPac ( this.localProxyServerIP, this.port, true, sock5 )
-					console.log ( `/GET \/pac from :[${ socket.remoteAddress }] sock5 [${ sock5 }] agent [${ agent }] httpHead.headers [${ Object.keys(httpHead.headers)}]`)
-					console.log ( dataStr )
 					return socket.end ( ret )
 				}
-
+				console.log (`new socket!\n headers [${ httpHead && httpHead.headers ? JSON.stringify ( httpHead.headers) : 'null' }]`, )
 				switch ( data.readUInt8 ( 0 )) {
 					case 0x4:
-						return socks = new Socks.sockt4 ( socket, data, agent, this )
+						return socks = new Socks.sockt4 ( socket, data, httpHead, this )
 					case 0x5:
-						return socks = new Socks.socks5 ( socket, agent, this )
+						return socks = new Socks.socks5 ( socket, httpHead, this )
 					default:
 						return httpProxy ( socket, data, useGatWay, this.hostGlobalIpV6 ? true : false, connectHostTimeOut, domainListPool, this.gateway, checkAgainTimeOut, domainBlackList )
 				}
