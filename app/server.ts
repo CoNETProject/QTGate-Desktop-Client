@@ -815,7 +815,6 @@ export class localServer {
 	public disConnectGateway () {
 		saveLog ( 'disConnectGateway.')
 		this.proxyServer.cancel ()
-		this.socketServer.emit ('disconnect')
 		this.proxyServer = null
 		this.connectCommand = null
 		

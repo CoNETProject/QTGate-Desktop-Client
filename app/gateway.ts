@@ -20,20 +20,21 @@ import * as Dns from 'dns'
 import * as Net from 'net'
 import * as res from './res'
 import * as Stream from 'stream'
+import * as Crypto from 'crypto'
 
 const Day = 1000 * 60 * 60 * 24
 
 const otherRequestForNet = ( path: string, host: string, port: number, UserAgent: string ) => {
-	if ( path.length < 2048) 
+	if ( path.length < 1024 + Math.round( Math.random () * 4000 )) 
 		return `GET /${ path } HTTP/1.1\r\n` +
-				`Host: ${ host }:${ port }\r\n` +
+				`Host: ${ host }${ port !== 80 ? ':'+ port : '' }\r\n` +
 				`Accept: */*\r\n` +
 				`Accept-Language: en-ca\r\n` +
 				`Connection: keep-alive\r\n` +
 				`Accept-Encoding: gzip, deflate\r\n` +
 				`User-Agent: ${ UserAgent ? UserAgent : 'Mozilla/5.0' }\r\n\r\n`
-	return 	`POST /${ Buffer.allocUnsafe ( 10 + Math.random()).toString('base64') } HTTP/1.1\r\n` +
-			`Host: ${ host }:${ port }\r\n` +
+	return 	`POST /${ Crypto.randomBytes ( 10 + Math.round ( Math.random () * 1500 )).toString ( 'base64')} HTTP/1.1\r\n` +
+			`Host: ${ host }${ port !== 80 ? ':'+ port : '' }\r\n` +
 			`Content-Length: ${ path.length }\r\n\r\n` +
 			path + '\r\n\r\n'
 }
@@ -74,7 +75,7 @@ export default class gateWay {
 
 		const _data = new Buffer ( JSON.stringify ({ hostName: hostName }), 'utf8' )
 		
-		const encrypt = new Compress.encryptStream ( this.password, 0, ( str: string ) => {
+		const encrypt = new Compress.encryptStream ( this.password, 3000, ( str: string ) => {
 			return this.request ( str )
 		})
 		
@@ -107,7 +108,7 @@ export default class gateWay {
 	public requestGetWay ( id: string, uuuu: VE_IPptpStream, userAgent: string, socket: Net.Socket ) {
 		this.userAgent = userAgent
 		const decrypt = new Compress.decryptStream ( this.password )
-		const encrypt = new Compress.encryptStream ( this.password, 0, ( str: string ) => {
+		const encrypt = new Compress.encryptStream ( this.password, 3000, ( str: string ) => {
 			return this.request ( str )
 		})
 		const httpBlock = new Compress.getDecryptClientStreamFromHttp ()

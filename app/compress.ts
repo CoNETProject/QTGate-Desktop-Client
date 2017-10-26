@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import * as crypto from 'crypto'
+import * as Crypto from 'crypto'
 import * as Async from 'async'
 import * as Stream from 'stream'
 import * as Net from 'net'
@@ -36,20 +36,20 @@ export interface pairConnect {
 export const encrypt = ( text: Buffer, masterkey: string, CallBack ) => {
 	let salt = null
 	Async.waterfall ([
-		next => crypto.randomBytes ( 64, next ),
+		next => Crypto.randomBytes ( 64, next ),
 		( _salt, next ) => {
 			salt = _salt
-			crypto.pbkdf2 ( masterkey, salt, 2145, 32, 'sha512', next )
+			Crypto.pbkdf2 ( masterkey, salt, 2145, 32, 'sha512', next )
 		}
 	], ( err, derivedKey ) => {
 		if ( err )
 			return CallBack ( err )
 		
-		crypto.randomBytes ( 12, ( err1, iv ) => {
+		Crypto.randomBytes ( 12, ( err1, iv ) => {
 			if ( err1 )
 				return CallBack ( err1 )
 			
-			const cipher = crypto.createCipheriv ( 'aes-256-gcm', derivedKey, iv );
+			const cipher = Crypto.createCipheriv ( 'aes-256-gcm', derivedKey, iv );
 		
 			let _text = Buffer.concat ([ Buffer.alloc ( 4, 0 ) , text ])
 			_text.writeUInt32BE ( text.length, 0 )
@@ -82,13 +82,13 @@ export const decrypt =  ( data: Buffer, masterkey, CallBack ) => {
 		const tag = data.slice ( 76, 92 );
 		const text = data.slice ( 92 );
 		// derive key using; 32 byte key length
-		crypto.pbkdf2 ( masterkey, salt , 2145, 32, 'sha512', ( err, derivedKey ) => {
+		Crypto.pbkdf2 ( masterkey, salt , 2145, 32, 'sha512', ( err, derivedKey ) => {
 			
 			if ( err )
 				return CallBack ( err )
 			// AES 256 GCM Mode
 			try {
-				const decipher = crypto.createDecipheriv ( 'aes-256-gcm', derivedKey, iv )
+				const decipher = Crypto.createDecipheriv ( 'aes-256-gcm', derivedKey, iv )
 				decipher.setAuthTag ( tag )
 				const decrypted = Buffer.concat([decipher.update ( text ), decipher.final ( )]) 
 				const leng = decrypted.slice( 4, 4 + decrypted.readUInt32BE(0))
@@ -145,14 +145,14 @@ export class encryptStream extends Stream.Transform {
 	}
 	private init ( callback ) {
 		return Async.waterfall ([
-			next => crypto.randomBytes ( 64, next ),
+			next => Crypto.randomBytes ( 64, next ),
 			( _salt, next ) => {
 				this.salt = _salt
-				crypto.randomBytes ( 12, next )
+				Crypto.randomBytes ( 12, next )
 			},
 			( _iv, next ) => {
 				this.iv = _iv
-				crypto.pbkdf2 ( this.password, this.salt, 2145, 32, 'sha512', next )
+				Crypto.pbkdf2 ( this.password, this.salt, 2145, 32, 'sha512', next )
 			}
 		], ( err, derivedKey ) => {
 			
@@ -171,15 +171,16 @@ export class encryptStream extends Stream.Transform {
 				return this._transform ( chunk, encode, cb )
 			})
 		}
-		const cipher = crypto.createCipheriv ( 'aes-256-gcm', this.derivedKey, this.iv )
+		const cipher = Crypto.createCipheriv ( 'aes-256-gcm', this.derivedKey, this.iv )
 
 		let _text = Buffer.concat ([ Buffer.alloc ( 4, 0 ) , chunk ])
 
 		_text.writeUInt32BE ( chunk.length, 0 )
-
+		
 		if ( chunk.length < this.random ) {
-			_text = Buffer.concat ([ _text, Buffer.allocUnsafe ( Math.random() * 1000 )])
+			_text = Buffer.concat ([ _text, Crypto.randomBytes ( Math.round(Math.random() * 5000 ))])
 		}
+
 		const _buf = Buffer.concat ([ cipher.update ( _text ), cipher.final ()])
 		const _buf1 = Buffer.concat ([ cipher.getAuthTag (), _buf ])
 		
@@ -213,7 +214,7 @@ export class decryptStream extends Stream.Transform {
 	private derivedKey: Buffer = null
 	private _decrypt ( _text: Buffer ) {
 		
-		const decipher = crypto.createDecipheriv ( 'aes-256-gcm', this.derivedKey, this.iv )
+		const decipher = Crypto.createDecipheriv ( 'aes-256-gcm', this.derivedKey, this.iv )
 		decipher.setAuthTag ( _text.slice ( 0, 16 ))
 		try {
 			const _buf = Buffer.concat ([ decipher.update ( _text.slice ( 16 )), decipher.final () ])
@@ -233,7 +234,7 @@ export class decryptStream extends Stream.Transform {
 	public _First (  chunk: Buffer, CallBack: ( err?: Error, text?: Buffer ) => void ) {
 		this.salt = chunk.slice ( 0, 64 );
 		this.iv = chunk.slice ( 64, 76 );
-		return crypto.pbkdf2 ( this.password, this.salt , 2145, 32, 'sha512', ( err, derivedKey ) => {
+		return Crypto.pbkdf2 ( this.password, this.salt , 2145, 32, 'sha512', ( err, derivedKey ) => {
 			if ( err ) {
 				console.log ( `decryptStream crypto.pbkdf2 ERROR: ${ err.message }` )
 				return CallBack ( err )

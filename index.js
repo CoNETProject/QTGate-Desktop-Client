@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /*!
  * Copyright 2017 QTGate systems Inc. All Rights Reserved.
  *
@@ -16,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+Object.defineProperty(exports, "__esModule", { value: true });
 const DEBUG = false;
 const Fs = require("fs");
 const Os = require("os");

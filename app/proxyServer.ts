@@ -437,7 +437,7 @@ export class proxyServer {
 				if ( /^GET \/pac/.test ( dataStr )) {
 					const httpHead = new HttpProxyHeader ( data )
 					agent = httpHead.headers['user-agent']
-					const sock5 = /Windows NT|Darwin/i.test ( agent ) && ! /CFNetwork/i.test (agent)
+					const sock5 = /Windows NT|Darwin|Firefox/i.test ( agent ) && ! /CFNetwork/i.test (agent)
 					
 					let ret = getPac ( this.localProxyServerIP, this.port, false, sock5 )
 					if ( /pacHttp/.test( dataStr ))
