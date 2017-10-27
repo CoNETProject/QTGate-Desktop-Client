@@ -130,13 +130,12 @@ export class socks5 {
 			
 		})
 	}
-
+	/*
 	private udpProcess ( data: Rfc1928.Requests ) {
 		data.REP = Rfc1928.Replies.GRANTED
-		data.port = this.proxyServer.UdpServer.port
 		return this.socket.write ( data.buffer )
 	}
-
+	*/
 	private connectStat2 ( data: Buffer ) {
 
 		const req = new Rfc1928.Requests ( data )
@@ -180,7 +179,7 @@ export class socks5 {
 			return this.closeSocks5 ( req.buffer )
 		}
 		if ( this.cmd === Rfc1928.CMD.UDP_ASSOCIATE )
-			return this.udpProcess ( req )
+			return console.log ('')
 		return this.connectStat2_after ( req )
 	}
 
@@ -329,5 +328,3 @@ export class UdpDgram {
 		this.createDgram ()
 	}
 }
-
-const uu = new UdpDgram ()

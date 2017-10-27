@@ -414,7 +414,7 @@ const infoDefine = [
                     detail: '当您使用我们的服务时，我们为了计费处理会自动收集非常有限的数据流量信息，并存储到服务器日志中。数据流量信息仅用于计算客户应支付通讯费用而收集的，它收集的数据是：日期，用户帐号，所使用的代理区域和代理服务器IP，数据包大小，下载或上传。例如：'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 },
                 {
                     header: null,
@@ -947,7 +947,7 @@ const infoDefine = [
                     detail: 'お客様がQTGateサービスをご利用になる際に、お客様のデータ通信料計算のために、ご利用データ量が自動的に収集および保存されます。限られたログは以下のようです。日付、お客様アカウント、ご利用ゲットウェーエリアとゲットウェーIPアドレス、データ量、アップ又はダウンロード。例：'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 }, {
                     header: null,
                     detail: 'QTGateは以上の情報以外には保存することしません。QTGateは以上の情報をカナダーの裁判所命令を持つカナダの法執行機関に協力することがありえます。カナダ以外のこのログ情報を協力する要請のあなたは、まずカナダ外務省までお問い合わせ下さい：'
@@ -1364,7 +1364,7 @@ const infoDefine = [
                     detail: 'In connection with your use of the Services, we may send you service announcements, administrative messages, and other information. You may opt out of some of those communications. When you use our services, for calculating communication charges we automatically collect and store communication data in server logs. The logs will limited as: Date footprinting, user account, used gateway region, used gateway ip address, package byte, Ingress or Egress. For example:'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 },
                 {
                     header: null,
@@ -1773,7 +1773,7 @@ const infoDefine = [
                     detail: '當您使用我們的服務時，我們為了計費處理會自動收集非常有限的數據流量信息，並存儲到伺服器日誌中。數據流量信息僅用於計算客戶應支付通訊費用而收集的，它收集的數據是：日期，用戶帳號，所使用的代理服務區域和代理伺服器IP，數據包大小，下載或上傳。例如：'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 }, {
                     header: null,
                     detail: 'QTGate沒有保存除了以上信息以外的任何其他信息。我們會配合並向持有加拿大法院令的執法機構提供此日誌文件。如果您是加拿大以外地區的執法機構，有這方面信息披露的需求，請通過加拿大外交部來聯繫我們：'

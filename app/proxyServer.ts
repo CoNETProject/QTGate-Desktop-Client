@@ -375,7 +375,6 @@ const getPac = ( hostIp: string, port: number, http: boolean, sock5: boolean ) =
 
 
 export class proxyServer {
-	public UdpServer = new Socks.UdpDgram ()
 	private hostLocalIpv4: { network: string, address: string } []= []
 	private hostLocalIpv6: string = null
 	private hostGlobalIpV4: string = null

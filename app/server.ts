@@ -31,7 +31,7 @@ import * as freePort from 'portastic'
 import * as prosyServer from './proxyServer'
 import * as Stream from 'stream'
 
-const DEBUG = false
+const DEBUG = true
 
 const openpgp = require ( 'openpgp' )
 const Express = require ( 'express' )

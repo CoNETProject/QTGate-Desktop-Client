@@ -1,12 +1,13 @@
 {
   "name": "qtgate",
-  "version": "0.8.46",
+  "version": "0.8.50",
   "license": "MIT",
   "description": "QTGate desktop client",
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
     "win": "electron-builder --win",
+    "win32": "electron-builder --win --ia32",
     "linux": "electron-builder --linux",
     "mac": "electron-builder",
     "pre": "electron-builder install-app-deps",
