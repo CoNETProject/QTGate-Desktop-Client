@@ -403,10 +403,14 @@ class RendererProcess {
 		})
 		this.win.loadURL (`file://${ Path.join ( __dirname, name +'.html')}`)
 	}
-	public cancel () {
+	public cancel ( ) {
 		if ( this.win && typeof this.win.destroy ==='function' ) {
 			return this.win.destroy()
 		}
+	}
+
+	public sendCommand ( command: string, data: any ) {
+		return this.win.emit ( command, data )
 	}
 }
 
@@ -430,8 +434,9 @@ export class localServer {
 	private bufferPassword = null
 	private clientIpAddress = null
 	private proxyServerWindow = null
-	private connectCommand: IConnectCommand = null
-	private proxyServer: RendererProcess = null
+	public connectCommand: IConnectCommand = null
+	public proxyServer: RendererProcess = null
+
 	public saveConfig () {
 		Fs.writeFile ( configPath, JSON.stringify ( this.config ) , { encoding: 'utf8' }, err => {
 			if ( err )
@@ -594,6 +599,9 @@ export class localServer {
 		})
 	}
 
+
+
+	//			After password
 	private listenAfterPassword ( socket: SocketIO.Socket ) {
 
 		socket.on ( 'startCheckImap', ( id: string, imapData: IinputData, CallBack: ( ret: number ) => void ) => {
@@ -651,19 +659,10 @@ export class localServer {
 				saveLog ( JSON.stringify ( res.Args ))
 				CallBack ( res.Args[0] )
 				//		Have gateway connect!
-				if ( res.Args[1]) {
+				if ( res.Args[ 1 ]) {
 					const uu: IConnectCommand = res.Args[1]
-					if ( !this.connectCommand ) {
-						this.connectCommand = uu
-					}
-					if ( ! this.proxyServer ) {
-						const runCom = uu.connectType === 1 ? '@Opn' : 'iOpn'
-						uu.localServerIp = getLocalInterface ()[0]
-						this.proxyServer = new RendererProcess ( runCom, uu, DEBUG, () => {
-							saveLog ( `proxyServerWindow on exit!`)
-							this.proxyServer = null
-							this.connectCommand = null
-						})
+					if ( ! this.proxyServer || ! this.connectCommand ) {
+						this.makeOpnConnect ( uu )
 					}
 					return socket.emit ( 'QTGateGatewayConnectRequest', this.connectCommand )
 				}
@@ -790,13 +789,7 @@ export class localServer {
 
 					CallBack ( res )
 					if ( res.error < 0 ) {
-						this.connectCommand = arg
-						const runCom = arg.connectType === 1 ? '@Opn' : 'iOpn'
-						return this.proxyServer = new RendererProcess ( runCom, arg, DEBUG, () => {
-							saveLog ( `proxyServerWindow on exit!`)
-							this.proxyServer = null
-							this.connectCommand = null
-						})
+						return this.makeOpnConnect ( arg )
 					}
 					saveLog ( `res.error [${ res.error }]`)
 				})
@@ -805,10 +798,24 @@ export class localServer {
 
 		})
 
-		socket.on ( 'disconnectClick', CallBack => {
-			this.disConnectGateway ()
+		socket.on ( 'disconnectClick', () => {
+			
 			this.stopGetwayConnect ()
-			CallBack ()
+			this.disConnectGateway () 
+		})
+	}
+
+	public makeOpnConnect ( arg: IConnectCommand ) {
+		
+		this.connectCommand = arg
+		const runCom = arg.connectType === 1 ? '@Opn' : 'iOpn'
+		saveLog (`makeOpnConnect arg [${ JSON.stringify ( arg )}]`)
+		console.trace ( arg )
+		return this.proxyServer = new RendererProcess ( runCom, arg, DEBUG, () => {
+			saveLog ( `proxyServerWindow on exit!`)
+			this.proxyServer = null
+			this.connectCommand = null
+			this.socketServer.emit ('disconnectClickCallBack')
 		})
 	}
 
@@ -1656,6 +1663,21 @@ class ImapConnect extends Imap.imapPeer {
 						localServer.disConnectGateway()
 
 					}
+
+					case 'changeDocker' : {
+						
+						const container: IConnectCommand = ret.Args[0]
+						if ( ! container ) {
+							return saveLog ( `got Command from server "changeDocker" but have no data ret = [${ JSON.stringify ( ret )}]`)
+						}
+
+						if ( ! this.localServer.proxyServer || ! this.localServer.connectCommand ) {
+							saveLog ( `got Command from server "changeDocker" localServer.proxyServer or localServer.connectCommand is null!!`)
+							return this.localServer.makeOpnConnect ( container )
+						}
+						this.localServer.proxyServer.sendCommand ( 'changeDocker', container )
+
+					}
 					default:{
 						return saveLog ( `QTGateAPIRequestCommand have not requestSerial!, 【${JSON.stringify ( ret )}】`)
 					}
@@ -1684,7 +1706,7 @@ class ImapConnect extends Imap.imapPeer {
 				return CallBack ( err1 )
 			}
 			this.append ( data )
-			saveLog ( `do request command [${ command.command }] finished and wait server responsr!`)
+			saveLog ( `do request command [${ command.command }] finished and wait server response!`)
 		})
 		
 	}

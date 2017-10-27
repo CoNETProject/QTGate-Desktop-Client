@@ -3307,6 +3307,10 @@ module view_layout {
 
             })
 
+            socketIo.on ( 'disconnectClickCallBack', () => {
+                this.desconnectCallBack ()
+            })
+
             socketIo.on ( 'QTGateGatewayConnectRequest', data => {
                 this.QTGateGatewayConnectRequestCallBack ( this, data )
             })
@@ -3897,35 +3901,35 @@ module view_layout {
 
         public disconnecting = ko.observable ( false )
 
-
-        public disconnectClick () {
-            
-            this.disconnecting ( true )
-            socketIo.emit ( 'disconnectClick', () => {
-                this.selectedQTGateRegion().showConnectedArea( false )
-                this.ConnectGatewayShow ( false )
-                this.selectedQTGateRegionCancel () 
-                this.disconnecting ( false )
-                socketIo.emit ( 'getAvaliableRegion', ( region: string [] ) => {
-                    this.QTGateRegions().forEach( n => {
-                        const index = region.findIndex ( nn => { return nn === n.qtRegion })
-                        if ( index < 0 )
-                            return n.available( false )
-                        return n.available ( true )
-                    })
-                    this.QTGateRegions.sort (( a, b ) => { 
-                        if ( a.available() === b.available() )  
-                            return 0
-                        if ( b.available() && !a.available() ) {
-                            return 1
-                        }
-                        return -1
-                    })
-                    const imapServer = this.emailPool()[0].iMapServerName ()
-                    
-                    this.canDoAtEmail ( /imap\.mail\.me\.com$/.test( imapServer ))
+        private desconnectCallBack () {
+            this.selectedQTGateRegion().showConnectedArea( false )
+            this.ConnectGatewayShow ( false )
+            this.selectedQTGateRegionCancel () 
+            this.disconnecting ( false )
+            socketIo.emit ( 'getAvaliableRegion', ( region: string [] ) => {
+                this.QTGateRegions().forEach( n => {
+                    const index = region.findIndex ( nn => { return nn === n.qtRegion })
+                    if ( index < 0 )
+                        return n.available( false )
+                    return n.available ( true )
                 })
+                this.QTGateRegions.sort (( a, b ) => { 
+                    if ( a.available() === b.available() )  
+                        return 0
+                    if ( b.available() && !a.available() ) {
+                        return 1
+                    }
+                    return -1
+                })
+                const imapServer = this.emailPool()[0].iMapServerName ()
+                
+                this.canDoAtEmail ( /imap\.mail\.me\.com$/.test( imapServer ))
             })
+        }
+  
+        public disconnectClick () {
+            this.disconnecting ( true )
+            socketIo.emit ( 'disconnectClick')
         }
 
         public newVersionInstallLoading = ko.observable ( false )

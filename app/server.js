@@ -357,6 +357,9 @@ class RendererProcess {
             return this.win.destroy();
         }
     }
+    sendCommand(command, data) {
+        return this.win.emit(command, data);
+    }
 }
 class localServer {
     constructor(version, port) {
@@ -569,6 +572,7 @@ class localServer {
             return CallBack();
         });
     }
+    //			After password
     listenAfterPassword(socket) {
         socket.on('startCheckImap', (id, imapData, CallBack) => {
             if (!id || !id.length || !imapData || !Object.keys(imapData).length) {
@@ -618,17 +622,8 @@ class localServer {
                 //		Have gateway connect!
                 if (res.Args[1]) {
                     const uu = res.Args[1];
-                    if (!this.connectCommand) {
-                        this.connectCommand = uu;
-                    }
-                    if (!this.proxyServer) {
-                        const runCom = uu.connectType === 1 ? '@Opn' : 'iOpn';
-                        uu.localServerIp = exports.getLocalInterface()[0];
-                        this.proxyServer = new RendererProcess(runCom, uu, DEBUG, () => {
-                            saveLog(`proxyServerWindow on exit!`);
-                            this.proxyServer = null;
-                            this.connectCommand = null;
-                        });
+                    if (!this.proxyServer || !this.connectCommand) {
+                        this.makeOpnConnect(uu);
                     }
                     return socket.emit('QTGateGatewayConnectRequest', this.connectCommand);
                 }
@@ -733,22 +728,27 @@ class localServer {
                     //		no error
                     CallBack(res);
                     if (res.error < 0) {
-                        this.connectCommand = arg;
-                        const runCom = arg.connectType === 1 ? '@Opn' : 'iOpn';
-                        return this.proxyServer = new RendererProcess(runCom, arg, DEBUG, () => {
-                            saveLog(`proxyServerWindow on exit!`);
-                            this.proxyServer = null;
-                            this.connectCommand = null;
-                        });
+                        return this.makeOpnConnect(arg);
                     }
                     saveLog(`res.error [${res.error}]`);
                 });
             });
         });
-        socket.on('disconnectClick', CallBack => {
-            this.disConnectGateway();
+        socket.on('disconnectClick', () => {
             this.stopGetwayConnect();
-            CallBack();
+            this.disConnectGateway();
+        });
+    }
+    makeOpnConnect(arg) {
+        this.connectCommand = arg;
+        const runCom = arg.connectType === 1 ? '@Opn' : 'iOpn';
+        saveLog(`makeOpnConnect arg [${JSON.stringify(arg)}]`);
+        console.trace(arg);
+        return this.proxyServer = new RendererProcess(runCom, arg, DEBUG, () => {
+            saveLog(`proxyServerWindow on exit!`);
+            this.proxyServer = null;
+            this.connectCommand = null;
+            this.socketServer.emit('disconnectClickCallBack');
         });
     }
     disConnectGateway() {
@@ -1367,6 +1367,17 @@ class ImapConnect extends Imap.imapPeer {
                         saveLog(`QTGateAPIRequestCommand on containerStop! doing disConnectGateway()`);
                         localServer.disConnectGateway();
                     }
+                    case 'changeDocker': {
+                        const container = ret.Args[0];
+                        if (!container) {
+                            return saveLog(`got Command from server "changeDocker" but have no data ret = [${JSON.stringify(ret)}]`);
+                        }
+                        if (!this.localServer.proxyServer || !this.localServer.connectCommand) {
+                            saveLog(`got Command from server "changeDocker" localServer.proxyServer or localServer.connectCommand is null!!`);
+                            return this.localServer.makeOpnConnect(container);
+                        }
+                        this.localServer.proxyServer.sendCommand('changeDocker', container);
+                    }
                     default: {
                         return saveLog(`QTGateAPIRequestCommand have not requestSerial!, 【${JSON.stringify(ret)}】`);
                     }
@@ -1442,7 +1453,7 @@ class ImapConnect extends Imap.imapPeer {
                 return CallBack(err1);
             }
             this.append(data);
-            saveLog(`do request command [${command.command}] finished and wait server responsr!`);
+            saveLog(`do request command [${command.command}] finished and wait server response!`);
         });
     }
     doingDisconnect() {

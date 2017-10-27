@@ -481,6 +481,17 @@ export class proxyServer {
 
 	}
 
+	public changeDocker ( data: IConnectCommand ) {
+		if ( !data.gateWayIpAddress || !data.gateWayPort || !data.imapData.randomPassword ) {
+			return saveLog (`ERROR: changeDocker data ERROR: gateWayIpAddress [${ data.gateWayIpAddress }] gateWayPort [${ data.gateWayPort }] data.imapData.randomPassword [${ data.imapData.randomPassword }]`)
+		}
+		this.serverIp = data.gateWayIpAddress
+		this.serverPort = data.gateWayPort
+		this.password = data.imapData.randomPassword
+		this.gateway = new gateWay ( this.serverIp, this.serverPort, this.password )
+		saveLog (`changeDocker gateWayIpAddress [${ data.gateWayIpAddress }] gateWayPort [${ data.gateWayPort }] data.imapData.randomPassword [${ data.imapData.randomPassword }]`)
+	}
+
 }
 
 interface proxyServerInfo {
@@ -501,12 +512,17 @@ const saveLog = ( log: string ) => {
 	})
 }
 
-
+let server: proxyServer = null
 remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
-	console.log ( data )
-	const server = new proxyServer ([], new Map(), data.localServerIp, data.localServerPort, 'pac', data.gateWayIpAddress, data.gateWayPort, data.imapData.randomPassword,
+	saveLog ( `************************** start proxyServer *****************************\r\n ${ JSON.stringify( data )}\r\n` )
+	server = new proxyServer ([], new Map(), data.localServerIp, data.localServerPort, 'pac', data.gateWayIpAddress, data.gateWayPort, data.imapData.randomPassword,
 		 5000, 50000, data.AllDataToGateway, [] )
 	
 })
+remote.getCurrentWindow().on( 'changeDocker', ( data: IConnectCommand ) => {
+	saveLog ( `got changeDocker event! data [${ JSON.stringify ( data )}]`)
+	server.changeDocker ( data )
+})
+
 
 remote.getCurrentWindow().emit ( 'first' )
