@@ -316,7 +316,7 @@ block jumbotron1
 								.meta( data-bind = " visible: imapCheckResult() && ! imapDataEditShow()" )
 									span( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.imapResultTitle" )
 									span.ui.star.rating( data-bind = " attr: { 'data-rating': dataRating() }" data-max-rating = "3" )
-								.ui.bottom.top.left.attached.label.background-clolr-white( data-bind = " click: () => { imapDataEditShow ( true ) }", style = "left: -10px!important;top: -6px!important;")
+								.ui.bottom.top.left.attached.label.background-clolr-white( data-bind = " click: () => { imapDataEditShow ( true ) }, visible: !imapDataEditShow()", style = "left: -10px!important;top: -6px!important;")
 									a
 										i.edit.outline.icon.large.blue
 								.description
@@ -710,10 +710,11 @@ block jumbotron1
 		
 	.ui.basic.modal
 		.ui.icon.header
-			i.heartbeat.icon( data-bind="text: infoDefine [ languageIndex() ].error_message.title ")
+			i.heartbeat.icon( data-bind="text: infoDefine [ languageIndex() ].error_message.title, visible: !hacked () ")
+			i.icon.spy.big( data-bind=" visible: hacked()")
 		.content
 			p( data-bind = " text: modalContent ")
 		.actions
-			.ui.red.ok.inverted.button( data-bind=" text: infoDefine [ languageIndex() ].linuxUpdate.exit, click: exit ")
+			.ui.red.inverted.button( data-bind=" text: infoDefine [ languageIndex() ].linuxUpdate.exit, click: exit, visible:!hacked() ")
 				
 

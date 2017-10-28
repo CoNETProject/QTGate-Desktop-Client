@@ -756,6 +756,7 @@ class localServer {
         this.proxyServer.cancel();
         this.proxyServer = null;
         this.connectCommand = null;
+        this.socketServer.emit('disconnectClickCallBack');
     }
     stopGetwayConnect() {
         const com = {
@@ -1096,6 +1097,9 @@ class localServer {
         transporter.sendMail(mailOptions, (err, info, infoID) => {
             if (err) {
                 saveLog(`transporter.sendMail got ERROR! [${JSON.stringify(err)}]`);
+                imapData.smtpCheck = false;
+                imapData.sendToQTGate = false;
+                this.saveImapData();
                 this.socketServer.emit('checkActiveEmailError', 9);
                 return Callback(err);
             }

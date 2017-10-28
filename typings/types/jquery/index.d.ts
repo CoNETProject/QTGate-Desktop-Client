@@ -5383,7 +5383,7 @@ interface JQuery<TElement extends Node = HTMLElement> extends Iterable<TElement>
     checkbox ( any? ): this
     dimmer ( any? ): this
     cookie ( any?): this
-    modal (act: string ): this
+    modal (...any): this
 }
 
 declare namespace JQuery {

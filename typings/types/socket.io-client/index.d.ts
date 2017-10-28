@@ -438,7 +438,7 @@ declare namespace SocketIOClient {
 	 * Options we can pass to the socket when connecting
 	 */
 	interface ConnectOpts {
-
+		reconnections?: number;
 		/**
 		 * Should we force a new Manager for this connection?
 		 * @default false

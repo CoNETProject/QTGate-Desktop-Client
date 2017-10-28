@@ -40,9 +40,10 @@ let socketIo = null;
  * 		@param email <string>
  * 		@return Imap & Smtp info
  */
-const getImapSmtpHost = (email) => {
+const getImapSmtpHost = (_email) => {
+    const email = _email.toLowerCase();
     const yahoo = (domain) => {
-        if (/yahoo.co.jp$/.test(domain))
+        if (/yahoo.co.jp$/i.test(domain))
             return 'yahoo.co.jp';
         if (/((.*\.){0,1}yahoo|yahoogroups|yahooxtra|yahoogruppi|yahoogrupper)(\..{2,3}){1,2}$/.test(domain))
             return 'yahoo.com';
@@ -115,9 +116,13 @@ const getImapSmtpHost = (email) => {
             ret.imap = 'mail.inbox.ee';
             break;
         //		gmx.com
+        case 'gmx.co.uk':
+        case 'gmx.de':
+        case 'gmx.us':
         case 'gmx.com':
             {
                 ret.smtp = 'mail.gmx.com';
+                ret.imap = 'imap.gmx.com';
             }
             break;
         //		aim.com
@@ -543,7 +548,7 @@ const infoDefine = [
         error_message: {
             title: '错误',
             errorNotifyTitle: '系统错误',
-            EmailAddress: ['请按以下格式输入你的电子邮件地址: someone@example.com.', '您已有相同的Email账户', '此类Email服务器暂时QTGate技术不能对应,请选择Apple公司，微软Outlook, Yahoo公司的Email服务。'],
+            EmailAddress: ['请按以下格式输入你的电子邮件地址: someone@example.com.', '您已有相同的Email账户', '此类Email服务器暂时QTGate技术不能对应。'],
             required: '请填写此字段',
             doCancel: '终止完成',
             PasswordLengthError: '密码必须设定为5个字符以上。',
@@ -582,7 +587,9 @@ const infoDefine = [
                 '您当天的数据通讯量达到上限，请等待明天再试或升级用户类型',
                 '用来通讯的Email设定有错误，请检查IMAP设定后重试，或QTGate不支持此Email类型',
                 '您所选区域不能够连结，请稍候再试',
-                '您的IMAP邮箱发信发生错误。请退出QTGate重试。如果持续发生此故障，您的IMAP帐号有可能被锁住，需要登陆您的IMAP邮箱网站解锁操作。 '
+                '您的IMAP邮箱发信发生错误。请退出QTGate重试。如果持续发生此故障，您的IMAP帐号有可能被锁住，需要登陆您的IMAP邮箱网站解锁操作。 ',
+                'QTGate程序发生错误，请退出后重启QTGate！',
+                '您是高手，不用我多说了。'
             ],
             activeing: '正在通讯中'
         },
@@ -1087,7 +1094,7 @@ const infoDefine = [
         error_message: {
             title: 'エラー',
             errorNotifyTitle: 'システムエラー',
-            EmailAddress: ['メール アドレスを someone@example.com の形式で入力してください。', '同じEmailアカンウトが既に存在します。', '入力したメールはQTGateシステム非対応です。QTGateは只今APPLEメール、マイクロソフトOutlookとYahooしか対応しておりません'],
+            EmailAddress: ['メール アドレスを someone@example.com の形式で入力してください。', '同じEmailアカンウトが既に存在します。', '入力したメールはQTGateシステム非対応です。'],
             required: 'このフィールドを入力してください。',
             PasswordLengthError: '5文字以上の長さのパスワードが必要。',
             localServerError: 'ローカルサーバーエラーが発生しました、QTGateを再起動をください！',
@@ -1127,7 +1134,9 @@ const infoDefine = [
                 'あなたの今日データ通信はリミットになっていますので、明日まで待ってください。またはユーザー種類をアップグレードをしてください',
                 '通信用IMAPの設定にエラーがあるか又はそのタープのIMAPアカンウトがQTGateサポートしません。よくチェックしてもう一回試しにしてください。',
                 '選択していたゲットウェーエリアは只今接続不能になっております、後ほどもう一度試しにしてください。',
-                'IMAPアカウトでEMAIL送信する際エラーが発生しました、一回退出し、起動して見てくださいね。重複発生した場合はIMAPアカウトのウェーブページでアカウトをアンロック操作を必要かもしれない。'
+                'IMAPアカウトでEMAIL送信する際エラーが発生しました、一回退出し、起動して見てくださいね。重複発生した場合はIMAPアカウトのウェーブページでアカウトをアンロック操作を必要かもしれない。',
+                'QTGateエラーが発生したした。一回退出してQTGateを再起動してください。',
+                'アララーー、あなたには負けるそ。'
             ],
             activeing: '通信中'
         },
@@ -1488,7 +1497,7 @@ const infoDefine = [
         error_message: {
             title: 'Error',
             errorNotifyTitle: 'System Error',
-            EmailAddress: ['Please enter your email address in the format someone@example.com.', 'Have same email account!', 'Sorry, QTGate system support Apple mail, Microsoft Outlook and Yahoo mail only.'],
+            EmailAddress: ['Please enter your email address in the format someone@example.com.', 'Have same email account!', 'Sorry, QTGate system have not support that kind mail server.'],
             required: 'Please fill in this field.',
             PasswordLengthError: 'Passwords must have at least 5 characters.',
             localServerError: 'Local QTGate server error. restart please!',
@@ -1527,7 +1536,9 @@ const infoDefine = [
                 `Your data transfer is limit today, please try again tomorrow or upgrade your user type.`,
                 'Your transfer email account looks not working, check the IMAP account please. Or your IMAP accout have not support with QTGate system.',
                 'Selected region has unavailable, try again later.',
-                'Your IMAP account got end mail error. Please exit QTGate and start up QTGate try again. If that have not be fixed, You may login to your IMAP account web side do unluck.'
+                'Your IMAP account got end mail error. Please exit QTGate and start up QTGate try again. If that have not be fixed, You may login to your IMAP account web side do unluck.',
+                'QTGate looks system error! Restart QTGate please.',
+                'Oooooops! How are today?'
             ],
             activeing: 'sending...'
         },
@@ -1899,7 +1910,7 @@ const infoDefine = [
             Success: '完成',
             localServerError: '本地伺服器錯誤，請重新啟動QTGate！',
             required: '請填寫此字段',
-            EmailAddress: ['請按照下列格式輸入你的電子郵件地址: someone@example.com.', '您已有相同的Email賬戶', '此類Email伺服器暫時QTGate技術不能對應,請選擇Apple公司，微軟Outlook, Yahoo公司的Email服務。'],
+            EmailAddress: ['請按照下列格式輸入你的電子郵件地址: someone@example.com.', '您已有相同的Email賬戶', '此類Email伺服器暫時QTGate技術不能對應。'],
             PasswordLengthError: '密碼必須設定為5個字符以上。',
             finishedKeyPair: '密鑰對創建完成',
             doCancel: '終止生成',
@@ -1934,7 +1945,9 @@ const infoDefine = [
                 '您當天的數據通訊量達到上限，請等待明天再試或升級用戶類型',
                 '用來通訊的Email設定有錯誤，請檢查IMAP設定後重試，或QTGate不支持此Email類型',
                 '您所選區域不能夠連結，請稍候再試',
-                '您的IMAP郵箱發信發生錯誤。請退出QTGate重試。如果持續發生此故障，您的IMAP帳號有可能被鎖住，需要登陸您的IMAP郵箱網站解鎖操作。'
+                '您的IMAP郵箱發信發生錯誤。請退出QTGate重試。如果持續發生此故障，您的IMAP帳號有可能被鎖住，需要登陸您的IMAP郵箱網站解鎖操作。',
+                'QTGate程序發生錯誤，請退出後重新啟動QTGate。',
+                '嗯，高手過招身手非凡啊！'
             ],
             activeing: '正在通訊中'
         },
@@ -2228,7 +2241,7 @@ const _QTGateRegions = [
         showConnectedArea: ko.observable(false)
     }
 ];
-const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.com$|imap\.mail\.me\.com$|imap\.mail\.yahoo\.co\.jp$|imap\.gmail\.com$|gmx\.com$|zoho\.com$/i;
+const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.com$|imap\.mail\.me\.com$|imap\.mail\.yahoo\.co\.jp$|imap\.gmail\.com$|gmx\.com$|imap\.zoho\.com$/i;
 const dummyIConnectCommand = {
     connectPeer: null,
     connectType: null,
@@ -2786,6 +2799,7 @@ var view_layout;
             this.feedBackAttachImgPath = ko.observable('');
             this.attachedLog = ko.observable('');
             this.feedBackTextArea = ko.observable('');
+            this.hacked = ko.observable(false);
             this.conformButtom = ko.computed(() => {
                 this.conformTextError(false);
                 const text = this.conformText();
@@ -2827,18 +2841,20 @@ var view_layout;
                 if (newValue == '1') {
                 }
             });
-            socketIo = io();
-            socketIo.emit('init', (err, data) => {
-                this.config(data);
-                if (!data.keypair.createDate)
-                    this.keyPairGenerateFormActive(true);
-                else
-                    this.showKeyPairInformation(true);
-                this.QTGateConnect1(data.lastConnectType ? data.lastConnectType.toString() : '1');
-                this.keyPair(data.keypair);
-                return $('.activating.element').popup({
-                    on: 'focus',
-                    position: 'bottom left',
+            socketIo = io({ reconnectionAttempts: 5, timeout: 1000 });
+            socketIo.once('connect', () => {
+                socketIo.emit('init', (err, data) => {
+                    this.config(data);
+                    if (!data.keypair.createDate)
+                        this.keyPairGenerateFormActive(true);
+                    else
+                        this.showKeyPairInformation(true);
+                    this.QTGateConnect1(data.lastConnectType ? data.lastConnectType.toString() : '1');
+                    this.keyPair(data.keypair);
+                    return $('.activating.element').popup({
+                        on: 'focus',
+                        position: 'bottom left',
+                    });
                 });
             });
             this.SystemAdministratorEmailAddress.subscribe(newValue => {
@@ -2914,16 +2930,7 @@ var view_layout;
                     return this.showAddImapDataButton(true);
             });
             socketIo.on('deleteKeyPair', () => {
-                this.keyPair(initKeyPair);
-                this.config().keypair = this.keyPair();
-                this.keyPairGenerateFormActive(true);
-                this.passwordError(false);
-                this.showConformMailForm(false);
-                this.ImapErr(false);
-                this.ImapAccountConnected(false);
-                this.emailAddressDoingCheck(false);
-                this.showConformMailForm(false);
-                return this.showKeyPairInformation(false);
+                window.location.replace('/');
             });
             socketIo.on('config', config => {
                 this.config(config);
@@ -2935,7 +2942,7 @@ var view_layout;
                         //      err = 4     unformat data from QTGate system
                         //      err = 6     QTGate connect pair timeout from server.js
                         this.modalContent(infoDefine[this.languageIndex()].emailConform.formatError[err]);
-                        return $('.ui.basic.modal').modal('show');
+                        return $('.ui.basic.modal').modal('setting', 'closable', false).modal('show');
                     }
                     this.conformTextError(true);
                     this.conformTextErrorNumber(err);
@@ -3082,7 +3089,7 @@ var view_layout;
                 return this.QTGateConnectActive(false);
             });
             //          gateway disconnect!
-            socketIo.on('disconnect', () => {
+            socketIo.on('disconnectClickCallBack', resopn => {
                 this.disconnecting(true);
                 if (this.selectedQTGateRegion()) {
                     this.selectedQTGateRegion().showConnectedArea(false);
@@ -3090,6 +3097,12 @@ var view_layout;
                     this.disconnecting(false);
                     this.selectedQTGateRegionCancel();
                 }
+            });
+            socketIo.once('reconnect_error', err => {
+                if (this.modalContent().length)
+                    return;
+                this.modalContent(infoDefine[this.languageIndex()].emailConform.formatError[10]);
+                return $('.ui.basic.modal').modal('setting', 'closable', false).modal('show');
             });
             socketIo.on('disconnectClickCallBack', () => {
                 this.desconnectCallBack();
@@ -3583,7 +3596,12 @@ var view_layout;
             socketIo.emit('disconnectClick');
         }
         exit() {
-            socketIo.emit('exit');
+            if (typeof require === 'undefined') {
+                this.modalContent(infoDefine[this.languageIndex()].emailConform.formatError[11]);
+                return this.hacked(true);
+            }
+            const { remote } = require('electron');
+            remote.app.quit();
         }
     }
     view_layout.view = view;

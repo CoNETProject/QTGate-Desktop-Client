@@ -815,7 +815,7 @@ export class localServer {
 			saveLog ( `proxyServerWindow on exit!`)
 			this.proxyServer = null
 			this.connectCommand = null
-			this.socketServer.emit ('disconnectClickCallBack')
+			this.socketServer.emit ( 'disconnectClickCallBack' )
 		})
 	}
 
@@ -824,7 +824,7 @@ export class localServer {
 		this.proxyServer.cancel ()
 		this.proxyServer = null
 		this.connectCommand = null
-		
+		this.socketServer.emit ( 'disconnectClickCallBack' )
 	}
 
 	private stopGetwayConnect () {
@@ -1289,6 +1289,9 @@ export class localServer {
 		transporter.sendMail ( mailOptions, ( err: Error, info: any, infoID: any ) => {
 			if ( err ) {
 				saveLog ( `transporter.sendMail got ERROR! [${ JSON.stringify ( err )}]` )
+				imapData.smtpCheck = false
+				imapData.sendToQTGate = false
+				this.saveImapData()
 				this.socketServer.emit ( 'checkActiveEmailError', 9 )
 				return Callback ( err )
 			}
