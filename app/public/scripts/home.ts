@@ -51,7 +51,7 @@ const uuID = () => {
 }
 
 const isElectronRender = typeof process === 'object'
-const socketIo: SocketIOClient.Socket = io ()
+let socketIo: SocketIOClient.Socket = null
 /**
  * 			getImapSmtpHost
  * 		@param email <string>
@@ -2996,6 +2996,8 @@ module view_layout {
                 }
             })
 
+            socketIo = io ()
+
             socketIo.emit ( 'init', ( err: Error, data: install_config ) => {
 
                 this.config ( data )
@@ -3061,6 +3063,8 @@ module view_layout {
                     return this.passwordError ( true )
                 }
             })
+
+
 
             socketIo.on ( 'newKeyPairCallBack', ( data: keypair ) => {
                 

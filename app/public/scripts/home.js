@@ -34,7 +34,7 @@ const uuID = () => {
     return uuid_generate().replace(/-/g, '');
 };
 const isElectronRender = typeof process === 'object';
-const socketIo = io();
+let socketIo = null;
 /**
  * 			getImapSmtpHost
  * 		@param email <string>
@@ -2827,6 +2827,7 @@ var view_layout;
                 if (newValue == '1') {
                 }
             });
+            socketIo = io();
             socketIo.emit('init', (err, data) => {
                 this.config(data);
                 if (!data.keypair.createDate)
