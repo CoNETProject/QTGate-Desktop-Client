@@ -131,16 +131,16 @@ const myIpServer = ( CallBack ) => {
 	let ret = false
 	Async.each ( myIpServerUrl, ( n, next ) => {
 		doUrl( n, ( err, data ) => {
-			if ( err ) {
+			if ( err || ! Net.isIPv4 ( data )) {
 				return next ()
 			}
-			if ( !ret ) {
+			if ( ! ret ) {
 				ret = true
 				return CallBack ( null, data )
 			}
 		})
 	}, () => {
-		return CallBack ( new Error (''))
+		return CallBack ( new Error ('no IP'))
 	})
 }
 
