@@ -1,6 +1,6 @@
 {
   "name": "qtgate",
-  "version": "0.8.55",
+  "version": "0.8.56",
   "license": "MIT",
   "description": "QTGate desktop client",
   "scripts": {
@@ -18,7 +18,7 @@
   },
   "build": {
     "squirrelWindows": {
-      "remoteReleases": "https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v0.8.10/"
+      "remoteReleases": "https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v0.8.51/"
     },
     "appId": "com.qtgate.client",
     "win": {

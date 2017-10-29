@@ -21,6 +21,7 @@ import * as Path from 'path'
 import * as Os from 'os'
 import * as Http from 'http'
 import * as Fs from 'fs'
+import { URL } from 'url'
 import * as Async from 'async'
 import * as Util from 'util'
 import * as Https from 'https'
@@ -47,7 +48,7 @@ const ErrorLogFile = Path.join ( QTGateFolder, 'systemError.log' )
 const feedbackFilePath = Path.join ( QTGateFolder,'.feedBack.json')
 const imapDataFileName = Path.join ( QTGateFolder, 'imapData.pem' )
 const sendMailAttach = Path.join ( QTGateFolder, 'sendmail')
-const myIpServerUrl = [ 'https://ipinfo.io/ip', 'https://icanhazip.com/', 'https://diagnostic.opendns.com/myip', 'http://ipecho.net/plain', 'https://www.trackip.net/ip' ]
+
 const keyServer = 'https://pgp.mit.edu'
 const QTGatePongReplyTime = 1000 * 30
 
@@ -100,37 +101,31 @@ const findPort = ( port: number, CallBack ) => {
     })
 }
 
-const doUrl = ( url: string, CallBack) => {
+
+const doUrlWithIp = ( url: string, dns: string, CallBack ) => {
 	let ret = ''
-	if ( /^https/.test( url ))
-		return Https.get ( url, res => {
-			res.on('data', (data: Buffer) => {
-				ret += data.toString('utf8')
-			})
-			res.once ( 'end', () => {
-				return CallBack( null, ret )
-			})
-		}).once ( 'error', err => {
-			console.log('on err ')
-			return CallBack ( err )
-		})
-	return Http.get ( url, res => {
-		res.on ('data', (data: Buffer) => {
+	const option = new URL ( url )
+	option.hostname = null
+	option.host = dns
+	const res = res => {
+		res.on ( 'data', ( data: Buffer) => {
 			ret += data.toString('utf8')
 		})
-		res.once ('end', () => {
-			return CallBack(null, ret)
+		res.once ( 'end', () => {
+			return CallBack ( null, ret )
 		})
-	}).once ( 'error', err => {
-		console.log( 'on err ' )
-		return CallBack ( err )
-	})
+	}
+	if ( /^https/i.test( option.protocol ))
+		return Https.request ( option, res )
+		.once ( 'error', CallBack )
+	return Http.get ( option, res )
+		.once ( 'error',  CallBack )
 }
 
-const myIpServer = ( CallBack ) => {
+const getMyLocalIpAddress = ( server: QTGate_DnsAddress[], CallBack ) => {
 	let ret = false
-	Async.each ( myIpServerUrl, ( n, next ) => {
-		doUrl( n, ( err, data ) => {
+	Async.each ( server, ( n: QTGate_DnsAddress, next ) => {
+		doUrlWithIp ( n.url, n.dnsName, ( err, data ) => {
 			if ( err || ! Net.isIPv4 ( data )) {
 				return next ()
 			}
@@ -140,9 +135,11 @@ const myIpServer = ( CallBack ) => {
 			}
 		})
 	}, () => {
-		return CallBack ( new Error ('no IP'))
+		if ( ! ret )
+			return CallBack ( new Error ('no IP'))
 	})
 }
+
 
 const getQTGateSign = ( _key ) => {
     const key = openpgp.key.readArmored (_key).keys
@@ -436,6 +433,7 @@ export class localServer {
 	private proxyServerWindow = null
 	public connectCommand: IConnectCommand = null
 	public proxyServer: RendererProcess = null
+	public myIpServer: QTGate_DnsAddress [] = null
 
 	public saveConfig () {
 		Fs.writeFile ( configPath, JSON.stringify ( this.config ) , { encoding: 'utf8' }, err => {
@@ -617,16 +615,8 @@ export class localServer {
 				}
 			}
 			
-			return myIpServer ((err, ip ) => {
-				
-				if ( err || !ip ) {
-					saveLog ( 'startCheckImap isOnline false!' )
-					return CallBack (2)
-				}
-				CallBack ( null )
-				this.clientIpAddress = ip
-				return this.doingCheck ( id, imapData, socket )
-			})
+			return this.doingCheck ( id, imapData, socket )
+			
 			
 
 		})
@@ -658,6 +648,8 @@ export class localServer {
 
 				saveLog ( JSON.stringify ( res.Args ))
 				CallBack ( res.Args[0] )
+				this.myIpServer = res.myIpServer
+				saveLog (`getAvaliableRegion ${ JSON.stringify ( res )} `)
 				//		Have gateway connect!
 				if ( res.Args[ 1 ]) {
 					const uu: IConnectCommand = res.Args[1]
@@ -754,32 +746,17 @@ export class localServer {
 			if ( this.proxyServer ) {
 				return
 			}
-			
-			return myIpServer (( err, ipAddress: string ) => {
-				if ( err ) {
-					return saveLog ( `myIpServer return error: [${ err.message }]`)
-				}
 
-				if ( cmd.connectType === 2 ) {
-					if ( ! Net.isIPv4 ( ipAddress )) {
-						ipAddress = ipAddress.split ('\n')[0]
-					}
-					cmd.imapData.clientIpAddress = ipAddress
-				}
-				
-				cmd.imapData.randomPassword = Crypto1.randomBytes (15).toString('hex')
-				cmd.account = this.config.keypair.email.toLocaleLowerCase()
-				saveLog (`ipAddress = [${ ipAddress }] Buffer [] = ${ Buffer.from ( ipAddress ).toString ('hex')}`)
-				
+			cmd.imapData.randomPassword = Crypto1.randomBytes (15).toString('hex')
+			cmd.account = this.config.keypair.email.toLocaleLowerCase()
+
+			const request = () => {
 				const com: QTGateAPIRequestCommand = {
 					command: 'connectRequest',
 					Args: [ cmd ],
 					error: null,
-					
 					requestSerial: Crypto1.randomBytes(8).toString('hex')
 				}
-				
-				
 				return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
 					const arg: IConnectCommand = res.Args[0]
 					arg.localServerIp = getLocalInterface ()[0]
@@ -793,8 +770,17 @@ export class localServer {
 					}
 					saveLog ( `res.error [${ res.error }]`)
 				})
+			}
+			if ( cmd.connectType === 2 ) {
+				return getMyLocalIpAddress ( this.myIpServer, ( err, data ) => {
+					cmd.imapData.clientIpAddress = data
+					saveLog ( JSON.stringify ( cmd ))
+					//return request ()
+				})
 				
-			})
+			}
+			return request ()
+			
 
 		})
 
@@ -1137,14 +1123,9 @@ export class localServer {
 							createWindow ()
 							return saveLog( `checkConfig keyPair Error! [${ JSON.stringify ( err )}]`)
 						}
-
-							
-						return myIpServer(( err, ipaddress ) => {
-							this.config.keypair = keyPair
-							this.clientIpAddress = this.config.serverGlobalIpAddress = ipaddress
-							this.saveConfig()
-							return createWindow ( )
-						})
+						this.config.keypair = keyPair
+						this.saveConfig()
+						return createWindow ( )
 					})
 
 					return createWindow ( )
@@ -1740,7 +1721,6 @@ class ImapConnect extends Imap.imapPeer {
 	}
  	
 }
-
 
 
 const _doUpdate1 = ( tag_name: string, port: number ) => {

@@ -21,6 +21,7 @@ const Path = require("path");
 const Os = require("os");
 const Http = require("http");
 const Fs = require("fs");
+const url_1 = require("url");
 const Async = require("async");
 const Util = require("util");
 const Https = require("https");
@@ -43,7 +44,6 @@ const ErrorLogFile = Path.join(QTGateFolder, 'systemError.log');
 const feedbackFilePath = Path.join(QTGateFolder, '.feedBack.json');
 const imapDataFileName = Path.join(QTGateFolder, 'imapData.pem');
 const sendMailAttach = Path.join(QTGateFolder, 'sendmail');
-const myIpServerUrl = ['https://ipinfo.io/ip', 'https://icanhazip.com/', 'https://diagnostic.opendns.com/myip', 'http://ipecho.net/plain', 'https://www.trackip.net/ip'];
 const keyServer = 'https://pgp.mit.edu';
 const QTGatePongReplyTime = 1000 * 30;
 let mainWindow = null;
@@ -86,36 +86,29 @@ const findPort = (port, CallBack) => {
         return findPort(port, CallBack);
     });
 };
-const doUrl = (url, CallBack) => {
+const doUrlWithIp = (url, dns, CallBack) => {
     let ret = '';
-    if (/^https/.test(url))
-        return Https.get(url, res => {
-            res.on('data', (data) => {
-                ret += data.toString('utf8');
-            });
-            res.once('end', () => {
-                return CallBack(null, ret);
-            });
-        }).once('error', err => {
-            console.log('on err ');
-            return CallBack(err);
-        });
-    return Http.get(url, res => {
+    const option = new url_1.URL(url);
+    option.hostname = null;
+    option.host = dns;
+    const res = res => {
         res.on('data', (data) => {
             ret += data.toString('utf8');
         });
         res.once('end', () => {
             return CallBack(null, ret);
         });
-    }).once('error', err => {
-        console.log('on err ');
-        return CallBack(err);
-    });
+    };
+    if (/^https/i.test(option.protocol))
+        return Https.request(option, res)
+            .once('error', CallBack);
+    return Http.get(option, res)
+        .once('error', CallBack);
 };
-const myIpServer = (CallBack) => {
+const getMyLocalIpAddress = (server, CallBack) => {
     let ret = false;
-    Async.each(myIpServerUrl, (n, next) => {
-        doUrl(n, (err, data) => {
+    Async.each(server, (n, next) => {
+        doUrlWithIp(n.url, n.dnsName, (err, data) => {
             if (err || !Net.isIPv4(data)) {
                 return next();
             }
@@ -125,7 +118,8 @@ const myIpServer = (CallBack) => {
             }
         });
     }, () => {
-        return CallBack(new Error('no IP'));
+        if (!ret)
+            return CallBack(new Error('no IP'));
     });
 };
 const getQTGateSign = (_key) => {
@@ -386,6 +380,7 @@ class localServer {
         this.proxyServerWindow = null;
         this.connectCommand = null;
         this.proxyServer = null;
+        this.myIpServer = null;
         this.ex_app = Express();
         this.ex_app.set('views', Path.join(__dirname, 'views'));
         this.ex_app.set('view engine', 'pug');
@@ -585,15 +580,7 @@ class localServer {
                     return CallBack(10);
                 }
             }
-            return myIpServer((err, ip) => {
-                if (err || !ip) {
-                    saveLog('startCheckImap isOnline false!');
-                    return CallBack(2);
-                }
-                CallBack(null);
-                this.clientIpAddress = ip;
-                return this.doingCheck(id, imapData, socket);
-            });
+            return this.doingCheck(id, imapData, socket);
         });
         socket.on('deleteImapAccount', uuid => {
             if (!uuid && !uuid.length) {
@@ -619,6 +606,8 @@ class localServer {
             return this.QTClass.request(com, (err, res) => {
                 saveLog(JSON.stringify(res.Args));
                 CallBack(res.Args[0]);
+                this.myIpServer = res.myIpServer;
+                saveLog(`getAvaliableRegion ${JSON.stringify(res)} `);
                 //		Have gateway connect!
                 if (res.Args[1]) {
                     const uu = res.Args[1];
@@ -702,19 +691,9 @@ class localServer {
             if (this.proxyServer) {
                 return;
             }
-            return myIpServer((err, ipAddress) => {
-                if (err) {
-                    return saveLog(`myIpServer return error: [${err.message}]`);
-                }
-                if (cmd.connectType === 2) {
-                    if (!Net.isIPv4(ipAddress)) {
-                        ipAddress = ipAddress.split('\n')[0];
-                    }
-                    cmd.imapData.clientIpAddress = ipAddress;
-                }
-                cmd.imapData.randomPassword = Crypto1.randomBytes(15).toString('hex');
-                cmd.account = this.config.keypair.email.toLocaleLowerCase();
-                saveLog(`ipAddress = [${ipAddress}] Buffer [] = ${Buffer.from(ipAddress).toString('hex')}`);
+            cmd.imapData.randomPassword = Crypto1.randomBytes(15).toString('hex');
+            cmd.account = this.config.keypair.email.toLocaleLowerCase();
+            const request = () => {
                 const com = {
                     command: 'connectRequest',
                     Args: [cmd],
@@ -732,7 +711,15 @@ class localServer {
                     }
                     saveLog(`res.error [${res.error}]`);
                 });
-            });
+            };
+            if (cmd.connectType === 2) {
+                return getMyLocalIpAddress(this.myIpServer, (err, data) => {
+                    cmd.imapData.clientIpAddress = data;
+                    saveLog(JSON.stringify(cmd));
+                    //return request ()
+                });
+            }
+            return request();
         });
         socket.on('disconnectClick', () => {
             this.stopGetwayConnect();
@@ -1019,12 +1006,9 @@ class localServer {
                             createWindow();
                             return saveLog(`checkConfig keyPair Error! [${JSON.stringify(err)}]`);
                         }
-                        return myIpServer((err, ipaddress) => {
-                            this.config.keypair = keyPair;
-                            this.clientIpAddress = this.config.serverGlobalIpAddress = ipaddress;
-                            this.saveConfig();
-                            return createWindow();
-                        });
+                        this.config.keypair = keyPair;
+                        this.saveConfig();
+                        return createWindow();
                     });
                 return createWindow();
             }

@@ -89,9 +89,13 @@ interface IinputData_server extends IinputData {
 }
 interface QTGateAPIRequestCommand {
 	command: string
+    myIpServer?: QTGate_DnsAddress []
+    account?: string
 	error: number
 	requestSerial: string
     Args: any[]
+    fingerprint?: string
+
 }
 interface iTransferData {
     startDate: Date
@@ -110,6 +114,13 @@ interface iTransferData {
     power: number
     timeZoneOffset: number
 }
+interface QTGate_DnsAddress {
+	dnsName: string,
+	ipv4: string,
+	url: string
+}
+
+
 interface IConnectCommand {
     region: string
     account: string
