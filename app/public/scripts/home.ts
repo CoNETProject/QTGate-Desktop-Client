@@ -794,7 +794,7 @@ const infoDefine = [
             },{
                 title:'选择自动设置代理服务器',
                 titleImage:'',
-                detail:'<p>在URL网址处填入：使用HTTP和HTTPS代理请按照蓝色第一行填入，使用SOCKS代理选择蓝色第二行</p>',
+                detail:'<p>WINDOWS10系统只对应HTTP和HTTPS，如果想使用全局代理的用户，需另外安装浏览器如火狐等，然后在火狐浏览器内单独设定Proxy全局代理SOCKS</p>',
                 image: '/images/windowsUseInfo4.jpg'
             }]
         },
@@ -899,7 +899,7 @@ const infoDefine = [
             },{
                 title:'自動プロキシをオンに',
                 titleImage:'',
-                detail:'<p>下の入力にHTTPとHTTPSは上のブルー行を、SOCKSは下の行を入力して保存をして終了します。</p>',
+                detail:'<p>WINDOWS 10 システムはHTTPとHTTPSしかサポートしておりませんが、SOCKSを使うなら、他のブラウザ例えばFireFoxなどをインストールによりお使いは可能です。</p>',
                 image: '/images/windowsUseInfo4.jpg'
             }]
         },
@@ -1407,7 +1407,7 @@ const infoDefine = [
             },{
                 title:'Open Use a proxy server, On Use setup script.',
                 titleImage:'',
-                detail:'<p>HTTP and HTTPS proxy please same as the top blue line, SOCKS proxy is the bottom line.</p>',
+                detail:'<p>Windows 10 system support HTTP & HTTPS proxy only, SOCKS user need install other browser like Firefox, then setup the SOCKS PROXY in Firefox.',
                 image: '/images/windowsUseInfo4.jpg'
             }]
         },
@@ -1774,7 +1774,7 @@ const infoDefine = [
             },{
                 title:'選擇自動設置代理伺服器。',
                 titleImage:'',
-                detail:'<p>HTTP和HTTPS代理按照藍色第一行填入，SOCKS代理按藍色第二行填入</p>',
+                detail:'<p>WINDOWS10系統只對應HTTP和HTTPS，如果想使用全局代理的用戶，需另外安裝瀏覽器如火狐等，然後在火狐瀏覽器內單獨設定Proxy全局代理SOCKS</p>',
                 image: '/images/windowsUseInfo4.jpg'
             }]
         },

@@ -53,7 +53,14 @@ Cache-Control: private, max-age=0
 
 ${ _HTTP_598_body }
 `
+export const Http_Pac = ( body: string ) => {
+	return `HTTP/1.1 200 OK
+Content-Type: application/x-ns-proxy-autoconfig
+Connection: keep-alive
+Content-Length: ${ body.length }
 
+${ body }\r\n\r\n`
+}
 export const _HTTP_200 = ( body: string ) => {
 	return `HTTP/1.1 200 OK
 Content-Type: text/html; charset=UTF-8

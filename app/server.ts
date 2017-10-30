@@ -123,6 +123,7 @@ const doUrlWithIp = ( url: string, dns: string, CallBack ) => {
 }
 
 const getMyLocalIpAddress = ( server: QTGate_DnsAddress[], CallBack ) => {
+	saveLog ( JSON.stringify (server))
 	let ret = false
 	Async.each ( server, ( n: QTGate_DnsAddress, next ) => {
 		doUrlWithIp ( n.url, n.dnsName, ( err, data ) => {
@@ -771,11 +772,13 @@ export class localServer {
 					saveLog ( `res.error [${ res.error }]`)
 				})
 			}
+
 			if ( cmd.connectType === 2 ) {
 				return getMyLocalIpAddress ( this.myIpServer, ( err, data ) => {
+					saveLog ( `getMyLocalIpAddress callback err [${ JSON.stringify ( err ) }] data [${ JSON.stringify ( data )}]`)
 					cmd.imapData.clientIpAddress = data
 					saveLog ( JSON.stringify ( cmd ))
-					//return request ()
+					return request ()
 				})
 				
 			}

@@ -100,6 +100,10 @@ export default class httpProxy {
 		return /^port/i.test ( this.commandWithLine[0] )
 	}
 
+	get host () {
+		return this.headers['host'].split(':')[0]
+	}
+
 	get cachePath () {
 		if ( !this.isGet || ! this.isCanCacheFile )
 			return null

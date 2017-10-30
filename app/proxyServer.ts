@@ -366,10 +366,11 @@ const getPac = ( hostIp: string, port: number, http: boolean, sock5: boolean ) =
 		isInNet ( dnsResolve( host ), "10.0.0.0", "255.0.0.0" )) {
 			return "DIRECT";
 		}
-	return "${ http ? 'PROXY': ( sock5 ? 'SOCKS5' : 'SOCKS' ) } ${ hostIp }:${ port.toString() }";
-	}`
+		return "${ http ? 'PROXY': ( sock5 ? 'SOCKS5' : 'SOCKS' ) } ${ hostIp }:${ port.toString() }";
 	
-	return res._HTTP_200 ( FindProxyForURL )
+	}`
+	//return "${ http ? 'PROXY': ( sock5 ? 'SOCKS5' : 'SOCKS' ) } ${ hostIp }:${ port.toString() }; ";
+	return res.Http_Pac ( FindProxyForURL )
 }
 
 
@@ -436,13 +437,13 @@ export class proxyServer {
 				if ( /^GET \/pac/.test ( dataStr )) {
 					const httpHead = new HttpProxyHeader ( data )
 					agent = httpHead.headers['user-agent']
-					const sock5 = /Windows NT|Darwin|Firefox/i.test ( agent ) && ! /CFNetwork/i.test (agent)
+					const sock5 = /Windows NT|Darwin|Firefox/i.test ( agent ) && ! /CFNetwork|WOW64/i.test ( agent )
 					
-					let ret = getPac ( this.localProxyServerIP, this.port, false, sock5 )
-					if ( /pacHttp/.test( dataStr ))
-						ret = getPac ( this.localProxyServerIP, this.port, true, sock5 )
+					
+					const ret = getPac ( httpHead.host, this.port, /pacHttp/.test( dataStr ), sock5 )
 					console.log ( `/GET \/pac from :[${ socket.remoteAddress }] sock5 [${ sock5 }] agent [${ agent }] httpHead.headers [${ Object.keys(httpHead.headers)}]`)
 					console.log ( dataStr )
+					console.log ( ret )
 					return socket.end ( ret )
 				}
 

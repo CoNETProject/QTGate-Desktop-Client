@@ -106,6 +106,7 @@ const doUrlWithIp = (url, dns, CallBack) => {
         .once('error', CallBack);
 };
 const getMyLocalIpAddress = (server, CallBack) => {
+    saveLog(JSON.stringify(server));
     let ret = false;
     Async.each(server, (n, next) => {
         doUrlWithIp(n.url, n.dnsName, (err, data) => {
@@ -714,9 +715,10 @@ class localServer {
             };
             if (cmd.connectType === 2) {
                 return getMyLocalIpAddress(this.myIpServer, (err, data) => {
+                    saveLog(`getMyLocalIpAddress callback err [${JSON.stringify(err)}] data [${JSON.stringify(data)}]`);
                     cmd.imapData.clientIpAddress = data;
                     saveLog(JSON.stringify(cmd));
-                    //return request ()
+                    return request();
                 });
             }
             return request();
