@@ -106,7 +106,7 @@ block jumbotron1
 						span( data-bind="text: $root.infoDefine[ $root.languageIndex() ].useInfoMacOS.proxyServerPort" style="padding-left: 10px;color: rgba(0,0,0,0.5);")
 						span( data-bind="text: $root.QTConnectData().localServerPort + ','" style="color: darkcyan;")
 					span.WindowsUseInfoLocalServerIp( data-bind="text: $index() === 4 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pacHttp' : '' " )
-					span.WindowsUseInfoPort( data-bind="text: $index() === 4 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pac' : ''" )
+					//-span.WindowsUseInfoPort( data-bind="text: $index() === 4 ? 'http://'+$root.QTConnectData().localServerIp+':'+$root.QTConnectData().localServerPort+'/pac' : ''" )
 					img( data-bind="attr: { src: image }, visible: image" style ="width: 500px;")
 		#iOSUseInfo.useInfoView
 			a.feedBack( href = "#" data-bind="click: () => { returnMainWin ( '#iOSUseInfo' )} ")
@@ -298,8 +298,8 @@ block jumbotron1
 								.ui.negative.message( data-bind = "visible: showSystemError(), animate:{ animation: 'pulse', state: languageIndex() + 1} ")
 									p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.systemError")
 			.content( data-bind = "visible: MenuItems()[2] && imapInputFormActive()" style = "margin-top: 3em;")
-				.ui.warning.message.hideArea( data-bind = " visible: !emailPool().length || !emailPool()[ emailPool().length - 1 ].emailAddress().length, css: { 'accordion AccordionBox-shadow-delete': emailPool().length && emailPool()[emailPool().length - 1].emailAddress().length } ")
-					.area( data-bind = "visible: !emailPool().length || !emailPool()[ emailPool().length - 1 ].emailAddress().length, css: { 'AccordionBox-shadow-delete title': emailPool().length && emailPool()[ emailPool().length - 1].emailAddress().length } ")
+				.ui.warning.message.hideArea( data-bind = " visible: showQTGateImapAccount(), css: { 'accordion AccordionBox-shadow-delete': emailPool().length && emailPool()[emailPool().length - 1].emailAddress().length } ")
+					.area( data-bind = " css: { 'AccordionBox-shadow-delete title': emailPool().length && emailPool()[ emailPool().length - 1].emailAddress().length } ")
 						a.ui.top.right.attached.label.background-clolr-white
 							i.icon.close
 						p.fg-grayLight( style="margin-top: 0!important;" data-bind = " html: infoDefine[ languageIndex() ].imapInformation.infomation, animate:{ animation: 'pulse', state: languageIndex() + 1 }" )
@@ -322,7 +322,7 @@ block jumbotron1
 								.description
 									.QTGateImapAccount
 									form.ui.form.fluid( data-bind = " visible: imapDataEditShow () ")
-										h4.ui.dividing.header.imapItemCardTitle( data-bind = " text: infoDefine [ $root.languageIndex() ].imapInformation.title ")
+										h4.ui.dividing.header.imapItemCardTitle( data-bind = " text: infoDefine [ $root.languageIndex() ].imapInformation.title, visible: $root.showQTGateImapAccount()")
 										.two.fields
 											.field.required( data-bind = " css: { error: emailAddressShowError ()}")
 												.ui.left.icon.input
@@ -442,8 +442,8 @@ block jumbotron1
 					.ui.fluid.card( style = "width: 36px!important;box-shadow: none!important; " data-bind = " visible: $root.showAddImapDataButton () ")
 							.insideButtom( style = "display: table;height: 100%;width: 100%;")
 								.meddle( style = "display: table-cell!important;vertical-align: middle;")
-									button.circular.ui.icon.button( data-bind= " click: () => { $root.addANewImapData( $root ) }")
-										i.icon.plus( style = " color: white!important;")
+									button.ui.icon.button( data-bind= " click: () => { $root.addANewImapData( $root ) }")
+										i.icon.add.user( style = " color: white!important;")
 
 				//-
 			#QTGateConnectContent.content( data-bind = "  visible: QTGateConnectActive() && MenuItems()[3] && showActiveMail () " style = "margin-top: 3em;")
@@ -630,18 +630,27 @@ block jumbotron1
 										label( data-bind = " text: QTGateRegionsSetup()[1].title" style="color:rgba(0,0,0,.7);")
 									a( href="#" )
 										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[1]}" style="margin-left: -10px;color:yellowgreen;")
+								
 								.field( data-position="bottom left" data-bind=" visible: canDoAtEmail()")
 									.ui.radio.checkbox( data-bind=" click: () => { QTGateConnect1('2')} ")
 										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.8);" value="2" data-bind="checked: QTGateConnect1, attr: {'dataCheck': QTGateConnect1()}")
 										label( data-bind = " text: QTGateRegionsSetup()[0].title" style="color:rgba(0,0,0,.7);")
 									a( href="#" )
 										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[0]}" style="margin-left: -10px;color:yellowgreen;")
-								.field
-									.ui.checkbox
-										input( type="checkbox" tabindex="0" class="hidden" checked readonly style="color:rgba(0,0,0,.7);" )
-										label.popupField( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.proxyDomain " data-position="top left" style="color: rgba(100,0,0,.4)!important;")
-									a( href="#" )
-										i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[2]}" style="margin-left: -10px;color:yellowgreen;")
+								.field( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '2'")
+									.ui.selection.dropdown
+										input( type="hidden" name="gender" data-bind="value: QTGateConnectSelectImap ")
+										i.dropdown.icon
+										.default.text( data-bind="text: emailPool().length > 0 && QTGateConnectSelectImap() > -1 ? emailPool()[QTGateConnectSelectImap()].iMapServerLoginName () : null")
+										.menu( data-bind="foreach: emailPool")
+											.item( data-bind=" text: iMapServerLoginName(),visible: /imap\.mail\.me\.com/i.test (iMapServerName()), attr: { 'data-text': iMapServerLoginName (), 'data-value': $index() }")
+
+							.field
+								.ui.checkbox
+									input( type="checkbox" tabindex="0" class="hidden" checked readonly style="color:rgba(0,0,0,.7);" )
+									label.popupField( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.proxyDomain " data-position="top left" style="color: rgba(100,0,0,.4)!important;")
+								a( href="#" )
+									i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[2]}" style="color:yellowgreen;")
 							.inline.fields
 								label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.dataTransfer " style="color:rgba(0,0,0,.8);" )
 								.field( data-position="bottom left" data-bind ="click: () => { QTGateConnect2(false); selectedQTGateRegion().error ( -1 ) }")

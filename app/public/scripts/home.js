@@ -1211,109 +1211,109 @@ const infoDefine = [
             detail: [{
                     color: '#a333c8',
                     icon: 'exchange',
-                    header: 'Security anonymous free internet access',
-                    detail: `The @OPN is world's first no IP Internet communication technology, client and proxy server do not know each other IP address. The iOPN is QTGate original technogy that disguise the traffic looks like normal HTTP protocol,. Both doing hide your IP address high-speed communication, stealth and protection of privacy via encrypt with <a onclick="return linkClick ('https://en.wikipedia.org/wiki/Advanced_Encryption_Standard')" href="#" target="_blank">AES256-GCM</a> and <a onclick="return linkClick ('https://en.wikipedia.org/wiki/Pretty_Good_Privacy')" href="#" target="_blank">OpenPGP</a>, strong anti-interference, firewall transparency.`
+                    header: 'Security and Privacy while accessing the Open Internet',
+                    detail: `@OPN@ uses QTGate’s “Quiet” technology to create a obfuscated private network by refracting encrypted data packets thru email servers. @OPN provides true stealth internet communications where your IP address is never known by client or proxy servers.iOPN uses QTGate’s proprietary technology to obfuscate data traffic over HTTP. Both @OPN and iOPN offer security and protection and anonymity while allowing access to the open internet. All data is kept private with encryption using <a onclick="return linkClick('https://en.wikipedia.org/wiki/Advanced_Encryption_Standard')" href="#" target="_blank">AES256-GCM</a> and <a onclick="returnlinkClick ('https://en.wikipedia.org/wiki/Pretty_Good_Privacy')"href="#" target="_blank"> OpenPGP </a>along with QTGate’s proprietary security measures.`
                 },
                 {
                     color: 'darkcyan',
                     icon: 'spy',
-                    header: 'Spy softwear ( Next version. )',
-                    detail: 'The QTGate system subscribe the global DNSBL database. QTGate user may stop spy softwear send your information to spy host when user doing internet via a QTGate client soft. Even you do need know the spy softwear running in background at device.'
+                    header: 'Spam and Spyware detection and blocking ( Next version. )',
+                    detail: 'QTGate system uses the global DNSBL database to stop spam and spyware. QTGate users will be automatically filtered from spam and spyware to stop them from transmitting your information.'
                 }, {
                     color: '#6435c9',
                     icon: 'external share',
-                    header: 'Local VPN server. ( Next version. )',
-                    detail: 'QTGate user may keep use OPN security network at out door via VPN connect to home network.'
+                    header: 'Personal VPN server. ( Next version. )',
+                    detail: 'Access your QTGate OPN services anywhere via personal VPN connection from anywhere.'
                 }, {
                     color: '#6435c9',
                     icon: 'cloud upload',
-                    header: 'Anonymous file cloud security storage and share ( Next version. )',
-                    detail: 'QTGate user crypto a file and split to multiple parts, append to different free email account. Unlimited file cloud stroge. QTGate user can share the file secret files between QTGate users via QTGate system.'
+                    header: 'Secure and Private cloud storage and file sharing  ( Next version. )',
+                    detail: 'Users can store and share files by using QTGate @OPN to split files into multiple parts, each encrypted to different email accounts. QTGate user can share the file secretly between other users on QTGate’s OPN.'
                 }, {
                     color: '#e03997',
                     icon: 'talk outline',
-                    header: 'No IP address peer to peer security anonymous Instant messaging ( Next version. )',
-                    detail: 'QTGate provide Instant messaging service via email system. It is peer to peer, no need IP address, security transfer message, pictures, video and any kind files, also support group chart with multiple users.'
+                    header: 'Secure, peer to peer Instant messaging, with no IP address ( Next version. )',
+                    detail: 'QTGate users can communicate with others via a private and secure Instant messaging service. Using the same encryption and stealth technology, users are secure and private with no IP address. Supports group chat with multiple users and can be used for safely transferring, pictures, video and other files.'
                 }]
         },
         firefoxUseInfo: {
-            title1: 'Firefox browser it set up a separate proxy service, you can easy to use proxy access Internet without touch system setup.',
+            title1: 'The Firefox browser can set a separate proxy service from the system. You can easily use a proxy to access Internet without editing the system setup.',
             info: [{
-                    title: 'Click Firefox tool icon. Select Preferences.',
+                    title: 'CClick Firefox tool icon. Select Preferences or Options.',
                     titleImage: '/images/macOsControl.jpg',
                     detail: '<p><a href="https://www.mozilla.org/en-US/firefox/#" target="_blank">Download Firefox.</a></p>',
                     image: '/images/firefox1.jpg'
                 }, {
-                    title: 'Click General, scroll to buttom, click the settings... at Net Working.',
+                    title: 'In the General tab, scroll to the bottom, click on Settings under Network Proxy.',
                     titleImage: '',
                     detail: '',
                     image: '/images/firefox2.jpg'
                 }, {
-                    title: 'Chooses Automatic proxy configuration URL, Check Proxy DNS when using SOCKS v5.',
+                    title: 'Select Manual proxy configuration and fill in HTTP Proxy and Port settings as shown in blue below. Make sure to Check on Use this proxy server for all protocols. Click OK to finish setup.',
                     titleImage: '',
-                    detail: 'HTTP and HTTPS proxy same as the top blue line, SOCKS is the bottom line.',
+                    detail: 'Chose either HTTP or Socket settings.',
                     image: '/images/firefox3.jpg'
                 }]
         },
         cover: {
-            firstTitle1: 'Protect Your Personal Privacy Online',
-            firstTitle2: 'Achieve a Secure and Open Internet Experience',
-            start: 'TRY NOW'
+            firstTitle1: 'Browse Quietly',
+            firstTitle2: 'Your Gateway to a Secure and Open Internet',
+            start: 'ENTER NOW'
         },
         useInfoiOS: {
             title1: 'iOS device local proxy setup.',
             info: [{
-                    title: 'Open the control panel. Type the WiFi.',
+                    title: 'Open the control panel and select the WiFi settings.',
                     titleImage: '/images/macOsControl.jpg',
                     detail: '',
                     image: '/images/iOS1.jpg'
                 }, {
-                    title: 'Type the icon of the Wifi name right side that is connect now.',
+                    title: 'Select the icon on the right side of the connected Wifi name.',
                     titleImage: '',
                     detail: '',
                     image: '/images/iOS2.jpg'
                 }, {
-                    title: 'Type Proxy ',
+                    title: 'Turn On Configure Proxy',
                     titleImage: '',
                     detail: '',
                     image: '/images/iOS3.jpg'
                 }, {
-                    title: 'Touch Automatic.',
+                    title: 'Select Automatic.',
                     titleImage: '',
-                    detail: '<p>At URL: HTTP and HTTPS proxy same as the top blue line, SOCKS is the bottom line.</p>',
+                    detail: '<p>Enter the Proxy address settings as shown in blue below and Save to finish setup.</p>',
                     image: '/images/iOS4.jpg'
                 }]
         },
         useInfoAndroid: {
             title1: 'Android device local proxy setup.',
             info: [{
-                    title: `Open your device’s Settings app. Tap Network & Internet and then Wi-Fi.`,
+                    title: `Open your device’s Settings. Under Networks, Select Wi-Fi.`,
                     titleImage: '/images/androidSetup.jpg',
                     detail: '',
                     image: '/images/android1.jpg'
                 }, {
-                    title: 'Touch and hold the Wi-Fi network name until a popup menu come. Then tap Modify network from the menu',
+                    title: 'Tap and hold the connected Wi-Fi network name until a pop up menu appears. Then tap Modify network or Manage network settings.',
                     titleImage: '',
                     detail: '',
                     image: '/images/android2.jpg'
                 }, {
-                    title: 'Tap the Down arrow at Advanced options. Pick the Proxy Auto-Config.',
+                    title: 'Tap to show Advanced options. Under Proxy, select Proxy Auto-Config.',
                     titleImage: '',
-                    detail: 'HTTP and HTTPS proxy please same as the top blue line, SOCKS proxy is the bottom line.',
+                    detail: 'Enter the Proxy address settings as shown in blue below and Save to finish setup.',
                     image: '/images/android3.jpg'
                 }]
         },
         useInfoWindows: {
             title1: 'Windows 10 proxy setup',
             info: [{
-                    title: 'About all other Windows version.',
+                    title: 'For all other Windows versions.',
                     titleImage: '',
-                    detail: '<p>All other Windows version proxy setup please visit <a href="#" target="_blank" onclick="return linkClick (`https://support.microsoft.com/en-us/help/135982/how-to-configure-internet-explorer-to-use-a-proxy-server`)">Microsoftweb side.</a></p><p>This is the data for setup proxy server:</p>',
+                    detail: 'For other Windows versions proxy setup please visit <a href="#" target="_blank" onclick="return linkClick (`https://support.microsoft.com/en-us/help/135982/how-to-configure-internet-explorer-to-use-a-proxy-server`)">Microsoftweb side.</a></p><p>This is the data for proxy server setup:</p>',
                     image: ''
                 }, {
-                    title: 'Open Internet Explorer',
+                    title: 'Open Microsoft Edge',
                     titleImage: '/images/IE10_icon.png',
-                    detail: '<p>Click the tool icon at the top of right, scroll menu down to bottom select Settings.</p>',
+                    detail: 'Click the tool icon at the top of right, Scroll down menu to the bottom and select Settings.</p>',
                     image: '/images/windowsUseInfo1.jpg'
                 }, {
                     title: 'Scroll menu to bottom and click View advanced settings.',
@@ -1326,9 +1326,9 @@ const infoDefine = [
                     detail: '',
                     image: '/images/windowsUseInfo3.jpg'
                 }, {
-                    title: 'Open Use a proxy server, On Use setup script.',
+                    title: 'Select Use a proxy server, fill in Address and Port Settings as shown in blue below. Then click save to finish.',
                     titleImage: '',
-                    detail: '<p>Windows 10 system support HTTP & HTTPS proxy only, SOCKS user need install other browser like Firefox, then setup the SOCKS PROXY in Firefox.',
+                    detail: '<p>Windows 10 system only supports HTTP & HTTPS proxy, SOCKS5 users will need install a browser like Firefox, then setup the SOCKS5 PROXY in Firefox.',
                     image: '/images/windowsUseInfo4.jpg'
                 }]
         },
@@ -1339,19 +1339,19 @@ const infoDefine = [
             title: 'Local proxy server is running at background. MacOS and windows user may close this window. All other devices can doing internet via local proxy setup use the QTGate system.',
             title1: 'MacOS proxy setup',
             info: [{
-                    title: 'Open the control panel, click the network.',
+                    title: 'Open the control panel, click on network.',
                     titleImage: '/images/macOsControl.jpg',
                     detail: '',
                     image: '/images/userInfoMacos1.jpg'
                 }, {
-                    title: 'click The Advanced... ',
+                    title: 'click on Advanced... ',
                     titleImage: '',
                     detail: '',
                     image: '/images/macosUserInfo2.jpg'
                 }, {
                     title: 'Select Proxies, check Automatic Proxy Configuration, check Exclude simple hostnames.',
                     titleImage: '',
-                    detail: '<p>HTTP and HTTPS proxy please same as the top blue line, SOCKS proxy is the bottom line.</p>',
+                    detail: '<p>Enter the Proxy address settings as shown in blue below and Save to finish setup.</p>',
                     image: '/images/macosUserInfo3.jpg'
                 }]
         },
@@ -1359,56 +1359,92 @@ const infoDefine = [
             title: '150th anniversary of Canada'
         },
         firstNote: {
-            title: 'Thanks for using GTGate products and services (“Services”). The Services are provided by QTGate Systems Inc. (QTGate), located at CANADA.',
+            title: 'Thank you for using our products and services (the “Services” or “Service”). The Services are provided by QTGate Systems Inc. (“QTGate”).',
             firstPart: 'By using our Services, you are agreeing to these terms. Please read them carefully.',
             detail: [
                 {
-                    header: 'Using our Services',
-                    detail: 'You must follow any policies made available to you within the Services. Don’t misuse our Services. For example, don’t interfere with our Services or try to access them using a method other than the interface and the instructions that we provide. You may use our Services only as permitted by law, including applicable export and re-export control laws and regulations.'
+                    header: 'Terms of Service',
+                    detail: 'This Terms of Service document (the “Terms”) outlines the terms and conditions of use of Services provided by QTGate Systems Inc. These Terms also govern the use of and access to QTGate’s content (the “Content”), which includes the QTGate’s website (the “Site”), applications (the “Apps”), and any software provided by QTGate (the “Software”).'
+                }, {
+                    header: null,
+                    detail: 'Before using QTGate’s Services, please read this agreement thoroughly. If You have any questions concerning the content of this agreement or what it implies, please contact QTGate at email address: support@QTGate.com'
                 }, {
                     header: null,
                     detail: 'We may suspend or stop providing our Services to you if you do not comply with our terms or policies or if we are investigating suspected misconduct. Using our Services does not give you ownership of any intellectual property rights in our Services or the content you access. You may not use content from our Services unless you obtain permission from its owner or are otherwise permitted by law. These terms do not grant you the right to use any branding or logos used in our Services. Don’t remove, obscure, or alter any legal notices displayed in or along with our Services.'
                 }, {
-                    header: 'Privacy Policy and Information we collect',
-                    detail: 'In connection with your use of the Services, we may send you service announcements, administrative messages, and other information. You may opt out of some of those communications. When you use our services, for calculating communication charges we automatically collect and store communication data in server logs. The logs will limited as: Date footprinting, user account, used gateway region, used gateway ip address, package byte, Ingress or Egress. For example:'
+                    header: 'Eligibility for Service',
+                    detail: 'By accessing the Content or Services, you are agreeing on behalf of yourself or those you represent (“You”) to comply with and be legally bound by these Terms in their entirety. These Terms constitute a legally binding agreement (the “Agreement”) between you and QTGate. If you do not agree with any part of the Terms, you may not use our Services.'
                 }, {
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: 'By creating an account for using our Services, you represent that you are at least eighteen (18) years of age or that you are a valid legal entity, and that the registration information you have provided is accurate and complete. If You are accepting the terms of this agreement on behalf of a company or other legal entity, You represent and warrant that You have the authority to bind that company or other legal entity to the terms of this agreement. If You are accepting this agreement on behalf of an enterprise’s end user, it is Your responsibility to communicate the information in this agreement to the enterprise end users and ensure compliance with the terms and conditions contained herein. By agreeing to these Terms, you are also agreeing to the End User License Agreement (“EULA”), which you can read on QTGate’s website.'
                 },
                 {
-                    header: null,
-                    detail: 'QTGate does not save any information other than the above information. We will cooperate and provide this log information to law enforcement agencies holding Canadian court orders. If you are the law enforcement agencies outside of Canada, please contact us through the Canadian Foreign Office at:'
+                    header: 'Privacy Policy',
+                    detail: 'Your privacy is highly important to us, since privacy is every person’s natural right! QTGate is committed to your privacy and does not collect or log browsing history, traffic destination, data content, or DNS queries from Subscribers using our Services. – hence, we DO NOT store details of, or monitor the data sent over our network or the websites you access while using our Services.'
                 }, {
                     header: null,
-                    detail: '<a class="tag alert" href="http://www.international.gc.ca/">http://www.international.gc.ca/</a>'
-                }, {
-                    header: 'Copyright',
-                    detail: 'QTGate gives you a personal, worldwide, royalty-free, non-assignable and non-exclusive license to use the software provided to you by QTGate as part of the Services. This license is for the sole purpose of enabling you to use and enjoy the benefit of the Services as provided by QTGate, in the manner permitted by these terms. You may not copy, modify, distribute, sell, or lease any part of our Services or included software, nor may you reverse engineer or attempt to extract the source code of that software.'
-                }, {
-                    header: 'Modifying and Terminating our Services',
-                    detail: 'We are constantly changing and improving our Services. We may add or remove functionalities or features, and we may suspend or stop a Service altogether. You can stop using our Services at any time, although we’ll be sorry to see you go. QTGate may also stop providing Services to you, or add or create new limits to our Services at any time.'
-                }, {
-                    header: 'Our Warranties and Disclaimers',
-                    detail: 'Our Warranties and Disclaimers: We provide our Services using a commercially reasonable level of skill and care and we hope that you will enjoy using them. But there are certain things that we don’t promise about our Services.'
+                    detail: 'During your registration, we will ask you for some personal information such as your email address and/or payment information. We only collect information that are necessary for the proper delivery of the Site and Services. This information is for our eyes only and will be stored on secured servers. We collect minimal usage statistics to maintain our quality of service. We may know: choice of server location, times when our Services was used by user and amount of data transferred by one user in one day. We store this information in order learn from it, and eventually deliver the best possible experience to you. This information which is gathered and analyzed generically is also kept on secured servers. We stand by our firm commitment to our customers’ privacy by not possessing any data related to a user’s online activities.'
                 }, {
                     header: null,
-                    detail: 'OTHER THAN AS EXPRESSLY SET OUT IN THESE TERMS OR ADDITIONAL TERMS, NEITHER QTGate NOR ITS SUPPLIERS OR DISTRIBUTORS MAKE ANY SPECIFIC PROMISES ABOUT THE SERVICES. FOR EXAMPLE, WE DON’T MAKE ANY COMMITMENTS ABOUT THE CONTENT WITHIN THE SERVICES, THE SPECIFIC FUNCTIONS OF THE SERVICES, OR THEIR RELIABILITY, AVAILABILITY, OR ABILITY TO MEET YOUR NEEDS. WE PROVIDE THE SERVICES “AS IS”.'
+                    detail: 'We reserve the right to modify the Privacy Policy at any time, so please review it frequently. Your continued use of the our Services will signify your acceptance of the changes to the Privacy Policy. If you have any questions regarding our Privacy Policy and how we handle your information, please feel free to contact QTGate at the following email address:  support@QTGate.com'
                 }, {
-                    header: 'Liability for our Services',
-                    detail: 'WHEN PERMITTED BY LAW, QTGATE, AND QTGATE’S SUPPLIERS AND DISTRIBUTORS, WILL NOT BE RESPONSIBLE FOR LOST PROFITS, REVENUES, OR DATA, FINANCIAL LOSSES OR INDIRECT, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES.'
+                    header: 'Subscriptions',
+                    detail: 'QTGate Services are available to you upon registration on the Site or Software. By subscribing to the Services, you agree to become a subscriber (“Subscriber”) for the period you have elected. A full list of subscription plans and pricing is available on the Site. QTGate reserves the right to amend subscription fees or institute new fees at any time upon reasonable advance notice posted on the Site or sent via email. Any changes to the pricing will not affect the Subscriber’s current subscription period and will become effective upon subscription renewal.'
                 }, {
-                    header: 'Business uses of our Services',
-                    detail: 'If you are using our Services on behalf of a business, that business accepts these terms. It will hold harmless and indemnify QTGate and its affiliates, officers, agents, and employees from any claim, suit or action arising from or related to the use of the Services or violation of these terms, including any liability or expense arising from claims, losses, damages, suits, judgments, litigation costs and attorneys’ fees.'
+                    header: null,
+                    detail: 'When supported by your payment method, plans renew automatically by default at the completion of the billing term. By default, the renewal term is for the same duration as the billing term for the original subscription. The subscription fee will be charged automatically to the payment method you last selected. If you would like to discontinue automatic renewal, you may turn off auto-renewal. By default, auto-renewal is turned on when you use a payment method that supports auto-renewal (such as a credit card or Paypal), and turned off when you use a payment method that does not support auto-renewal (such as bitcoin).'
+                }, {
+                    header: null,
+                    detail: 'Your Subscription is Yours and Yours only. You may not lend it, rent it, hire it out or share it with people or any other legal entity such as a company, partnership etc, who are not You yourself. Each paid subscription grants you one (1) license to use.'
+                }, {
+                    header: 'Subscription Cancellation and Suspension',
+                    detail: 'You can cancel your Subscription by simply sending us a request via email to support@QTGate.com. Refund are subject to the QTGate’s Refund Policy. QTGate is entitled to impose Service limits, revoke any Service, suspend it, or block any type of usage made by You at its sole discretion if it is reasonable to believe that the You violate or have violated the Terms of Service or if the way You use the Services may render QTGate liable to any offence or breach of any third party rights or disturb other users use of the Service. QTGate does not undertake to provide You with any prior notice of these measures. The application of any of these measures will not entitle You to a refund.'
+                }, {
+                    header: 'Refund Policy',
+                    detail: 'If you would like to get a refund, please notify us by email at support@QTGate.com  no later than 7 days from the date on which you purchased the subscription. Please let us know in the email your user name and the reason you wish to stop using our Service and get your money back so we can be better for the future.'
+                }, {
+                    header: null,
+                    detail: 'We will refund your order if: <p class="tag info">It is the first time you’ve ordered our Services and there have not been previous purchases on your account.</p><p class="tag info">If you have made less than one hundred connections to our Service and your bandwidth usage is less than 500 MB.</p><p class="tag info">If you haven’t violated QTGate’s Terms of Service in any way.</p><p class="tag info">As stated above, if the refund request is made within 7 days since the purchase has been made.</p><p class="tag info">Refunds are generally processed within seven (7) days, and are made to the original form of payment used for purchase. All refunds are sent in USD and therefore the refund amount could differ from the amount originally paid in local currency or bitcoin. How long it takes until you will see the refunded amount in your bank account varies according to the payment method you used, bank regulations, etc.</p>'
+                }, {
+                    header: 'Acceptable Use Policy',
+                    detail: 'You must follow any policies made available to you within the Services. You shall use QTGate Services in compliance with all applicable laws and not for any unlawful Purpose. QTGate Services may be accessed from all around the world, so it is your responsibility to assess whether using the Apps, Services, Sites or Software is in compliance with local laws and regulations. You may only use the Services as permitted by law. Services may NOT be used for any illegal activity. Whenever you use the Apps, Services, Sites or Software, you should comply with these Terms and applicable laws, regulations, and policies. You agree to not to use the Service in a way that may result in a violation of any laws of any jurisdiction. Don’t misuse our Services. For example, don’t interfere with our Services or try to access them using a method other than the interface and the instructions that we provide. We may suspend or stop providing our Services to you if you do not comply with our terms or policies or if we are investigating suspected misconduct.'
+                }, {
+                    header: null,
+                    detail: 'You understand that it is your responsibility to keep your QTGate account information confidential. You are responsible for all activity under your account. You agree to not make any illegal or unauthorized use of the Services through Your user id/password and not to enable access to your account to users who are not You. If you ever discover or suspect that someone has accessed your account without your authorization, you are advised to inform us immediately so that we may revoke your account credentials and issue new ones. You will be held accountable and liable for any and all actions performed on the QTGate’s servers where the login is identified by Your user id/password. In order to protect the Services from being misused or used to harm someone, QTGate reserves the right to take appropriate measures when our Services are being used contrary to these Terms and applicable laws. You agree that QTGate may terminate your account, without providing a refund for Services already paid, if you misuse the Service.'
+                }, {
+                    header: null,
+                    detail: 'In using our Services, you agree not to: <p class="tag info">Send spam, uninvited emails or  transmit unsolicited advertisements or content (i.e., “spam”), or any other versions of spam, large quantities of emails even if such are sent-off from another server and sending opt-in emails.</p><p class="tag info">Send, post, or transmit over the Service any content which is illegal, hateful, threatening, insulting, or defamatory; infringes on intellectual property rights; invades privacy; or incites violence.</p><p class="tag info">Upload, download, post, reproduce, or distribute any content that includes sexual or explicit depictions of minors.</p><p class="tag info">Attempt to access, probe, or connect to computing devices without proper authorization (i.e., port scanning, scanning for open proxies, or any form of “hacking”).</p><p class="tag info">Attempt to compile, utilize, or distribute a list of IP addresses operated by QTGate in conjunction with the Service.</p><p class="tag info">Use for distribution of viruses, hacking, cracking, network sabotage, phishing; any fraudulent behavior is strictly prohibited.</p><p class="tag info">Use the Service for anything other than lawful purposes.You shall be held responsible for any damages caused by Your negligence or exposure to vulnerabilities, whether your actions were intentional or not.</p>'
+                }, {
+                    header: 'License',
+                    detail: 'Subject to your compliance with these Terms, QTGate grants to you a worldwide, non-assignable, non-exclusive and limited license to use the software provided to you by QTGate as part of the Services. This license is for the sole purpose of enabling you to use and enjoy the benefit of the Services as provided by QTGate, in the manner permitted by these terms. You may not copy, modify, distribute, sell, or lease any part of our Services or included Software, nor may you reverse engineer or attempt to extract the source code of that Software, unless laws prohibit those restrictions or you have our written permission. Using the Software and our Services in any way not expressly authorized by QTGate is strictly prohibited.'
+                }, {
+                    header: null,
+                    detail: 'Usage of any material which is subject to QTGate’s intellectual property rights is prohibited unless you have been provided with explicit written consent by QTGate. Using our Services does not give you ownership of any intellectual property rights in our Services or the content you access. These terms do not grant you the right to use any branding or logos used in our Services. Don’t remove, obscure, or alter any legal notices displayed in or along with our Services.'
+                }, {
+                    header: 'Disclaimers and Warranties',
+                    detail: 'QTGate undertakes to provide the best Service possible in the circumstances and make the Service available at all times except for when maintenance work is being performed for repair and improvement or in case of circumstances beyond the control of the QTGate, including force majeure. The Service provided may also become unavailable due to other factors beyond the QTGate’s control such as third party service failure or malfunction. The accuracy and timeliness of data received is not guaranteed and may vary based on compressions, configuration, network congestion and other factors that may affect it. The Service’s network speed is an estimate and is no indication or guarantee to the speed which You or the Service will send or receive data. We provide our Services using a commercially reasonable level of skill and care and we hope that you will enjoy using them. But there are certain things that we don’t promise about our Services. QTGate does not monitor Your sessions for inappropriate use nor does it keep logs of Your internet activities. However, the QTGate reserves the right to monitor and investigate matters which it considers at its own discretion to be a violation or potential violations of these Terms of Use.'
+                }, {
+                    header: null,
+                    detail: 'Other than as expressly set out in these terms or additional terms, neither QTGate nor its suppliers or distributors make any specific promises about the Services. The Service, the Software and any third party services and software are provided by the QTGate on an “as is” basis and QTGate hereby disclaims all warranties of any kind, whether expressed or implied. Some jurisdictions provide for certain warranties, like the implied warranty of merchantability, fitness for a particular purpose and non-infringement. To the extent permitted by law, we exclude all warranties.'
+                }, {
+                    header: null,
+                    detail: 'QTGate also reserves the right, but is not obligated to, at its sole discretion and without providing prior notice, to block, delete, filter or restrict by any means, any materials or data it deems potential or actual violations of the restrictions set forth in these Terms of Use and also any other actions that may subject the QTGate or its customers to any liability. QTGate disclaims any and all liability for any failure on our part to prevent such materials or information from being transmitted over the Service and/or into Your computing device.'
+                }, {
+                    header: 'Limitation of Liability',
+                    detail: 'QTGate will not be liable for any damages or loss caused by viruses, denial-of-service, attacks or any other technologically harmful material that my infect Your computer, its peripherals, data stored on it or on its peripherals, computer programs or any other proprietary material due to the use of the Services or due to Your downloading of anything which is posted on the QTGate’s website or any website which is linked there to. In no event will QTGate Systems Inc., its suppliers, distributors,  partners, affiliates, subsidiaries, members, officers, or employees be liable for lost profits, revenues, or data, financial losses or indirect, special, consequential, exemplary, or punitive damages, or for any other loss or damages of any kind, even if they have been advised of the possibility thereof. The foregoing shall not apply to the extent prohibited by applicable law. To the extent permitted by law, the total liability of QTGate, and its suppliers and distributors, for any claims under these terms, including for any implied warranties, is limited to the amount You paid QTGate to use the Services.'
+                }, {
+                    header: 'Indemnification',
+                    detail: 'You agree to hold harmless and indemnify QTGate, its officers, directors, agents, employees,  members, partners, suppliers, their affiliates, and its or their shareholders, directors, and employees from any and all claims, suit or action arising from or related to the use of QTGate’s Services, Apps, Content, Site, or Software or violation of these terms, including any liability or expense arising from claims, losses, damages, suits, judgments, litigation costs and attorney’s’ fees. We may, at our sole discretion, assume the exclusive defense and control of any matter subject to indemnification by you. The assumption of such defense or control by us, however, shall not excuse any of your indemnity obligations. If you are using our Services on behalf of a business, that business accepts these terms.'
                 }, {
                     header: 'About these Terms',
-                    detail: 'We may modify these terms or any additional terms that apply to a Service to, for example, reflect changes to the law or changes to our Services. You should look at the terms regularly. We’ll post notice of modifications to these terms on this page. We’ll post notice of modified additional terms in the applicable Service. Changes will not apply retroactively and will become effective no sooner than fourteen days after they are posted. However, changes addressing new functions for a Service or changes made for legal reasons will be effective immediately.'
+                    detail: 'QTGate may update the Terms or any additional terms that apply to a Service, from time to time without notice. You understand and agree that it is your obligation to review these Terms regularly in order to stay informed on current rules and obligations. If you continue to use QTGate’s Services, Apps, Content, Site, or Software after these changes take effect, then you agree to the revised Terms. The current version of the Terms is available on the Site. Notification on any core changes to the Terms will be provided to subscribers through an email message or update to the Site. If you do not agree to the modified terms for a Service, you should discontinue your use of that Service. If there is a conflict between these terms and the additional terms, the additional terms will control for that conflict. These terms control the relationship between QTGate and you. They do not create any third party beneficiary rights.'
                 }, {
                     header: null,
-                    detail: 'If you do not agree to the modified terms for a Service, you should discontinue your use of that Service. If there is a conflict between these terms and the additional terms, the additional terms will control for that conflict. These terms control the relationship between QTGate and you. They do not create any third party beneficiary rights. If you do not comply with these terms, and we don’t take action right away, this doesn’t mean that we are giving up any rights that we may have (such as taking action in the future). if it turns out that a particular term is not enforceable, this will not affect any other terms. The laws of BC, Canada., excluding BC’s conflict of laws rules, will apply to any disputes arising out of or relating to these terms or the Services. All claims arising out of or relating to these terms or the Services will be litigated exclusively in the federal or state courts of BC, Canada, and you and QTGate consent to personal jurisdiction in those courts.'
+                    detail: 'If you do not comply with these terms, and we don’t take action right away, this doesn’t mean that we are giving up any rights that we may have (such as taking action in the future). If it turns out that a particular term is not enforceable, this will not affect any other terms. All of our Content was originally written in English. Any translation of our Content is done on a best-effort basis. We cannot guarantee the accuracy of translated Content. In the event of any discrepancy between the translated Content and the English Content, the English Content shall prevail. The laws of British Columbia, Canada, excluding British Columbia’s conflict of laws rules, will apply to any disputes arising out of or relating to these Terms or the Services.'
                 }
             ],
-            disagree: 'Disagree',
-            agreeMent: 'QTGate service Terms and Privacy'
+            disagree: 'I Disagree',
+            agreeMent: 'I Agree to the QTGate Terms of Use'
         },
         linuxUpdate: {
             newVersionDownload: 'click here to download and install!',
@@ -1418,12 +1454,12 @@ const infoDefine = [
             step2J2: '/images/linuxUpdate2.jpeg',
             step2_detail1: 'Right click downloaded QTGate file and select the properties.',
             step2_detail2: 'Check the allow executing file as program in Permissions tab.',
-            step3: 'Exit old version QTGate and double click the new QTGate file to run install.',
+            step3: 'Exit old version of QTGate and double click the new QTGate file to run install.',
             exit: 'Exit QTGate.'
         },
         imapInformation: {
-            title: 'Transfer email account setup.',
-            infomation: `The IMAP email account will use for communicate between QTGate system and you. You may provide the account name and password to QTGate system. For your personal information privacy, please register a new free email account. QTGate system support <a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>, <a href="#" onclick="return linkClick ('https://outlook.live.com/owa/?WT.mc_id=O16_BingHP?mkt=en-us')">Outlook</a>, <a href="#" onclick="return linkClick ('https://login.yahoo.com/?.src=ym&.intl=us&.done=https%3A%2F%2Fmail.yahoo.com%2F')">Yahoo Mail</a>, <a href="#" onclick="return linkClick ('https://gmail.com')">GMAIL</a>, <a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">GMX</a>, <a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">ZOHO</a>. We recommand use Aplle iCloud. ( The none IP internet technolgy @OPN support icloud mail only.) </span> About password we recommand use <a href="#" onclick="return linkClick ('https://help.yahoo.com/kb/SLN15241.html')">third-party app passwords.</a>`,
+            title: 'Email account to use by OPN.',
+            infomation: `Please provide an IMAP email account you will use to communicate between QTGate’s OPN and you. You will need to provide the account name and password. For your personal information privacy, please register a new email account.<span style="color:red;"> QTGate system currently supports  <a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>, <a href="#" onclick="return linkClick ('https://outlook.live.com/owa/?WT.mc_id=O16_BingHP?mkt=en-us')">Outlook</a>, <a href="#" onclick="return linkClick ('https://login.yahoo.com/?.src=ym&.intl=us&.done=https%3A%2F%2Fmail.yahoo.com%2F')">Yahoo Mail</a>, <a href="#" onclick="return linkClick ('https://gmail.com')">GMAIL</a>, <a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">GMX</a>, <a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">ZOHO</a>. We recommand use Apple iCloud Mail. (Currenlty @OPN's full stealth IP technology supports icloud mail only.) </span>  For passwords, we recommend generating a<a href="https://help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick ('https://help.yahoo.com/kb/SLN15241.html')">third-party app password.</a>`,
             serverDetail: 'settings:',
             imapServer: 'IMAP server setup',
             imapServerInput: 'IMAP server name or IP address',
@@ -1435,12 +1471,12 @@ const infoDefine = [
             smtpServer: 'SMTP server setup',
             smtpServerInput: 'SMTP server name or IP address',
             emailServerPassword: 'Email account password ( app password )',
-            imapAccountConform: '<p><dt>By clicking submit you are agreeing to this:</dt></p>This email is a temporary account for use QTGate system. You agree QTGate can full access this account for transfer data between you and QTGate.',
-            agree: `I understand the risk and want keep`,
-            imapOtherCheckError: 'Cannot connect to email server! Server name or IP address or Port number may have mistake. Please check the detail of email setup!',
-            CertificateError: 'Certificate for this email server is not trusted. Please select "Keep connect even certificate is not trusted" in settings if you still want connect. your email login information may leak to this Email server!',
-            IgnoreCertificate: 'Keep connect even certificate is not trusted',
-            Certificat: 'Dangerous thing! Do not chooses this if you not sure. Because you may revealed your information.',
+            imapAccountConform: '<p><dt>By clicking submit you are agreeing to this:</dt></p>This email is a temporary account for use with QTGate services. You agree QTGate may have full access to this account for transferring data between you and QTGate.',
+            agree: `I understand and agree to continue.`,
+            imapOtherCheckError: 'Cannot connect to email server! Server name or IP address or Port number may have a mistake. Please check the details of your email setup!',
+            CertificateError: 'Certificate for this email server is not trusted. Please select "Keep connected even certificate is not trusted" in settings if you still want connect. Your email login information may leak to this Email server!',
+            IgnoreCertificate: 'Keep connected even certificate is not trusted',
+            Certificat: 'Warning! Do not select this if you are not sure, it may reveal your information.',
             AuthenticationFailed: 'Invalid login username or password! Please check username and password.',
             addAEmail: 'Add a new Email account',
             tryAgain: 'Try again.',
@@ -1452,12 +1488,12 @@ const infoDefine = [
             testSuccess: 'Email server setup success!',
             exitEdit: 'Exit edit email account',
             deleteImap: 'Delete IMAP account.',
-            proxyPortError: 'Port number should be Numbers from 1000 to 65535. Or this port is using by another process. please try other number.'
+            proxyPortError: 'Port number should be a number from 1000 to 65535. Or this port is being used by another process. Please try another port number.'
         },
         Home_keyPairInfo_view: {
             title: 'Key pair information',
-            emailNotVerifi: 'Keypair does not signed by QTGate yet.',
-            emailVerified: 'Keypair has signed by QTGate.',
+            emailNotVerifi: 'Keypair not signed by QTGate yet.',
+            emailVerified: 'Keypair signed by QTGate.',
             NickName: 'Nick name：',
             creatDate: 'Key pair created date：',
             keyLength: 'Key pair bit Length：',
@@ -1465,7 +1501,7 @@ const infoDefine = [
             password1: 'Key pair password.',
             logout: 'Logout',
             keyID: 'Key pair ID：',
-            deleteKeyPairInfo: 'Note: Delete key pair will lost all your system setup. You may setup QTGate agian from first step. If your email address is same as this one. You may back your QTGate account balance.',
+            deleteKeyPairInfo: 'Note: Deleting your keypair will lose your current account settings. You will need to set up QTGate account settings again. If your email address is the same as this one, you may restore your QTGate account balance.',
             delete: 'Delete',
             locked: 'Please enter your key pair password to unlock this key pair to continue.',
             systemError: 'System error! Please delete the key pair and re-setup QTGate.'
@@ -1485,19 +1521,19 @@ const infoDefine = [
             clickInstall: 'Install',
             continueCreateKeyPair: 'Keep generate.',
             stopCreateKeyPair: 'Cancel generate key pair',
-            KeypairLength: 'Select the bit length of your key pair. as long as stronger and harder for a hacker to crack but may slow network transfer.',
+            KeypairLength: 'Select the bit length of your keypair. Larger bit lengths are stronger and harder for a hacker to crack but may result in slower network transfer speeds.',
             SystemAdministratorNickName: 'Nick name ( Required )',
             systemAdministratorEmail: 'Generate RSA Key pair',
-            GenerateKeypair: '<em>Generate RSA Key pair. It may take a few minutes. It will need more long time when you chooess 4096 bit key length. About RSA keypair system can be found here: ' +
+            GenerateKeypair: '<em>Generating RSA Keypair. Please wait, as it may take a few minutes. More time will be needed if you choose 4096 bit key length. Information about RSA keypair system can be found here:' +
                 `<a href='hhttp://en.wikipedia.org/wiki/RSA_(cryptosystem)' target="_blank" onclick="return linkClick ('https://en.wikipedia.org/wiki/RSA_(cryptosystem)')">https://en.wikipedia.org/wiki/RSA_(cryptosystem)</a></em>`,
             systemPassword: 'Password',
-            inputEmail: `This RSA key pair will used for all data for this system and transfer data with QTGate system, also that is your proof of identity in QTGate system. The password of the key pair is not send to QTGate, this is mean you can't running QTGate system again if you lost your password. Please memo your password. <em style="color: red;">QTGate domain looks in block list at some area there have regulate the Internet domestically. Please use the email that in outside these area.</em>`,
-            accountEmailInfo: `Because QTGate looks in firewall's black list at some area. The best way is chooess your outside firewall's mail account.`
+            inputEmail: `This RSA key is a private key used for for a secure symmetric key exchange that is used for actual transmitted data encryption and decryption within the QTGate system. This is also used for identification within the QTGate system. The password and key is not stored by QTGate, thus you cannot access QTGate system if password is lost. Please store your password in a safe place. <em style="color: red;">QTGate domain may be blocked in some regions. Please use an email that in outside these area.</em>`,
+            accountEmailInfo: `Because QTGate may be on a firewall's black list in some areas. It’s best to choose a mail account outside your region’s firewall.`
         },
         error_message: {
             title: 'Error',
             errorNotifyTitle: 'System Error',
-            EmailAddress: ['Please enter your email address in the format someone@example.com.', 'Have same email account!', 'Sorry, QTGate system have not support that kind mail server.'],
+            EmailAddress: ['Please enter your email address in this format name@example.com.', 'Sorry, QTGate system support Apple mail, Microsoft Outlook and Yahoo mail only.'],
             required: 'Please fill in this field.',
             PasswordLengthError: 'Passwords must have at least 5 characters.',
             localServerError: 'Local QTGate server error. restart please!',
@@ -1505,20 +1541,20 @@ const infoDefine = [
             Success: 'Success',
             doCancel: 'Canceled generate keypair!',
             errorKeyPair: 'Generate new keypair had ERROR, try again!',
-            SystemPasswordError: 'Your keypair password did not match. Please try again. If you forgot your password, pless delete this key pair. That will let you lost all setup.',
+            SystemPasswordError: 'Your keypair password does not match. Please try again. If you forgot your password, please delete this keypair. Beware you will lose you current account settings.',
             finishedDeleteKeyPair: 'Key pair deleted!',
-            offlineError: 'Looks have not internet connect. Please check your network and try again!',
-            imapErrorMessage: ['', 'Data format error!', 'Looks this computer have not internet connect. Please check your network and try again!', `Email server did responer IMAP's username or password ERROR!`,
-                `Can't connect to email server with the port. Please check the IMAP port number. This port may be filtering by firewall If you in a firewall network.`,
+            offlineError: 'There is no internet connect detected. Please check your network and try again!',
+            imapErrorMessage: ['', 'Data format error!', 'This computer dose not detect an internet connection. Please check your network and try again!', `Email server did respond to IMAP's username or password ERROR!`,
+                `Can't connect to email server with the port. Please check the IMAP port number. This port may be filtered by a firewall in your network.`,
                 `There is a problem with this IMAP email server's security certificate!`, `Email server can't get ipaddress error. Please check the email server domain.`,
-                'This email provider have not support QTGate technology, please change other email provider.', `Email server did responer SMTP's username or password ERROR!`,
+                'This email provider currently does not support QTGate technology, please try another email provider.', `Email server did responer SMTP's username or password ERROR!`,
                 `There is a problem with this SMTP email server's security certificate!`, `Connect to SMTP Email server got unknow error!`, 'Have same email account!']
         },
         emailConform: {
             activeViewTitle: 'Active your keypair.',
-            emailTitle: 'Welcome to choose QTGate service.',
-            info1_1: 'Keypair verify have not complete. A verification email from QTGate had sent. Please check your [',
-            info1_2: '] mailbox. If you have one more mails from QTGate in your mailbox. Please chooses the latest one.',
+            emailTitle: 'Welcome to QTGate.',
+            info1_1: 'Keypair verify have not complete. A verification email from QTGate has been sent. Please check your [',
+            info1_2: '] mailbox. If you have one more then one mail from QTGate in your mailbox, please choose the newest one.',
             info2: 'Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
             emailDetail1: 'Dear ',
             emailDetail1_1: ' ,',
@@ -1528,17 +1564,17 @@ const infoDefine = [
             conformButtom: 'Conform',
             formatError: [
                 'Format error! Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
-                'Oops. This may not decrypt. Find the lasest mail from QTGate in your key pair email mailbox. Or delete this key pair and rebuild new key pair please.',
-                'Connect to QTGate had error!. Please exit and restart QTGate.',
+                'Oops. Find the lasest mail from QTGate in your key pair email mailbox. Or delete this key pair and rebuild new key pair please.',
+                'Connection to QTGate had an error!. Please exit and restart QTGate.',
                 'This secret verification code was invalid. QTGate disconnected. A new verification email was sent to your mail box. Please restart QTGate and check your email. Do validate again!',
-                'Your QTGate looks have problem, Please delete your key pair and do setup again from first!',
-                'QTGate system looks have problem, Please try again late.',
-                `Your data transfer is limit today, please try again tomorrow or upgrade your user type.`,
-                'Your transfer email account looks not working, check the IMAP account please. Or your IMAP accout have not support with QTGate system.',
-                'Selected region has unavailable, try again later.',
-                'Your IMAP account got end mail error. Please exit QTGate and start up QTGate try again. If that have not be fixed, You may login to your IMAP account web side do unluck.',
-                'QTGate looks system error! Restart QTGate please.',
-                'Oooooops! How are today?'
+                'Your QTGate account may have a problem, Please delete your key pair and setup again!',
+                'There is an error in connection to QTGate, Please try again late.',
+                `Your data transfer has hit the daily limit today, please try again tomorrow or upgrade your user type.`,
+                'Your transfer email account may not be working, please check the IMAP account. Or your IMAP accout may not support QTGate system.',
+                'Selected region is unavailable, try again later.',
+                'Your IMAP account recieved an error. Please restart QTGate and try again. If the error is not fixed, You may need check your IMAP account setting to enable third party IMAP applications.',
+                'QTGate system error! Plesee restart QTGate.',
+                'Oooooops! How are you today?'
             ],
             activeing: 'sending...'
         },
@@ -1548,21 +1584,21 @@ const infoDefine = [
             unavailable: 'Unavailable',
             proxyDomain: 'Domain lookup via QTGate gateway side.',
             setupCardTitle: 'connecting with:',
-            dataViaGateway: 'All internet data transfer via QTGate gateway.',
+            dataViaGateway: 'All internet data transfered via QTGate gateway.',
             dataTransfer: 'Data:',
-            dataTransfer_datail: ['All data via QTGate gateway.', `When can not connect to target server only.`],
+            dataTransfer_datail: ['All data on QTGate gateway.', `Data on QTGate gateway only when cannot connect to target server.`],
             proxyDataCache: 'Web cache:',
             proxyDataCache_detail: ['Yes', 'No'],
             clearCache: 'Delete all cache now',
             localPort: 'Local proxy port number:',
             localPath: 'HTTP/HTTPS conect path name:',
             GlobalIp: 'Global IP:',
-            QTGateRegionERROR: ['Send connect request mail got error. Please check your IMAP account setup.',
+            QTGateRegionERROR: ['Send connect request mail has an error. Please check your IMAP account settings.',
                 ''],
-            GlobalIpInfo: 'Note: When you press [QTGate], you will send your Internet IP to the QTGate system, if you do like that please choose [@QTGate] technology to use QTGate service! Can not find [@QTGate]? @QTGate technology support iClould IMAP only.',
+            GlobalIpInfo: `Please note: When you connecting to QTGate iOPN, your IP will initially seen by QTGate system. QTGate does not log any IP addresses nor store any communications data. Please refer to QTGate's Terms of Service for more information. To keep your IP hidden from QTGate, please use @OPN services. If you do not see [@OPN], @OPN currently supports iClould IMAP.`,
             cacheDatePlaceholder: 'Web cache freshness lifetime.',
-            sendConnectRequestMail: ['QTGate connect looks down. A connect request mail was sent to QTGate system. Please wait for a moment.',
-                'Free user connect will be down when user had not use QTGate last 24 hours. QTGate system keep connection 1 month for paid user.'],
+            sendConnectRequestMail: ['QTGate connection maybe down. A connection request mail was sent to QTGate system. Please wait a moment.',
+                'Free user connection will be down when user has not used QTGate in the last 24 hours. QTGate system keeps connected for 1 month for paid users.'],
             cacheDatePlaceDate: [{ name: '1 hour', id: 1 }, { name: '12 hour', id: 12 }, { name: '1 day', id: 24 }, { name: '15 days', id: 360 }, { name: '1 month', id: 720 }, { name: '6 months', id: 4320 }, { name: 'forever', id: -1 }],
             atQTGateDetail: [`The world's first QTGate no IP Internet communication technology, client and proxy server do not know each other IP address, security and reliability, firewall transparency. The network communication response by the email service provider you use the impact of the server, not suitable for video games and video chat. iCloud mail support only.`,
                 'QTGate original encryption technogy it can disguise the traffic looks like normal HTTP protocol, to hide your IP address high-speed communication, stealth and protection of privacy, strong anti-interference, firewall transparency. You need to use your IP to connect proxy server. This is best chooses If you just want freedom of internet.',
@@ -2241,6 +2277,10 @@ const _QTGateRegions = [
         showConnectedArea: ko.observable(false)
     }
 ];
+const checkCanDoAtQTGateReg = /^imap\.mail\.me\.com$/;
+const checkCanDoAtQTGate = (imapArray) => {
+    return imapArray().findIndex(n => { return checkCanDoAtQTGateReg.test(n.iMapServerName()) && n.imapCheckResult() > 0; });
+};
 const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.com$|imap\.mail\.me\.com$|imap\.mail\.yahoo\.co\.jp$|imap\.gmail\.com$|gmx\.com$|imap\.zoho\.com$/i;
 const dummyIConnectCommand = {
     connectPeer: null,
@@ -2277,7 +2317,7 @@ var view_layout;
                     }
                 }
                 const data = getImapSmtpHost(email);
-                if (!availableImapServer.test(data.imap)) {
+                if (!this.root.qtgateImapAccount() && !availableImapServer.test(data.imap)) {
                     this.emailAddressShowError(true);
                     this.EmailAddressErrorType(2);
                     $('.activating.element').popup({
@@ -2709,6 +2749,7 @@ var view_layout;
             this.emailAddressDoingCheck = ko.observable(false);
             this.cancelImapConnect = ko.observable(false);
             this.emailPool = ko.observableArray([]);
+            this.showQTGateImapAccount = ko.observable(true);
             // - IMAP email setup view
             // - conformMailForm
             this.checkActiveEmailError = ko.observable(false);
@@ -2729,6 +2770,7 @@ var view_layout;
             this.QTGateConnect_SelectTech = ko.observable(-1);
             this.QTGateConnect1 = ko.observable('');
             this.QTGateConnect2 = ko.observable(false);
+            this.QTGateConnectSelectImap = ko.observable(-1);
             this.QTGateAllData = ko.observable(false);
             this.QTGateCacheUse = ko.observable(false);
             this.QTGate_CacheTime = ko.observable(0);
@@ -2913,6 +2955,9 @@ var view_layout;
                 this.imapInputFormActive(true);
                 return this.MenuItems([false, false, true, false, false]);
             });
+            socketIo.on('KeyPairActiveCallBack', (data) => {
+                this.keyPair(data);
+            });
             socketIo.on('ImapData', (data) => {
                 this.imapInputFormActive(true);
                 if (!data || !data.length)
@@ -2962,7 +3007,7 @@ var view_layout;
                 this.imapInputFormActive(true);
                 this.QTGateConnectActive(true);
                 this.menuClick(3, true);
-                //      have no imap data 
+                //      have no imap data
                 if (!data) {
                     //      show imap manager area
                     this.menuClick(2, true);
@@ -2984,13 +3029,15 @@ var view_layout;
                     })
                 }
                 */
+                if (data && data.qtgateConnectImapAccount) {
+                    const uu = this.emailPool().findIndex(n => { return n.uuid === data.qtgateConnectImapAccount; });
+                    this.qtgateImapAccount(uu);
+                }
                 if (!this.keyPair().verified) {
                     if (data.qtGateConnecting === 6) {
                         return this.connectQTGateShow(true);
                     }
                     this.showActiveMail(true);
-                    const uu = this.emailPool().findIndex(n => { return n.uuid === data.qtgateConnectImapAccount; });
-                    this.qtgateImapAccount(uu);
                     this.QTGateConnecting(data.qtGateConnecting);
                     this.QTGateConnectActive(true);
                     this.QTGateConnectError(data.error);
@@ -3080,8 +3127,13 @@ var view_layout;
                             }
                             return -1;
                         });
-                        const imapServer = this.emailPool()[0].iMapServerName();
-                        this.canDoAtEmail(/imap\.mail\.me\.com$/.test(imapServer));
+                        const uu = checkCanDoAtQTGate(this.emailPool);
+                        if (uu > -1) {
+                            this.QTGateConnectSelectImap(uu);
+                            this.canDoAtEmail(true);
+                            this.showQTGateImapAccount(false);
+                        }
+                        $('.ui.dropdown').dropdown();
                     });
                 }
                 this.QTGateRegionInfo(false);
@@ -3415,12 +3467,15 @@ var view_layout;
                         fromIInputData.rating('disable');
                     });
                     this.canShowAddAImapButton();
-                    const index = this.emailPool().findIndex(n => { return n.sendToQTGate(); });
-                    if (index < 0) {
-                        return this.qtgateImapAccount(0);
+                    /*
+                    const index = this.emailPool().findIndex ( n => { return n.sendToQTGate()})
+                    if ( index < 0 ) {
+                        return this.qtgateImapAccount ( 0 )
                     }
-                    this.emailPool()[0].emailAddress;
-                    return this.qtgateImapAccount(index);
+                    this.emailPool()[0].emailAddress
+                    
+                    return this.qtgateImapAccount ( index )
+                    */
                 }
                 this.showPasswordErrorMessage(true);
                 $('.activating.element').popup({
@@ -3444,7 +3499,6 @@ var view_layout;
             this.checkActiveEmailError(false);
             this.checkingActiveEmail(true);
             this.QTGateConnecting(4);
-            const u = Buffer.from(this.conformText());
             let text = this.conformText();
             //      Outlook Mail 
             if (u.indexOf('-----BEGIN PGP MESSAGE----- Version: GnuPG v1 ') > -1) {
@@ -3504,7 +3558,7 @@ var view_layout;
                 }
                 const connect = {
                     account: this.config().account,
-                    imapData: this.emailPool()[0].GetImapData(),
+                    imapData: this.emailPool()[this.QTGateConnectSelectImap()].GetImapData(),
                     gateWayIpAddress: null,
                     region: data.qtRegion,
                     connectType: this.QTGateConnect1() === '1' ? 2 : 1,
@@ -3587,8 +3641,13 @@ var view_layout;
                     }
                     return -1;
                 });
-                const imapServer = this.emailPool()[0].iMapServerName();
-                this.canDoAtEmail(/imap\.mail\.me\.com$/.test(imapServer));
+                const uu = checkCanDoAtQTGate(this.emailPool);
+                if (uu > -1) {
+                    this.QTGateConnectSelectImap(uu);
+                    this.canDoAtEmail(true);
+                    this.showQTGateImapAccount(false);
+                }
+                $('.ui.dropdown').dropdown();
             });
         }
         disconnectClick() {

@@ -21,7 +21,6 @@ const Path = require("path");
 const Os = require("os");
 const Http = require("http");
 const Fs = require("fs");
-const url_1 = require("url");
 const Async = require("async");
 const Util = require("util");
 const Https = require("https");
@@ -44,6 +43,7 @@ const ErrorLogFile = Path.join(QTGateFolder, 'systemError.log');
 const feedbackFilePath = Path.join(QTGateFolder, '.feedBack.json');
 const imapDataFileName = Path.join(QTGateFolder, 'imapData.pem');
 const sendMailAttach = Path.join(QTGateFolder, 'sendmail');
+const myIpServerUrl = ['https://ipinfo.io/ip', 'https://icanhazip.com/', 'https://diagnostic.opendns.com/myip', 'http://ipecho.net/plain', 'https://www.trackip.net/ip'];
 const keyServer = 'https://pgp.mit.edu';
 const QTGatePongReplyTime = 1000 * 30;
 let mainWindow = null;
@@ -88,9 +88,10 @@ const findPort = (port, CallBack) => {
 };
 const doUrlWithIp = (url, dns, CallBack) => {
     let ret = '';
-    const option = new url_1.URL(url);
-    option.hostname = null;
-    option.host = dns;
+    const option = {
+        host: dns,
+        path: url,
+    };
     const res = res => {
         res.on('data', (data) => {
             ret += data.toString('utf8');
@@ -102,14 +103,35 @@ const doUrlWithIp = (url, dns, CallBack) => {
     if (/^https/i.test(option.protocol))
         return Https.request(option, res)
             .once('error', CallBack);
-    return Http.get(option, res)
+    return Http.request(option, res)
         .once('error', CallBack);
 };
-const getMyLocalIpAddress = (server, CallBack) => {
-    saveLog(JSON.stringify(server));
+const doUrl = (url, CallBack) => {
+    let ret = '';
+    const res = res => {
+        res.on('data', (data) => {
+            ret += data.toString('utf8');
+        });
+        res.once('end', () => {
+            return CallBack(null, ret);
+        });
+    };
+    if (/^https/.test(url))
+        return Https.get(url, res)
+            .once('error', err => {
+            console.log('on err ', err);
+            return CallBack(err);
+        });
+    return Http.get(url, res)
+        .once('error', err => {
+        console.log('on err ', err);
+        return CallBack(err);
+    });
+};
+const myIpServer = (CallBack) => {
     let ret = false;
-    Async.each(server, (n, next) => {
-        doUrlWithIp(n.url, n.dnsName, (err, data) => {
+    Async.each(myIpServerUrl, (n, next) => {
+        doUrl(n, (err, data) => {
             if (err || !Net.isIPv4(data)) {
                 return next();
             }
@@ -119,8 +141,7 @@ const getMyLocalIpAddress = (server, CallBack) => {
             }
         });
     }, () => {
-        if (!ret)
-            return CallBack(new Error('no IP'));
+        return CallBack(new Error(''));
     });
 };
 const getQTGateSign = (_key) => {
@@ -381,7 +402,6 @@ class localServer {
         this.proxyServerWindow = null;
         this.connectCommand = null;
         this.proxyServer = null;
-        this.myIpServer = null;
         this.ex_app = Express();
         this.ex_app.set('views', Path.join(__dirname, 'views'));
         this.ex_app.set('view engine', 'pug');
@@ -581,6 +601,7 @@ class localServer {
                     return CallBack(10);
                 }
             }
+            CallBack(null);
             return this.doingCheck(id, imapData, socket);
         });
         socket.on('deleteImapAccount', uuid => {
@@ -607,7 +628,6 @@ class localServer {
             return this.QTClass.request(com, (err, res) => {
                 saveLog(JSON.stringify(res.Args));
                 CallBack(res.Args[0]);
-                this.myIpServer = res.myIpServer;
                 saveLog(`getAvaliableRegion ${JSON.stringify(res)} `);
                 //		Have gateway connect!
                 if (res.Args[1]) {
@@ -659,7 +679,7 @@ class localServer {
                         this.config.keypair.publicKey = key;
                         this.config.keypair.verified = getQTGateSign(key);
                         this.saveConfig();
-                        socket.emit('newKeyPairCallBack', this.config.keypair);
+                        socket.emit('KeyPairActiveCallBack', this.config.keypair);
                         this.qtGateConnectEmitData.qtGateConnecting = 2;
                         this.qtGateConnectEmitData.error = -1;
                         return socket.emit('qtGateConnect', this.qtGateConnectEmitData);
@@ -714,7 +734,7 @@ class localServer {
                 });
             };
             if (cmd.connectType === 2) {
-                return getMyLocalIpAddress(this.myIpServer, (err, data) => {
+                return myIpServer((err, data) => {
                     saveLog(`getMyLocalIpAddress callback err [${JSON.stringify(err)}] data [${JSON.stringify(data)}]`);
                     cmd.imapData.clientIpAddress = data;
                     saveLog(JSON.stringify(cmd));
@@ -903,6 +923,7 @@ class localServer {
                 }
                 return this.emitQTGateToClient(socket, null);
             }
+            saveLog('checkPemPassword');
             return Async.waterfall([
                 (next) => {
                     return this.getPbkdf2(password, next);
@@ -1209,12 +1230,12 @@ class localServer {
         if (!imapData.imapCheck || !imapData.smtpCheck || !imapData.imapTestResult)
             return saveLog(` emitQTGateToClient STOP with !imapData.imapCheck || !imapData.smtpCheck || !imapData.imapTestResult`);
         const ret = {
-            qtgateConnectImapAccount: this.config.QTGateConnectImapUuid,
+            qtgateConnectImapAccount: imapData.uuid,
             qtGateConnecting: !imapData.sendToQTGate ? 0 : 1,
             isKeypairQtgateConform: this.config.keypair.verified,
             error: null
         };
-        saveLog(`doConnect!`);
+        saveLog(`doConnect! ret = [${JSON.stringify(ret)}]\n imapData.uuid= [${imapData.uuid}]`);
         const doConnect = () => {
             if (!this.imapDataPool.length)
                 return;
@@ -1253,12 +1274,13 @@ class localServer {
         doConnect();
     }
     doingCheck(id, _imapData, socket) {
-        saveLog(`doingCheck`);
+        saveLog(`doingCheck id = [${id}] UUID [${_imapData.uuid}]`);
         const imapData = this.imapDataPool[this.addInImapData(_imapData)];
         imapData.imapCheck = imapData.smtpCheck = false;
         imapData.imapTestResult = 0;
         this.saveImapData();
         return this.imapTest(imapData, (err, code) => {
+            saveLog(`imapTest finished! [${id}]`);
             socket.emit(id + '-imap', err ? err : null, code);
             imapData.imapTestResult = code;
             imapData.imapCheck = code > 0;
@@ -1269,6 +1291,7 @@ class localServer {
                 socket.emit(id + '-smtp', err1 ? err1 : null);
                 imapData.smtpCheck = !err1;
                 this.saveImapData();
+                saveLog(`smtpVerify finished! [${id}]`);
                 if (err1)
                     return;
                 this.emitQTGateToClient(socket, _imapData.uuid);

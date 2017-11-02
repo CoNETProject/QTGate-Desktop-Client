@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-/// <reference path="../typings/types/v7/index.d.ts" />
 import * as Net from 'net'
 import * as Http from 'http'
 import * as Dns from 'dns'
@@ -75,26 +74,6 @@ export const checkDomainInBlackList = ( BlackLisk: string[], domain: string, Cal
 
 		return CallBack ( null, result )
 	})
-}
-
-const otherRespon = ( path: string, host: string, port: number, UserAgent: string ) => {
-	
-	const option = {
-		host: host,
-		port: port,
-		path: '/' + path,
-		method: 'GET',
-		headers: {
-			//'Upgrade-Insecure-Requests': 1,
-			Host: host + ':' + port,
-			'Accept': '*/*',
-			'Accept-Language': 'en-US',
-			'Connection': 'keep-alive',
-			'Accept-Encoding': 'gzip, deflate',
-			'User-Agent': UserAgent || 'Mozilla/5.0',
-		}
-	}
-	return option
 }
 
 const testLogin = ( req: Buffer, loginUserList: string ) => {
@@ -437,7 +416,7 @@ export class proxyServer {
 				if ( /^GET \/pac/.test ( dataStr )) {
 					const httpHead = new HttpProxyHeader ( data )
 					agent = httpHead.headers['user-agent']
-					const sock5 = /Windows NT|Darwin|Firefox/i.test ( agent ) && ! /CFNetwork|WOW64/i.test ( agent )
+					const sock5 = /Firefox/i.test (agent) || /Windows NT|Darwin|Firefox/i.test ( agent ) && ! /CFNetwork|WOW64/i.test ( agent )
 					
 					
 					const ret = getPac ( httpHead.host, this.port, /pacHttp/.test( dataStr ), sock5 )
@@ -461,7 +440,7 @@ export class proxyServer {
 					socks = null
 				console.log ( `[${ip}] socket.on error`, err.message )
 			})
-			socket.once ('end', () => {
+			socket.once ( 'end', () => {
 				socks = null
 			})
 		})

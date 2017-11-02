@@ -14,26 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import * as Net from 'net'
+import * as proxyServer from './qtGate_emailClient'
 import * as Rfc1928 from './rfc1928'
-import * as res from './res'
-import * as os from 'os'
 import * as Crypto from 'crypto'
-import * as proxyServer from './proxyServer'
-import * as Dgram from 'dgram'
 import * as Util from 'util'
-
-//	socks 5 headers
-
-const server_res = {
-	NO_AUTHENTICATION_REQUIRED: new Buffer ('0500', 'hex')
-}
+import * as Net from 'net'
+import * as res from './res'
 
 const isSslFromBuffer = ( buffer ) => {
 	const ret = /^\x16\x03|^\x80/.test ( buffer )
 	return ret
 }
+const server_res = {
+	NO_AUTHENTICATION_REQUIRED: new Buffer ('0500', 'hex')
+}
+
 
 export class socks5 {
 	private host: string = null
@@ -75,7 +70,7 @@ export class socks5 {
 	
 					const id = `[${ this.clientIP }:${ this.port }][${ Util.inspect(uuuu) }] `
 					
-					return this.proxyServer.gateway.requestGetWay ( id, uuuu, this.agent, this.socket )
+					return this.proxyServer.imapClass.newRemoteRequest ( this.socket, uuuu, uuuu.ssl )
 					
 				}
 				
@@ -108,7 +103,7 @@ export class socks5 {
 				return this.closeSocks5 ( retBuffer.buffer )
 			}
 			if ( this.host ) {
-				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.agent, this.proxyServer.domainListPool, ( err, _hostIp ) => {
+				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.checkAgainTimeOut, this.proxyServer.imapClass, this.proxyServer.domainListPool, ( err, _hostIp ) => {
 					if ( err ) {
 						console.log ( `[${ this.host }] Blocked!`)
 						retBuffer.REP = Rfc1928.Replies.CONNECTION_NOT_ALLOWED_BY_RULESET
@@ -183,7 +178,7 @@ export class socks5 {
 		return this.connectStat2_after ( req )
 	}
 
-	constructor ( private socket: Net.Socket,private agent: string, private proxyServer: proxyServer.proxyServer ) {
+	constructor ( private socket: Net.Socket,private agent: string, private proxyServer: proxyServer.default ) {
 
 		this.socket.once ( 'data', ( chunk: Buffer ) => {
 			return this.connectStat2 ( chunk )
@@ -202,7 +197,7 @@ export class sockt4 {
 	private targetDomainData: domainData = null
 	private clientIP = this.socket
 	private keep = false
-	constructor ( private socket: Net.Socket, private buffer: Buffer, private agent: string, private proxyServer: proxyServer.proxyServer ) {
+	constructor ( private socket: Net.Socket, private buffer: Buffer, private agent: string, private proxyServer: proxyServer.default ) {
 		switch ( this.cmd ) {
 			case Rfc1928.CMD.CONNECT: {
 				this.keep = true
@@ -243,7 +238,7 @@ export class sockt4 {
 						ssl: isSslFromBuffer ( _data )
 					}
 					const id = `[${ this.clientIP }:${ this.port }][${ uuuu.uuid }] `
-					return this.proxyServer.gateway.requestGetWay ( id, uuuu, this.agent, this.socket )
+					return this.proxyServer.imapClass.newRemoteRequest ( this.socket, uuuu, uuuu.ssl )
 				}
 				
 				return this.socket.end ( res.HTTP_403 )
@@ -253,10 +248,10 @@ export class sockt4 {
 
 		this.socket.once ( 'data', ( _data: Buffer ) => {
 			console.log (`connectStat2 [${ this.host||this.targetIpV4 }]get data `)
-			proxyServer.tryConnectHost ( this.host, this.targetDomainData, this.port, _data, this.socket, false, this.proxyServer.checkAgainTimeOut, 
+			proxyServer.tryConnectHost ( this.host, this.targetDomainData, this.port, _data, this.socket, false, this.proxyServer.checkAgainTimeOut,
 				this.proxyServer.connectHostTimeOut, this.proxyServer.useGatWay, CallBack )
 		})
-		const buffer = this.req.request_4_granted ( !this.host ? null: this.targetDomainData.dns[0].address, this.port )
+		const buffer = this.req.request_4_granted ( !this.host ? null: this.targetDomainData[0].address, this.port )
 		this.socket.write ( buffer )
 		return this.socket.resume ()
 	}
@@ -271,7 +266,7 @@ export class sockt4 {
 			}
 			if ( this.host ) {
 				console.log (`socks4 host [${ this.host }]`)
-				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.agent, this.proxyServer.domainListPool, ( err, _hostIp ) => {
+				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.checkAgainTimeOut,  this.proxyServer.imapClass, this.proxyServer.domainListPool, ( err, _hostIp ) => {
 					if ( err ) {
 						console.log ( `[${ this.host }] Blocked!`)
 						return this.socket.end ( this.req.request_failed )
@@ -291,39 +286,5 @@ export class sockt4 {
 			return this.connectStat2 ()
 			
 		})
-	}
-}
-
-export class UdpDgram {
-	private server: Dgram.Socket = null
-	public port = 0
-
-	private createDgram () {
-		this.server = Dgram.createSocket ( 'udp4' )
-		
-		this.server.once ( 'error', err => {
-			console.log ( 'server.once error close server!', err  )
-			this.server.close ()
-		})
-
-		this.server.on ( 'message', ( msg: Buffer, rinfo: Dgram.AddressInfo ) => {
-			console.log(`UdpDgram server msg: ${ msg.toString('hex') } from ${ rinfo.address }:${ rinfo.port }`)
-		})
-
-		this.server.once ( 'listening', () => {
-			const address = this.server.address()
-			this.port = address.port
-			console.log ( `server listening ${ address.address }:${ address.port}` )
-		})
-
-		this.server.bind ({ port: 0 } , ( err, kkk ) => {
-			if ( err ) {
-				return console.log ( `server.bind ERROR`, err )
-			}
-			console.log ( kkk )
-		})
-	}
-	constructor () {
-		this.createDgram ()
 	}
 }
