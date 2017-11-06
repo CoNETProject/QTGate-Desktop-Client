@@ -60,7 +60,7 @@ const getImapSmtpHost = (_email) => {
     const ret = {
         imap: 'imap.' + domain,
         smtp: 'smtp.' + domain,
-        SmtpPort: [465],
+        SmtpPort: [465, 587, 994],
         ImapPort: 993,
         imapSsl: true,
         smtpSsl: true,
@@ -74,7 +74,6 @@ const getImapSmtpHost = (_email) => {
             {
                 ret.imap = 'imap.mail.yahoo.co.jp';
                 ret.smtp = 'smtp.mail.yahoo.co.jp';
-                ret.SmtpPort = [465];
             }
             break;
         //			gmail
@@ -138,7 +137,6 @@ const getImapSmtpHost = (_email) => {
             {
                 ret.imap = 'imap-mail.outlook.com';
                 ret.smtp = 'smtp-mail.outlook.com';
-                ret.SmtpPort = [587];
             }
             break;
         //			apple mail
@@ -148,7 +146,6 @@ const getImapSmtpHost = (_email) => {
             {
                 ret.imap = 'imap.mail.me.com';
                 ret.smtp = 'smtp.mail.me.com';
-                ret.SmtpPort = [587];
             }
             break;
         //			163.com
@@ -157,13 +154,11 @@ const getImapSmtpHost = (_email) => {
             {
                 ret.imap = 'appleimap.' + domain;
                 ret.smtp = 'applesmtp.' + domain;
-                ret.SmtpPort = [465];
             }
             break;
         case 'sina.com':
         case 'yeah.net':
             {
-                ret.SmtpPort = [465];
                 ret.smtpSsl = false;
             }
             break;
@@ -769,7 +764,7 @@ const infoDefine = [
             mainImapAccount: 'QTGate通讯用邮箱',
             QTGateConnectStatus: 'QTGate连接状态',
             QTGateConnectResultWaiting: '已向QTGate系统发送连接请求Email。由于是首次连接QTGate系统，系统需要几分钟时间来完成与您的对接，请耐心等待。',
-            QTGateSignButton: '',
+            QTGateDisconnectInfo: 'QTGate连结已断开。请选择向QTGate发送请求对接Email的IMAP帐号：',
             QTGateConnectError: ['给QTGate发送连接请求Email出现发送错误，请检查IMAP邮件帐户的SMTP设定！'],
             QTGateConnectResult: ['QTGate未联机，请点击连接QTGate！', '正在和QTGate联机中', '已经连接QTGate', '连接QTGate时发生错误，请修改IMAP账号设定', '已经连接QTGate'],
             QTGateSign: ['您的密钥状态', '还未获得QTGate信任签署,点击完成信任签署',
@@ -1018,7 +1013,7 @@ const infoDefine = [
             title: 'カナダ１５０周年特別提供'
         },
         imapInformation: {
-            title: '通信専用Emailアカーンドを登録',
+            title: '通信専用Emailアカウントを登録',
             infomation: 'QTGate通信専用emailアカンウトを設定します。このemailアカウントはあなたとQTGateお互い情報交換するのために、ユーザ名とパスワードをQTGateシステムへ提供します。個人情報漏洩の恐れ、一時的なemailアカウントを新たにつくてください。QTGate技術は只今<a href="#" onclick="return linkClick (`https://icloud.com`)">Apple iCloud</a>、<a href="#" onclick="return linkClick (`https://www.microsoft.com/ja-jp/outlook-com/`)">Outlook</a>、<a href="#" onclick="return linkClick (`https://login.yahoo.co.jp/config/login?.src=ym&.done=https%3A%2F%2Fmail.yahoo.co.jp%2F`)">Yahoo Mail</a>、<a href="#" onclick="return linkClick (`https://gmail.com`)">GMAIL</a>、<a href="#" onclick="return linkClick (`https://www.gmx.com/mail/#.1559516-header-nav1-2`)">GMX</a>、<a href="#" onclick="return linkClick (`https://www.zoho.com/mail/`)">HOZO</a>対応しております、APPLEのiCloudを使うお勧めです。（@OPN IPなし通信技術はiCloudのみ対応しております）</span>メールアカウントのパスワードについて、<a href="#" onclick="return linkClick (`https://support.google.com/accounts/answer/185833?hl=ja`)">アプリパスワード</a>の利用をお勧めです',
             serverDetail: '詳細設定：',
             imapServer: 'IMAP設定',
@@ -1192,7 +1187,8 @@ const infoDefine = [
             title: 'QTGates接続',
             QTGateConnectResultWaiting: 'QTGateシステムへ接続請求メールを送信しました。初めてのQTGateシステムへ接続請求ですから、接続完成したまで数分かかる場合もあるかもしれませんが、暫くお待ちをください。',
             mainImapAccount: 'QTGateへ情報交換用Emailアカンウト',
-            QTGateConnectError: ['QTG'],
+            QTGateDisconnectInfo: 'QTGateと接続はしておりません、通信専用Emailを選択してQTGateへ接続メールを送信します。',
+            QTGateConnectError: ['QTGateへメールの送信にエラーが発生しました。通信専用Emailをチェックしてください。'],
             QTGateConnectStatus: 'QTGate接続状態',
             QTGateConnectResult: ['未接続、クリックと接続します。', 'QTGateへ接続中.', 'QTGateに接続しました。', 'QTGateへ接続にエラーが発生しました。IMAP設定を立ち直すしてください。',
                 'QTGateに接続しました。'],
@@ -1212,32 +1208,32 @@ const infoDefine = [
                     color: '#a333c8',
                     icon: 'exchange',
                     header: 'Security and Privacy while accessing the Open Internet',
-                    detail: `@OPN@ uses QTGate’s “Quiet” technology to create a obfuscated private network by refracting encrypted data packets thru email servers. @OPN provides true stealth internet communications where your IP address is never known by client or proxy servers.iOPN uses QTGate’s proprietary technology to obfuscate data traffic over HTTP. Both @OPN and iOPN offer security and protection and anonymity while allowing access to the open internet. All data is kept private with encryption using <a onclick="return linkClick('https://en.wikipedia.org/wiki/Advanced_Encryption_Standard')" href="#" target="_blank">AES256-GCM</a> and <a onclick="returnlinkClick ('https://en.wikipedia.org/wiki/Pretty_Good_Privacy')"href="#" target="_blank"> OpenPGP </a>along with QTGate’s proprietary security measures.`
+                    detail: `@OPN@ uses QTGate’s “Quiet” technology to create a obfuscated private network by refracting encrypted data packets thru email servers. @OPN provides true stealth internet communications where your IP address is hidden to client or proxy servers. iOPN uses QTGate’s technology to obfuscate data traffic over HTTP. Both @OPN and iOPN offer security, protection and privacy while allowing access to the open internet. All data is kept private with encryption using <a onclick="return linkClick('https://en.wikipedia.org/wiki/Advanced_Encryption_Standard')" href="#" target="_blank">AES256-GCM</a> and <a onclick="return linkClick ('https://en.wikipedia.org/wiki/Pretty_Good_Privacy')" href="#" target="_blank">OpenPGP</a> along with QTGate’s proprietary security measures.`
                 },
                 {
                     color: 'darkcyan',
                     icon: 'spy',
-                    header: 'Spam and Spyware detection and blocking ( Next version. )',
+                    header: 'Spam and Spyware detection and blocking (Next version.)',
                     detail: 'QTGate system uses the global DNSBL database to stop spam and spyware. QTGate users will be automatically filtered from spam and spyware to stop them from transmitting your information.'
                 }, {
                     color: '#6435c9',
                     icon: 'external share',
-                    header: 'Personal VPN server. ( Next version. )',
+                    header: 'Personal VPN connection. (Next version.)',
                     detail: 'Access your QTGate OPN services anywhere via personal VPN connection from anywhere.'
                 }, {
                     color: '#6435c9',
                     icon: 'cloud upload',
-                    header: 'Secure and Private cloud storage and file sharing  ( Next version. )',
-                    detail: 'Users can store and share files by using QTGate @OPN to split files into multiple parts, each encrypted to different email accounts. QTGate user can share the file secretly between other users on QTGate’s OPN.'
+                    header: 'Secure and Private cloud storage and file sharing (Next version.)',
+                    detail: 'Users can store and share files by using QTGate @OPN to split files into multiple parts, each encrypted to different email accounts. QTGate user can share the file privately between other users on QTGate’s OPN.'
                 }, {
                     color: '#e03997',
                     icon: 'talk outline',
-                    header: 'Secure, peer to peer Instant messaging, with no IP address ( Next version. )',
-                    detail: 'QTGate users can communicate with others via a private and secure Instant messaging service. Using the same encryption and stealth technology, users are secure and private with no IP address. Supports group chat with multiple users and can be used for safely transferring, pictures, video and other files.'
+                    header: 'Secure, peer to peer Instant messaging, with no IP address (Next version.)',
+                    detail: 'QTGate users may communicate with others via a private and secure Instant messaging service. Using the same encryption and stealth technology, users are secure and private with no IP address. Supports group chat with multiple users and can be used for safely transferring, pictures, video and other files.'
                 }]
         },
         firefoxUseInfo: {
-            title1: 'The Firefox browser can set a separate proxy service from the system. You can easily use a proxy to access Internet without editing the system setup.',
+            title1: 'Firefox browser can use separate proxy settings from the system settings. This allows for easy use of a proxy to access the internet without editing the system settings.',
             info: [{
                     title: 'CClick Firefox tool icon. Select Preferences or Options.',
                     titleImage: '/images/macOsControl.jpg',
@@ -1249,7 +1245,7 @@ const infoDefine = [
                     detail: '',
                     image: '/images/firefox2.jpg'
                 }, {
-                    title: 'Select Manual proxy configuration and fill in HTTP Proxy and Port settings as shown in blue below. Make sure to Check on Use this proxy server for all protocols. Click OK to finish setup.',
+                    title: 'Select Automatic proxy configuration URL and insert the URL as shown in blue below (select URL for HTTP/S or SOCKS). Make sure to Check on “Proxy DNS when using SOCKS v5”. Click OK to finish setup.',
                     titleImage: '',
                     detail: 'Chose either HTTP or Socket settings.',
                     image: '/images/firefox3.jpg'
@@ -1280,7 +1276,7 @@ const infoDefine = [
                 }, {
                     title: 'Select Automatic.',
                     titleImage: '',
-                    detail: '<p>Enter the Proxy address settings as shown in blue below and Save to finish setup.</p>',
+                    detail: '<p>Check Automatic proxy and insert the URL as shown in blue below (select URL for HTTP/S or SOCKS). Save to finish setup.</p>',
                     image: '/images/iOS4.jpg'
                 }]
         },
@@ -1299,7 +1295,7 @@ const infoDefine = [
                 }, {
                     title: 'Tap to show Advanced options. Under Proxy, select Proxy Auto-Config.',
                     titleImage: '',
-                    detail: 'Enter the Proxy address settings as shown in blue below and Save to finish setup.',
+                    detail: 'Insert the PAC URL as shown in blue below (select URL for HTTP/S or SOCKS) and Save to finish setup',
                     image: '/images/android3.jpg'
                 }]
         },
@@ -1308,7 +1304,7 @@ const infoDefine = [
             info: [{
                     title: 'For all other Windows versions.',
                     titleImage: '',
-                    detail: 'For other Windows versions proxy setup please visit <a href="#" target="_blank" onclick="return linkClick (`https://support.microsoft.com/en-us/help/135982/how-to-configure-internet-explorer-to-use-a-proxy-server`)">Microsoftweb side.</a></p><p>This is the data for proxy server setup:</p>',
+                    detail: '<p>For other Windows versions’ proxy setup info, please visit <a href="#" target="_blank" onclick="return linkClick (`https://support.microsoft.com/en-us/help/135982/how-to-configure-internet-explorer-to-use-a-proxy-server`)">Microsoft website.</a></p><p>This is the data for proxy server setup:</p>',
                     image: ''
                 }, {
                     title: 'Open Microsoft Edge',
@@ -1316,17 +1312,17 @@ const infoDefine = [
                     detail: 'Click the tool icon at the top of right, Scroll down menu to the bottom and select Settings.</p>',
                     image: '/images/windowsUseInfo1.jpg'
                 }, {
-                    title: 'Scroll menu to bottom and click View advanced settings.',
+                    title: 'Scroll to bottom of menu and click View advanced settings.',
                     titleImage: '',
                     detail: '',
                     image: '/images/windowsUseInfo2.jpg'
                 }, {
-                    title: 'Scroll menu again click Open proxy settings.',
+                    title: 'Scroll down menu and click Open proxy settings.',
                     titleImage: '',
                     detail: '',
                     image: '/images/windowsUseInfo3.jpg'
                 }, {
-                    title: 'Select Use a proxy server, fill in Address and Port Settings as shown in blue below. Then click save to finish.',
+                    title: 'Select Proxy, turn On Automatically detect settings and Use setup script. Insert the Script address as shown in blue below. Then click save to finish.',
                     titleImage: '',
                     detail: '<p>Windows 10 system only supports HTTP & HTTPS proxy, SOCKS5 users will need install a browser like Firefox, then setup the SOCKS5 PROXY in Firefox.',
                     image: '/images/windowsUseInfo4.jpg'
@@ -1351,7 +1347,7 @@ const infoDefine = [
                 }, {
                     title: 'Select Proxies, check Automatic Proxy Configuration, check Exclude simple hostnames.',
                     titleImage: '',
-                    detail: '<p>Enter the Proxy address settings as shown in blue below and Save to finish setup.</p>',
+                    detail: '<p>Insert Proxy URL shown in blue in the image below (select URL for HTTP/S or SOCKS). Click OK to finish.</p>',
                     image: '/images/macosUserInfo3.jpg'
                 }]
         },
@@ -1444,46 +1440,46 @@ const infoDefine = [
                 }
             ],
             disagree: 'I Disagree',
-            agreeMent: 'I Agree to the QTGate Terms of Use'
+            agreeMent: 'I Agree to the QTGate Terms of Service'
         },
         linuxUpdate: {
             newVersionDownload: 'click here to download and install!',
-            step1: 'Download the new QTGate.',
+            step1: 'Download latest QTGate version.',
             step2: 'Allow executing file as program',
             step2J1: '/images/linuxUpdate1.jpg',
             step2J2: '/images/linuxUpdate2.jpeg',
             step2_detail1: 'Right click downloaded QTGate file and select the properties.',
-            step2_detail2: 'Check the allow executing file as program in Permissions tab.',
+            step2_detail2: 'Check allow executing file as program in Permissions tab.',
             step3: 'Exit old version of QTGate and double click the new QTGate file to run install.',
             exit: 'Exit QTGate.'
         },
         imapInformation: {
             title: 'Email account to use by OPN.',
-            infomation: `Please provide an IMAP email account you will use to communicate between QTGate’s OPN and you. You will need to provide the account name and password. For your personal information privacy, please register a new email account.<span style="color:red;"> QTGate system currently supports  <a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>, <a href="#" onclick="return linkClick ('https://outlook.live.com/owa/?WT.mc_id=O16_BingHP?mkt=en-us')">Outlook</a>, <a href="#" onclick="return linkClick ('https://login.yahoo.com/?.src=ym&.intl=us&.done=https%3A%2F%2Fmail.yahoo.com%2F')">Yahoo Mail</a>, <a href="#" onclick="return linkClick ('https://gmail.com')">GMAIL</a>, <a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">GMX</a>, <a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">ZOHO</a>. We recommand use Apple iCloud Mail. (Currenlty @OPN's full stealth IP technology supports icloud mail only.) </span>  For passwords, we recommend generating a<a href="https://help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick ('https://help.yahoo.com/kb/SLN15241.html')">third-party app password.</a>`,
+            infomation: `Please provide an IMAP enabled email account to be used with QTGate’s OPN services. The account name and password will be required. For your personal privacy, please consider registering a new email account to use.<span style="color: red;"> QTGate currently supports <a href="https://www.icloud.com/" target="_blank" onclick="return linkClick('https://www.icloud.com/')">Apple iCloud</a>, <a href="https://login.yahoo.com/" target="_blank" onclick="return linkClick('https://login.yahoo.com/')">Yahoo Mail</a>, <a href="https://mail.google.com" target="_blank" onclick="return linkClick('https://mail.google.com')">GMAIL</a>, <a href="https://www.gmx.com/" target="_blank" onclick="return linkClick('https://www.gmx.com/')">GMX</a>, <a href="https://www.zoho.com/mail/" target="_blank" onclick="return linkClick('https://www.zoho.com/mail/')">ZOHO</a>. (@OPN currently supports iCloud mail only.)</span> For passwords, we recommend generating a<a href="https://help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick('https://help.yahoo.com/kb/SLN15241.html')"> third-party app password.</a>`,
             serverDetail: 'settings:',
             imapServer: 'IMAP server setup',
             imapServerInput: 'IMAP server name or IP address',
-            UserName: 'Login user name',
-            Ssl: 'By Ssl connect:',
+            UserName: 'Login username',
+            Ssl: 'By SSL connection:',
             portName: 'Port number:',
             otherPortNumber: 'Other:',
-            Error_portNumber: 'Port number should be Numbers from 1 to 65535.',
             smtpServer: 'SMTP server setup',
             smtpServerInput: 'SMTP server name or IP address',
             emailServerPassword: 'Email account password ( app password )',
+            Error_portNumber: 'Port number should be from 1 to 65535.',
             imapAccountConform: '<p><dt>By clicking submit you are agreeing to this:</dt></p>This email is a temporary account for use with QTGate services. You agree QTGate may have full access to this account for transferring data between you and QTGate.',
             agree: `I understand and agree to continue.`,
-            imapOtherCheckError: 'Cannot connect to email server! Server name or IP address or Port number may have a mistake. Please check the details of your email setup!',
-            CertificateError: 'Certificate for this email server is not trusted. Please select "Keep connected even certificate is not trusted" in settings if you still want connect. Your email login information may leak to this Email server!',
-            IgnoreCertificate: 'Keep connected even certificate is not trusted',
+            imapOtherCheckError: 'Cannot connect to email server! Server name, IP address or Port number may have a mistake. Please check the details of your email setup!',
+            CertificateError: 'Certificate for this email server is not trusted. Please select "Keep connected even if certificate is not trusted" in settings if you still want to connect. Your email login information maybe leaked to this email server!',
+            IgnoreCertificate: 'Keep connected even when certificate is not trusted',
             Certificat: 'Warning! Do not select this if you are not sure, it may reveal your information.',
             AuthenticationFailed: 'Invalid login username or password! Please check username and password.',
             addAEmail: 'Add a new Email account',
             tryAgain: 'Try again.',
             connectImap: 'Connect to QTGate',
-            cancelConnect: 'Stop connect to QTGate.',
+            cancelConnect: 'Stop connecting to QTGate.',
             imapItemTitle: 'Email account details:',
-            imapCheckingStep: ['Try connect to email server.', 'Connected to email server with IMAP.', 'Connected to email server with SMTP.'],
+            imapCheckingStep: ['Trying to connect to email server.', 'Connected to email server with IMAP.', 'Connected to email server with SMTP.'],
             imapResultTitle: 'IMAP Server QTGate Communication Rating: ',
             testSuccess: 'Email server setup success!',
             exitEdit: 'Exit edit email account',
@@ -1492,19 +1488,19 @@ const infoDefine = [
         },
         Home_keyPairInfo_view: {
             title: 'Key pair information',
-            emailNotVerifi: 'Keypair not signed by QTGate yet.',
-            emailVerified: 'Keypair signed by QTGate.',
+            emailNotVerifi: 'Key pair has not been signed by QTGate yet.',
+            emailVerified: 'Key pair signed by QTGate.',
             NickName: 'Nick name：',
-            creatDate: 'Key pair created date：',
+            creatDate: 'Key pair creation date：',
             keyLength: 'Key pair bit Length：',
             password: '5-character minimum password.',
             password1: 'Key pair password.',
             logout: 'Logout',
             keyID: 'Key pair ID：',
-            deleteKeyPairInfo: 'Note: Deleting your keypair will lose your current account settings. You will need to set up QTGate account settings again. If your email address is the same as this one, you may restore your QTGate account balance.',
+            deleteKeyPairInfo: 'Note: By deleting your key pair, you will lose your current account settings. You will need to set up QTGate account settings again. If your email address is the same as the one used previously, you may restore your QTGate account balance.',
             delete: 'Delete',
-            locked: 'Please enter your key pair password to unlock this key pair to continue.',
-            systemError: 'System error! Please delete the key pair and re-setup QTGate.'
+            locked: 'Please enter your key pair password to continue.',
+            systemError: 'System error! Please delete this key pair and set up QTGate again.'
         },
         home_index_view: {
             newVersion: 'A new version is ready to install.',
@@ -1521,39 +1517,44 @@ const infoDefine = [
             clickInstall: 'Install',
             continueCreateKeyPair: 'Keep generate.',
             stopCreateKeyPair: 'Cancel generate key pair',
-            KeypairLength: 'Select the bit length of your keypair. Larger bit lengths are stronger and harder for a hacker to crack but may result in slower network transfer speeds.',
+            KeypairLength: 'Select the bit length of your key pair. Larger bit lengths are stronger and harder for a hacker to crack but may result in slower network transfer speeds.',
             SystemAdministratorNickName: 'Nick name ( Required )',
             systemAdministratorEmail: 'Generate RSA Key pair',
-            GenerateKeypair: '<em>Generating RSA Keypair. Please wait, as it may take a few minutes. More time will be needed if you choose 4096 bit key length. Information about RSA keypair system can be found here:' +
+            GenerateKeypair: '<em>Generating RSA Key pair. Please wait, as it may take a few minutes. More time will be needed if you selected 4096 bit key length. Information about RSA keypair system can be found here:' +
                 `<a href='hhttp://en.wikipedia.org/wiki/RSA_(cryptosystem)' target="_blank" onclick="return linkClick ('https://en.wikipedia.org/wiki/RSA_(cryptosystem)')">https://en.wikipedia.org/wiki/RSA_(cryptosystem)</a></em>`,
             systemPassword: 'Password',
-            inputEmail: `This RSA key is a private key used for for a secure symmetric key exchange that is used for actual transmitted data encryption and decryption within the QTGate system. This is also used for identification within the QTGate system. The password and key is not stored by QTGate, thus you cannot access QTGate system if password is lost. Please store your password in a safe place. <em style="color: red;">QTGate domain may be blocked in some regions. Please use an email that in outside these area.</em>`,
-            accountEmailInfo: `Because QTGate may be on a firewall's black list in some areas. It’s best to choose a mail account outside your region’s firewall.`
+            inputEmail: `This RSA key is a private key used for authentication, identification and secure encryption/decryption of data transmission within QTGate’s system. The password and key are not stored by QTGate. You cannot reset your password if lost and you cannot access QTGate services without your password. Please store your password in a safe place. <em style="color: red;">QTGate’s domain may be blocked in some regions. Please use an email account with servers outside these regions,</em>`,
+            accountEmailInfo: `Because QTGate may be on a firewall's black list in some regions. It is best to choose an email account with servers outside your region’s firewall.`
         },
         error_message: {
             title: 'Error',
             errorNotifyTitle: 'System Error',
-            EmailAddress: ['Please enter your email address in this format name@example.com.', 'Sorry, QTGate system support Apple mail, Microsoft Outlook and Yahoo mail only.'],
+            EmailAddress: ['Please enter your email address in this format name@example.com.', 'Sorry, QTGate currently support Apple iCloud mail, Microsoft Outlook and Yahoo mail only.'],
             required: 'Please fill in this field.',
             PasswordLengthError: 'Passwords must have at least 5 characters.',
             localServerError: 'Local QTGate server error. restart please!',
-            finishedKeyPair: 'Generate new keypair down.',
+            finishedKeyPair: 'Generate new key pair down.',
             Success: 'Success',
-            doCancel: 'Canceled generate keypair!',
-            errorKeyPair: 'Generate new keypair had ERROR, try again!',
-            SystemPasswordError: 'Your keypair password does not match. Please try again. If you forgot your password, please delete this keypair. Beware you will lose you current account settings.',
+            doCancel: 'Canceled generating key pair!',
+            errorKeyPair: 'here was an ERROR in generating new key pair, Please try again!',
+            SystemPasswordError: 'Your key pair password does not match. Please try again. If you forgot your password, please delete this key pair. Beware you will lose you current account settings.',
             finishedDeleteKeyPair: 'Key pair deleted!',
-            offlineError: 'There is no internet connect detected. Please check your network and try again!',
-            imapErrorMessage: ['', 'Data format error!', 'This computer dose not detect an internet connection. Please check your network and try again!', `Email server did respond to IMAP's username or password ERROR!`,
+            offlineError: 'There is no internet connection detected. Please check your network and try again!',
+            imapErrorMessage: ['', 'Data format error!',
+                'This computer does not detect an internet connection. Please check your network and try again!',
+                `IMAP email server did respond to username or an error in password .`,
                 `Can't connect to email server with the port. Please check the IMAP port number. This port may be filtered by a firewall in your network.`,
-                `There is a problem with this IMAP email server's security certificate!`, `Email server can't get ipaddress error. Please check the email server domain.`,
-                'This email provider currently does not support QTGate technology, please try another email provider.', `Email server did responer SMTP's username or password ERROR!`,
-                `There is a problem with this SMTP email server's security certificate!`, `Connect to SMTP Email server got unknow error!`, 'Have same email account!']
+                `There is a problem with this IMAP email server's security certificate!`,
+                `Error in email server’s address. Please check the email server’s domain.`,
+                'This email provider currently does not support QTGate’s @OPN technology, please try another email provider.',
+                `Email server did respond to SMTP's username or an error in password.`,
+                `There is a problem with this SMTP email server’s security certificate!`,
+                `Connecting to SMTP Email server received an unknown error!`, 'Please check email account!']
         },
         emailConform: {
             activeViewTitle: 'Active your keypair.',
             emailTitle: 'Welcome to QTGate.',
-            info1_1: 'Keypair verify have not complete. A verification email from QTGate has been sent. Please check your [',
+            info1_1: 'Key pair verification is not complete. A verification email from QTGate has been sent. Please check your [',
             info1_2: '] mailbox. If you have one more then one mail from QTGate in your mailbox, please choose the newest one.',
             info2: 'Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
             emailDetail1: 'Dear ',
@@ -1595,48 +1596,54 @@ const infoDefine = [
             GlobalIp: 'Global IP:',
             QTGateRegionERROR: ['Send connect request mail has an error. Please check your IMAP account settings.',
                 ''],
-            GlobalIpInfo: `Please note: When you connecting to QTGate iOPN, your IP will initially seen by QTGate system. QTGate does not log any IP addresses nor store any communications data. Please refer to QTGate's Terms of Service for more information. To keep your IP hidden from QTGate, please use @OPN services. If you do not see [@OPN], @OPN currently supports iClould IMAP.`,
+            GlobalIpInfo: `Please note: When connecting to iOPN, your IP will be visible only to QTGate. Rest assured, your privacy is safe as QTGate does not log IP nor store any communications data. For stealth IP connection, please use @OPN. If [@OPN] option is not available, you may need to check your IMAP email account. (currently @OPN only supports iClould IMAP.)`,
             cacheDatePlaceholder: 'Web cache freshness lifetime.',
             sendConnectRequestMail: ['QTGate connection maybe down. A connection request mail was sent to QTGate system. Please wait a moment.',
                 'Free user connection will be down when user has not used QTGate in the last 24 hours. QTGate system keeps connected for 1 month for paid users.'],
             cacheDatePlaceDate: [{ name: '1 hour', id: 1 }, { name: '12 hour', id: 12 }, { name: '1 day', id: 24 }, { name: '15 days', id: 360 }, { name: '1 month', id: 720 }, { name: '6 months', id: 4320 }, { name: 'forever', id: -1 }],
-            atQTGateDetail: [`The world's first QTGate no IP Internet communication technology, client and proxy server do not know each other IP address, security and reliability, firewall transparency. The network communication response by the email service provider you use the impact of the server, not suitable for video games and video chat. iCloud mail support only.`,
-                'QTGate original encryption technogy it can disguise the traffic looks like normal HTTP protocol, to hide your IP address high-speed communication, stealth and protection of privacy, strong anti-interference, firewall transparency. You need to use your IP to connect proxy server. This is best chooses If you just want freedom of internet.',
-                'Use QTGate gateway side domain lookup can always get right IP address from DNS cache pollution. This is the default.', 'All internet data transfer via QTGate gateway dose anonymity network.',
-                'When target server can not connect then data transfer via QTGate gateway. This chooese will save your QTGate data transfer.',
-                'Web cache (or HTTP cache) is an information technology for the temporary storage (caching) of web documents, to reduce bandwidth usage, server load, and perceived lag. QTGate always crypto all web cache data. This is not working for HTTPS connect.', 'Do not use web cache.',
-                'By setting the cache expiration date, you can always obtain the latest information on the server side. The unit is time.',
-                'Local proxy server port number is provide all other devices use QTGate network connect. Please setup a number from 3001 to 65535.', 'Local proxy server http/https access PATH can seculity your server.'],
-            connectQTGate: 'Connecting to QTGate for getting gateway area information...'
+            atQTGateDetail: [
+                `Recommended for full privacy. @OPN@ uses QTGate’s “Quiet” technology to create a obfuscated private network by refracting encrypted data packets thru email servers. @OPN provides stealth internet communications where your IP address is hidden to client or proxy servers. Gaming and video stream my not be supported due to stability and speeds affected by email server choice. Currently iCloud mail is only supported.`,
+                'Recommended for high speed open internet access. iOPN uses QTGate’s “Quiet” technology to obfuscate encrypted data traffic to look like normal HTTP communications. iOPN offer security and protection of privacy while allowing access to the open internet.',
+                'Use QTGate’s gateway for domain search to get the right IP address from DNS cache. This is default.',
+                'Transfer all internet data over OPN.',
+                'Transfer select data over OPN. Only when unable to connect to certain servers. This may save data on your account transfer limits.',
+                'Web cache (or HTTP cache) is an used for the temporary storage (caching) of web documents, to reduce bandwidth usage, server load, and perceived lag. QTGate always encrypts all web cache data. This does not work for HTTPS connections.',
+                'Do not use web cache.',
+                'By setting the cache expiration date, you can always obtain the latest information on the server side.',
+                'Local proxy server port number is provided for other devices to use QTGate’s OPN connection. Please set a number from 3001 to 65535.',
+                'Local proxy server http/https access can secure your server.'
+            ],
+            connectQTGate: 'Connecting, Retrieving QTGate gateway information...'
         },
         QTGateGateway: {
-            title: 'QTGate service use detail',
-            processing: 'Try to connecting QTGate gateway...',
+            title: 'QTGate service user detail',
+            processing: 'Trying to connect to QTGate gateway...',
             error: ['Error: Your account has a connection that is using the QTGate proxy server. Please disconnect it before attempting to connect again.',
-                'Error: Bandwidt maximum. If you want to continue using it, please upgrade your account. Free account have bandwidth is maximum of 100MB each day, 1 GB every month.',
-                'Error: Data format error. Please restart QTGate.', 'Error: This area have not resource. Please select other area or connect again late.',
-                'Error: This area have not support this technogly. Please select other area, or change other connect type.'],
+                'Error: Bandwidth maximum. If you would like to continue using OPN, please upgrade your account. Free accounts have a bandwidth maximum of 100MB per a day, 1 GB every month.',
+                'Error: Data format error. Please restart QTGate.', 'Error: This area does not have the resources. Please select another area or try connecting again later.',
+                'Error: This region does not support OPN technology. Please select another area, or change other connect type.'],
             connected: 'connected.',
-            userType: ['free', 'Subscript'],
-            datatransferToday: 'The limit of bandwidth each day.：',
-            datatransferMonth: 'The limit of bandwidth each month.：',
+            userType: ['Free user', 'Subscript'],
+            datatransferToday: 'The daily bandith limit.：',
+            datatransferMonth: 'The monthly bandwidth limit.：',
             todaysDatatransfer: 'Available today.',
-            monthDatatransfer: 'Available month.',
-            gatewayInfo: ['Gateway Ip address：', 'Gateway connect port：'],
+            monthDatatransfer: 'Available this month.',
+            gatewayInfo: ['Gateway Ip address：', 'Gateway connection port：'],
             userInfoButton: 'How to use?',
             stopGatewayButton: 'Disconnect',
             disconnecting: 'Disconnecting'
         },
         qtGateView: {
-            QTGateConnectResultWaiting: 'It will take a few minutes to response to your connection request via QTGATE System. Please keep waiting.',
+            QTGateConnectResultWaiting: 'Please wait. It will take a few minutes to respond to your connection request to QTGate.',
             title: 'QTGate connect',
-            mainImapAccount: 'Email account for communicate with QTGate',
-            QTGateConnectStatus: 'Status of QTGate connect',
+            mainImapAccount: 'Email account for communicating with QTGate',
+            QTGateDisconnectInfo: 'Lost QTGate connect. Please select IMAP account to send email for request connect.',
+            QTGateConnectStatus: 'Status of QTGate connection',
             QTGateConnectResult: [
-                'QTGate disconnect, click to connect to QTGate.', 'Connecting to QTGate.', 'QTGate Connected.', 'Connect sotp wieh error! Please fix the IMAP account setup!',
+                'QTGate disconnected, click to connect to QTGate.', 'Connecting to QTGate.', 'QTGate Connected.', 'Connection stopped with error! Please check IMAP account settings!',
                 'QTGate Connected.'
             ],
-            QTGateSign: ['Keypair status', 'Your keypair has not get sign from QTGate.',
+            QTGateSign: ['Keypair status', 'Your key pair is not signed by QTGate.',
                 'QTGate certification authority is a trusted thus certifying your public keys is yoursalf in QTGate users when you share files of send message to other QTGate user. You also can signing another QTGate users with your keypair for make your trust relationship.',
                 'Getting QTGate certification authority.', 'Opps. System error. Try restart QTGate, if still have please re-install QTGate.', 'System error!']
         },
@@ -2035,6 +2042,7 @@ const infoDefine = [
             title: 'QTGate連接',
             QTGateConnectResultWaiting: '已向QTGate系統發送連接請求Email。由於是首次連接QTGate系統，系統需要幾分鐘時間來完成與您的對接，請耐心等待。',
             mainImapAccount: 'QTGate通訊用郵箱',
+            QTGateDisconnectInfo: 'QTGate連結已斷開。請選擇向QTGate發送請求對接的IMAP帳號',
             QTGateConnectStatus: 'QTGate連接狀態',
             QTGateConnectResult: ['QTGate未聯機，請點擊連接QTGate！', '正在和QTGate聯機中', '已經連接QTGate', '連接QTGate時發生錯誤，請修改IMAP賬號設定',
                 '已經連接QTGate'],
@@ -2416,6 +2424,7 @@ var view_layout;
             this.showDeleteArea = ko.observable(false);
             this.sendToQTGate = ko.observable(false);
             this.process = $(`#${this.uuid}>.progress`);
+            this.edited = false;
             this.getMailIcon = ko.computed(() => {
                 let imapServer = null;
                 if (!(imapServer = this.iMapServerName()).length)
@@ -2524,7 +2533,7 @@ var view_layout;
                 imapUserPassword: this.iMapServerLoginPassword(),
                 smtpServer: this.SmtpServerName(),
                 smtpSsl: this.smtpSecure(),
-                smtpPortNumber: this.smtpPortChecked() === 'other' ? this.smtpServerPortNumber() : this.smtpPortChecked(),
+                smtpPortNumber: this.edited ? (this.smtpPortChecked() === 'other' ? this.smtpServerPortNumber() : this.smtpPortChecked()) : ['465', '587', '994'],
                 smtpUserName: this.SmtpServerLoginName(),
                 smtpUserPassword: this.smtpServerLoginPassword(),
                 smtpIgnoreCertificate: this.smtpIgnoreCertificate(),
@@ -2540,7 +2549,8 @@ var view_layout;
                 randomPassword: null,
                 uuid: this.uuid,
                 canDoDelete: false,
-                clientIpAddress: null
+                clientIpAddress: null,
+                ciphers: null
             };
             return data;
         }
@@ -2565,12 +2575,12 @@ var view_layout;
             this.smtpSecure(data.smtpSsl);
             this.imapIgnoreCertificate(data.imapIgnoreCertificate);
             this.smtpIgnoreCertificate(data.smtpIgnoreCertificate);
-            if (this.smtpPortArray.findIndex(n => { return n === data.smtpPortNumber; }) !== -1) {
-                this.smtpPortChecked(data.smtpPortNumber);
+            if (this.smtpPortArray.findIndex(n => { return n === data.smtpPortNumber[0]; }) !== -1) {
+                this.smtpPortChecked(data.smtpPortNumber[0]);
             }
             else {
                 this.smtpPortChecked('other');
-                this.smtpServerPortNumber(data.smtpPortNumber);
+                this.smtpServerPortNumber(data.smtpPortNumber[0]);
             }
             this.imapCheckOk(data.imapCheck);
             this.imapCheckResult(data.imapTestResult);
@@ -2685,6 +2695,14 @@ var view_layout;
                 this.root.addANewImapData(this.root);
             this.root.canShowAddAImapButton();
         }
+        ImapDetailAccordionTitleClick() {
+            this.edited = true;
+            const self = this;
+            const body = $("html, body");
+            return body.stop().animate({ scrollTop: 0 }, 100, 'swing', () => {
+                return self.root.overflowShow(true);
+            });
+        }
     }
     view_layout.emailPoolData = emailPoolData;
     class view {
@@ -2789,6 +2807,7 @@ var view_layout;
             this.ConnectGatewayShow = ko.observable(false);
             this.portNumberError = ko.observable(false);
             this.canDoAtEmail = ko.observable(false);
+            this.reSendConnectMail = ko.observable(false);
             //-
             this.config = ko.observable({
                 firstRun: true,
@@ -2842,6 +2861,7 @@ var view_layout;
             this.attachedLog = ko.observable('');
             this.feedBackTextArea = ko.observable('');
             this.hacked = ko.observable(false);
+            this.UserPerment = ko.observable(false);
             this.conformButtom = ko.computed(() => {
                 this.conformTextError(false);
                 const text = this.conformText();
@@ -2878,10 +2898,6 @@ var view_layout;
                 return socketIo.emit('checkPort', newValue, err => {
                     return this.localProxyPortError(err);
                 });
-            });
-            this.QTGateConnect1.subscribe(newValue => {
-                if (newValue == '1') {
-                }
             });
             socketIo = io({ reconnectionAttempts: 5, timeout: 1000 });
             socketIo.once('connect', () => {
@@ -3006,6 +3022,7 @@ var view_layout;
             socketIo.on('qtGateConnect', (data) => {
                 this.imapInputFormActive(true);
                 this.QTGateConnectActive(true);
+                this.reSendConnectMail(false);
                 this.menuClick(3, true);
                 //      have no imap data
                 if (!data) {
@@ -3013,22 +3030,6 @@ var view_layout;
                     this.menuClick(2, true);
                     return this.QTGateConnectActive(false);
                 }
-                /*
-                if ( typeof data === 'boolean' ) {
-                    
-                    this.QTGateRegionInfo ( true )
-                    $('.mainAccordion').accordion ('refresh')
-                    this.QTGateConnectActive( false )
-                    return socketIo.emit ( 'getAvaliableRegion', ( region: string [] ) => {
-                        _QTGateRegions.forEach ( n => {
-                            const index = region.findIndex ( nn => { return nn === n.qtRegion })
-                            if ( index < 0 )
-                                return n.available( false )
-                            return n.available ( true )
-                        })
-                    })
-                }
-                */
                 if (data && data.qtgateConnectImapAccount) {
                     const uu = this.emailPool().findIndex(n => { return n.uuid === data.qtgateConnectImapAccount; });
                     this.qtgateImapAccount(uu);
@@ -3112,29 +3113,19 @@ var view_layout;
                     return this.QTGateRegionERROR(0);
                 }
                 if (data.qtGateConnecting === 2) {
-                    socketIo.emit('getAvaliableRegion', (region) => {
-                        this.QTGateRegions().forEach(n => {
-                            const index = region.findIndex(nn => { return nn === n.qtRegion; });
-                            if (index < 0)
-                                return n.available(false);
-                            return n.available(true);
+                    setTimeout(() => {
+                        return socketIo.emit('getAvaliableRegion', (region, dataTransfer, config) => {
+                            return this.getAvaliableRegionCallBack(region, dataTransfer, config);
                         });
-                        this.QTGateRegions.sort((a, b) => {
-                            if (a.available() === b.available())
-                                return 0;
-                            if (b.available() && !a.available()) {
-                                return 1;
-                            }
-                            return -1;
-                        });
-                        const uu = checkCanDoAtQTGate(this.emailPool);
-                        if (uu > -1) {
-                            this.QTGateConnectSelectImap(uu);
-                            this.canDoAtEmail(true);
-                            this.showQTGateImapAccount(false);
-                        }
-                        $('.ui.dropdown').dropdown();
-                    });
+                    }, 2000);
+                }
+                if (data.qtGateConnecting === 3 && data.error === 10) {
+                    const index = this.emailPool().findIndex(n => { return availableImapServer.test(n.iMapServerName()); });
+                    if (index > -1) {
+                        this.QTGateConnectSelectImap(index);
+                    }
+                    $('.ui.dropdown').dropdown();
+                    return this.reSendConnectMail(true);
                 }
                 this.QTGateRegionInfo(false);
                 //$('.mainAccordion').accordion('refresh')
@@ -3237,68 +3228,25 @@ var view_layout;
             _self.overflowShow(true);
         }
         takeScreen() {
-            const { desktopCapturer, remote } = require('electron');
-            const path = require('path');
-            const Os = require('os');
-            const Fs = require('fs');
-            desktopCapturer.getSources({ types: ['window', 'screen'], thumbnailSize: { width: 850, height: 480 } }, (error, sources) => {
-                if (error)
-                    throw error;
-                const debug = true;
-                sources.forEach(n => {
-                    if (n.name === 'QTGate') {
-                        const QTGateFolder = path.join(Os.homedir(), '.QTGate/tempfile');
-                        const screenshotFileName = uuID() + '.png';
-                        const screenshotSavePath = path.join(QTGateFolder, screenshotFileName);
-                        const screenshotUrl = '/tempfile/' + screenshotFileName;
-                        Fs.writeFile(screenshotSavePath, n.thumbnail.toPng(), error => {
-                            if (error)
-                                return console.log(error);
-                            this.feedBackAttachImg(screenshotUrl);
-                            this.showFeedBackWin();
-                            this.attachedLog();
-                            this.feedBackAttachImgPath(screenshotSavePath);
-                            /*
-                            let win = new remote.BrowserWindow ({
-                                minWidth: 900,
-                                minHeight: 600,
-                                backgroundColor: '#ffffff',
-                            })
-                            if ( debug ) {
-                                win.webContents.openDevTools()
-                                win.maximize()
-                                
-                            }
-                            win.loadURL ( `http://127.0.0.1:${ this.config().serverPort }/feedBack?imagFile=${ screenshotUrl }` )
-                            win.once ( 'closed', () => {
-                                win = null
-                            })
-                            */
-                        });
-                    }
-                });
+            return socketIo.emit('takeScreen', (err, img) => {
+                if (err) {
+                    return alert(err.message);
+                }
+                this.feedBackAttachImg(img.screenshotUrl);
+                this.showFeedBackWin();
+                this.attachedLog();
+                return this.feedBackAttachImgPath(img.screenshotSavePath);
             });
         }
         feedBackSuccess() {
             this.returnMainWin('#feedBackView');
-            const Fs = require('fs');
-            const Os = require('os');
-            const path = require('path');
-            const savePath = path.join(Os.homedir(), '.QTGate/.feedBack.json');
             const data = {
                 attachedLog: this.attachedLog(),
                 attachImagePath: this.feedBackAttachImgPath(),
                 comment: this.feedBackTextArea(),
                 date: new Date().toISOString()
             };
-            Fs.access(savePath, err => {
-                if (err) {
-                    return Fs.writeFile(savePath, JSON.stringify([data]), err => { });
-                }
-                const feeds = require(savePath);
-                feeds.push(data);
-                return Fs.writeFile(savePath, JSON.stringify(feeds), err => { });
-            });
+            return socketIo.emit('feedBackSuccess', data);
         }
         openFeedBackAttachImg() {
             const { shell } = require('electron');
@@ -3514,6 +3462,17 @@ var view_layout;
             this.emailPool()[this.qtgateImapAccount()];
             socketIo.emit('connectQTGate', this.emailPool()[this.qtgateImapAccount()].uuid);
         }
+        connectQTGate1() {
+            socketIo.emit('connectQTGate1', this.emailPool()[this.QTGateConnectSelectImap()].uuid);
+        }
+        selectedQTGateRegionCancel() {
+            this.selectedQTGateRegion().selected(false);
+            this.selectedQTGateRegion().showExtraContent(false);
+            this.ConnectGatewayShow(false);
+            this.QTGateConnectRegionActive(true);
+            this.menuClick(3, true);
+            return false;
+        }
         QTGateRegionCardClick(index) {
             const uu = this.QTGateRegions()[index];
             uu.selected(true);
@@ -3529,17 +3488,10 @@ var view_layout;
                 position: 'bottom center',
             });
         }
-        selectedQTGateRegionCancel() {
-            this.selectedQTGateRegion().selected(false);
-            this.selectedQTGateRegion().showExtraContent(false);
-            this.ConnectGatewayShow(false);
-            this.QTGateConnectRegionActive(true);
-            this.menuClick(3, true);
-            return false;
-        }
         menuClick(index, scroll) {
             const uu = new Array(8).fill(false);
             uu[index] = true;
+            this.UserPerment(false);
             this.MenuItems(uu);
             const body = $("html, body");
             return body.stop().animate({ scrollTop: 0 }, 100, 'swing', () => {
@@ -3594,7 +3546,8 @@ var view_layout;
                         data.showExtraContent(true);
                         //this.QTGateConnectRegionActive ( true )
                         //this.QTGateGatewayActiveProcess ( false )
-                        return data.error(_data.error);
+                        data.error(_data.error);
+                        return this.menuClick(3, true);
                     }
                     const data1 = _data.Args[0];
                     return this.QTGateGatewayConnectRequestCallBack(this, data1);
@@ -3621,33 +3574,41 @@ var view_layout;
             this.ConnectGatewayShow(true);
             return data.showConnectedArea(true);
         }
+        getAvaliableRegionCallBack(region, dataTransfer, config) {
+            this.QTGateRegions().forEach(n => {
+                const index = region.findIndex(nn => { return nn === n.qtRegion; });
+                if (index < 0)
+                    return n.available(false);
+                return n.available(true);
+            });
+            this.QTGateRegions.sort((a, b) => {
+                if (a.available() === b.available())
+                    return 0;
+                if (b.available() && !a.available()) {
+                    return 1;
+                }
+                return -1;
+            });
+            const uu = checkCanDoAtQTGate(this.emailPool);
+            if (uu > -1) {
+                this.QTGateConnectSelectImap(uu);
+                this.canDoAtEmail(true);
+                this.showQTGateImapAccount(false);
+            }
+            else {
+                this.QTGateConnectSelectImap(0);
+            }
+            $('.ui.dropdown').dropdown();
+            this.QTTransferData(dataTransfer);
+            this.config(config);
+        }
         desconnectCallBack() {
             this.selectedQTGateRegion().showConnectedArea(false);
             this.ConnectGatewayShow(false);
             this.selectedQTGateRegionCancel();
             this.disconnecting(false);
-            socketIo.emit('getAvaliableRegion', (region) => {
-                this.QTGateRegions().forEach(n => {
-                    const index = region.findIndex(nn => { return nn === n.qtRegion; });
-                    if (index < 0)
-                        return n.available(false);
-                    return n.available(true);
-                });
-                this.QTGateRegions.sort((a, b) => {
-                    if (a.available() === b.available())
-                        return 0;
-                    if (b.available() && !a.available()) {
-                        return 1;
-                    }
-                    return -1;
-                });
-                const uu = checkCanDoAtQTGate(this.emailPool);
-                if (uu > -1) {
-                    this.QTGateConnectSelectImap(uu);
-                    this.canDoAtEmail(true);
-                    this.showQTGateImapAccount(false);
-                }
-                $('.ui.dropdown').dropdown();
+            socketIo.emit('getAvaliableRegion', (region, dataTransfer, config) => {
+                return this.getAvaliableRegionCallBack(region, dataTransfer, config);
             });
         }
         disconnectClick() {

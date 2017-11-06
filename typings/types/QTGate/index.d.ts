@@ -67,7 +67,7 @@ interface IinputData extends imapConnect {
     smtpServer:string
     smtpUserName:string
     smtpUserPassword:string
-    smtpPortNumber:string
+    smtpPortNumber:string|string[]
     smtpSsl:boolean
     smtpIgnoreCertificate: boolean
     imapTestResult: number
@@ -82,6 +82,7 @@ interface IinputData extends imapConnect {
     uuid: string
     canDoDelete: boolean
     clientIpAddress: string
+    ciphers: string
 }
 interface IinputData_server extends IinputData {
     connectEmail: boolean;
@@ -95,7 +96,7 @@ interface QTGateAPIRequestCommand {
 	requestSerial: string
     Args: any[]
     fingerprint?: string
-
+    dataTransfer?: iTransferData
 }
 interface iTransferData {
     startDate: Date

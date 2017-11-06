@@ -23,7 +23,9 @@ const path_1 = require("path");
 const async_1 = require("async");
 const freePort = require("portastic");
 const url_1 = require("url");
-const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater } = require('electron');
+const path = require("path");
+const Crypto = require("crypto");
+const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater, desktopCapturer } = require('electron');
 const handleSquirrelEvent = () => {
     if (process.argv.length === 1 || process.platform !== 'win32') {
         return false;
@@ -105,6 +107,42 @@ let mainWindow = null;
 let doReady = false;
 const ErrorLogFile = path_1.join(QTGateFolder, 'indexError.log');
 exports.port = 3000 + Math.round(10000 * Math.random());
+const takeScreen = (CallBack) => {
+    desktopCapturer.getSources({ types: ['window', 'screen'], thumbnailSize: { width: 850, height: 480 } }, (error, sources) => {
+        if (error)
+            throw error;
+        const debug = true;
+        sources.forEach(n => {
+            if (n.name === 'QTGate') {
+                const screenshotFileName = Crypto.randomBytes(10).toString('hex') + '.png';
+                const screenshotSavePath = path.join(QTGateTemp, screenshotFileName);
+                Fs.writeFile(screenshotSavePath, n.thumbnail.toPng(), error => {
+                    if (error) {
+                        console.log(error);
+                        return CallBack(error);
+                    }
+                    CallBack(null, screenshotFileName);
+                    /*
+                    let win = new remote.BrowserWindow ({
+                        minWidth: 900,
+                        minHeight: 600,
+                        backgroundColor: '#ffffff',
+                    })
+                    if ( debug ) {
+                        win.webContents.openDevTools()
+                        win.maximize()
+                        
+                    }
+                    win.loadURL ( `http://127.0.0.1:${ this.config().serverPort }/feedBack?imagFile=${ screenshotUrl }` )
+                    win.once ( 'closed', () => {
+                        win = null
+                    })
+                    */
+                });
+            }
+        });
+    });
+};
 const hideWindowDownload = (downloadUrl, saveFilePath, Callback) => {
     let _err = null;
     if (!downloadUrl) {
@@ -359,6 +397,7 @@ const appReady = () => {
                 localServer1.setIgnoreMouseEvents(!DEBUG);
                 localServer1.rendererSidePort = exports.port;
                 localServer1.createWindow = createWindow;
+                localServer1.takeScreen = takeScreen;
                 localServer1._doUpdate = _doUpdate;
                 DEBUG ? localServer1.webContents.openDevTools() : null;
                 //localServer1.maximize ()

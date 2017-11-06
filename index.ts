@@ -24,7 +24,10 @@ import { series } from 'async'
 import * as freePort from 'portastic'
 import { format } from 'url'
 import { spawn } from 'child_process'
-const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater } = require ( 'electron' )
+import * as path from 'path'
+import * as Crypto from 'crypto'
+
+const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater, desktopCapturer } = require ( 'electron' )
   
 const handleSquirrelEvent = () => {
     if ( process.argv.length === 1 || process.platform !== 'win32') {
@@ -119,6 +122,48 @@ let mainWindow = null
 let doReady = false
 const ErrorLogFile = join ( QTGateFolder, 'indexError.log' )
 export let port = 3000 + Math.round ( 10000 * Math.random ())
+
+const takeScreen = ( CallBack ) => {
+    
+    desktopCapturer.getSources ({ types: [ 'window', 'screen' ], thumbnailSize: { width: 850, height: 480 }}, ( error, sources ) => {
+        if ( error ) throw error
+        const debug = true
+        sources.forEach ( n => {
+            
+            if ( n.name === 'QTGate' ) {
+                const screenshotFileName = Crypto.randomBytes(10).toString('hex') + '.png'
+                const screenshotSavePath = path.join ( QTGateTemp, screenshotFileName )
+                Fs.writeFile ( screenshotSavePath, n.thumbnail.toPng(), error => {
+                    if ( error ) {
+                        console.log ( error )
+                        return CallBack ( error )
+                    }
+                        
+
+                    CallBack ( null, screenshotFileName )
+                    /*
+                    let win = new remote.BrowserWindow ({
+                        minWidth: 900,
+                        minHeight: 600,
+                        backgroundColor: '#ffffff',
+                    })
+                    if ( debug ) {
+                        win.webContents.openDevTools()
+                        win.maximize()
+                        
+                    }
+                    win.loadURL ( `http://127.0.0.1:${ this.config().serverPort }/feedBack?imagFile=${ screenshotUrl }` )
+                    win.once ( 'closed', () => {
+                        win = null
+                    })
+                    */
+                })
+            }
+        })
+        
+    })
+    
+}
 const hideWindowDownload = ( downloadUrl, saveFilePath, Callback ) => {
     let _err = null
     if ( !downloadUrl ) {
@@ -187,12 +232,14 @@ const hideWindowDownload = ( downloadUrl, saveFilePath, Callback ) => {
         return win.loadURL ( downloadUrl )
     })
 }
+
 const saveLog = ( log: string ) => {
 	const data = `${ new Date().toUTCString () }: ${ log }\r\n`
 	Fs.appendFile ( ErrorLogFile, data, err => {
 		
 	})
 }
+
 const _doUpdate = ( tag_name: string, _port ) => {
 	let url = null
 	
@@ -403,6 +450,7 @@ const appReady = () => {
                 localServer1.setIgnoreMouseEvents ( !DEBUG )
                 localServer1.rendererSidePort = port
                 localServer1.createWindow = createWindow
+                localServer1.takeScreen = takeScreen
                 localServer1._doUpdate = _doUpdate
                 DEBUG ? localServer1.webContents.openDevTools() : null
                 //localServer1.maximize ()

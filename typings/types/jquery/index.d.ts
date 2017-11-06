@@ -5384,6 +5384,7 @@ interface JQuery<TElement extends Node = HTMLElement> extends Iterable<TElement>
     dimmer ( any? ): this
     cookie ( any?): this
     modal (...any): this
+    dropdown (...any): this
 }
 
 declare namespace JQuery {
