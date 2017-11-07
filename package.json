@@ -1,6 +1,6 @@
 {
   "name": "qtgate",
-  "version": "0.8.80",
+  "version": "0.8.81",
   "license": "MIT",
   "description": "QTGate desktop client",
   "scripts": {
@@ -53,7 +53,7 @@
   },
   "homepage": "https://www.qtgate.com",
   "devDependencies": {
-    "electron-builder-squirrel-windows": "^19.43.0"
+    "electron-builder-squirrel-windows": "^19.45.0"
   },
   "dependencies": {
     "async": "^2.5.0",

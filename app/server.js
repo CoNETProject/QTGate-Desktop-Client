@@ -660,16 +660,21 @@ class localServer {
             remote.app.exit();
         });
         socket.on('checkActiveEmailSubmit', (text) => {
-            console.log(`checkActiveEmailSubmit!`);
-            /*
-            if ( ! text || ! text.length || !/^-----BEGIN PGP MESSAGE-----/.test ( text )) {
-                socket.emit ( 'checkActiveEmailError', 0 )
-                return saveLog ( `checkActiveEmailSubmit, no text.length !` )
+            console.log(`checkActiveEmailSubmit!`, text);
+            if (!text || !text.length || !/^-----BEGIN PGP MESSAGE-----/.test(text)) {
+                socket.emit('checkActiveEmailError', 0);
+                return saveLog(`checkActiveEmailSubmit, no text.length !`);
             }
-            */
             if (!this.QTClass) {
                 socket.emit('checkActiveEmailError', 2);
                 return saveLog(`checkActiveEmailSubmit, have no this.QTClass!`);
+            }
+            if (text.indexOf('-----BEGIN PGP MESSAGE----- Version: GnuPG v1 ') > -1) {
+                console.log(`Outlook mail! support!`);
+                text = text.replace(/-----BEGIN PGP MESSAGE----- Version: GnuPG v1 /, '-----BEGIN__PGP__MESSAGE-----\r\nVersion:__GnuPG__v1\r\n\r\n');
+                text = text.replace(/-----END PGP MESSAGE-----/, '-----END__PGP__MESSAGE-----');
+                text = text.replace(/ /g, '\r\n');
+                text = text.replace(/__/g, ' ');
             }
             this.pgpDecrypt(text, (err, data) => {
                 if (err) {
@@ -1671,7 +1676,7 @@ const makeFeedBackDataToQTGateAPIRequestCommand = (data, Callback) => {
         if (err) {
             return Callback(err, null);
         }
-        data.attachImage = iData.toString('base64');
+        //data.attachImage = iData.toString ('base64')
         ret.Args = [data];
         Fs.unlink(data.attachImagePath, () => {
             return Callback(null, ret);

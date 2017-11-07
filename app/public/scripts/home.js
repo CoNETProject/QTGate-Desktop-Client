@@ -3449,12 +3449,6 @@ var view_layout;
             this.QTGateConnecting(4);
             let text = this.conformText();
             //      Outlook Mail 
-            if (u.indexOf('-----BEGIN PGP MESSAGE----- Version: GnuPG v1 ') > -1) {
-                text = text.replace(/-----BEGIN PGP MESSAGE----- Version: GnuPG v1 /, '-----BEGIN__PGP__MESSAGE-----\r\nVersion:__GnuPG__v1\r\n\r\n');
-                text = text.replace(/-----END PGP MESSAGE-----/, '-----END__PGP__MESSAGE-----');
-                text = text.replace(/ /g, '\r\n');
-                text = text.replace(/__/g, ' ');
-            }
             return socketIo.emit('checkActiveEmailSubmit', text);
         }
         connectQTGate() {
