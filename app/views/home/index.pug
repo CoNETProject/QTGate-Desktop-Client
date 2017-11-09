@@ -600,7 +600,7 @@ block jumbotron1
 											span( data-bind=" text: QTTransferData().transferDayLimit / ( 1024 * 1024 ) + ' Mbyte'" style = "font-size: smaller;font-weight: lighter;")
 								//-.three.wide.column( style="padding-top: 0px!important;")
 									span( data-bind = "text: infoDefine [ $root.languageIndex() ].QTGateGateway.monthDatatransfer " )
-								.sixteen.wide.column( style="padding-top: 0px!important;")
+								.sixteen.wide.column( data-bind="style:{ 'padding-top' : config().freeUser ? '0px!important': '' }" style="padding-top: 0px!important;")
 									.userDetail.ui.tiny.progress.success( data-bind = "attr: { 'data-total': QTTransferData().transferMonthly / ( 1024 * 1024 ), 'data-value':( QTTransferData().transferMonthly - $root.QTTransferData().usedMonthlyTransfer)/( 1024 * 1024 )}")
 										.bar
 											.progress
