@@ -295,7 +295,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 		const isIp = Net.isIP ( hostName )
 		const hostIp: domainData = ! isIp ? domainListPool.get ( hostName ) : { dns: [{ family: isIp, address: hostName, expire: null, connect: [] }], expire: null }
         
-        if ( ! hostIp ) {
+        if ( ! hostIp && ! this.useGatWay ) {
 
 			return isAllBlackedByFireWall ( hostName,  ip6, gatway, userAgent, domainListPool, ( err, _hostIp ) => {
 				if ( err ) {
@@ -361,7 +361,8 @@ export class proxyServer {
 	private hostGlobalIpV6: string = null
 	private network = false
 	private getGlobalIpRunning = false
-	public gateway = new gateWay ( this.serverIp, this.serverPort, this.password )
+	public gateway = new gateWay ( this.multipleGateway )
+	
 	private saveWhiteIpList () {
 		if ( this.whiteIpList.length > 0 )
 			Fs.writeFile ( Path.join( __dirname, whiteIpFile ), JSON.stringify( this.whiteIpList ), { encoding: 'utf8' }, err => {
@@ -393,8 +394,7 @@ export class proxyServer {
 
 			const domain = data
 			if ( ! domain )
-				return console.log ( `[${ gateWay.serverIp } : ${ gateWay.serverPort }] Gateway connect Error!` )
-			console.log ( `[${ gateWay.serverIp } : ${ gateWay.serverPort }] Gateway connect success!` )
+				return console.log ( `[] Gateway connect Error!` )
 			console.log ( '****************************************' )
 
 		})
@@ -402,7 +402,7 @@ export class proxyServer {
 	}
     
 	constructor ( public whiteIpList: string[], public domainListPool: Map < string, domainData >, private localProxyServerIP: string, 
-		private port: number, private securityPath: string, private serverIp: string, private serverPort: number, private password: string, public checkAgainTimeOut: number, 
+		private port: number, private securityPath: string,  public checkAgainTimeOut: number, private multipleGateway: multipleGateway[],
 		public connectHostTimeOut: number, public useGatWay: boolean, public domainBlackList: string[] ) {
 		this.getGlobalIp ( this.gateway )
 		let socks = null
@@ -451,9 +451,7 @@ export class proxyServer {
 		})
 
 		server.listen ( port, () => {
-			console.log (`remote server: [${ serverIp }]:[${ serverPort }]`)
 			return console.log ( 'proxy start success on port :', port, 'security path = ', securityPath )
-
 		})
 
 
@@ -461,14 +459,12 @@ export class proxyServer {
 	}
 
 	public changeDocker ( data: IConnectCommand ) {
-		if ( !data.gateWayIpAddress || !data.gateWayPort || !data.imapData.randomPassword ) {
-			return saveLog (`ERROR: changeDocker data ERROR: gateWayIpAddress [${ data.gateWayIpAddress }] gateWayPort [${ data.gateWayPort }] data.imapData.randomPassword [${ data.imapData.randomPassword }]`)
+		if ( !data.requestMultipleGateway && (!data.gateWayIpAddress || !data.gateWayPort || !data.imapData.randomPassword ) || data.requestMultipleGateway > 1 && ( !data.multipleGateway || data.multipleGateway.length !== data.requestMultipleGateway )) {
+			return saveLog ( `ERROR: changeDocker data ERROR: gateWayIpAddress [${ data.gateWayIpAddress }] gateWayPort [${ data.gateWayPort }] data.imapData.randomPassword [${ data.imapData.randomPassword }]`)
 		}
-		this.serverIp = data.gateWayIpAddress
-		this.serverPort = data.gateWayPort
-		this.password = data.imapData.randomPassword
-		this.gateway = new gateWay ( this.serverIp, this.serverPort, this.password )
-		saveLog (`changeDocker gateWayIpAddress [${ data.gateWayIpAddress }] gateWayPort [${ data.gateWayPort }] data.imapData.randomPassword [${ data.imapData.randomPassword }]`)
+		this.multipleGateway = data.multipleGateway
+		this.gateway = new gateWay ( this.multipleGateway )
+		saveLog (`changeDocker [${ JSON.stringify ( this.multipleGateway )}]`)
 	}
 
 }
@@ -494,14 +490,11 @@ const saveLog = ( log: string ) => {
 let server: proxyServer = null
 remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
 	saveLog ( `************************** start proxyServer *****************************\r\n ${ JSON.stringify( data )}\r\n` )
-	server = new proxyServer ([], new Map(), data.localServerIp, data.localServerPort, 'pac', data.gateWayIpAddress, data.gateWayPort, data.imapData.randomPassword,
-		 5000, 50000, data.AllDataToGateway, [] )
-	
+	console.log (`with gateway = [${data.multipleGateway}]`)
+	server = new proxyServer ( [], new Map(), data.localServerIp, data.localServerPort, 'pac', 5000, data.multipleGateway, 50000, data.AllDataToGateway, [] )
 })
 remote.getCurrentWindow().on( 'changeDocker', ( data: IConnectCommand ) => {
 	saveLog ( `got changeDocker event! data [${ JSON.stringify ( data )}]`)
 	server.changeDocker ( data )
 })
-
-
 remote.getCurrentWindow().emit ( 'first' )

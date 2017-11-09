@@ -107,7 +107,7 @@ export class socks5 {
 				retBuffer.REP = Rfc1928.Replies.CONNECTION_NOT_ALLOWED_BY_RULESET
 				return this.closeSocks5 ( retBuffer.buffer )
 			}
-			if ( this.host ) {
+			if ( this.host && !this.proxyServer.useGatWay ) {
 				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.agent, this.proxyServer.domainListPool, ( err, _hostIp ) => {
 					if ( err ) {
 						console.log ( `[${ this.host }] Blocked!`)
@@ -269,7 +269,7 @@ export class sockt4 {
 				console.log ( `[${ this.host }] Blocked!`)
 				return this.socket.end ( this.req.request_failed )
 			}
-			if ( this.host ) {
+			if ( this.host && !this.proxyServer.useGatWay ) {
 				console.log (`socks4 host [${ this.host }]`)
 				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.agent, this.proxyServer.domainListPool, ( err, _hostIp ) => {
 					if ( err ) {

@@ -591,7 +591,7 @@ block jumbotron1
 							.ui.grid
 								//-.three.wide.column( style="padding-bottom: 0px!important;")
 									span( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateGateway.todaysDatatransfer " )
-								.sixteen.wide.column( data-bind="visible: !config().freeUser " style="padding-bottom: 0px!important;")
+								.sixteen.wide.column( data-bind="visible: config().freeUser " style="padding-bottom: 0px!important;")
 									.userDetail.ui.tiny.progress.success( data-bind="attr: { 'data-total': QTTransferData().transferDayLimit / ( 1024 * 1024 ), 'data-value':( QTTransferData().transferDayLimit - $root.QTTransferData().usedDayTransfer) /( 1024 * 1024 )}")
 										.bar
 											.progress
@@ -652,7 +652,14 @@ block jumbotron1
 										label( data-bind = " text: QTGateRegionsSetup()[1].title" style="color:rgba(0,0,0,.7);")
 									a( href="#" )
 										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[1]}" style="margin-left: -10px;color:yellowgreen;")
-								
+								.field( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '1'")
+									label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.setupCardTitle " style="color:rgba(0,0,0,.8);")
+									.ui.compact.selection.dropdown
+										input( type="hidden" name="MultipleGateway" data-bind="value: QTGateMultipleGateway")
+										i.dropdown.icon
+										.text( data-bind="text: QTGateMultipleGateway()")
+										.menu( data-bind="foreach: QTGateMultipleGatewayPool ")
+											.item( data-bind=" text: $index()+1, attr: { 'data-text': $index()+1, 'data-value': $index()+1 }")
 								.field( data-position="bottom left" data-bind=" visible: canDoAtEmail()")
 									.ui.radio.checkbox( data-bind=" click: () => { QTGateConnect1('2')} ")
 										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.8);" value="2" data-bind="checked: QTGateConnect1, attr: {'dataCheck': QTGateConnect1()}")

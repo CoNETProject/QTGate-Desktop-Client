@@ -405,6 +405,7 @@ class localServer {
         this.proxyServerWindow = null;
         this.connectCommand = null;
         this.proxyServer = null;
+        this.doingStopContainer = false;
         this.ex_app = Express();
         this.ex_app.set('views', Path.join(__dirname, 'views'));
         this.ex_app.set('view engine', 'pug');
@@ -774,7 +775,6 @@ class localServer {
         });
         socket.on('disconnectClick', () => {
             this.stopGetwayConnect();
-            this.disConnectGateway();
         });
     }
     makeOpnConnect(arg) {
@@ -790,32 +790,21 @@ class localServer {
         });
     }
     disConnectGateway() {
-        saveLog('disConnectGateway.');
-        this.proxyServer.cancel();
-        this.proxyServer = null;
-        this.connectCommand = null;
-        this.socketServer.emit('disconnectClickCallBack');
+        if (this.proxyServer && this.proxyServer.cancel)
+            this.proxyServer.cancel();
+        this.doingStopContainer = false;
     }
     stopGetwayConnect() {
+        if (this.doingStopContainer)
+            return;
+        this.doingStopContainer = true;
         const com = {
             command: 'stopGetwayConnect',
             Args: null,
             error: null,
-            requestSerial: Crypto1.randomBytes(8).toString('hex')
+            requestSerial: null
         };
-        this.QTClass.request(com, (err, res) => {
-            const arg = res.Args[0];
-            const connect = res.Args[1];
-            saveLog(JSON.stringify(arg));
-            saveLog(`Have connect\n[${connect}]`);
-            //		no error
-            if (arg.error < 0) {
-                //		@QTGate connect
-                if (arg.connectType === 1) {
-                }
-                //		iQTGate connect
-            }
-        });
+        return this.QTClass.request(com, null);
     }
     addInImapData(imapData) {
         const index = this.imapDataPool.findIndex(n => { return n.uuid === imapData.uuid; });
@@ -1379,7 +1368,7 @@ class localServer {
             return saveLog(`emitQTGateToClient STOP with !imapData.imapCheck || !imapData.smtpCheck || !imapData.imapTestResult`);
         const ret = {
             qtgateConnectImapAccount: imapData.uuid,
-            qtGateConnecting: !imapData.sendToQTGate ? 0 : 1,
+            qtGateConnecting: imapData.sendToQTGate ? 1 : (this.config.keypair.verified ? 1 : 0),
             isKeypairQtgateConform: this.config.keypair.verified,
             error: null
         };
@@ -1416,16 +1405,12 @@ class localServer {
         this.qtGateConnectEmitData = ret;
         saveLog(`socket.emit ( 'qtGateConnect' ) ret = [${JSON.stringify(ret)}]`);
         socket.emit('qtGateConnect', ret);
-        if (ret.qtGateConnecting === 0) {
-            return saveLog(`emitQTGateToClient STOP with ret.qtGateConnecting === 0`);
-        }
         if (!imapData.serverFolder || !imapData.uuid || imapData.canDoDelete) {
             imapData.serverFolder = Uuid.v4();
             imapData.clientFolder = Uuid.v4();
             imapData.randomPassword = Uuid.v4();
             imapData.sendToQTGate = false;
             imapData.canDoDelete = false;
-            imapData.sendToQTGate = true;
         }
         this.saveImapData();
         saveLog(JSON.stringify(imapData));
@@ -1544,11 +1529,13 @@ class ImapConnect extends Imap.imapPeer {
         });
         this.newMail = (ret) => {
             //		have not requestSerial that may from system infomation
-            if (!ret || !ret.requestSerial) {
+            if (!ret.requestSerial) {
+                saveLog(`newMail have not ret.requestSerial, doing switch ( ret.command ) `);
                 switch (ret.command) {
+                    case 'stopGetwayConnect':
                     case 'containerStop': {
                         saveLog(`QTGateAPIRequestCommand on containerStop! doing disConnectGateway()`);
-                        localServer.disConnectGateway();
+                        return localServer.disConnectGateway();
                     }
                     case 'changeDocker': {
                         const container = ret.Args[0];
@@ -1560,7 +1547,7 @@ class ImapConnect extends Imap.imapPeer {
                             saveLog(`got Command from server "changeDocker" localServer.proxyServer or localServer.connectCommand is null!!`);
                             return this.localServer.makeOpnConnect(container);
                         }
-                        this.localServer.proxyServer.sendCommand('changeDocker', container);
+                        return this.localServer.proxyServer.sendCommand('changeDocker', container);
                     }
                     default: {
                         return saveLog(`QTGateAPIRequestCommand have not requestSerial!, 【${JSON.stringify(ret)}】`);
@@ -1571,7 +1558,7 @@ class ImapConnect extends Imap.imapPeer {
             if (!CallBack || typeof CallBack !== 'function') {
                 return saveLog(`QTGateAPIRequestCommand got commandCallBackPool ret.requestSerial [${ret.requestSerial}] have not callback `);
             }
-            saveLog(`QTGateAPIRequestCommand got commandCallBackPool [${ret.requestSerial}] have not callback `);
+            saveLog(`QTGateAPIRequestCommand got [${ret.requestSerial}] callback  [${CallBack.toString()}]`);
             return CallBack(null, ret);
         };
         console.trace(`new ImapConnect created!`);
@@ -1633,8 +1620,10 @@ class ImapConnect extends Imap.imapPeer {
         });
     }
     request(command, CallBack) {
-        this.commandCallBackPool.set(command.requestSerial, CallBack);
-        this._enCrypto(JSON.stringify(command), (err1, data) => {
+        saveLog(`request command [${command.command}] requestSerial [${command.requestSerial}]`);
+        if (command.requestSerial)
+            this.commandCallBackPool.set(command.requestSerial, CallBack);
+        return this._enCrypto(JSON.stringify(command), (err1, data) => {
             if (err1) {
                 saveLog(`request _deCrypto got error [${JSON.stringify(err1)}]`);
                 return CallBack(err1);

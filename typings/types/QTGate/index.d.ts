@@ -121,6 +121,12 @@ interface QTGate_DnsAddress {
 	url: string
 }
 
+interface multipleGateway {
+    gateWayIpAddress: string
+    gateWayPort: number
+    dockerName: string
+    password: string
+}
 
 interface IConnectCommand {
     region: string
@@ -137,6 +143,8 @@ interface IConnectCommand {
     AllDataToGateway: boolean
     localServerPort: number
     localServerIp: string
+    multipleGateway: multipleGateway []
+    requestMultipleGateway: number
 }
 
 interface QTGateCommand {

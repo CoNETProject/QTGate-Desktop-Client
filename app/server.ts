@@ -462,6 +462,7 @@ export class localServer {
 	private proxyServerWindow = null
 	public connectCommand: IConnectCommand = null
 	public proxyServer: RendererProcess = null
+	public doingStopContainer = false
 
 	public isMultipleQTGateImapData () {
 		if ( this.imapDataPool.length < 2 )
@@ -848,7 +849,7 @@ export class localServer {
 		socket.on ( 'disconnectClick', () => {
 			
 			this.stopGetwayConnect ()
-			this.disConnectGateway () 
+			
 		})
 	}
 
@@ -867,35 +868,23 @@ export class localServer {
 	}
 
 	public disConnectGateway () {
-		saveLog ( 'disConnectGateway.')
-		this.proxyServer.cancel ()
-		this.proxyServer = null
-		this.connectCommand = null
-		this.socketServer.emit ( 'disconnectClickCallBack' )
+		if ( this.proxyServer && this.proxyServer.cancel )
+			this.proxyServer.cancel ()
+		this.doingStopContainer = false
 	}
 
 	private stopGetwayConnect () {
+		if ( this.doingStopContainer )
+			return
+
+		this.doingStopContainer = true
 		const com: QTGateAPIRequestCommand = {
 			command: 'stopGetwayConnect',
 			Args: null,
 			error: null,
-			requestSerial: Crypto1.randomBytes(8).toString('hex')
+			requestSerial: null
 		}
-		this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
-			const arg: IConnectCommand = res.Args[0]
-			const connect = res.Args [1]
-			saveLog ( JSON.stringify ( arg ))
-			saveLog (`Have connect\n[${ connect }]`)
-			//		no error
-			if ( arg.error < 0 ) {
-				//		@QTGate connect
-				if ( arg.connectType === 1 ) {
-				}
-				//		iQTGate connect
-				
-			}
-	
-		})
+		return this.QTClass.request ( com, null )
 	}
 
 	private addInImapData ( imapData: IinputData ) {
@@ -1606,7 +1595,7 @@ export class localServer {
 
 		const ret: IQtgateConnect = {
 			qtgateConnectImapAccount: imapData.uuid,
-			qtGateConnecting: ! imapData.sendToQTGate ? 0: 1,
+			qtGateConnecting: imapData.sendToQTGate ? 1: ( this.config.keypair.verified ? 1 : 0 ),
 			isKeypairQtgateConform: this.config.keypair.verified,
 			error: null
 		}
@@ -1652,18 +1641,14 @@ export class localServer {
 		saveLog ( `socket.emit ( 'qtGateConnect' ) ret = [${ JSON.stringify ( ret )}]`)
 		socket.emit ( 'qtGateConnect', ret )
 
-		if ( ret.qtGateConnecting === 0 ) {
-			return saveLog ( `emitQTGateToClient STOP with ret.qtGateConnecting === 0`)
-		}
-
-		if (! imapData.serverFolder || ! imapData.uuid || imapData.canDoDelete ) {
+		if ( ! imapData.serverFolder || ! imapData.uuid || imapData.canDoDelete ) {
 			
 			imapData.serverFolder = Uuid.v4 ()
 			imapData.clientFolder = Uuid.v4 ()
 			imapData.randomPassword = Uuid.v4 ()
 			imapData.sendToQTGate = false
 			imapData.canDoDelete = false
-			imapData.sendToQTGate = true
+
 		}
 
 		this.saveImapData()
@@ -1861,11 +1846,14 @@ class ImapConnect extends Imap.imapPeer {
 
 		this.newMail = ( ret: QTGateAPIRequestCommand ) => {
 			//		have not requestSerial that may from system infomation
-			if ( ! ret || ! ret.requestSerial ) {
+			if ( ! ret.requestSerial ) {
+				saveLog (`newMail have not ret.requestSerial, doing switch ( ret.command ) `)
 				switch ( ret.command ) {
+
+					case 'stopGetwayConnect':
 					case 'containerStop' : {
 						saveLog (`QTGateAPIRequestCommand on containerStop! doing disConnectGateway()`)
-						localServer.disConnectGateway()
+						return localServer.disConnectGateway()
 					}
 
 					case 'changeDocker' : {
@@ -1880,7 +1868,7 @@ class ImapConnect extends Imap.imapPeer {
 							saveLog ( `got Command from server "changeDocker" localServer.proxyServer or localServer.connectCommand is null!!`)
 							return this.localServer.makeOpnConnect ( container )
 						}
-						this.localServer.proxyServer.sendCommand ( 'changeDocker', container )
+						return this.localServer.proxyServer.sendCommand ( 'changeDocker', container )
 
 					}
 					default:{
@@ -1895,7 +1883,7 @@ class ImapConnect extends Imap.imapPeer {
 				
 				return saveLog ( `QTGateAPIRequestCommand got commandCallBackPool ret.requestSerial [${ ret.requestSerial }] have not callback `)
 			}
-			saveLog ( `QTGateAPIRequestCommand got commandCallBackPool [${ ret.requestSerial }] have not callback `)
+			saveLog ( `QTGateAPIRequestCommand got [${ ret.requestSerial }] callback  [${ CallBack.toString () }]`)
 			return CallBack ( null, ret )
 			
 		}
@@ -1904,9 +1892,10 @@ class ImapConnect extends Imap.imapPeer {
 	}
 
 	public request ( command: QTGateAPIRequestCommand, CallBack ) {
-
-		this.commandCallBackPool.set ( command.requestSerial, CallBack )
-		this._enCrypto ( JSON.stringify ( command ), ( err1, data: string ) => {
+		saveLog (`request command [${ command.command }] requestSerial [${ command.requestSerial }]`)
+		if ( command.requestSerial )
+			this.commandCallBackPool.set ( command.requestSerial, CallBack )
+		return this._enCrypto ( JSON.stringify ( command ), ( err1, data: string ) => {
 			if ( err1 ) {
 				saveLog ( `request _deCrypto got error [${ JSON.stringify ( err1 )}]` )
 				return CallBack ( err1 )

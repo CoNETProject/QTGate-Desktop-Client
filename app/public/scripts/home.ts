@@ -652,6 +652,7 @@ const infoDefine = [
             unavailable: '准备中',
             proxyDomain: '域名解释全程使用QTGate代理服务器端',
             setupCardTitle: '使用连接技术:',
+            MultipleGateway: '同时使用代理服务器数：',
             dataTransfer: '数据通讯：',
             dataTransfer_datail: ['全程使用代理服务器','当本地不能够到达目标主机时使用'],
             proxyDataCache: '浏览数据本地缓存:',
@@ -1213,6 +1214,7 @@ const infoDefine = [
             unavailable: '準備しています',
             proxyDomain:'ドメイン検索はQTGateゲットウェイ側に依頼します。',
             setupCardTitle: '接続技術:',
+            MultipleGateway: '同時使用ゲットウェイ数：',
             dataTransfer: '通信データは：',
             dataTransfer_datail: ['全てのデータをOPN経由','ターゲットサーバ到達不能時だけ'],
             proxyDataCache: 'Webキャッシュ:',
@@ -1408,7 +1410,7 @@ const infoDefine = [
             proxyServerIp:'<p>Proxy setup: <span style="color: red;">Automatic or Auto-Config</span></p>',
             proxyServerPort: 'HTTP & HTTPS proxy setup:',
             proxyServerPassword: 'SOCKS proxy setup:',
-            title:'Local proxy server is running at background. MacOS and windows user may close this window. All other devices can doing internet via local proxy setup use the QTGate system.',
+            title:'Local proxy server is running at background. MacOS and windows user may close this window. All other devices can access internet via local proxy setup to use the QTGate OPN.',
             title1:'MacOS proxy setup',
             info:[{
                 title:'Open the control panel, click on network.',
@@ -1587,12 +1589,12 @@ const infoDefine = [
             emailNotVerifi: 'Key pair has not been signed by QTGate yet.',
             emailVerified: 'Key pair signed by QTGate.',
             NickName: 'Nick name：',
-            creatDate:'Key pair creation date：',
-            keyLength: 'Key pair bit Length：',
+            creatDate:'Creation date：',
+            keyLength: 'Bit Length：',
             password: '5-character minimum password.',
             password1: 'Key pair password.',
             logout: 'Logout',
-            keyID: 'Key pair ID：',
+            keyID: 'ID：',
             deleteKeyPairInfo: 'Note: By deleting your key pair, you will lose your current account settings. You will need to set up QTGate account settings again. If your email address is the same as the one used previously, you may restore your QTGate account balance.',
             delete: 'Delete',
             locked: 'Please enter your key pair password to continue.',
@@ -1686,9 +1688,10 @@ const infoDefine = [
             unavailable: 'Unavailable',
             proxyDomain:'Domain lookup via QTGate gateway side.',
             setupCardTitle: 'connecting with:',
+            MultipleGateway: 'Gateway count:',
             dataViaGateway:'All internet data transfered via QTGate gateway.',
             dataTransfer: 'Data:',
-            dataTransfer_datail: ['All data on QTGate gateway.',`Data on QTGate gateway only when cannot connect to target server.`],
+            dataTransfer_datail: ['All data on QTGate gateway.',`Only when cannot connect to target server.`],
             proxyDataCache: 'Web cache:',
             proxyDataCache_detail: ['Yes','No'],
             clearCache: 'Delete all cache now',
@@ -2120,6 +2123,7 @@ const infoDefine = [
             unavailable: '準備中',
             proxyDomain: '域名解釋全程使用QTGate代理伺服器端',
             setupCardTitle: '使用連接技術:',
+            MultipleGateway: '同時使用代理服務器數：',
             connectQTGate:'正在獲得代理伺服器區域信息...',
             dataTransfer: '數據通訊:',
             dataTransfer_datail: ['全程使用QTGate代理伺服器','當本地不能夠到達目標伺服器時使用'],
@@ -2436,11 +2440,15 @@ const checkCanDoAtQTGate = ( imapArray: KnockoutObservableArray < view_layout.em
     return imapArray().findIndex ( n => { return checkCanDoAtQTGateReg.test ( n.iMapServerName()) && n.imapCheckResult() > 0 })
 }
 const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.com$|imap\.mail\.me\.com$|imap\.mail\.yahoo\.co\.jp$|imap\.gmail\.com$|gmx\.com$|imap\.zoho\.com$/i
-const dummyIConnectCommand: IConnectCommand = {
+const dummyIConnectCommand = {
     connectPeer: null,
     connectType: null,
     localServerIp: null,
-    localServerPort: null
+    localServerPort: null,
+    account: null,
+    AllDataToGateway: null,
+
+
 }
 
 module view_layout {
@@ -3015,6 +3023,8 @@ module view_layout {
 
             public QTGateConnect_SelectTech = ko.observable(-1)
             public QTGateConnect1 = ko.observable ('')
+            public QTGateMultipleGateway = ko.observable (1)
+            public QTGateMultipleGatewayPool = ko.observableArray ([1,2])
             public QTGateConnect2 = ko.observable ( false )
             public QTGateConnectSelectImap = ko.observable (-1)
             public QTGateAllData = ko.observable ( false )
@@ -3828,8 +3838,8 @@ module view_layout {
             uu.showExtraContent ( true )
             this.ConnectGatewayShow ( true )
             const body = $( "html, body" )
-            body.stop().animate({ scrollTop: 0 }, 100, 'swing', () => { 
-                return this.overflowShow ( false )
+            body.stop().animate ({ scrollTop: 0 }, 100, 'swing', () => { 
+                return this.overflowShow ( true )
             })
             return $('.popupField').popup({
                 on:'click',
@@ -3856,7 +3866,7 @@ module view_layout {
 
         public QTGateGatewayConnectRequest () {
             const data = this.selectedQTGateRegion()
-            return socketIo.emit ('checkPort', this.QTGateLocalProxyPort(), err => {
+            return socketIo.emit ( 'checkPort', this.QTGateLocalProxyPort(), err => {
                 if ( err ) {
                     return this.localProxyPortError ( err )
                 }
@@ -3870,7 +3880,9 @@ module view_layout {
                     AllDataToGateway: !this.QTGateConnect2 (),
                     error: null,
                     fingerprint: null,
-                    localServerIp: null
+                    localServerIp: null,
+                    multipleGateway: [],
+                    requestMultipleGateway: this.QTGateMultipleGateway()
                     
                 }
                 
@@ -3975,6 +3987,7 @@ module view_layout {
             this.selectedQTGateRegionCancel () 
             this.disconnecting ( false )
             socketIo.emit ( 'getAvaliableRegion', ( region: string [], dataTransfer: iTransferData, config: install_config ) => {
+            
                 return this.getAvaliableRegionCallBack ( region, dataTransfer, config )
             })
         }
