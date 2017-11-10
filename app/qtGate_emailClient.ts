@@ -310,6 +310,7 @@ const httpImapProxy = ( imapClass: imapClass.imapClientControl, clientSocket: Ne
 	})
 
 }
+
 const getPac = ( hostIp: string, port: number, http: boolean, sock5: boolean ) => {
 	
 		const FindProxyForURL = `function FindProxyForURL ( url, host )

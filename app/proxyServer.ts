@@ -352,8 +352,6 @@ const getPac = ( hostIp: string, port: number, http: boolean, sock5: boolean ) =
 	return res.Http_Pac ( FindProxyForURL )
 }
 
-
-
 export class proxyServer {
 	private hostLocalIpv4: { network: string, address: string } []= []
 	private hostLocalIpv6: string = null
@@ -493,8 +491,10 @@ remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
 	console.log (`with gateway = [${data.multipleGateway}]`)
 	server = new proxyServer ( [], new Map(), data.localServerIp, data.localServerPort, 'pac', 5000, data.multipleGateway, 50000, data.AllDataToGateway, [] )
 })
+
 remote.getCurrentWindow().on( 'changeDocker', ( data: IConnectCommand ) => {
 	saveLog ( `got changeDocker event! data [${ JSON.stringify ( data )}]`)
 	server.changeDocker ( data )
 })
+
 remote.getCurrentWindow().emit ( 'first' )

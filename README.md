@@ -23,7 +23,7 @@ QTGATEはローカルプロキシサーバを提供して、HTTP, HTTPS, SOCKS 4
 
 ## Build 編譯 ビルド
 
-bozon package [mac|windows|linux]
+npm run [mac|windows|linux]
 
 [Multi Platform Build 如何編譯多平台APP可參照 マルチOSのビルドにつて](https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build)
 

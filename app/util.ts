@@ -108,7 +108,6 @@ const getDownloadFiles = ( name: string, assets: any[], CallBack ) => {
         
 }
 
-
 $( document ).ready (() => {
     const url = 'https://api.github.com/repos/QTGate/QTGate-Desktop-Client/releases/latest'
     $.getJSON ( url )

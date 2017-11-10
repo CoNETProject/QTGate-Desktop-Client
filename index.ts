@@ -90,9 +90,11 @@ const handleSquirrelEvent = () => {
         return true;
     }
   }
-if ( handleSquirrelEvent()) {
+
+  if ( handleSquirrelEvent()) {
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 }
+
 const makeSingleInstance = () => {
 
     //  For Mac App Store build
@@ -102,12 +104,13 @@ const makeSingleInstance = () => {
         createWindow ()
     })
 }
+
 if ( makeSingleInstance ()) {
     app.quit ()
 }
+
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion()
-
 
 enum lang { 'zh', 'ja', 'en', 'tw' }
 const QTGateFolder = join ( Os.homedir(), '.QTGate' )
@@ -164,6 +167,7 @@ const takeScreen = ( CallBack ) => {
     })
     
 }
+
 const hideWindowDownload = ( downloadUrl, saveFilePath, Callback ) => {
     let _err = null
     if ( !downloadUrl ) {
@@ -425,6 +429,7 @@ const findPort = ( CallBack ) => {
         return findPort ( CallBack )
     })
 }
+
 const template = [
     {
         label: 'Edit',
