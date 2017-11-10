@@ -39,7 +39,9 @@ npm run [mac|windows|linux]
 ## Notice 注意事項 
 
 This bate version have not support UDP proxy
+
 當前版本UDP未對應
+
 このパージョンはUDP対応しておりませんので、ご注意してください。
 
 ## License 版權 
