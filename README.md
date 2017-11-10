@@ -20,6 +20,13 @@ QTGATEはローカルプロキシサーバを提供して、HTTP, HTTPS, SOCKS 4
 
 ![http protocol](/resources/vpn.email11.jpg?raw=true)
 
+## Download 下載 ダウンロード
+
+[releases/latest](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
+Windows32: qtgate.Setup.?.?.?.ia32.exe
+Windows64: qtgate-.Setup.?.?.?.exe
+MacOS: qtgate-?.?.?.dmg
+Linux: qtgate_?.?.?_amd64.deb
 
 ## Build 編譯 ビルド
 
