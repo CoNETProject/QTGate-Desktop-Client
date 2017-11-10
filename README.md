@@ -25,7 +25,7 @@ QTGATEはローカルプロキシサーバを提供して、HTTP, HTTPS, SOCKS 4
 ### [The latest 最新版](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
 
 * Windows32: qtgate.Setup.?.?.?.ia32.exe
-* Windows64: qtgate-.Setup.?.?.?.exe
+* Windows64: qtgate.Setup.?.?.?.exe
 * MacOS: qtgate-?.?.?.dmg
 * Linux: qtgate_?.?.?_amd64.deb
 
