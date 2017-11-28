@@ -31,10 +31,12 @@ import * as Imap from './imap'
 import * as freePort from 'portastic'
 import * as prosyServer from './proxyServer'
 import * as Stream from 'stream'
-import { start } from 'repl';
-import { imapAccountTest } from './imap';
-
-const DEBUG = false
+import { start } from 'repl'
+import { imapAccountTest } from './imap'
+//import * as Ping from 'net-ping'
+import * as netPing from 'net-ping'
+import { Buffer } from 'buffer';
+const DEBUG = true
 
 const openpgp = require ( 'openpgp' )
 const Express = require ( 'express' )
@@ -54,7 +56,8 @@ const QTGateTemp = Path.join ( QTGateFolder, 'tempfile' )
 const myIpServerUrl = [ 'https://ipinfo.io/ip', 'https://icanhazip.com/', 'https://diagnostic.opendns.com/myip', 'http://ipecho.net/plain', 'https://www.trackip.net/ip' ]
 const keyServer = 'https://pgp.mit.edu'
 const QTGatePongReplyTime = 1000 * 30
-const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.com$|imap\.mail\.me\.com$|imap\.mail\.yahoo\.co\.jp$|imap\.gmail\.com$|gmx\.com$|imap\.zoho\.com$/i
+const testPingTimes = 5
+const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.(com|co\.jp|co\.uk|au)$|imap\.mail\.me\.com$|imap\.gmail\.com$|gmx\.(com|us|net)$|imap\.zoho\.com$/i
 
 
 let mainWindow = null
@@ -206,12 +209,13 @@ const emitConfig = ( config: install_config, passwordOK: boolean ) => {
 		multiLogin: config.multiLogin,
 		freeUser: config.freeUser,
 		account: config.keypair.email,
-		QTGateConnectImapUuid: config.QTGateConnectImapUuid,
 		serverGlobalIpAddress: config.serverGlobalIpAddress,
 		serverPort: config.serverPort,
 		connectedQTGateServer: config.connectedQTGateServer,
 		localIpAddress: getLocalInterface(),
-		lastConnectType: config.lastConnectType
+		lastConnectType: config.lastConnectType,
+		iterations: config.iterations,
+		connectedImapDataUuid: config.connectedImapDataUuid
 	}
 	return ret
 }
@@ -316,13 +320,12 @@ const InitConfig = ( first: boolean, version, port ) => {
 		digest: 'sha512',
 		freeUser: true,
 		account: null,
-		QTGateConnectImapUuid: null,
 		serverGlobalIpAddress: null,
 		serverPort: port,
 		connectedQTGateServer: false,
 		localIpAddress: getLocalInterface (),
-		lastConnectType: 1
-		
+		lastConnectType: 1,
+		connectedImapDataUuid: null
 	}
 	return ret
 }
@@ -463,6 +466,8 @@ export class localServer {
 	public connectCommand: IConnectCommand = null
 	public proxyServer: RendererProcess = null
 	public doingStopContainer = false
+	public regionV1: regionV1[] = null
+	public pingChecking = false
 
 	public isMultipleQTGateImapData () {
 		if ( this.imapDataPool.length < 2 )
@@ -476,6 +481,7 @@ export class localServer {
 			return true
 		return false
 	}
+
 	public saveConfig () {
 		Fs.writeFile ( configPath, JSON.stringify ( this.config ) , { encoding: 'utf8' }, err => {
 			if ( err )
@@ -611,31 +617,37 @@ export class localServer {
 				}
 				
 				Fs.readFile ( imapDataFileName, 'utf8', next )
-			},
-			( data: string, next: any ) => {
+			}],( err, data: string ) => {
+
+				if ( err ) {
+					saveLog (`readImapData Async.waterfall error: [${ err.message }]`)
+					return CallBack ( err )
+				}
+				let callback = false
 				options.message = openpgp.message.readArmored ( data.toString () )
 				openpgp.decrypt ( options ).then ( plaintext => {
 					
 					try {
 						const data = JSON.parse ( plaintext.data )
-						return next ( null, data )
+						callback = true
+						return CallBack ( null, data )
 					} catch ( e ) {
-						return next ( new Error ( 'readImapData try JSON.parse ( plaintext.data ) catch ERROR:'+ e.message ))
+						if ( !callback ) {
+							callback = true
+							saveLog (`openpgp.decrypt JSON.parse error!: [${ e.massage}]`)
+							return CallBack ( new Error ( 'readImapData try JSON.parse ( plaintext.data ) catch ERROR:'+ e.message ))
+						}
 					}
 
 				}).catch ( err => {
-					next ( err )
+					if ( !callback ) {
+						callback = true
+						saveLog (`openpgp.decrypt catch error!: [${ err.massage}]`)
+						return CallBack (`readImapData openpgp.decrypt catch error: [${ err.message }] `)
+					}
 				})
-			}
-		], ( err, data ) => {
-			if ( err ) {
-				return CallBack ( err )
-			}
-			
-			this.imapDataPool = data
-			return CallBack ()
-			
-		})
+			})
+		
 	}
 
 	//			After password
@@ -653,11 +665,8 @@ export class localServer {
 					return CallBack ( 10 )
 				}
 			}
-			CallBack(null)
+			CallBack ( null )
 			return this.doingCheck ( id, imapData, socket )
-			
-			
-
 		})
 
 		socket.on ( 'deleteImapAccount', uuid => {
@@ -682,18 +691,15 @@ export class localServer {
 				error: null,
 				requestSerial: Crypto1.randomBytes(8).toString('hex')
 			}
-			saveLog ( `getAvaliableRegion` )
 			return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
 
-				saveLog ( JSON.stringify ( res.Args ))
 				this.config.freeUser = /free/i.test ( res.dataTransfer.productionPackage )
-
 				CallBack ( res.Args[0], res.dataTransfer, this.config )
-
 				saveLog ( `getAvaliableRegion ${ JSON.stringify ( res )} `)
 				
 				//		Have gateway connect!
 				this.saveConfig ()
+				
 				if ( res.Args[ 1 ]) {
 					const uu: IConnectCommand = res.Args[1]
 					if ( ! this.proxyServer || ! this.connectCommand ) {
@@ -701,12 +707,48 @@ export class localServer {
 					}
 					return socket.emit ( 'QTGateGatewayConnectRequest', this.connectCommand )
 				}
+
+				this.regionV1 = res.Args[2]
 			})
 		})
 
 		socket.once ( 'exit', () => {
 			remote.app.exit()
 		})
+
+		socket.on ( 'pingCheck', CallBack => {
+			saveLog (`socket.on ( 'pingCheck' )`)
+			if ( !this.regionV1 || this.pingChecking ) {
+				saveLog (`!this.regionV1 [${ !this.regionV1 }] || this.pingChecking [${ this.pingChecking }]`)
+				return CallBack()
+			}
+				
+			this.pingChecking = true
+			
+			Async.eachSeries ( this.regionV1, ( n: regionV1, next ) => {
+				return testPing ( n.testHostIp, ( err, ping ) => {
+					if ( err ) {
+						socket.emit ( 'pingCheck', n.regionName, 0 )
+						return next ()
+					}
+						
+					saveLog( `testPing [${ n.regionName }] return ping [${ ping }]`)
+					socket.emit ( 'pingCheck', n.regionName, ping )
+					return next ()
+				})
+			}, () => {
+				saveLog (`pingCheck success!`)
+				this.pingChecking = false
+				return CallBack ()
+			})
+			
+		})
+
+		socket.once ( 'downloadCheck', CallBack => {
+			if ( !this.regionV1 )
+				return CallBack()
+		})
+
 
 		socket.on ( 'checkActiveEmailSubmit', ( text: string ) => {
 			console.log (`checkActiveEmailSubmit!`, text )
@@ -769,20 +811,13 @@ export class localServer {
 
 		})
 
-		socket.on ( 'connectQTGate', uuid => {
-			const index = this.imapDataPool.findIndex ( n => { return n.uuid === uuid })
-			if ( index < 0 )
-				return
-			this.imapDataPool [ index ].sendToQTGate = true
-			this.emitQTGateToClient ( socket, uuid )
-
-		})
-
+		//	
 		socket.on ( 'connectQTGate1', uuid => {
 			const index = this.imapDataPool.findIndex ( n => { return n.uuid === uuid })
 			if ( index < 0 )
 				return
 			this.imapDataPool [ index ].canDoDelete = true
+			saveLog (`socket.on ( 'connectQTGate1')  uuid = [${ uuid }]`)
 			this.emitQTGateToClient ( socket, uuid )
 
 		})
@@ -984,7 +1019,6 @@ export class localServer {
 		
 	}
 
-
 	//- socket server 
 		private socketConnectListen ( socket: SocketIO.Socket ) {
 
@@ -1011,8 +1045,6 @@ export class localServer {
 				this.saveConfig ()
 				return callback ()
 			})
-
-			
 
 			socket.on ( 'NewKeyPair', ( preData: INewKeyPair ) => {
 
@@ -1098,13 +1130,15 @@ export class localServer {
 						return callBack ( false )
 					callBack ( true, this.imapDataPool )
 					this.listenAfterPassword ( socket )
-					saveLog (`this.connectCommand && this.httpServer [${ this.connectCommand && this.httpServer }]`)
 					if ( this.connectCommand && this.httpServer ) {
 						return socket.emit ( 'QTGateGatewayConnectRequest', this.connectCommand )
 					}
-					return this.emitQTGateToClient ( socket, null )
+					//		imapDataPool have QTGateImap doing emitQTGateToClient
+					if ( this.imapDataPool.length > 0 && findQTGateImap ( this.imapDataPool ) > -1 )
+						return this.emitQTGateToClient ( socket, null )
+					return
 				}
-				saveLog ('checkPemPassword')
+
 				return Async.waterfall ([
 					( next: any ) => {
 						return this.getPbkdf2 ( password, next )
@@ -1123,14 +1157,16 @@ export class localServer {
 					this.listenAfterPassword ( socket )
 					
 					this.savedPasswrod = password	
-					this.readImapData (( err: Error ) => {
+					this.readImapData ( (err: Error, data ) => {
 						if ( err ) {
 							return saveLog ( 'checkPemPassword readImapData got error! ' + err.message )
 						}
+						this.imapDataPool = data
 						socket.emit ( 'ImapData', this.imapDataPool )
 
-						//		check imap data
-						return this.emitQTGateToClient ( socket, null )
+						//		imapDataPool have QTGateImap doing emitQTGateToClient
+						if ( this.imapDataPool.length > 0 && findQTGateImap ( this.imapDataPool ) > -1 )
+							return this.emitQTGateToClient ( socket, null )
 						
 					})
 
@@ -1366,10 +1402,10 @@ export class localServer {
 		})
 	}
 
-	private smtpVerify ( imapData: IinputData, CallBack: ( err?: number,imap?: IinputData ) => void ) {
+	private smtpVerify ( imapData: IinputData, CallBack: ( err?: number, imap?: IinputData ) => void ) {
 		saveLog ( `smtpVerify [${ JSON.stringify ( imapData )}]`)
 		let testArray: IinputData[] = null
-		let ret = false
+		let _ret = false
 		let err1 = 0
 		if ( typeof imapData.smtpPortNumber !== 'string' ) {
 			testArray = imapData.smtpPortNumber.map ( n => { 
@@ -1388,23 +1424,25 @@ export class localServer {
 			ret.smtpSsl = false
 			return ret
 		}))
-		saveLog( `smtpVerify testArray.length = [${ testArray.length }]`)
+
 		Async.each ( testArray, ( n, next ) => {
 			this._smtpVerify ( n, ( err ) => {
 				if ( err > 0 ) {
 					err1 = err 
-					saveLog (`_smtpVerify callback error (${ err })`)
 					return next ()
 				}
+				next ()
+				if ( !_ret ) {
+					_ret = true
+					imapData = n
+					saveLog ( `smtpVerify success! imapData = [${ JSON.stringify ( n )}]`)
+					return CallBack ( null, n )
+				}
 				
-				ret = true
-				imapData = n
-				saveLog (`smtpVerify success! imapData = [${ JSON.stringify ( n )}]`)
-				return CallBack ( null, n )
 				
 			})
 		}, () => {
-			if ( ! ret )
+			if ( ! _ret )
 				return CallBack ( 10 )
 		})
 		
@@ -1507,6 +1545,8 @@ export class localServer {
 					saveLog ( `encryptWithKey && sendMailToQTGate got ERROR [${ Util.inspect( err1 ) }]`)
 					return CallBack ( err1 )
 				}
+				imapData.sendToQTGate = true
+				this.saveImapData()
 				return CallBack ()
 
 			})
@@ -1514,8 +1554,9 @@ export class localServer {
 
 	}
 
+
 	private imapTest ( imapData: IinputData, CallBack: ( err: number, num?: number ) => void ) {
-		const testNumber = 4
+		const testNumber = 1
 		const uu = next => {
 			Imap.imapAccountTest ( imapData, next )
 		}
@@ -1555,7 +1596,8 @@ export class localServer {
 
 	private emitQTGateToClient ( socket: SocketIO.Socket, _imapUuid: string ) {
 		
-		let sendWhenTimeOut = true
+		const haveImapUuid = _imapUuid && _imapUuid.length
+		//		already connecting QTGate
 		if ( this.qtGateConnectEmitData && this.qtGateConnectEmitData.qtGateConnecting && this.QTClass && typeof this.QTClass.checkConnect === 'function') {
 			this.qtGateConnectEmitData.qtGateConnecting = 1
 			socket.emit ( 'qtGateConnect', this.qtGateConnectEmitData )
@@ -1565,16 +1607,17 @@ export class localServer {
 			})
 		}
 
-		if ( ! _imapUuid ) {
-			if ( this.imapDataPool.length < 1 ) {
-				return socket.emit ( 'qtGateConnect', null )
-			}
-			if ( ! this.config.QTGateConnectImapUuid ) {
-				this.config.QTGateConnectImapUuid = this.imapDataPool[0].uuid
-			}
-		} else {
-			this.config.QTGateConnectImapUuid = _imapUuid
+		if ( !_imapUuid ) {
+			const index = findQTGateImap ( this.imapDataPool )
+			//		have no QTGateIMAP STOP
+			if ( index < 0 )
+				return
+			//		show send mail form
+			const uuImap = this.imapDataPool [index]
+			_imapUuid = uuImap.uuid
 		}
+		
+		
 		
 		//	sendToQTGate
 		//	case 0: conform
@@ -1582,30 +1625,40 @@ export class localServer {
 		//	case 2: connected
 		//	case 3: connect error & error = error number
 		//	case 4: sent conform & wait return from QTGate
-		const index = this.imapDataPool.findIndex ( n => { return n.uuid === this.config.QTGateConnectImapUuid })
+		const index = this.imapDataPool.findIndex ( n => { return n.uuid === _imapUuid })
+		
 		if ( index < 0 ) {
-			this.config.QTGateConnectImapUuid = this.imapDataPool[0].uuid
-			this.QTGateConnectImap = 0
-		} else {
-			this.QTGateConnectImap = index
+			return saveLog ( `can't find index = this.imapDataPool.findIndex`)
 		}
-		const imapData = this.imapDataPool [ this.QTGateConnectImap ]
-		if ( !imapData.imapCheck || !imapData.smtpCheck || !imapData.imapTestResult )
+		const imapData = this.imapDataPool [ this.QTGateConnectImap = index ]
+		saveLog ( `QTGateConnectImap [${ this.QTGateConnectImap }]`)
+		
+		if ( !imapData.imapCheck || !imapData.smtpCheck || !imapData.imapTestResult ) {
 			return saveLog ( `emitQTGateToClient STOP with !imapData.imapCheck || !imapData.smtpCheck || !imapData.imapTestResult`)
+		}
 
 		const ret: IQtgateConnect = {
 			qtgateConnectImapAccount: imapData.uuid,
-			qtGateConnecting: imapData.sendToQTGate ? 1: ( this.config.keypair.verified ? 1 : 0 ),
+			qtGateConnecting: !haveImapUuid && !imapData.sendToQTGate ? 0 : 1,
 			isKeypairQtgateConform: this.config.keypair.verified,
 			error: null
 		}
 
-		saveLog ( `doConnect! ret = [${ JSON.stringify ( ret )}]\n imapData.uuid= [${ imapData.uuid }]` )
-		const doConnect = () => {
+		saveLog ( `socket.emit ( 'qtGateConnect' ) ret = [${ JSON.stringify ( ret )}]`)
+		socket.emit ( 'qtGateConnect', ret )
+		if ( ret.qtGateConnecting === 0 )
+			return
+
+		
+		this.qtGateConnectEmitData = ret
+		this.saveImapData()
+
+		const doConnect = ( sendMailIftimeOut ) => {
 			if ( !this.imapDataPool.length )
 				return
+			saveLog ( `doConnect with imapData [${ imapData.email }]`)
 			
-			this.QTClass = new ImapConnect ( imapData, this.qtGateConnectEmitData, sendWhenTimeOut, this, this.savedPasswrod, ( err?: number ) => {
+			this.QTClass = new ImapConnect ( imapData, this.qtGateConnectEmitData, sendMailIftimeOut, this, this.savedPasswrod, ( err?: number ) => {
 				saveLog (`ImapConnect exit with [${ err }]`)
 				if ( err !== null ) {
 					
@@ -1623,7 +1676,7 @@ export class localServer {
 					}
 					// QTGate disconnected resend connect request
 					
-					imapData.sendToQTGate = false
+					
 					this.saveImapData()
 				}
 				if ( this.QTClass ) {
@@ -1636,28 +1689,32 @@ export class localServer {
 			
 
 		}
-		
-		this.qtGateConnectEmitData = ret
-		saveLog ( `socket.emit ( 'qtGateConnect' ) ret = [${ JSON.stringify ( ret )}]`)
-		socket.emit ( 'qtGateConnect', ret )
-
-		if ( ! imapData.serverFolder || ! imapData.uuid || imapData.canDoDelete ) {
+		if ( ! imapData.serverFolder ) {
 			
 			imapData.serverFolder = Uuid.v4 ()
 			imapData.clientFolder = Uuid.v4 ()
 			imapData.randomPassword = Uuid.v4 ()
-			imapData.sendToQTGate = false
 			imapData.canDoDelete = false
-
+			return this.sendEmailTest ( imapData, err => {
+				if ( err ) {
+					saveLog ( `sendEmailTest exit err > 0 `)
+					this.qtGateConnectEmitData.qtGateConnecting = 3
+					this.qtGateConnectEmitData.error = err
+					if ( this.QTClass ) {
+						this.QTClass.removeAllListeners()
+						this.QTClass = null
+					}
+					socket.emit ( 'qtGateConnect', this.qtGateConnectEmitData )
+					return this.qtGateConnectEmitData = null
+				}
+				return doConnect ( false )
+			})
 		}
-
-		this.saveImapData()
-		saveLog ( JSON.stringify ( imapData ))
-		doConnect ()
+		return doConnect ( true )
 	}
 
 	private doingCheck ( id: string, _imapData: IinputData, socket: SocketIO.Socket ) {
-		saveLog (`doingCheck id = [${ id }] UUID [${ _imapData.uuid }]`)
+		saveLog ( `doingCheck id = [${ id }] UUID [${ _imapData.uuid }]`)
 		let imapData = this.imapDataPool [ this.addInImapData ( _imapData )]
 		imapData.imapCheck = imapData.smtpCheck = false
 		imapData.imapTestResult = 0
@@ -1682,8 +1739,10 @@ export class localServer {
 				imapData = this.imapDataPool [ this.addInImapData ( newImapData )]
 				saveLog ( `smtpVerify finished! [${ JSON.stringify ( imapData )}]`)
 				this.saveImapData ()
-				if ( !this.QTClass || !this.qtGateConnectEmitData )
-					return this.emitQTGateToClient ( socket,  _imapData.uuid )
+				
+				if ( ! this.QTClass || this.imapDataPool.length < 2 )
+					return this.emitQTGateToClient ( socket, null )
+				
 			})
 			
 		})
@@ -1695,6 +1754,12 @@ export class localServer {
 		this.httpServer.close ()
 	}
 	
+}
+
+const findQTGateImap = ( imapPool: IinputData_server[] ) => {
+	return imapPool.findIndex ( n => {
+		return availableImapServer.test ( n.imapServer ) && n.imapCheck && n.smtpCheck && n.imapTestResult > 0 
+	})
 }
 
 const sentRequestMailWaitTimeOut = 1000 * 60 * 1.5
@@ -1773,7 +1838,7 @@ class ImapConnect extends Imap.imapPeer {
 		})
 	}
 
-	constructor ( public imapData: IinputData, private qtGateConnectEmitData: IQtgateConnect, sendConnectMailWhenServerNotReady: boolean,
+	constructor ( public imapData: IinputData, private qtGateConnectEmitData: IQtgateConnect, sendMailIfTimeOut: boolean,
 			private localServer: localServer, password: string,  private _exit: ( err?: number ) => void, private socket: SocketIO.Socket ) {
 		super ( imapData, imapData.clientFolder, imapData.serverFolder, ( text, CallBack ) => {
 			this._enCrypto ( text, CallBack )
@@ -1785,7 +1850,7 @@ class ImapConnect extends Imap.imapPeer {
 				_exit = null
 			}
 		})
-
+		
 		Async.parallel ([
 			next => readQTGatePublicKey ( next ),
 			next => this.localServer.getPbkdf2 ( password, next )
@@ -1801,18 +1866,24 @@ class ImapConnect extends Imap.imapPeer {
 				this.password = data[0].toString ('hex')
 			}
 		})
-
-		sendConnectMailWhenServerNotReady ?  this.timeOutWhenSendConnectRequestMail = setTimeout (() => {
-			saveLog (`sendConnectMailWhenServerNotReady setTimeout!`)
-			if ( this.localServer.isMultipleQTGateImapData ) {
-				
-				if ( this.localServer.isMultipleQTGateImapData ) {
-					clearTimeout ( this.timeOutWhenSendConnectRequestMail )
-					saveLog ( `isMultipleQTGateImapData!`)
-					return this.destroy (10)
-				}
+		/*
+		sendConnectMailWhenServerNotReady ? this.timeOutWhenSendConnectRequestMail = setTimeout (() => {
+			saveLog ( `sendConnectMailWhenServerNotReady setTimeout! [${ this.localServer.isMultipleQTGateImapData() }]`)
+			if ( this.localServer.isMultipleQTGateImapData() ) {
+				saveLog ( `isMultipleQTGateImapData!`)
+				return this.destroy (10)
 			}
+			this.checkConnect ( err => {
+
+			})
 		}, QTGatePongReplyTime ) : this.makeTimeOutEvent ()
+		*/
+		sendMailIfTimeOut ? 
+			this.checkConnect ( err => {
+				saveLog ( `this.checkConnect got error!`)
+				return this.destroy (10)
+			})
+			: this.makeTimeOutEvent ()
 
 		this.once ( 'ready', () => {
 			saveLog ( 'ImapConnect got response from QTGate imap server, connect ready!' )
@@ -1822,7 +1893,6 @@ class ImapConnect extends Imap.imapPeer {
 			qtGateConnectEmitData.qtGateConnecting = 2
 			this.localServer.saveImapData ()
 			this.localServer.config.connectedQTGateServer = true
-			this.localServer.config.QTGateConnectImapUuid = imapData.uuid
 			this.localServer.saveConfig ()
 			socket.emit ( 'qtGateConnect', qtGateConnectEmitData )
 			
@@ -1839,15 +1909,13 @@ class ImapConnect extends Imap.imapPeer {
 
 		this.once ( 'wFolder', () => {
 			console.log ( `wImap once wFolder`)
-			if ( sendConnectMailWhenServerNotReady ) {
-				return this.doSendConnectMail ()
-			}
+			return this.doSendConnectMail ()
 		})
 
 		this.newMail = ( ret: QTGateAPIRequestCommand ) => {
 			//		have not requestSerial that may from system infomation
 			if ( ! ret.requestSerial ) {
-				saveLog (`newMail have not ret.requestSerial, doing switch ( ret.command ) `)
+				saveLog ( `newMail have not ret.requestSerial, doing switch ( ret.command ) `)
 				switch ( ret.command ) {
 
 					case 'stopGetwayConnect':
@@ -1880,10 +1948,9 @@ class ImapConnect extends Imap.imapPeer {
 			const CallBack = this.commandCallBackPool.get ( ret.requestSerial )
 
 			if ( ! CallBack || typeof CallBack !== 'function' ) {
-				
 				return saveLog ( `QTGateAPIRequestCommand got commandCallBackPool ret.requestSerial [${ ret.requestSerial }] have not callback `)
 			}
-			saveLog ( `QTGateAPIRequestCommand got [${ ret.requestSerial }] callback  [${ CallBack.toString () }]`)
+			saveLog ( `QTGateAPIRequestCommand got [${ ret.requestSerial }] callback`)
 			return CallBack ( null, ret )
 			
 		}
@@ -1892,7 +1959,7 @@ class ImapConnect extends Imap.imapPeer {
 	}
 
 	public request ( command: QTGateAPIRequestCommand, CallBack ) {
-		saveLog (`request command [${ command.command }] requestSerial [${ command.requestSerial }]`)
+		saveLog ( `request command [${ command.command }] requestSerial [${ command.requestSerial }]` )
 		if ( command.requestSerial )
 			this.commandCallBackPool.set ( command.requestSerial, CallBack )
 		return this._enCrypto ( JSON.stringify ( command ), ( err1, data: string ) => {
@@ -1900,8 +1967,7 @@ class ImapConnect extends Imap.imapPeer {
 				saveLog ( `request _deCrypto got error [${ JSON.stringify ( err1 )}]` )
 				return CallBack ( err1 )
 			}
-			this.append ( data )
-			saveLog ( `do request command [${ command.command }] finished and wait server response!`)
+			this.trySendToRemote ( Buffer.from ( data ), () => {})
 		})
 		
 	}
@@ -1916,14 +1982,15 @@ class ImapConnect extends Imap.imapPeer {
 		const time = setTimeout (() => {
 			
 			this.localServer.sendEmailTest ( this.imapData, err => {
-				if ( err )
+				if ( err ) {
+					CallBack ( err )
 					return saveLog (`class [ImapConnect] checkConnect timeout! send request mail to QTGate! ERROR! [${ JSON.stringify ( err )}]`)
+				}
 				saveLog (`class [ImapConnect] checkConnect timeout! send request mail to QTGate! success`)
 			})
 		}, QTGatePongReplyTime )
-
+		
 		this.once ( 'ready', () => {
-			
 			clearTimeout ( time )
 			CallBack ()
 		})
@@ -1931,6 +1998,36 @@ class ImapConnect extends Imap.imapPeer {
 
 	}
  	
+}
+
+const testPing = ( hostIp: string, CallBack ) => {
+	let pingTime = 0
+	const test = new Array ( testPingTimes )
+	test.fill ( hostIp )
+	saveLog (`start testPing [${ hostIp }]`)
+	return Async.eachSeries ( test, ( n, next ) => {
+		
+		const session = netPing.createSession ()
+		session.pingHost ( hostIp, ( err, target, sent, rcvd ) => {
+			
+			session.close ()
+			if ( err ) {
+				saveLog (`session.pingHost ERROR, ${ err.message }`)
+				return next ( err )
+			}
+			saveLog ( `session.pingHost success!`)
+			const ping = rcvd.getTime () - sent.getTime ()
+			pingTime += ping
+			return next ()
+		})
+	}, err => {
+		if ( err ) {
+			return CallBack ( new Error ('ping error'))
+		}
+
+		return CallBack ( null, Math.round ( pingTime/testPingTimes ))
+	})
+	
 }
 
 const makeFeedBackDataToQTGateAPIRequestCommand = ( data: feedBackData, Callback ) => {

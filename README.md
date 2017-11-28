@@ -32,9 +32,9 @@ QTGATEはローカルプロキシサーバを提供して、HTTP, HTTPS, SOCKS 4
 
 ## Build 編譯 ビルド
 
-npm run [mac|windows|linux]
+npm run [mac|win32|win|linux]
 
-[Multi Platform Build 如何編譯多平台APP可參照 マルチOSのビルドにつて](https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build)
+[Multi Platform Build 如何編譯多平台APP可參照 マルチOSのビルドにつて](https://www.electron.build/multi-platform-build)
 
 ## Notice 注意事項 
 

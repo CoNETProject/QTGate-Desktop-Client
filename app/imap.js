@@ -23,7 +23,7 @@ const Stream = require("stream");
 const Event = require("events");
 const Uuid = require("node-uuid");
 const Async = require("async");
-const crypto = require("crypto");
+const Crypto = require("crypto");
 const path_1 = require("path");
 const os_1 = require("os");
 const MAX_INT = 9007199254740992;
@@ -94,7 +94,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         clearTimeout(this.idleNextStop);
         clearTimeout(this.idleResponsrTime);
         this.cmd = this.runningCommand = `DONE`;
-        const cc = crypto.randomBytes(10).toString('base64');
+        const cc = Crypto.randomBytes(10).toString('base64');
         this.debug ? debugOut(this.cmd + `【${cc}】`, false) : null;
         if (this.writable) {
             this.idleResponsrTime = setTimeout(() => {
@@ -136,7 +136,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                     if (/^ok$/i.test(cmdArray[1])) {
                         if (/^IDLE$/i.test(cmdArray[0]))
                             clearTimeout(this.idleResponsrTime);
-                        this.doCommandCallback();
+                        this.doCommandCallback(null, commandLine);
                         return callback();
                     }
                     this.doCommandCallback(new Error(cmdArray.slice(2).join(' ')));
@@ -285,7 +285,10 @@ class ImapServerSwitchStream extends Stream.Transform {
                         haveMoreNewMail = _moreNew;
                         this.flagsDeleted(newMailIds, next);
                     },
-                        next => this.expunge(next)
+                    (data, next) => {
+                        saveLog(`Async.waterfall ( data[${typeof data}], next ${typeof next}) `);
+                        this.expunge(next);
+                    }
                 ], (err, newMail) => {
                     this.runningCommand = null;
                     if (err)
@@ -380,7 +383,7 @@ class ImapServerSwitchStream extends Stream.Transform {
             const name = this.imapServer.idleSupport ? 'IDLE' : 'NOOP';
             this.Tag = `${name}`;
             this.cmd = `${name} ${name}`;
-            const cc = crypto.randomBytes(10).toString('base64');
+            const cc = Crypto.randomBytes(10).toString('base64');
             this.debug ? debugOut(this.cmd + `【${cc}】`, false) : null;
             if (this.writable) {
                 this.idleResponsrTime = setTimeout(() => {
@@ -494,10 +497,10 @@ class ImapServerSwitchStream extends Stream.Transform {
             return this.logout_process(this.waitLogoutCallBack);
         }
         this.canDoLogout = false;
-        this.doCommandCallback = err => {
+        this.doCommandCallback = (err, info) => {
             this.canDoLogout = true;
             this.checkLogout(() => {
-                CallBack(err);
+                CallBack(err, info);
             });
         };
         let out = `Content-Type: application/octet-stream\r\nContent-Disposition: attachment\r\nMessage-ID:<${Uuid.v4()}@>${this.imapServer.domainName}\r\nContent-Transfer-Encoding: base64\r\nMIME-Version: 1.0\r\n\r\n${text}`;
@@ -708,8 +711,10 @@ class ImapServerSwitchStream extends Stream.Transform {
         return this.imapServer.destroyAll(null);
     }
     expunge(callback) {
+        console.trace(callback.toString());
         let newSwitchRet = false;
         this.doCommandCallback = (err) => {
+            console.trace(callback.toString());
             return callback(err, newSwitchRet);
         };
         this.commandProcess = (text, cmdArray, next, _callback) => {
@@ -796,9 +801,11 @@ class qtGateImap extends Event.EventEmitter {
         else {
             const jj = Tls.connect({ rejectUnauthorized: !this.IMapConnect.imapIgnoreCertificate, host: this.IMapConnect.imapServer, port: this.port }, () => {
                 jj.once('error', err => {
+                    saveLog(`jj.once ( 'error' ) listenFolder[${this.listenFolder}] writeFolder [${this.writeFolder}]`);
                     this.destroyAll(err);
                 });
                 jj.once('end', () => {
+                    saveLog(`jj.once ( 'end' ) listenFolder[${this.listenFolder}] writeFolder [${this.writeFolder}]`);
                     this.destroyAll(null);
                 });
                 this.socket = jj;
@@ -837,7 +844,7 @@ class qtGateImapwrite extends qtGateImap {
         this.canAppend = false;
         this.appendPool = [];
         this.once('ready', () => {
-            console.log(`qtGateImapwrite [${writeFolder}] ready`);
+            console.log(`qtGateImapWrite [${writeFolder}] ready`);
             this.ready = this.canAppend = true;
         });
     }
@@ -881,13 +888,67 @@ exports.getMailAttached = (email) => {
     const attachment = email.slice(attachmentStart + 4);
     return Buffer.from(attachment.toString(), 'base64');
 };
+exports.imapBasicTest = (IMapConnect, CallBack) => {
+    saveLog(`start imapBasicTest imap [${JSON.stringify(IMapConnect)}]`);
+    let callbackCall = false;
+    let startTime = null;
+    let wImap = null;
+    const listenFolder = Crypto.randomBytes(20).toString('hex');
+    const ramdomText = Crypto.randomBytes(20);
+    const timeout = setTimeout(() => {
+        if (rImap) {
+            rImap.logout();
+        }
+        rImap = null;
+        if (wImap) {
+            wImap.logout();
+        }
+        wImap = null;
+        doCallBack(new Error('timeout'), null);
+    }, 15000);
+    const doCallBack = (err, ret) => {
+        if (!callbackCall) {
+            callbackCall = true;
+            clearTimeout(timeout);
+            return CallBack(err, ret);
+        }
+    };
+    let rImap = new qtGateImapRead(IMapConnect, listenFolder, true, true, () => {
+    });
+    rImap.once('ready', () => {
+        console.log(`imapBasicTest rImap.once ( 'ready' )`);
+        rImap.logout();
+        rImap = null;
+        wImap = new qtGateImapwrite(IMapConnect, listenFolder);
+        wImap.once('ready', () => {
+            console.log(`imapBasicTest wImap.once ( 'ready' )`);
+            startTime = new Date().getTime();
+            wImap.append(ramdomText.toString('base64'), (err, info) => {
+                if (err) {
+                    console.log(` imapBasicTest wImap.append err`, err);
+                }
+                else {
+                    console.log(`imapBasicTest wImap.append success [${info}]`);
+                }
+                wImap.logout();
+                wImap = null;
+            });
+        });
+    });
+    rImap.once('end', err => {
+        doCallBack(err, null);
+    });
+    rImap.once('error', err => {
+        doCallBack(err, null);
+    });
+};
 exports.imapAccountTest = (IMapConnect, CallBack) => {
     saveLog(`start test imap [${JSON.stringify(IMapConnect)}]`);
     let callbackCall = false;
     let startTime = null;
     let wImap = null;
     const listenFolder = Uuid.v4();
-    const ramdomText = crypto.randomBytes(20);
+    const ramdomText = Crypto.randomBytes(20);
     const timeout = setTimeout(() => {
         if (rImap) {
             rImap.logout();
@@ -983,13 +1044,11 @@ class imapPeer extends Event.EventEmitter {
                             return setTimeout(() => {
                                 saveLog(`outlook replyPing ()`);
                                 this.pingUuid = null;
-                                if (this.wImapReady)
-                                    this.replyPing(uu);
+                                this.replyPing(uu);
                                 return this.Ping();
                             }, 5000);
                         }
-                        if (this.wImapReady)
-                            this.replyPing(uu);
+                        this.replyPing(uu);
                         saveLog(`THIS peerConnect have not ready send ping!`);
                         this.pingUuid = null;
                         return this.Ping();
@@ -1011,56 +1070,52 @@ class imapPeer extends Event.EventEmitter {
             }
         });
     }
-    sendToRemote(text, CallBack) {
-        if (this.wImap)
-            return this.wImap.append(text.toString('base64'), CallBack);
+    trySendToRemote(email, CallBack) {
+        if (this.wImap) {
+            return this.wImap.append(email.toString('base64'), err => {
+                if (err) {
+                    saveLog(`this.wImap.append ERROR: [${err.message ? err.message : ''}]`);
+                }
+                return CallBack(err);
+            });
+        }
+        this.sendMailPool.push(email);
+        this.newWriteImap();
+        return CallBack();
     }
     replyPing(uu) {
         return this.enCrypto(JSON.stringify({ pong: uu.ping }), (err, data) => {
-            this.append(data);
+            this.trySendToRemote(Buffer.from(data), () => {
+            });
         });
     }
     Ping() {
-        if (!this.wImapReady || this.pingUuid !== null)
-            return saveLog(`Ping do nothing : this.wImapReady [${this.wImapReady}] || this.pingUuid [${this.pingUuid}]`);
         this.pingUuid = Uuid.v4();
+        saveLog(`Ping!`);
         return this.enCrypto(JSON.stringify({ ping: this.pingUuid }), (err, data) => {
             if (err) {
                 return saveLog(`Ping enCrypto error: [${err.message}]`);
             }
-            const doSend = () => {
-                this.sendToRemote(Buffer.from(data), err => {
-                    if (err) {
-                        this.emit('wFolder');
-                        return saveLog(`Ping doSend error! [${err.message}]`);
-                    }
-                    saveLog(`PING success!`);
-                });
-            };
-            doSend();
+            this.trySendToRemote(Buffer.from(data), () => { });
         });
     }
     sendAllMail() {
         if (!this.sendMailPool.length || !this.wImapReady)
             return saveLog(`sendAllMail do nothing! sendMailPool.length [${this.sendMailPool.length}] wImapReady [${this.wImapReady}]`);
-        const uu = Buffer.from(this.sendMailPool.pop());
+        const uu = this.sendMailPool.pop();
         if (!uu)
             return saveLog(`sendAllMail this.sendMailPool.pop () got nothing!`);
-        this.sendToRemote(uu, err => {
-            if (err) {
-                saveLog(`this.wImap.append error [${err.message}]! `);
-                this.sendMailPool.push();
-            }
-            saveLog(`sendAllMail sendToRemote success!`);
-        });
+        this.trySendToRemote(uu, () => { });
     }
     newWriteImap() {
         this.wImap = new qtGateImapwrite(this.imapData, this.writeBox);
         this.wImap.once('end', err => {
-            saveLog(`this.wImap.once end ! [${err && err.message ? err.message : null}]`);
+            saveLog(`this.wImap.once end ! [${err && err.message ? err.message : null}]!`);
             this.wImap = null;
-            if (!this.doingDestroy)
+            if (this.sendMailPool.length > 0) {
+                saveLog(`this.wImap.once end ! sendMailPool.length > 0 [${this.sendMailPool.length}] newWriteImap () `);
                 return this.newWriteImap();
+            }
         });
         this.wImap.once('error', err => {
             if (err && err.message && /AUTH|certificate/i.test(err.message)) {
@@ -1070,6 +1125,7 @@ class imapPeer extends Event.EventEmitter {
             this.wImap.destroyAll(null);
         });
         this.wImap.once('ready', () => {
+            saveLog(`wImap.once ( 'ready')`);
             this.wImapReady = true;
             if (this.sendFirstPing) {
                 this.sendAllMail();
@@ -1107,6 +1163,7 @@ class imapPeer extends Event.EventEmitter {
             this.rImap.destroyAll(null);
         });
         this.rImap.once('end', err => {
+            saveLog(`rImap.once ( 'end' ) this.doingDestroy [${this.doingDestroy}]`);
             this.rImap = null;
             if (!this.doingDestroy)
                 return this.newReadImap();
@@ -1147,14 +1204,10 @@ class imapPeer extends Event.EventEmitter {
             this.exit = null;
         }
     }
-    append(text) {
-        this.sendMailPool.unshift(text);
-        return this.sendAllMail();
-    }
     sendDone() {
         return Async.waterfall([
                 next => this.enCrypto(JSON.stringify({ done: new Date().toISOString() }), next),
-            (data, next) => this.sendToRemote(Buffer.from(data), next)
+            (data, next) => this.trySendToRemote(Buffer.from(data), next)
         ], err => {
             if (err)
                 return saveLog(`sendDone got error [${err.message}]`);

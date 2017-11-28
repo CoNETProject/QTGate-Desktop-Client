@@ -356,6 +356,10 @@ const QTGateRegionsSetup = [
 ];
 const infoDefine = [
     {
+        QTGateDonate: {
+            title: 'QTGate赞助商提供的免流量网站',
+            meta_title: '捐赠者：'
+        },
         QTGateInfo: {
             title: 'QTGate功能简介',
             version: '本机QTGate版本：v',
@@ -498,7 +502,8 @@ const infoDefine = [
             testSuccess: 'email服务器连接试验成功！',
             exitEdit: '退出编辑Email帐户',
             deleteImap: '删除IMAP账户',
-            proxyPortError: '端口号应该是从1000-65535之间的数字，或此端口号已被其他APP所占用。请尝试其他号码。'
+            proxyPortError: '端口号应该是从1000-65535之间的数字，或此端口号已被其他APP所占用。请尝试其他号码。',
+            appPassword: '关于APP密码'
         },
         home_index_view: {
             newVersion: '新版本准备就绪，请安装！',
@@ -554,7 +559,10 @@ const infoDefine = [
             SystemPasswordError: '密钥对密码错误，请重试！如果您已忘记您的密钥对密码，请删除现有的密钥对，重新生成新的密钥对。但您的原有设定将全部丢失！',
             finishedDeleteKeyPair: '密钥对完成删除!',
             offlineError: '您的电脑未连接到互联网，请检查网络后再次尝试！',
-            imapErrorMessage: ['', '数据格式错误，请重试', '您的电脑未连接到互联网，请检查网络后再次尝试！', 'email服务器提示用户名或密码错！',
+            imapErrorMessage: ['',
+                '数据格式错误，请重试',
+                '您的电脑未连接到互联网，请检查网络后再次尝试！',
+                'email服务器提示用户名或密码错！这个错误通常是由于您使用的密码是普通密码所造成的，请使用APP密码重新试一次。',
                 'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！<a href="data-html"></a>',
                 '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在IMAP详细设定中选择忽略证书错误。', '无法获得Email服务器域名信息，请检查您的Email服务器设定！',
                 '此Email伺服器不能使用QTGate通訊技术。请选择其他email服务供应商！', 'email服务器提示SMTP用户名或密码错！ ',
@@ -590,6 +598,7 @@ const infoDefine = [
         },
         QTGateRegion: {
             title: 'QTGate代理服务器区域选择',
+            speedTest: '代理服务器速度测试：',
             error: [],
             connectQTGate: '正在获得代理服务器区域信息...',
             available: '服务中',
@@ -609,7 +618,7 @@ const infoDefine = [
             GlobalIp: '本机互联网IP地址:',
             QTGateRegionERROR: ['发送连接请求Email到QTGate系统发生送信错误， 请检查您的IMAP账号的设定。',
                 ''],
-            GlobalIpInfo: '注意：当您按下【QTGate连结】时您会把您的本机互联网IP提供给QTGate系统，如果您不愿意，请选择【@QTGate】技术来使用QTGate服务！没有【@QTGate】选项是因为@QTGate技术只能对应iCloud邮箱。',
+            GlobalIpInfo: '注意：当您按下【QTGate连结】时您会把您的本机互联网IP提供给QTGate系统，如果您不愿意，请选择【@OPN】技术来使用QTGate服务！没有【@OPN】选项是因为@QTGate技术只能对应iCloud邮箱。',
             sendConnectRequestMail: ['您的QTGate客户端没有和QTgate系统联机，客户端已向QTgate系统重新发出联机请求Email。和QTgate系统联机需要额外的时间，请耐心等待。',
                 '当免费用户连续24小时内没有使用客户端，您的连接会被中断。付费用户情况下QTgate系统可保持持续联机一个月。'],
             cacheDatePlaceDate: [{ name: '1小时', id: 1 }, { name: '12小时', id: 12 }, { name: '1日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永远', id: -1 }],
@@ -773,6 +782,10 @@ const infoDefine = [
                 '正在获得QTGate信任签署中', '系统错误，请重启QTGate后再试，如果仍然存在，请尝试重新安装QTGate。', 'QTGate系统错误!']
         }
     }, {
+        QTGateDonate: {
+            title: 'スポンサーが提供する無料アクセスウェブサイト',
+            meta_title: 'ドナー：'
+        },
         QTGateInfo: {
             title: 'QTGate機能紹介',
             version: '本機QTGateバージョン：v',
@@ -1044,7 +1057,8 @@ const infoDefine = [
             testSuccess: 'emailサーバのテストが完了しました',
             exitEdit: '退出編集Emailアカンウト',
             deleteImap: 'IMAPアカウトを削除',
-            proxyPortError: 'ポート番号は1000から65535までの数字です。又はこのポート番号は他のアプリが使っています。他の番号にチェンジしてください。'
+            proxyPortError: 'ポート番号は1000から65535までの数字です。又はこのポート番号は他のアプリが使っています。他の番号にチェンジしてください。',
+            appPassword: 'APPパスワードについて'
         },
         Home_keyPairInfo_view: {
             newVersionDownload: 'クリックしてダウンロードとインストール',
@@ -1101,7 +1115,10 @@ const infoDefine = [
             SystemPasswordError: '暗号鍵パスワードが違います。パースワードが忘れた場合、現在の鍵ペアを削除してください。この場合は、現有の設定はなくなって、一からシステム設定をやり直しが必要です。',
             finishedDeleteKeyPair: '暗号鍵ペア削除しました。',
             offlineError: 'インターネット接続されていないらしいですが、ネットワークをチェックしてもう一度お試しください！',
-            imapErrorMessage: ['', 'データフーマットエラー！', 'インターネット接続されていないらしいですが、ネットワークをチェックしてもう一度お試しください！', 'emailサーバはIMAPユーザー名又はパスワードに間違いがあると提示しました！',
+            imapErrorMessage: ['',
+                'データフーマットエラー！',
+                'インターネット接続されていないらしいですが、ネットワークをチェックしてもう一度お試しください！',
+                'emailサーバはIMAPユーザー名又はパスワードに間違いがあると提示しました！このエラーは普通パスワードを使っていたのです。APPパスワードを使ってもう一度試しにしてください。',
                 '指定したPORTでemailサーバへIMAPの接続ができませんでした、PORT番号をチェックしてください、ファイヤウォールの中にいる場合、指定したPORTはファイアウォールにフィルタした可能性があ裏ます、IMAPサーバーのその他有効PORT番号にチェッジしてください。<a href="https://tw.help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick (`https://tw.help.yahoo.com/kb/SLN15241.html`)">应用密码</a>',
                 'IMAPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
                 'emailサーバドメインは有効ではありません、emailサーバの設定を修正してください。', 'このemailサーバはQTGate通信技術サポートしていません、他のemailプロバイダにチェンジをしてください。',
@@ -1138,6 +1155,7 @@ const infoDefine = [
         },
         QTGateRegion: {
             title: 'QTGateゲットウェイエリア',
+            speedTest: 'スピードテスト：',
             available: 'サービス中',
             unavailable: '準備しています',
             proxyDomain: 'ドメイン検索はQTGateゲットウェイ側に依頼します。',
@@ -1157,7 +1175,7 @@ const infoDefine = [
             sendConnectRequestMail: ['QTGateクライアントはQTGateシステムとの接続が切れた。再接続要請メールをQTGateシステムへ送信しました、接続を完了するまで時間がかかるのためしばらくお待ちおください。',
                 'フリーユーザアカンウトには24時間以内、QTGateをご利用していなっかたの場合、QTGateシステムは接続を切る事にします。QTGateシステムは有料ユーザーにはが一ヶ月長時間接続できます。'],
             GlobalIp: 'グロバールIP:',
-            GlobalIpInfo: '要注意：【QTGate接続】をおすとあなたのグロバールIPアドレスをQTGateシステムに送信しますので、それを遠慮すれば【@QTGate】接続を選んでください。【@QTGate】が見つからない場合は@QTGate技術がiCloudしか対応しておりません。',
+            GlobalIpInfo: '要注意：【QTGate接続】をおすとあなたのグロバールIPアドレスをQTGateシステムに送信しますので、それを遠慮すれば【@OPN】接続を選んでください。【@OPN】が見つからない場合は@OPN技術がiCloudしか対応しておりません。',
             cacheDatePlaceDate: [{ name: '1時間', id: 1 }, { name: '12時間', id: 12 }, { name: '一日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永遠', id: -1 }],
             connectQTGate: 'QTGateゲットウェーエリアインフォメーションを取得しています...',
             atQTGateDetail: ['QTGateの世界初のIP不要な通信技術です。暗号化したEmailメッセージを通じたゲットウェイに接続することで、身を隠して誰も知らないうちにインターネットへ、プライバシーと強くファイヤウォールをうまくすり抜けることができます。但しお使いメールサーバの性能に次第スピードが遅くなり、長い遅延など短所があります、ゲームやビデオチャットなどに通信障害出る可能性があります。この技術はiCloudアカンウトのみ対応です',
@@ -1203,6 +1221,10 @@ const infoDefine = [
             okTitle: 'QTGateへ送信'
         },
     }, {
+        QTGateDonate: {
+            title: 'Free access website provided by sponsor.',
+            meta_title: 'Donor：'
+        },
         QTGateInfo: {
             title: 'QTGate Features',
             version: 'Installed QTGate veriosn：v',
@@ -1486,7 +1508,8 @@ const infoDefine = [
             testSuccess: 'Email server setup success!',
             exitEdit: 'Exit edit email account',
             deleteImap: 'Delete IMAP account.',
-            proxyPortError: 'Port number should be a number from 1000 to 65535. Or this port is being used by another process. Please try another port number.'
+            proxyPortError: 'Port number should be a number from 1000 to 65535. Or this port is being used by another process. Please try another port number.',
+            appPassword: 'About APP password.'
         },
         Home_keyPairInfo_view: {
             title: 'Key pair information',
@@ -1542,16 +1565,19 @@ const infoDefine = [
             SystemPasswordError: 'Your key pair password does not match. Please try again. If you forgot your password, please delete this key pair. Beware you will lose you current account settings.',
             finishedDeleteKeyPair: 'Key pair deleted!',
             offlineError: 'There is no internet connection detected. Please check your network and try again!',
-            imapErrorMessage: ['', 'Data format error!',
+            imapErrorMessage: [
+                '',
+                'Data format error!',
                 'This computer does not detect an internet connection. Please check your network and try again!',
-                `IMAP email server did respond to username or an error in password .`,
+                `Email server did respond to username or an error in password. You may need use APP password to pass this test if you did normal password.`,
                 `Can't connect to email server with the port. Please check the IMAP port number. This port may be filtered by a firewall in your network.`,
                 `There is a problem with this IMAP email server's security certificate!`,
                 `Error in email server’s address. Please check the email server’s domain.`,
                 'This email provider currently does not support QTGate’s @OPN technology, please try another email provider.',
                 `Email server did respond to SMTP's username or an error in password.`,
                 `There is a problem with this SMTP email server’s security certificate!`,
-                `Connecting to SMTP Email server received an unknown error!`, 'Please check email account!']
+                `Connecting to SMTP Email server received an unknown error!`, 'Please check email account!'
+            ]
         },
         emailConform: {
             activeViewTitle: 'Active your keypair.',
@@ -1584,6 +1610,7 @@ const infoDefine = [
         QTGateRegion: {
             title: 'QTGate gateway area',
             available: 'Available',
+            speedTest: 'Speed test：',
             unavailable: 'Unavailable',
             proxyDomain: 'Domain lookup via QTGate gateway side.',
             setupCardTitle: 'connecting with:',
@@ -1656,6 +1683,10 @@ const infoDefine = [
             okTitle: 'Send to QTGate'
         },
     }, {
+        QTGateDonate: {
+            title: 'QTGate贊助商提供的免流量網站',
+            meta_title: '捐贈者：'
+        },
         useInfoiOS: {
             title1: 'iOS設備本地代理伺服器設定',
             info: [{
@@ -1908,7 +1939,8 @@ const infoDefine = [
             testSuccess: '電子郵件伺服器連接試驗成功！',
             exitEdit: '退出編輯Email帳戶',
             deleteImap: '刪除IMAP帳戶',
-            proxyPortError: '連接埠應該是從1000-65535之間的數字，或此端口已被其他APP所占用，請再嘗試其他號碼。'
+            proxyPortError: '連接埠應該是從1000-65535之間的數字，或此端口已被其他APP所占用，請再嘗試其他號碼。',
+            appPassword: '關於APP密碼'
         },
         Home_keyPairInfo_view: {
             title: '密鑰信息',
@@ -1964,11 +1996,16 @@ const infoDefine = [
             SystemPasswordError: '密鑰對密碼錯誤，請重試！如果您已忘記您的密鑰對密碼，請刪除現有的密鑰對，重新生成新的密鑰對。',
             finishedDeleteKeyPair: '密鑰對完成刪除!',
             offlineError: '您的電腦視乎未連結到互聯網，請檢查網路連結',
-            imapErrorMessage: ['', '數據格式錯誤，請重試', '您的電腦未連接到互聯網，請檢查網絡後再次嘗試！', 'email伺服器提示IMAP用戶名或密碼錯！',
+            imapErrorMessage: ['',
+                '數據格式錯誤，請重試',
+                '您的電腦未連接到互聯網，請檢查網絡後再次嘗試！',
+                'email伺服器提示IMAP用戶名或密碼錯！這個錯誤通常是由於您使用的密碼是普通密碼所造成的，請使用APP密碼重新試一次。',
                 'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！',
                 '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在IMAP詳細設定中選擇忽略證書錯誤。',
                 '無法獲得Email伺服器域名信息，請檢查您的Email伺服器設定！', '此Email伺服器不能使用QTGate通訊技术。请选择其他email服务供应商！',
-                'email伺服器提示SMTP用戶名或密碼錯！', '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在SMTP詳細設定中選擇忽略證書錯誤。', 'SMTP連結提示未知錯誤', '您已有相同的Email賬戶']
+                'email伺服器提示SMTP用戶名或密碼錯！', '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在SMTP詳細設定中選擇忽略證書錯誤。',
+                'SMTP連結提示未知錯誤',
+                '您已有相同的Email賬戶']
         },
         emailConform: {
             activeViewTitle: '驗證您的密鑰',
@@ -2000,6 +2037,7 @@ const infoDefine = [
         QTGateRegion: {
             title: 'QTGate代理伺服器區域',
             available: '服務中',
+            speedTest: '代理伺服器速度測試',
             unavailable: '準備中',
             proxyDomain: '域名解釋全程使用QTGate代理伺服器端',
             setupCardTitle: '使用連接技術:',
@@ -2017,7 +2055,7 @@ const infoDefine = [
                 ''],
             sendConnectRequestMail: ['您的QTGate客戶端沒有和QTgate系統聯機，客戶端已向QTgate系統重新發出聯機請求Email。和QTgate系統聯機需要額外的時間，請耐心等待。 ',
                 '當免費用戶連續24小時內沒有使用客戶端，您的連接會被中斷。付費用戶情況下QTgate系統可保持持續聯機一個月。 '],
-            GlobalIpInfo: '注意：當您按下【QTGate連結】時您會把您的本機互聯網IP提供給QTGate系統，如果您不願意，請選擇【@QTGate】技術來使用QTGate服務！沒有【@QTGate】選項是因為@QTGate只能對應iCloud郵箱。',
+            GlobalIpInfo: '注意：當您按下【QTGate連結】時您會把您的本機互聯網IP提供給QTGate系統，如果您不願意，請選擇【@OPN】技術來使用QTGate服務！沒有【@OPN】選項是因為@QOPN只能對應iCloud郵箱。',
             localPort: '本地代理伺服器連接埠:',
             cacheDatePlaceDate: [{ name: '1小时', id: 1 }, { name: '12小时', id: 12 }, { name: '1日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永遠', id: -1 }],
             atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用強加密Email通訊，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私，超強防火牆穿透能力。缺点是有延遲，网络通讯响应受您所使用的email服务供应商的伺服器影响，不適合遊戲視頻會話等通訊。目前該技術只支持iCloud郵箱。',
@@ -2076,7 +2114,9 @@ const _QTGateRegions = [
         qtRegion: 'Asia.Bangalore',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'singapore',
         content: ['新加坡', 'シンガポール', 'Singapore', '新加坡'],
@@ -2091,7 +2131,9 @@ const _QTGateRegions = [
         qtRegion: 'singapore',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'japan',
         content: ['东京', '東京', 'Tokyo', '東京'],
@@ -2106,7 +2148,9 @@ const _QTGateRegions = [
         qtRegion: 'tokyo',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'netherlands',
         content: ['阿姆斯特丹', 'アムステルダム', 'Amsterdam', '阿姆斯特丹'],
@@ -2121,7 +2165,9 @@ const _QTGateRegions = [
         qtRegion: 'amsterdam',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'germany',
         content: ['法兰克福', 'フランクフルト', 'Frankfurt', '法蘭克福'],
@@ -2136,7 +2182,9 @@ const _QTGateRegions = [
         qtRegion: 'frankfurt',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'united kingdom',
         content: ['爱尔兰', 'アイルランド', 'Ireland', '愛爾蘭'],
@@ -2151,7 +2199,9 @@ const _QTGateRegions = [
         qtRegion: 'Ireland',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'united kingdom',
         content: ['伦敦', 'ロンドン', 'London', '倫敦'],
@@ -2166,7 +2216,9 @@ const _QTGateRegions = [
         qtRegion: 'London',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'australia',
         content: ['悉尼', 'シドニー', 'Sydney', '悉尼'],
@@ -2181,7 +2233,9 @@ const _QTGateRegions = [
         qtRegion: 'Sydney',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'united states',
         content: ['纽约', 'ニューヨーク', 'New York City', '紐約'],
@@ -2196,7 +2250,9 @@ const _QTGateRegions = [
         qtRegion: 'new-york-city',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'canada',
         content: ['多伦多', 'トロント', 'Toronto', '多倫多'],
@@ -2211,7 +2267,9 @@ const _QTGateRegions = [
         qtRegion: 'toronto',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'united states',
         content: ['旧金山', 'サンフランシスコ', 'San Francisco', '舊金山'],
@@ -2226,7 +2284,9 @@ const _QTGateRegions = [
         qtRegion: 'francisco',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'hong kong',
         content: ['香港', '香港', 'Hong Kong', '香港'],
@@ -2241,7 +2301,9 @@ const _QTGateRegions = [
         qtRegion: 'HK',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'china',
         content: ['上海市', '上海市', 'Shanghai', '上海市'],
@@ -2256,7 +2318,9 @@ const _QTGateRegions = [
         qtRegion: 'shanghai',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'china',
         content: ['北京市', '北京市', 'Beijing', '北京市'],
@@ -2271,7 +2335,9 @@ const _QTGateRegions = [
         qtRegion: 'beijing',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }, {
         icon: 'china',
         content: ['无锡市', '無錫市', 'Wuxi', '無錫市'],
@@ -2286,14 +2352,16 @@ const _QTGateRegions = [
         qtRegion: 'Wuxi',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable(false),
-        showConnectedArea: ko.observable(false)
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
     }
 ];
 const checkCanDoAtQTGateReg = /^imap\.mail\.me\.com$/;
 const checkCanDoAtQTGate = (imapArray) => {
     return imapArray().findIndex(n => { return checkCanDoAtQTGateReg.test(n.iMapServerName()) && n.imapCheckResult() > 0; });
 };
-const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.com$|imap\.mail\.me\.com$|imap\.mail\.yahoo\.co\.jp$|imap\.gmail\.com$|gmx\.com$|imap\.zoho\.com$/i;
+const availableImapServer = /imap\-mail\.outlook\.com$|imap\.mail\.yahoo\.(com|co\.jp|co\.uk|au)$|imap\.mail\.me\.com$|imap\.gmail\.com$|gmx\.(com|us|net)$|imap\.zoho\.com$/i;
 const dummyIConnectCommand = {
     connectPeer: null,
     connectType: null,
@@ -2301,6 +2369,137 @@ const dummyIConnectCommand = {
     localServerPort: null,
     account: null,
     AllDataToGateway: null,
+    region: null,
+    imapData: null,
+    error: null,
+    fingerprint: null,
+    multipleGateway: null,
+    requestMultipleGateway: null
+};
+const donateArray = [{
+        image: [
+            'https://user-images.githubusercontent.com/19976150/32689499-0e193bac-c69b-11e7-9297-4ed714522497.png',
+            'https://user-images.githubusercontent.com/19976150/32689499-0e193bac-c69b-11e7-9297-4ed714522497.png',
+            'https://user-images.githubusercontent.com/19976150/32689499-0e193bac-c69b-11e7-9297-4ed714522497.png',
+            'https://user-images.githubusercontent.com/19976150/32689499-0e193bac-c69b-11e7-9297-4ed714522497.png'
+        ],
+        header: ['维基百科', 'ウィキペディア', 'Wikipedia', '維基百科'],
+        meta: ['匿名北美慈善团体', 'ある北米チャリティー', 'Anonymous North American charity', '匿名北美慈善團體'],
+        description: [
+            '维基百科是一个自由内容、公开编辑且多语言的网络百科全书协作项目，通过Wiki技术使得包括您在内的所有人都可以简单地使用网页浏览器修改其中的内容。维基百科一字取自于本网站核心技术“Wiki”以及具有百科全书之意的“encyclopedia”共同创造出来的新混成词“Wikipedia”，当前维基百科由维基媒体基金会负责运营。',
+            'ウィキペディアは、信頼されるフリーなオンライン百科事典、それも質・量ともに史上最大の百科事典を、共同作業で創り上げることを目的とするプロジェクト、およびその成果である百科事典本体です。',
+            'Wikipedia is a free online encyclopedia with the aim to allow anyone to edit articles. Wikipedia is the largest and most popular general reference work on the Internet, and is ranked the fifth-most popular website. Wikipedia is owned by the nonprofit Wikimedia Foundation.',
+            '維基百科是一個自由內容、公開編輯且多語言的網絡百科全書協作項目，通過Wiki技術使得包括您在內的所有人都可以簡單地使用網頁瀏覽器修改其中的內容。維基百科一字取自於本網站核心技術“Wiki”以及具有百科全書之意的“encyclopedia”共同創造出來的新混成詞“Wikipedia”，當前維基百科由維基媒體基金會負責運營。'
+        ]
+    }];
+const checkSmtpImapAccountSetup = (email, uuid, imap) => {
+    if (checkEmail(email).length) {
+        imap.emailAddressShowError(true);
+        imap.EmailAddressErrorType(0);
+        $('.activating.element').popup({
+            on: 'focus',
+            movePopup: false
+        });
+        return false;
+    }
+    if (imap.root.emailPool().length) {
+        const index = imap.root.emailPool().findIndex(n => { return n.emailAddress() === email && n.uuid !== uuid; });
+        if (index > -1) {
+            imap.emailAddressShowError(true);
+            imap.EmailAddressErrorType(1);
+            $('.activating.element').popup({
+                on: 'focus',
+                movePopup: false
+            });
+            return false;
+        }
+    }
+    const data = getImapSmtpHost(email);
+    if (!imap.root.QTGateConnectSelectImap() && !availableImapServer.test(data.imap)) {
+        imap.emailAddressShowError(true);
+        imap.EmailAddressErrorType(2);
+        $('.activating.element').popup({
+            on: 'focus',
+            movePopup: false
+        });
+        return false;
+    }
+    imap.emailAddressSuccess(true);
+    //if (!$(`#${ imap.uuid }-imap`).hasClass('active')) {
+    imap.iMapServerName(data.imap);
+    imap.iMapServerLoginName(email);
+    imap.iMapSecure(data.imapSsl);
+    imap.imapPortChecked(data.ImapPort.toString());
+    imap.imapIgnoreCertificate(false);
+    //}
+    //if (!$(`#${ imap.uuid }-smtp`).hasClass('active')) {
+    imap.SmtpServerName(data.smtp);
+    imap.SmtpServerLoginName(email);
+    imap.smtpSecure(data.smtpSsl);
+    imap.smtpPortChecked(data.SmtpPort[0].toString());
+    imap.smtpIgnoreCertificate(false);
+    //}
+    //this.showImapSmtpdetailTreeView (true)
+    return true;
+};
+const imapAccountGoCheckClick = (imap) => {
+    if (checkEmail(imap.emailAddress()).length) {
+        checkSmtpImapAccountSetup(imap.emailAddress(), imap.uuid, imap);
+        return false;
+    }
+    if (!checkSmtpImapAccountSetup(imap.emailAddress(), imap.uuid, imap))
+        return false;
+    imap.imapCheckOk(false);
+    imap.smtpCheckOk(false);
+    imap.imapDataEditShow(false);
+    imap.runningCheck(true);
+    let percent = 0;
+    imap.imapCheckingStep(0);
+    imap.process.progress('reset');
+    const doingProcessBar = () => {
+        clearTimeout(imap.doingProcessBarTime);
+        imap.doingProcessBarTime = setTimeout(() => {
+            imap.process.progress({
+                percent: ++percent
+            });
+            if (percent < 100)
+                return doingProcessBar();
+        }, 200);
+    };
+    doingProcessBar();
+    socketIo.emit('startCheckImap', imap.progressBarCss(), imap.GetImapData(), (ret) => {
+        if (ret)
+            return imap.callBackError(ret);
+        socketIo.once(imap.progressBarCss() + '-imap', (err, result) => {
+            if (err) {
+                imap.appPaassword(err === 3);
+                return imap.callBackError(err);
+            }
+            socketIo.once(imap.progressBarCss() + '-smtp', (err) => {
+                if (err) {
+                    return imap.callBackError(err);
+                }
+                percent = 98;
+                imap.smtpCheckOk(true);
+                imap.process.addClass('success');
+                imap.showImapTestSuccess(true);
+                const fromIInputData = $('.rating');
+                fromIInputData.rating('disable');
+                imap.root.canShowAddAImapButton();
+                imap.process.removeClass('success');
+                imap.runningCheck(false);
+                imap.showImapTestSuccess(false);
+                return imap.imapCheckingStep(2);
+            });
+            percent = 33;
+            imap.imapCheckResult(result);
+            imap.dataRating(result < 500 ? 3 : result < 1000 ? 2 : 1);
+            imap.imapCheckOk(true);
+            return imap.imapCheckingStep(1);
+        });
+        percent = 0;
+        return imap.imapCheckingStep(0);
+    });
 };
 var view_layout;
 (function (view_layout) {
@@ -2308,56 +2507,6 @@ var view_layout;
         // * view
         constructor(root) {
             this.root = root;
-            this.checkSmtpImapAccountSetup = (email, uuid) => {
-                if (checkEmail(email).length) {
-                    this.emailAddressShowError(true);
-                    this.EmailAddressErrorType(0);
-                    $('.activating.element').popup({
-                        on: 'focus',
-                        movePopup: false
-                    });
-                    return false;
-                }
-                if (this.root.emailPool().length) {
-                    const index = this.root.emailPool().findIndex(n => { return n.emailAddress() === email && n.uuid !== uuid; });
-                    if (index > -1) {
-                        this.emailAddressShowError(true);
-                        this.EmailAddressErrorType(1);
-                        $('.activating.element').popup({
-                            on: 'focus',
-                            movePopup: false
-                        });
-                        return false;
-                    }
-                }
-                const data = getImapSmtpHost(email);
-                if (!this.root.qtgateImapAccount() && !availableImapServer.test(data.imap)) {
-                    this.emailAddressShowError(true);
-                    this.EmailAddressErrorType(2);
-                    $('.activating.element').popup({
-                        on: 'focus',
-                        movePopup: false
-                    });
-                    return false;
-                }
-                this.emailAddressSuccess(true);
-                if (!$(`#${this.uuid}-imap`).hasClass('active')) {
-                    this.iMapServerName(data.imap);
-                    this.iMapServerLoginName(email);
-                    this.iMapSecure(data.imapSsl);
-                    this.imapPortChecked(data.ImapPort.toString());
-                    this.imapIgnoreCertificate(false);
-                }
-                if (!$(`#${this.uuid}-smtp`).hasClass('active')) {
-                    this.SmtpServerName(data.smtp);
-                    this.SmtpServerLoginName(email);
-                    this.smtpSecure(data.smtpSsl);
-                    this.smtpPortChecked(data.SmtpPort[0].toString());
-                    this.smtpIgnoreCertificate(false);
-                }
-                //this.showImapSmtpdetailTreeView (true)
-                return true;
-            };
             // - DATA
             this.emailAddress = ko.observable('');
             this.password = ko.observable('');
@@ -2431,6 +2580,7 @@ var view_layout;
             this.sendToQTGate = ko.observable(false);
             this.process = $(`#${this.uuid}>.progress`);
             this.edited = false;
+            this.appPaassword = ko.observable(false);
             this.getMailIcon = ko.computed(() => {
                 let imapServer = null;
                 if (!(imapServer = this.iMapServerName()).length)
@@ -2486,7 +2636,7 @@ var view_layout;
                 this.emailAddressShowError(false);
                 this.imapAuthenticationFailed(false);
                 this.smtpAuthenticationFailed(false);
-                this.checkSmtpImapAccountSetup(newValue, this.uuid);
+                checkSmtpImapAccountSetup(newValue, this.uuid, this);
                 this.imapDataEnited(true);
             });
             this.password.subscribe(newValue => {
@@ -2601,61 +2751,7 @@ var view_layout;
             this.dataRating(data.imapTestResult < 500 ? 3 : data.imapTestResult < 1000 ? 2 : 1);
         }
         imapAccountGoCheckClick() {
-            if (checkEmail(this.emailAddress()).length) {
-                this.checkSmtpImapAccountSetup(this.emailAddress(), this.uuid);
-                return false;
-            }
-            if (!this.checkSmtpImapAccountSetup(this.emailAddress(), this.uuid))
-                return false;
-            this.imapCheckOk(false);
-            this.smtpCheckOk(false);
-            this.imapDataEditShow(false);
-            this.runningCheck(true);
-            let percent = 0;
-            this.imapCheckingStep(0);
-            this.process.progress('reset');
-            const doingProcessBar = () => {
-                clearTimeout(this.doingProcessBarTime);
-                this.doingProcessBarTime = setTimeout(() => {
-                    this.process.progress({
-                        percent: ++percent
-                    });
-                    if (percent < 100)
-                        return doingProcessBar();
-                }, 200);
-            };
-            doingProcessBar();
-            socketIo.emit('startCheckImap', this.progressBarCss(), this.GetImapData(), (ret) => {
-                if (ret)
-                    return this.callBackError(ret);
-                socketIo.once(this.progressBarCss() + '-imap', (err, result) => {
-                    if (err) {
-                        return this.callBackError(err);
-                    }
-                    socketIo.once(this.progressBarCss() + '-smtp', (err) => {
-                        if (err)
-                            return this.callBackError(err);
-                        percent = 98;
-                        this.smtpCheckOk(true);
-                        this.process.addClass('success');
-                        this.showImapTestSuccess(true);
-                        const fromIInputData = $('.rating');
-                        fromIInputData.rating('disable');
-                        this.root.canShowAddAImapButton();
-                        this.process.removeClass('success');
-                        this.runningCheck(false);
-                        this.showImapTestSuccess(false);
-                        return this.imapCheckingStep(2);
-                    });
-                    percent = 33;
-                    this.imapCheckResult(result);
-                    this.dataRating(result < 500 ? 3 : result < 1000 ? 2 : 1);
-                    this.imapCheckOk(true);
-                    return this.imapCheckingStep(1);
-                });
-                percent = 0;
-                return this.imapCheckingStep(0);
-            });
+            return imapAccountGoCheckClick(this);
         }
         cancelDoingCheck() {
             this.root.emailAddressDoingCheck(false);
@@ -2782,7 +2878,6 @@ var view_layout;
             this.checkingActiveEmail = ko.observable(false);
             this.showConformMailForm = ko.observable(false);
             this.connectingImapAccount = ko.observable(false);
-            this.qtgateImapAccount = ko.observable(0);
             this.QTGateConnectActive = ko.observable(false);
             this.QTGateConnectRegionActive = ko.observable(false);
             this.QTGateConnectError = ko.observable(0);
@@ -2796,7 +2891,7 @@ var view_layout;
             this.QTGateMultipleGateway = ko.observable(1);
             this.QTGateMultipleGatewayPool = ko.observableArray([1, 2]);
             this.QTGateConnect2 = ko.observable(false);
-            this.QTGateConnectSelectImap = ko.observable(-1);
+            this.QTGateConnectSelectImap = ko.observable(0);
             this.QTGateAllData = ko.observable(false);
             this.QTGateCacheUse = ko.observable(false);
             this.QTGate_CacheTime = ko.observable(0);
@@ -2817,6 +2912,9 @@ var view_layout;
             this.canDoAtEmail = ko.observable(false);
             this.reSendConnectMail = ko.observable(false);
             //-
+            //- Donate
+            this.donateDataPool = ko.observableArray(donateArray);
+            //-
             this.config = ko.observable({
                 firstRun: true,
                 alreadyInit: false,
@@ -2830,9 +2928,10 @@ var view_layout;
                 freeUser: null,
                 account: null,
                 imapConnectStatus: null,
-                QTGateConnectImapUuid: null,
                 serverGlobalIpAddress: null,
+                connectedImapDataUuid: null,
                 serverPort: null,
+                iterations: null,
                 connectedQTGateServer: false,
                 localIpAddress: null,
                 lastConnectType: 1
@@ -2893,6 +2992,7 @@ var view_layout;
             this.connectQTGateShow = ko.observable(false);
             this.disconnecting = ko.observable(false);
             this.newVersionInstallLoading = ko.observable(false);
+            this.pingCheckLoading = ko.observable(false);
             this.QTGateLocalProxyPort.subscribe(newValue => {
                 this.localProxyPortError(false);
                 const num = parseInt(newValue.toString());
@@ -2909,7 +3009,7 @@ var view_layout;
             });
             socketIo = io({ reconnectionAttempts: 5, timeout: 1000 });
             socketIo.once('connect', () => {
-                socketIo.emit('init', (err, data) => {
+                return socketIo.emit('init', (err, data) => {
                     this.config(data);
                     if (!data.keypair.createDate)
                         this.keyPairGenerateFormActive(true);
@@ -2980,10 +3080,11 @@ var view_layout;
                 return this.MenuItems([false, false, true, false, false]);
             });
             socketIo.on('KeyPairActiveCallBack', (data) => {
-                this.keyPair(data);
+                return this.keyPair(data);
             });
             socketIo.on('ImapData', (data) => {
                 this.imapInputFormActive(true);
+                this.showQTGateImapAccount(true);
                 if (!data || !data.length)
                     return;
                 this.emailPool([]);
@@ -2995,14 +3096,16 @@ var view_layout;
                 const fromIInputData = $('.rating');
                 fromIInputData.rating('disable');
                 const index = this.emailPool().findIndex(n => { return n.emailAddress().length === 0; });
+                if (this.emailPool().length > 1)
+                    this.showQTGateImapAccount(false);
                 if (index === -1)
                     return this.showAddImapDataButton(true);
             });
             socketIo.on('deleteKeyPair', () => {
-                window.location.replace('/');
+                return window.location.replace('/');
             });
             socketIo.on('config', config => {
-                this.config(config);
+                return this.config(config);
             });
             socketIo.on('checkActiveEmailError', err => {
                 if (err !== null && err > -1) {
@@ -3040,7 +3143,7 @@ var view_layout;
                 }
                 if (data && data.qtgateConnectImapAccount) {
                     const uu = this.emailPool().findIndex(n => { return n.uuid === data.qtgateConnectImapAccount; });
-                    this.qtgateImapAccount(uu);
+                    this.QTGateConnectSelectImap(uu);
                 }
                 if (!this.keyPair().verified) {
                     if (data.qtGateConnecting === 6) {
@@ -3068,7 +3171,7 @@ var view_layout;
                         return $('.activating.element').popup({
                             on: 'click',
                             onHidden: () => {
-                                this.emailPool()[this.qtgateImapAccount()].callBackError(data.error);
+                                this.emailPool()[this.QTGateConnectSelectImap()].callBackError(data.error);
                                 this.MenuItems([false, false, true, false, false]);
                                 this.QTGateConnectActive(false);
                             },
@@ -3117,7 +3220,7 @@ var view_layout;
                 if (data.qtGateConnecting === 5) {
                     clearTimeout(this.doingProcessBarTime);
                     process.addClass('error');
-                    this.emailPool()[this.qtgateImapAccount()].callBackError(data.error);
+                    this.emailPool()[this.QTGateConnectSelectImap()].callBackError(data.error);
                     return this.QTGateRegionERROR(0);
                 }
                 if (data.qtGateConnecting === 2) {
@@ -3146,7 +3249,7 @@ var view_layout;
                     this.selectedQTGateRegion().showConnectedArea(false);
                     this.ConnectGatewayShow(false);
                     this.disconnecting(false);
-                    this.selectedQTGateRegionCancel();
+                    return this.selectedQTGateRegionCancel();
                 }
             });
             socketIo.once('reconnect_error', err => {
@@ -3156,10 +3259,13 @@ var view_layout;
                 return $('.ui.basic.modal').modal('setting', 'closable', false).modal('show');
             });
             socketIo.on('disconnectClickCallBack', () => {
-                this.desconnectCallBack();
+                return this.desconnectCallBack();
             });
             socketIo.on('QTGateGatewayConnectRequest', data => {
-                this.QTGateGatewayConnectRequestCallBack(this, data);
+                return this.QTGateGatewayConnectRequestCallBack(this, data);
+            });
+            socketIo.on('pingCheck', (region, ping) => {
+                return this.pingCheckReturn(region, ping);
             });
         }
         MakeNotify(note, _title, type, addNode, keepTime) {
@@ -3402,6 +3508,7 @@ var view_layout;
             this.commandStatus('checkActiveEmailSubmit');
             socketIo.emit('checkPemPassword', password, (data, iinputData) => {
                 this.passwordChecking(false);
+                this.showQTGateImapAccount(true);
                 if (typeof data !== 'boolean') {
                     this.showSystemError(true);
                     return true;
@@ -3422,6 +3529,9 @@ var view_layout;
                         const fromIInputData = $('.rating');
                         fromIInputData.rating('disable');
                     });
+                    if (this.emailPool().length > 1) {
+                        this.showQTGateImapAccount(false);
+                    }
                     this.canShowAddAImapButton();
                     /*
                     const index = this.emailPool().findIndex ( n => { return n.sendToQTGate()})
@@ -3459,11 +3569,13 @@ var view_layout;
             //      Outlook Mail 
             return socketIo.emit('checkActiveEmailSubmit', text);
         }
-        connectQTGate() {
-            this.connectQTGateShow(true);
-            this.emailPool()[this.qtgateImapAccount()];
-            socketIo.emit('connectQTGate', this.emailPool()[this.qtgateImapAccount()].uuid);
+        /*
+        public connectQTGate () {
+            //this.connectQTGateShow ( true )
+            //this.QTGateConnecting ( 1 )
+            socketIo.emit ( 'connectQTGate1', this.emailPool()[ this.QTGateConnectSelectImap() ].uuid )
         }
+        */
         connectQTGate1() {
             socketIo.emit('connectQTGate1', this.emailPool()[this.QTGateConnectSelectImap()].uuid);
         }
@@ -3617,7 +3729,7 @@ var view_layout;
         }
         disconnectClick() {
             this.disconnecting(true);
-            socketIo.emit('disconnectClick');
+            return socketIo.emit('disconnectClick');
         }
         exit() {
             if (typeof require === 'undefined') {
@@ -3625,7 +3737,147 @@ var view_layout;
                 return this.hacked(true);
             }
             const { remote } = require('electron');
-            remote.app.quit();
+            return remote.app.quit();
+        }
+        pingCheck() {
+            if (this.pingCheckLoading()) {
+                return;
+            }
+            this.pingCheckLoading(true);
+            this.QTGateRegions().forEach(n => {
+                if (!n.available())
+                    return;
+                return n.ping(-1);
+            });
+            return socketIo.emit('pingCheck', CallBack => {
+                this.QTGateRegions.sort((a, b) => {
+                    const _a = a.ping();
+                    const _b = b.ping();
+                    if (a.available() === b.available()) {
+                        if (!a.available())
+                            return 0;
+                        if (_b > 0 && _a > _b)
+                            return 1;
+                        return -1;
+                    }
+                    if (b.available() && !a.available()) {
+                        return 1;
+                    }
+                    return -1;
+                });
+                return this.pingCheckLoading(false);
+            });
+        }
+        downloadCheck() {
+            return socketIo.emit('downloadCheck');
+        }
+        pingCheckReturn(region, ping) {
+            const index = this.QTGateRegions().findIndex(n => { return n.qtRegion === region; });
+            if (index < 0)
+                return;
+            const _reg = this.QTGateRegions()[index];
+            _reg.ping(ping);
+        }
+        appPassword(imapServer) {
+            const { shell } = require('electron');
+            let url = '';
+            switch (imapServer) {
+                case 'imap.gmx.com': {
+                    url = 'https://support.gmx.com/pop-imap/toggle.html';
+                    break;
+                }
+                case 'imap.mail.yahoo.com': {
+                    switch (this.languageIndex()) {
+                        case 0: {
+                            url = 'https://tw.help.yahoo.com/kb/account/%E7%94%A2%E7%94%9F%E7%AC%AC%E4%B8%89%E6%96%B9%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F%E5%AF%86%E7%A2%BC-sln15241.html?impressions=true';
+                            break;
+                        }
+                        case 3: {
+                            url = 'https://tw.help.yahoo.com/kb/account/%E7%94%A2%E7%94%9F%E7%AC%AC%E4%B8%89%E6%96%B9%E6%87%89%E7%94%A8%E7%A8%8B%E5%BC%8F%E5%AF%86%E7%A2%BC-sln15241.html?impressions=true';
+                            break;
+                        }
+                        case 1:
+                        case 2:
+                        default: {
+                            url = `https://help.yahoo.com/kb/account/create-third-party-password-sln15241.html`;
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case 'imap-mail.outlook.com': {
+                    switch (this.languageIndex()) {
+                        case 0: {
+                            url = 'https://support.office.com/zh-cn/article/%E4%B8%BA-Office-365-%E5%88%9B%E5%BB%BA%E5%BA%94%E7%94%A8%E5%AF%86%E7%A0%81-3e7c860f-bda4-4441-a618-b53953ee1183?omkt=zh-CN&ui=zh-CN&rs=zh-CN&ad=CN';
+                            break;
+                        }
+                        case 3: {
+                            url = 'https://support.office.com/zh-tw/article/%E7%82%BA-Office-365-%E5%BB%BA%E7%AB%8B-App-%E5%AF%86%E7%A2%BC-3e7c860f-bda4-4441-a618-b53953ee1183?omkt=zh-TW&ui=zh-TW&rs=zh-TW&ad=TW';
+                            break;
+                        }
+                        case 1: {
+                            url = 'https://support.office.com/ja-jp/article/Office-365-%E3%81%AE%E3%82%A2%E3%83%97%E3%83%AA-%E3%83%91%E3%82%B9%E3%83%AF%E3%83%BC%E3%83%89%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B-3e7c860f-bda4-4441-a618-b53953ee1183?omkt=ja-JP&ui=ja-JP&rs=ja-JP&ad=JP';
+                            break;
+                        }
+                        case 2:
+                        default: {
+                            url = `https://support.office.com/en-us/article/Create-an-app-password-for-Office-365-3e7c860f-bda4-4441-a618-b53953ee1183`;
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case 'imap.gmail.com': {
+                    switch (this.languageIndex()) {
+                        case 0: {
+                            url = 'https://support.google.com/accounts/answer/185833?hl=zh-Hans';
+                            break;
+                        }
+                        case 3: {
+                            url = 'https://support.google.com/accounts/answer/185833?hl=zh-Hant';
+                            break;
+                        }
+                        case 2: {
+                            url = 'https://support.google.com/accounts/answer/185833?hl=ja';
+                            break;
+                        }
+                        case 1:
+                        default: {
+                            url = `https://support.google.com/accounts/answer/185833?hl=en`;
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case 'imap.zoho.com': {
+                    url = 'https://www.zoho.com/mail/help/imap-access.html#EnableIMAP';
+                    break;
+                }
+                default:
+                case 'imap.mail.me.com': {
+                    switch (this.languageIndex()) {
+                        case 0: {
+                            url = 'https://support.apple.com/zh-cn/HT204397';
+                            break;
+                        }
+                        case 1:
+                            url = 'https://support.apple.com/ja-jp/HT204397';
+                            break;
+                        case 3: {
+                            url = 'https://support.apple.com/zh-tw/HT204397';
+                            break;
+                        }
+                        case 2:
+                        default: {
+                            url = `https://support.apple.com/en-ca/HT204397`;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            event.preventDefault();
+            shell.openExternal(url);
         }
     }
     view_layout.view = view;

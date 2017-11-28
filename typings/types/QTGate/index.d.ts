@@ -26,17 +26,17 @@ interface install_config {
     newVersionDownloadFault?: number 
     newVerReady?: boolean
     keypair: keypair
+    iterations: number
     salt?: Buffer
-    iterations?: number
     keylen?: number
     localIpAddress: string []
     digest?: string
-    QTGateConnectImapUuid: string
     freeUser: boolean
+    connectedImapDataUuid: string
     account: string
     serverGlobalIpAddress: string
     serverPort: number
-    connectedQTGateServer: boolean
+    connectedQTGateServer: boolean          //      true when connect to QTGate network
     lastConnectType: number
 }
 
@@ -212,4 +212,28 @@ interface dnsAddress {
 interface domainData {
 	dns: dnsAddress[]
 	expire: number
+}
+interface regionV1 {
+    regionName: string
+    testHostIp: string
+    testUrl: string
+    testHost: string
+}
+interface QTGateRegions {
+    icon: string
+    content: string[]
+    description: string[]
+    meta: string[]
+    canVoe: KnockoutObservable < boolean >
+    canVoH: KnockoutObservable < boolean >
+    available: KnockoutObservable < boolean >
+    selected: KnockoutObservable < boolean >
+    showExtraContent: KnockoutObservable < boolean >
+    QTGateRegionsSetup: IQTGateRegionsSetup[]
+    qtRegion: string
+    error: KnockoutObservable<number >
+    showRegionConnectProcessBar: KnockoutObservable < boolean >
+    showConnectedArea: KnockoutObservable < boolean >
+    ping: KnockoutObservable <number >
+    downloadSpeed: KnockoutObservable <number >
 }
