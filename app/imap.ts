@@ -26,6 +26,7 @@ import * as Crypto from 'crypto'
 import * as Util from 'util'
 import { join } from 'path'
 import { homedir }from 'os'
+import { setTimeout, clearTimeout } from 'timers';
 
 const MAX_INT = 9007199254740992
 const debug = true
@@ -158,7 +159,8 @@ class ImapServerSwitchStream extends Stream.Transform {
                         this.doCommandCallback ( null, commandLine )
                         return callback ()
                     }
-                    this.doCommandCallback ( new Error ( cmdArray.slice (2).join(' ')))
+                    const errs = cmdArray.slice (2).join(' ')
+                    this.doCommandCallback ( new Error (errs ))
                     return callback ()
 
                 }
@@ -166,7 +168,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                     return this.serverCommandError ( new Error (`_commandPreProcess got switch default error!` ), callback )
             }
         }
-        this.login ( commandLine, cmdArray, _next, callback )
+        return this.login ( commandLine, cmdArray, _next, callback )
     }
 
     private checkFetchEnd () {
@@ -215,11 +217,11 @@ class ImapServerSwitchStream extends Stream.Transform {
                     return
                 }
 
-                const _buf = this._buffer.slice(0, index)
-                if (_buf.length) {
-                    return this.preProcessCommane(_buf.toString(), next, () => {
+                const _buf = this._buffer.slice ( 0, index )
+                if ( _buf.length ) {
+                    return this.preProcessCommane ( _buf.toString (), next, () => {
                         this._buffer = this._buffer.slice ( index + 2 )
-                        return doLine()
+                        return doLine ()
                     })
                 }
                 if (! this.callback ) {
@@ -332,7 +334,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                         this.flagsDeleted ( newMailIds, next )
                     },
                     ( data, next ) => {
-                        saveLog (`Async.waterfall ( data[${ typeof data }], next ${ typeof next}) `)
+                        
                         this.expunge ( next )
                     }
                 ], ( err, newMail ) => {
@@ -459,12 +461,16 @@ class ImapServerSwitchStream extends Stream.Transform {
 
     private login ( text: string, cmdArray: string[], next, _callback ) {
 
-        this.doCommandCallback = ( err ) => {
+        this.doCommandCallback = ( err: Error ) => {
+            
             if ( ! err ) {
+                saveLog (`login this.doCommandCallback no err `)
                 return this.capability ()
             }
-            return this.imapServer.destroyAll( err )
+            
+            return this.imapServer.destroyAll ( err )
         }
+
         this.commandProcess = (  text: string, cmdArray: string[], next, callback ) => {
             switch ( cmdArray[0] ) {
                 case '+':
@@ -475,7 +481,9 @@ class ImapServerSwitchStream extends Stream.Transform {
                 return callback ()
             }
         }
+        
         switch ( cmdArray[0] ) {
+            
             case '*': {                                  /////       *
                 //          check imap server is login ok
                 if ( /^ok$/i.test ( cmdArray [1]) && this.first ) {
@@ -492,6 +500,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                 return _callback ()
             }
             default:
+            
             return this.serverCommandError ( new Error ( `login switch default ERROR!` ), _callback )
         }
 
@@ -806,10 +815,10 @@ class ImapServerSwitchStream extends Stream.Transform {
     }
 
     private expunge ( callback ) {
-        console.trace (callback.toString())
+
         let newSwitchRet = false
         this.doCommandCallback = ( err ) => {
-            console.trace (callback.toString())
+
             return callback ( err, newSwitchRet )
         }
         this.commandProcess = ( text: string, cmdArray: string[], next , _callback ) => {
@@ -919,6 +928,9 @@ export class qtGateImap extends Event.EventEmitter {
     constructor ( public IMapConnect: imapConnect, public listenFolder: string, private isEachMail: boolean, public deleteBoxWhenEnd: boolean, public writeFolder: string, private debug: boolean, public newMail: ( mail ) => void ) {
         super ()
         this.connect ()
+        this.once (`error`, err => {
+            saveLog (`qtGateImap on error [${err.messag}]` )
+        })
         /*
         process.once ( 'uncaughtException', err => {
             console.log ( err )
@@ -1135,20 +1147,19 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
 
 }
 
-const pingPongTimeOut = 1000 * 10
+const pingPongTimeOut = 1000 * 15
 
 export class imapPeer extends Event.EventEmitter {
     private mailPool = []
-    private keepConnectTime: NodeJS.Timer = null
     private rImapReady = false
-    private waitingReplyTimeOut = null
-    private lastReplyPongTime = null
+    private waitingReplyTimeOut: NodeJS.Timer = null
     private pingUuid = null
     private doingDestroy = false
     private wImapReady = false
     private peerReady = false
     private sendFirstPing = false
     public newMail: ( data: any ) => void
+
 
     private mail ( email: Buffer ) {
 
@@ -1188,6 +1199,7 @@ export class imapPeer extends Event.EventEmitter {
                         return saveLog (`Invalid ping uuid`)
                     saveLog ( `imapPeer connected`)
                     this.pingUuid = null
+                    clearTimeout ( this.waitingReplyTimeOut )
                     return this.emit ('ready')
                 }
                 return this.newMail (uu )
@@ -1201,9 +1213,12 @@ export class imapPeer extends Event.EventEmitter {
     }
 
     public trySendToRemote ( email: Buffer, CallBack ) {
-        if ( this.wImap ) {
+        if ( this.wImap && this.wImapReady ) {
             return this.wImap.append ( email.toString ( 'base64' ), err => {
-                if ( err ) {
+                if ( err) {
+                    if ( err.message && /TRYCREATE/i.test( err.message )) {
+                        this.emit ('wFolder')
+                    }
                     saveLog (`this.wImap.append ERROR: [${ err.message ? err.message : '' }]`)
                 }
                 return CallBack ( err )
@@ -1223,6 +1238,12 @@ export class imapPeer extends Event.EventEmitter {
             })
         })
     }
+
+    private setTimeOutOfPing () {
+        return this.waitingReplyTimeOut = setTimeout (() => {
+            this.emit ( 'pingTimeOut' )
+        }, pingPongTimeOut)
+    }
     
     public Ping () {
 
@@ -1232,7 +1253,9 @@ export class imapPeer extends Event.EventEmitter {
             if ( err ) {
                 return saveLog ( `Ping enCrypto error: [${ err.message }]`)
             }
-            this.trySendToRemote ( Buffer.from ( data ), () => {})
+            return this.trySendToRemote ( Buffer.from ( data ), () => {
+                return this.setTimeOutOfPing ()
+            })
         })
     }
 
@@ -1252,11 +1275,13 @@ export class imapPeer extends Event.EventEmitter {
     }
 
     private newWriteImap() {
+        saveLog (`newWriteImap`)
         this.wImap = new qtGateImapwrite ( this.imapData, this.writeBox )
 
         this.wImap.once ( 'end', err => {
             saveLog ( `this.wImap.once end ! [${ err && err.message ? err.message : null }]!` )
             this.wImap = null
+            this.wImapReady = false
             if ( this.sendMailPool.length > 0 ) {
                 saveLog ( `this.wImap.once end ! sendMailPool.length > 0 [${ this.sendMailPool.length }] newWriteImap () ` )
                 return this.newWriteImap ()
@@ -1264,11 +1289,13 @@ export class imapPeer extends Event.EventEmitter {
         })
 
         this.wImap.once ( 'error', err => {
-            if ( err && err.message && /AUTH|certificate/i.test ( err.message )) {
+            if ( err && err.message && /AUTH|certificate|LOGIN/i.test ( err.message )) {
                 return this.destroy (1)
             }
             saveLog ( `imapPeer this.wImap on error [${ err.message }]`)
-            this.wImap.destroyAll(null)
+            this.wImapReady = false
+            this.wImap = null
+            //this.wImap.destroyAll(null)
         })
 
         this.wImap.once ( 'ready', () => {
@@ -1280,18 +1307,21 @@ export class imapPeer extends Event.EventEmitter {
             }
                 
             this.sendFirstPing = true
+            this.Ping ()
             if ( /outlook\.com/i.test ( this.imapData.imapServer )) {
                 saveLog ( `outlook support!`)
-                this.once ( 'wFolder', () => {
+                return this.once ( 'wFolder', () => {
                     saveLog ( `this.once ( 'wFolder') do makeWriteFolder!`)
-                    return this.makeWriteFolder ()
+                    return this.makeWriteFolder (() => {
+                        return this.Ping ()
+                    })
                 })
             }
-            return this.Ping ()
         })
     }
 
     private newReadImap() {
+        saveLog (`newReadImap!`)
         this.rImap = new qtGateImapRead ( this.imapData, this.listenBox, false, false, email => {
             this.mail ( email )
             this.rImap.emit ('nextNewMail')
@@ -1309,17 +1339,19 @@ export class imapPeer extends Event.EventEmitter {
         })
         this.rImap.once ( 'error', err => {
             saveLog ( `rImap on Error [${ err.message }]`)
-            if ( err && err.message && /AUTH|certificate/i.test ( err.message )) {
+            if ( err && err.message && /AUTH|certificate|LOGIN/i.test ( err.message )) {
                 return this.destroy (1)
             }
             this.rImap.destroyAll (null)
 
         })
         this.rImap.once ( 'end', err => {
-            saveLog (`rImap.once ( 'end' ) this.doingDestroy [${ this.doingDestroy }]`)
+            
             this.rImap = null
-            if ( !this.doingDestroy )
+            if ( !this.doingDestroy && !err ) {
                 return this.newReadImap ()
+            }
+            this.exit ( err )
         })
     }
 
@@ -1334,18 +1366,19 @@ export class imapPeer extends Event.EventEmitter {
         this.newReadImap ()
     }
 
-    private makeWriteFolder () {
+    private makeWriteFolder (CallBack) {
         
         let uu = new qtGateImapRead ( this.imapData, this.writeBox, false, false, email => {})
         uu.once ( 'ready', () => {
             uu.destroyAll ( null )
             this.pingUuid = null
             this.wImap.destroyAll (null)
+            return CallBack ()
         })
         uu.once ( 'error', err => {
             saveLog ( `makeWriteFolder error! do again!`)
             uu = null
-            return this.makeWriteFolder ()
+            return this.makeWriteFolder ( CallBack )
         })
         uu.once ( 'end', () => {
             uu = null
@@ -1353,6 +1386,7 @@ export class imapPeer extends Event.EventEmitter {
     }
 
     public destroy ( err?: number ) {
+        console.trace ('destroy')
         if ( this.doingDestroy )
             return
         this.doingDestroy = true

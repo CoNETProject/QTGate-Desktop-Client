@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-const DEBUG = true
+const DEBUG = false
 
 import * as Fs from 'fs'
 import * as Os from 'os'
@@ -454,6 +454,7 @@ const appReady = () => {
                 localServer1 = new BrowserWindow ({ show: DEBUG })
                 localServer1.setIgnoreMouseEvents ( !DEBUG )
                 localServer1.rendererSidePort = port
+                localServer1.debug = DEBUG
                 localServer1.createWindow = createWindow
                 localServer1.takeScreen = takeScreen
                 localServer1._doUpdate = _doUpdate

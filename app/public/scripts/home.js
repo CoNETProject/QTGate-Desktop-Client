@@ -368,27 +368,27 @@ const infoDefine = [
                     color: '#a333c8',
                     icon: 'exchange',
                     detail: 'QTGate通过使用<a onclick="return linkClick (`https://zh.wikipedia.org/wiki/%E9%AB%98%E7%BA%A7%E5%8A%A0%E5%AF%86%E6%A0%87%E5%87%86`)" href="#" target="_blank">AES256-GCM</a>和<a onclick="return linkClick (`https://zh.wikipedia.org/wiki/PGP`)" href="#" target="_blank">OpenPGP</a>加密Email通讯，创造了OPN匿名网络通讯技术，QTGate公司首创的@OPN技术，它全程使用加密Email通讯，客户端和代理服务器彼此不用交换IP地址来实现高速通讯。iOPN通讯技术是利用普通HTTP协议下的混淆流量加密技术，能够隐藏变换您的IP地址高速通讯。二种通讯方式都能够让您，隐身和安全及不被检出的上网，保护您的隐私，具有超强对抗网络监控,网络限制和网络阻断。'
+                }, {
+                    color: '#e03997',
+                    icon: 'talk outline',
+                    header: '无IP点对点即时加密通讯服务QTChat',
+                    detail: 'QTGate用户之间通过email的点对点即时通讯服务，它具有传统即时通讯服务所不具有的，匿名无IP和用户之保持秘密通讯的功能。QTChat加密通讯服务可以传送文字，图片和视频文件信息，QTGate系统只负责传送信息，不拥有信息，也无法检查信息本身，所以QTGate不承担信息所有的法律责任。QTChat支持群即时通讯，将支持视频流直播服务。'
+                }, {
+                    color: '#6435c9',
+                    icon: 'cloud upload',
+                    header: '加密文件匿名网络云储存及分享功能QTStorage',
+                    detail: '用户通过申请多个和不同的免费email服务商账号，可以把一个文件加密拆分成多个部分，分别存储在不同的email账号下，可以保密安全和无限量的使用网络储存。用户还可以通过QTGate系统在QTGate用户之间分享秘密文件。'
                 },
                 {
                     color: 'darkcyan',
                     icon: 'spy',
-                    header: '阻断间谍软件向外送信功能(下一版本)',
+                    header: '阻断间谍软件向外送信功能',
                     detail: 'QTGate系统连接全球DNSBL联盟数据库，用户通过订阅QTGate系统黑名单列表，并使用QTGate客户端上网，让潜伏在您电子设备内的间谍软件，它每时每刻收集的信息，不能够被送信到其信息收集服务器，能够最大限的保障您的个人隐私。'
                 }, {
                     color: '#6435c9',
                     icon: 'external share',
-                    header: '本地VPN服务器(下一版本)',
+                    header: '本地VPN服务器',
                     detail: 'QTGate用户在户外时可以通过连接自己家里的VPN，来使用QTGate客户端隐身安全上网。'
-                }, {
-                    color: '#6435c9',
-                    icon: 'cloud upload',
-                    header: '加密文件匿名网络云储存及分享功能(下一版本)',
-                    detail: '用户通过申请多个和不同的免费email服务商账号，可以把一个文件加密拆分成多个部分，分别存储在不同的email账号下，可以保密安全和无限量的使用网络储存。用户还可以通过QTGate系统在QTGate用户之间分享秘密文件。'
-                }, {
-                    color: '#e03997',
-                    icon: 'talk outline',
-                    header: '无IP点对点即时加密通讯服务(下一版本)',
-                    detail: 'QTGate用户之间通过email的点对点即时通讯服务，它具有传统即时通讯服务所不具有的，匿名无IP和用户之保持秘密通讯的功能。QTGate加密通讯服务可以传送文字，图片和视频文件信息。QTGate加密通讯服务支持群即时通讯。'
                 }]
         },
         cover: {
@@ -473,7 +473,7 @@ const infoDefine = [
         },
         imapInformation: {
             title: '通讯专用Email邮箱设置',
-            infomation: `请设置QTGate通讯专用Email邮箱信息。由于此账户的用户名和密码信息会提交给QTGate系统，为了防止您的个人信息被泄漏，请新申请一个临时Email账户。目前QTGate技术对应<a href="#" onclick="return linkClick ('https://www.icloud.com/')">苹果iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/')">微软OUTLOOK</a>，<a href="#" onclick="return linkClick ('https://tw.mail.yahoo.com/')">雅虎邮箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄罗斯ZOHO邮箱</a>，<a href="#" onclick=" return linkClick ('https://gmail.com')">Google邮箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1 -2')">美国在线GMX邮箱</a>，QTGate强力推荐使用苹果公司的Email可以达到最佳速度(@OPN无IP连结技术只对应苹果公司iCloud邮箱)。密码推荐使用Email服务商的<a href="#" target="_blank" onclick="return linkClick ('https://tw.help. yahoo.com/kb/SLN15241.html')">应用密码</a>`,
+            infomation: `请设置QTGate通讯专用Email邮箱信息。由于此账户的用户名和密码信息会提交给QTGate系统，为了防止您的个人信息被泄漏，请新申请一个临时Email账户。目前QTGate技术对应<a href="#" onclick="return linkClick ('https://www.icloud.com/')">苹果iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/')">微软OUTLOOK</a>，<a href="#" onclick="return linkClick ('https://tw.mail.yahoo.com/')">雅虎邮箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄罗斯ZOHO邮箱</a>，<a href="#" onclick=" return linkClick ('https://gmail.com')">Google邮箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美国在线GMX邮箱</a>，QTGate强力推荐使用苹果公司的Email可以达到最佳速度(@OPN无IP连结技术只对应苹果公司iCloud邮箱)。密码请使用Email服务商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">应用密码</a>。对于Email供应商在应用密码申请时，须<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/%E9%96%8B%E5%95%9F%E5%85%A9%E6%AD%A5%E9%A9%9F%E9%A9%97%E8%AD%89-sln5013.html')" >二步认证</a>并提供手机号码接受验证码，为保护您的隐私，建议使用免费在线代理接收验证码服务。( 如<a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a> ) 更多请 <a href="#" onclick="return linkClick ('http://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E5%85%8D%E8%B4%20%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%20%E7%A0%81&rsv_pq=e94f47a50001f66f&rsv_t=b03ePiy3rHH0T4FVoWB8Hx9vrVdZLzVhhErWOo4xdBpjDw%2BtGri%2BViTaVAw&rqlang=cn&rsv_enter=1&rsv_sug3=42&rsv_sug1=5&rsv_sug7=100')">百度查找</a>，<a href="#" onclick="return linkClick ('https://www.google.com/search?q=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&oq=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&aqs=chrome..69i57j69i60.254j0j4&sourceid=chrome&ie=UTF-8')">Google查找</a>。`,
             serverDetail: '详细设定：',
             imapServer: 'IMAP服务器设定',
             imapServerInput: 'IMAP服务器IP或域名',
@@ -562,7 +562,7 @@ const infoDefine = [
             imapErrorMessage: ['',
                 '数据格式错误，请重试',
                 '您的电脑未连接到互联网，请检查网络后再次尝试！',
-                'email服务器提示用户名或密码错！这个错误通常是由于您使用的密码是普通密码所造成的，请使用APP密码重新试一次。',
+                'Email伺服器提示IMAP用户名或密码错！这个错误通常是由于您使用的密码是普通密码，或者您的APP密码已失效，请到您的Email帐户检查您的APP密码，然后再试一次。',
                 'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！<a href="data-html"></a>',
                 '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在IMAP详细设定中选择忽略证书错误。', '无法获得Email服务器域名信息，请检查您的Email服务器设定！',
                 '此Email伺服器不能使用QTGate通訊技术。请选择其他email服务供应商！', 'email服务器提示SMTP用户名或密码错！ ',
@@ -794,27 +794,27 @@ const infoDefine = [
                     icon: 'exchange',
                     header: '自由匿名なインターネットへ',
                     detail: '@OPNは本社の世界初のIP不要な通信技術です、<a onclick="return linkClick (`https://ja.wikipedia.org/wiki/Advanced_Encryption_Standard`)" href="#" target="_blank">AES256-GCM</a>と<a onclick="return linkClick (`https://ja.wikipedia.org/wiki/Pretty_Good_Privacy`)" href="#" target="_blank">OpenPGP</a>暗号化したEmailメッセージを通じたゲットウェイに接続します、iOPNは本社の独自のHTTPゲットウェイ暗号化高速通信技術です。どちらとも身を隠して誰も知らないうちにインターネットへ、プライバシー、ネットワーク監視とアクセスを制限・遮断にうまくすり抜けることができます。'
+                }, {
+                    color: '#e03997',
+                    icon: 'talk outline',
+                    header: 'IP不要な匿名プライバシーインスタントメッセージQTChat',
+                    detail: 'QTGateユーザー間の無IPペアーツーペアープライバシーインスタントメッセージです。それは伝統的なインスタントメッセージより匿名とプライバシーが可能です。又グループをして複数なユーザーの間でのインスタントメッセージもご利用いただけます。文字をはじめ、写真やビデオ映像、あらゆるファイルの暗号化転送も可能です。QTGateシステムはインスタントメッセージを各ユーザへ転送することだけですから、メッセージの内容をチェックするまたはメッセージ所有することではありませんので、メッセージそのものに法的責任は、メッセージをしたユーザーが負うです。'
+                }, {
+                    color: '#6435c9',
+                    icon: 'cloud upload',
+                    header: 'ファイルを匿名プライバシーストレージとシェアQTStroage',
+                    detail: '一つのファイルを暗号化してからスプリットし、多数のフリーメールアカンウトに保存します。無限かつ秘密プライバシーのファイルストレージ事ができます。QTGateユーザー間のファイルシェアも可能です。'
                 },
                 {
                     color: 'darkcyan',
                     icon: 'spy',
-                    header: 'スパイソフトウェア送信を切断（次のバージョンにご提供予定）',
+                    header: 'スパイソフトウェア送信を切断',
                     detail: 'QTGateシステムはグロバルDNSBLに加入し、スパイホストダータベースを更新しています。QTGateユーザはQTGateシステムをご利用してインターネットへアクセスした場合、あなたのデバイスに闇活動しているスパイソフト、収集したあなたの個人データの送信を切断することができます。'
                 }, {
                     color: '#6435c9',
                     icon: 'external share',
-                    header: 'ローカルVPNサーバ（次のバージョンにご提供予定）',
+                    header: 'ローカルVPNサーバ',
                     detail: 'QTGateユーザは自宅のマシンにVPN接続により、外にいても楽々OPNで隠れたネットワークへご利用できます。'
-                }, {
-                    color: '#6435c9',
-                    icon: 'cloud upload',
-                    header: 'ファイルを匿名プライバシーストレージとシェア（次のバージョンにご提供予定）',
-                    detail: '一つのファイルを暗号化してからスプリットし、多数のフリーメールアカンウトに保存します。無限かつ秘密プライバシーのファイルストレージ事ができます。QTGateユーザー間のファイルシェアも可能です。'
-                }, {
-                    color: '#e03997',
-                    icon: 'talk outline',
-                    header: 'IP不要な匿名プライバシーインスタントメッセージ（次のバージョンにご提供予定）',
-                    detail: 'QTGateユーザー間の無IPペアーツーペアープライバシーインスタントメッセージです。それは伝統的なインスタントメッセージより匿名とプライバシーが可能です。又グループをして複数なユーザーの間でのインスタントメッセージもご利用いただけます。文字をはじめ、写真やビデオ映像、あらゆるファイルの暗号化転送も可能です。'
                 }]
         },
         useInfoWindows: {
@@ -1028,7 +1028,7 @@ const infoDefine = [
         },
         imapInformation: {
             title: '通信専用Emailアカウントを登録',
-            infomation: 'QTGate通信専用emailアカンウトを設定します。このemailアカウントはあなたとQTGateお互い情報交換するのために、ユーザ名とパスワードをQTGateシステムへ提供します。個人情報漏洩の恐れ、一時的なemailアカウントを新たにつくてください。QTGate技術は只今<a href="#" onclick="return linkClick (`https://icloud.com`)">Apple iCloud</a>、<a href="#" onclick="return linkClick (`https://www.microsoft.com/ja-jp/outlook-com/`)">Outlook</a>、<a href="#" onclick="return linkClick (`https://login.yahoo.co.jp/config/login?.src=ym&.done=https%3A%2F%2Fmail.yahoo.co.jp%2F`)">Yahoo Mail</a>、<a href="#" onclick="return linkClick (`https://gmail.com`)">GMAIL</a>、<a href="#" onclick="return linkClick (`https://www.gmx.com/mail/#.1559516-header-nav1-2`)">GMX</a>、<a href="#" onclick="return linkClick (`https://www.zoho.com/mail/`)">HOZO</a>対応しております、APPLEのiCloudを使うお勧めです。（@OPN IPなし通信技術はiCloudのみ対応しております）</span>メールアカウントのパスワードについて、<a href="#" onclick="return linkClick (`https://support.google.com/accounts/answer/185833?hl=ja`)">アプリパスワード</a>の利用をお勧めです',
+            infomation: `QTGate通信専用emailアカンウトを設定します。このemailアカウントはあなたとQTGateお互い情報交換するのために、ユーザ名とパスワードをQTGateシステムへ提供します。個人情報漏洩の恐れ、一時的なemailアカウントを新たにつくてください。QTGate技術は只今<a href="#" onclick="return linkClick ('https://icloud.com')">Apple iCloud</a>, <a href="#" onclick="return linkClick ('https://www.microsoft.com/ja-jp/outlook-com/')">Outlook</a>, <a href="#" onclick="return linkClick ('https://login.yahoo.co.jp/config/login?.src=ym&.done=https%3A%2F%2Fmail.yahoo.co.jp%2F')">Yahoo Mail</a>, <a href="#" onclick="return linkClick ('https://gmail.com')">GMAIL</a>, <a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">GMX</a>, <a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">HOZO</a>対応しております、APPLEのiCloudを使うお勧めです。( @OPN IPなし通信技術はiCloudのみ対応しております）</span>メールアカウントのパスワードについて、<a href="#" onclick="return linkClick ('https://support.microsoft.com/ja-jp/help/12409/microsoft-account-app-passwords-two-step-verification')">アプリパスワード</a>をご利用のをお勧めです。アプリパスワードを申請する際に、<a href="#" onclick="return linkClick ('https://support.microsoft.com/ja-jp/help/12408')">2段階認証プロセス</a>に必要なスマートフォン番号を提示が必要な場合、個人プライバシーを守るのため、( <a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a> ) など<a href="#" onclick="return linkClick ('http://jpnpay.com/archives/561')">オンライン無料SMS受信サービス</a>をお勧めします。`,
             serverDetail: '詳細設定：',
             imapServer: 'IMAP設定',
             imapServerInput: 'IMAPサーバー名又はIP',
@@ -1118,12 +1118,15 @@ const infoDefine = [
             imapErrorMessage: ['',
                 'データフーマットエラー！',
                 'インターネット接続されていないらしいですが、ネットワークをチェックしてもう一度お試しください！',
-                'emailサーバはIMAPユーザー名又はパスワードに間違いがあると提示しました！このエラーは普通パスワードを使っていたのです。APPパスワードを使ってもう一度試しにしてください。',
+                'mailサーバはIMAPユーザー名又はパスワードに間違いがあると提示しました！このエラーは普通パスワードを使っていましたか、またはAPPパスワードが失効と可能性もありますが、メールプロバイダのアカウトページへチェックをしてください。',
                 '指定したPORTでemailサーバへIMAPの接続ができませんでした、PORT番号をチェックしてください、ファイヤウォールの中にいる場合、指定したPORTはファイアウォールにフィルタした可能性があ裏ます、IMAPサーバーのその他有効PORT番号にチェッジしてください。<a href="https://tw.help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick (`https://tw.help.yahoo.com/kb/SLN15241.html`)">应用密码</a>',
                 'IMAPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
-                'emailサーバドメインは有効ではありません、emailサーバの設定を修正してください。', 'このemailサーバはQTGate通信技術サポートしていません、他のemailプロバイダにチェンジをしてください。',
-                'emailサーバはSMTPユーザー名又はパスワードに間違いがあると提示しました！', 'SMTPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
-                'SMTPサーバへ接続ができません。', '同じEmailアカンウトが既に存在します。']
+                'emailサーバドメインは有効ではありません、emailサーバの設定を修正してください。',
+                'このemailサーバはQTGate通信技術サポートしていません、他のemailプロバイダにチェンジをしてください。',
+                'emailサーバはSMTPユーザー名又はパスワードに間違いがあると提示しました！',
+                'SMTPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
+                'SMTPサーバへ接続ができません。',
+                '同じEmailアカンウトが既に存在します。']
         },
         emailConform: {
             activeViewTitle: '鍵ペア検証',
@@ -1233,27 +1236,27 @@ const infoDefine = [
                     icon: 'exchange',
                     header: 'Security and Privacy while accessing the Open Internet',
                     detail: `@OPN@ uses QTGate’s “Quiet” technology to create a obfuscated private network by refracting encrypted data packets thru email servers. @OPN provides true stealth internet communications where your IP address is hidden to client or proxy servers. iOPN uses QTGate’s technology to obfuscate data traffic over HTTP. Both @OPN and iOPN offer security, protection and privacy while allowing access to the open internet. All data is kept private with encryption using <a onclick="return linkClick('https://en.wikipedia.org/wiki/Advanced_Encryption_Standard')" href="#" target="_blank">AES256-GCM</a> and <a onclick="return linkClick ('https://en.wikipedia.org/wiki/Pretty_Good_Privacy')" href="#" target="_blank">OpenPGP</a> along with QTGate’s proprietary security measures.`
+                }, {
+                    color: '#e03997',
+                    icon: 'talk outline',
+                    header: 'QTChat: Private and secure, peer to peer Instant messaging with no IP address.',
+                    detail: 'QTGate users can communicate with others via a private and secure instant messaging service. Using the @OPN stealth technology and end-to-end encryption, users are secure and messages kept private with no IP address footprint. Supports group chat with multiple users and can be used for privately transferring, pictures, files and live video streaming. Using end-to-end encryption ensures only the user and the people the user is communicating with can read what is sent, and nobody in between, not even QTGate. This is because messages are secured with an encrypted lock, and only the recipient and original message sender will have the special key needed to unlock and read them.'
+                }, {
+                    color: '#6435c9',
+                    icon: 'cloud upload',
+                    header: 'QTStroage: The secure and Private cloud storage and file sharing.',
+                    detail: 'Users can store and share files by using QTGate @OPN to split files into multiple parts, each encrypted to different email accounts. QTGate user can share the file privately between other users on QTGate’s OPN.'
                 },
                 {
                     color: 'darkcyan',
                     icon: 'spy',
-                    header: 'Spam and Spyware detection and blocking (Next version.)',
+                    header: 'Spam and Spyware detection and blocking.',
                     detail: 'QTGate system uses the global DNSBL database to stop spam and spyware. QTGate users will be automatically filtered from spam and spyware to stop them from transmitting your information.'
                 }, {
                     color: '#6435c9',
                     icon: 'external share',
-                    header: 'Personal VPN connection. (Next version.)',
+                    header: 'Personal VPN connection.',
                     detail: 'Access your QTGate OPN services anywhere via personal VPN connection from anywhere.'
-                }, {
-                    color: '#6435c9',
-                    icon: 'cloud upload',
-                    header: 'Secure and Private cloud storage and file sharing (Next version.)',
-                    detail: 'Users can store and share files by using QTGate @OPN to split files into multiple parts, each encrypted to different email accounts. QTGate user can share the file privately between other users on QTGate’s OPN.'
-                }, {
-                    color: '#e03997',
-                    icon: 'talk outline',
-                    header: 'Secure, peer to peer Instant messaging, with no IP address (Next version.)',
-                    detail: 'QTGate users may communicate with others via a private and secure Instant messaging service. Using the same encryption and stealth technology, users are secure and private with no IP address. Supports group chat with multiple users and can be used for safely transferring, pictures, video and other files.'
                 }]
         },
         firefoxUseInfo: {
@@ -1479,7 +1482,7 @@ const infoDefine = [
         },
         imapInformation: {
             title: 'Email account to use by OPN.',
-            infomation: `Please provide an IMAP enabled email account to be used with QTGate’s OPN services. The account name and password will be required. For your personal privacy, please consider registering a new email account to use.<span style="color: red;"> QTGate currently supports <a href="https://www.icloud.com/" target="_blank" onclick="return linkClick('https://www.icloud.com/')">Apple iCloud</a>, <a href="https://login.yahoo.com/" target="_blank" onclick="return linkClick('https://login.yahoo.com/')">Yahoo Mail</a>, <a href="https://mail.google.com" target="_blank" onclick="return linkClick('https://mail.google.com')">GMAIL</a>, <a href="https://www.gmx.com/" target="_blank" onclick="return linkClick('https://www.gmx.com/')">GMX</a>, <a href="https://www.zoho.com/mail/" target="_blank" onclick="return linkClick('https://www.zoho.com/mail/')">ZOHO</a>. (@OPN currently supports iCloud mail only.)</span> For passwords, we recommend generating a<a href="https://help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick('https://help.yahoo.com/kb/SLN15241.html')"> third-party app password.</a>`,
+            infomation: `Please provide an IMAP enabled email account to be used with QTGate’s OPN services. The account name and password will be required. For your personal privacy, please consider registering a new email account to use. QTGate currently supports <a href="#" onclick="return linkClick('https://www.icloud.com/')">Apple iCloud</a>, <a href="#" onclick="return linkClick('https://outlook.live.com/owa/')">Outlook Mail</a>, <a href="#" onclick="return linkClick('https://login.yahoo.com/')">Yahoo Mail</a>, <a href="#" onclick="return linkClick('https://mail.google.com')">GMAIL</a>, <a href="#" onclick="return linkClick('https://www.gmx.com/')">GMX</a>, <a href="#" onclick="return linkClick('https://www.zoho.com/mail/')">ZOHO</a>. (@OPN currently supports iCloud mail only.) For passwords, it is recommended use a <a href="#" onclick="return linkClick('https://help.yahoo.com/kb/SLN15241.html')">generated app-specific password.</a> If using <a href="#" onclick="return linkClick('https://help.yahoo.com/kb/two-step-verification-sln5013.html')">2-step verification</a>, we recommend using a free anonymous SMS receiving site to receive SMS codes, ( such as <a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a>, or <a href="#" onclick="return linkClick('https://www.google.com/search?q=free+anonymous+SMS+receiving+site&oq=free+anonymous+SMS+receiving+site&aqs=chrome..69i57.268j0j4&sourceid=chrome&ie=UTF-8')" >others</a> ).`,
             serverDetail: 'settings:',
             imapServer: 'IMAP server setup',
             imapServerInput: 'IMAP server name or IP address',
@@ -1569,7 +1572,7 @@ const infoDefine = [
                 '',
                 'Data format error!',
                 'This computer does not detect an internet connection. Please check your network and try again!',
-                `Email server did respond to username or an error in password. You may need use APP password to pass this test if you did normal password.`,
+                `Email server did respond to username or an error in password. You may need use APP password to pass this test if you did normal password. Or your app passwords need to be updated.`,
                 `Can't connect to email server with the port. Please check the IMAP port number. This port may be filtered by a firewall in your network.`,
                 `There is a problem with this IMAP email server's security certificate!`,
                 `Error in email server’s address. Please check the email server’s domain.`,
@@ -1807,29 +1810,29 @@ const infoDefine = [
             detail: [{
                     color: '#a333c8',
                     icon: 'exchange',
-                    header: '隱身匿名自由上網',
+                    header: '隱身匿名自由上網QTGate',
                     detail: 'QTGate通過使用<a href="https://zh.wikipedia.org/wiki/%E9%AB%98%E7%BA%A7%E5%8A%A0%E5%AF%86%E6%A0%87%E5%87%86" target="_blank">AES256-GCM</a>和<a href="https://zh.wikipedia.org/wiki/PGP" target="_blank">OpenPGP</a >加密Email通訊，創造了OPN匿名網絡通訊技術，QTGate公司首創的@OPN技術，它全程使用加密Email通訊，客戶端和代理伺服器彼此之間不用交換IP地址，實現高速網絡通訊。iOPN通訊技術是一種HTTP協議下的加密混淆代理技術，能夠隱藏變換您的IP地址高速通訊。二種通訊方式都能夠讓您，隱身和安全及不被檢出的上網，保護您的隱私，具有超強對抗網絡監控,網絡限制和網絡阻斷。'
+                }, {
+                    color: '#e03997',
+                    icon: 'talk outline',
+                    header: '無IP點對點即時加密通訊服務QTChat',
+                    detail: 'QTGate用戶之間通過email的點對點即時通訊服務，它具有傳統即時通訊服務所不具有的，匿名無IP和用戶之保持秘密通訊的功能。 QTChat加密通訊服務可以傳送文字，圖片和視頻文件信息，QTGate系統只負責傳送信息，不擁有信息，也無法檢查信息本身，所以QTGate不承擔信息所有的法律責任。 QTChat支持群即時通訊，將支持視頻流直播服務。'
+                }, {
+                    color: '#6435c9',
+                    icon: 'cloud upload',
+                    header: '加密文件匿名網絡雲存儲分享功能QTStorage',
+                    detail: '用戶通過申請多個和不同的免費email服務商賬號，可以把一個文件加密拆分成多個部分，分別存儲在不同的email賬號下，可以保密安全和無限量的使用網絡儲存。用戶還可以通過QTGate系統在QTGate用戶之間分享秘密文件。'
                 },
                 {
                     color: 'darkcyan',
                     icon: 'spy',
-                    header: '阻斷間諜軟件（下一版本）',
+                    header: '阻斷間諜軟件',
                     detail: 'QTGate系統連接全球DNSBL聯盟數據庫，用戶通過訂閱QTGate系統黑名單列表，並使用QTGate客戶端上網，讓潛伏在您電子設備內的間諜軟件，它每時每刻收集的信息，不能夠被送信到其信息收集伺服器，能夠最大限的保障您的個人隱私。'
                 }, {
                     color: '#6435c9',
                     icon: 'external share',
-                    header: '本地VPN伺服器(下一版本)',
+                    header: '本地VPN伺服器',
                     detail: 'QTGate用戶在戶外時可以通過連接自己家裡的VPN，來使用QTGate客戶端隱身安全上網。'
-                }, {
-                    color: '#6435c9',
-                    icon: 'cloud upload',
-                    header: '加密文件匿名網絡雲存儲分享功能（下一版本）',
-                    detail: '用戶通過申請多個和不同的免費email服務商賬號，可以把一個文件加密拆分成多個部分，分別存儲在不同的email賬號下，可以保密安全和無限量的使用網絡儲存。用戶還可以通過QTGate系統在QTGate用戶之間分享秘密文件。'
-                }, {
-                    color: '#e03997',
-                    icon: 'talk outline',
-                    header: '無IP點對點即時加密通訊服務（下一版本）',
-                    detail: 'QTGate用戶之間通過email的點對點即時通訊服務，它具有傳統即時通訊服務所不具有的，匿名無IP和用戶之保持秘密通訊的功能。 QTGate加密通訊服務可以傳送文字，圖片和視頻文件信息。 QTGate加密通訊服務支持群即時通訊。'
                 }]
         },
         cover: {
@@ -1910,7 +1913,7 @@ const infoDefine = [
         },
         imapInformation: {
             title: '通訊專用Email郵箱設置',
-            infomation: `請設置QTGate通訊專用Email郵箱信息。由於此賬戶的用戶名和密碼信息會提交給QTGate系統，為了防止您的個人信息被洩漏，請新申請一個臨時Email賬戶。目前QTGate技術對應<a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/mobile/?WT.mc_id=mscom')">微軟OUTLOOK</a>，<a href="#" onclick="return linkClick ('http://tw.mail.yahoo.com/')">雅虎郵箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄羅斯ZOHO郵箱</a>，<a href="#" onclick="return linkClick ('https://gmail.com')">Google郵箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美國在線GMX郵箱</a>，QTGate強力推薦使用蘋果公司的Email可以達到最佳速度(@OPN無IP連結技術只對應蘋果公司iCloud郵箱)。密碼推薦使用Email服務商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">應用密碼</a>`,
+            infomation: `請設置QTGate通訊專用Email郵箱信息。由於此賬戶的用戶名和密碼信息會提交給QTGate系統，為了防止您的個人信息被洩漏，請新申請一個臨時Email賬戶。目前QTGate技術對應<a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/mobile/?WT.mc_id=mscom')">微軟OUTLOOK</a>，<a href="#" onclick="return linkClick ('http://tw.mail.yahoo.com/')">雅虎郵箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄羅斯ZOHO郵箱</a>，<a href="#" onclick="return linkClick ('https://gmail.com')">Google郵箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美國在線GMX郵箱</a>，QTGate強力推薦使用蘋果公司的Email可以達到最佳速度(@OPN無IP連結技術只對應蘋果公司iCloud郵箱)。密碼請使用Email服務商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">應用密碼</a>。對於Email供應商在應用密碼申請時，須打開<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/%E9%96%8B%E5%95%9F%E5%85%A9%E6%AD%A5%E9%A9%9F%E9%A9%97%E8%AD%89-sln5013.html')">二步認證</a>並必須提供手機號碼接受驗證碼，為保護您的隱私，建議使用免費在線代理接收驗證碼服務。如 ( <a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a> ) 更多請 <a href="#" onclick="return linkClick ('http://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&rsv_pq=e94f47a50001f66f&rsv_t=b03ePiy3rHH0T4FVoWB8Hx9vrVdZLzVhhErWOo4xdBpjDw%2BtGri%2BViTaVAw&rqlang=cn&rsv_enter=1&rsv_sug3=42&rsv_sug1=5&rsv_sug7=100')">百度查找</a>，<a href="#" onclick="return linkClick ('https://www.google.com/search?q=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&oq=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&aqs=chrome..69i57j69i60.254j0j4&sourceid=chrome&ie=UTF-8')">Google查找</a>。`,
             serverDetail: '詳細設定：',
             imapServer: 'IMAP伺服器設定',
             UserName: '登陸用戶名稱',
@@ -1999,7 +2002,7 @@ const infoDefine = [
             imapErrorMessage: ['',
                 '數據格式錯誤，請重試',
                 '您的電腦未連接到互聯網，請檢查網絡後再次嘗試！',
-                'email伺服器提示IMAP用戶名或密碼錯！這個錯誤通常是由於您使用的密碼是普通密碼所造成的，請使用APP密碼重新試一次。',
+                'Email伺服器提示IMAP用戶名或密碼錯！這個錯誤通常是由於您使用的密碼是普通密碼，或者您的APP密碼已失效，請到您的Email帳戶檢查您的APP密碼，然後再試一次。',
                 'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！',
                 '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在IMAP詳細設定中選擇忽略證書錯誤。',
                 '無法獲得Email伺服器域名信息，請檢查您的Email伺服器設定！', '此Email伺服器不能使用QTGate通訊技术。请选择其他email服务供应商！',
@@ -2482,7 +2485,6 @@ const imapAccountGoCheckClick = (imap) => {
                 percent = 98;
                 imap.smtpCheckOk(true);
                 imap.process.addClass('success');
-                imap.showImapTestSuccess(true);
                 const fromIInputData = $('.rating');
                 fromIInputData.rating('disable');
                 imap.root.canShowAddAImapButton();
@@ -2911,6 +2913,7 @@ var view_layout;
             this.portNumberError = ko.observable(false);
             this.canDoAtEmail = ko.observable(false);
             this.reSendConnectMail = ko.observable(false);
+            this.showRegionData = ko.observable(false);
             //-
             //- Donate
             this.donateDataPool = ko.observableArray(donateArray);
@@ -3145,12 +3148,37 @@ var view_layout;
                     const uu = this.emailPool().findIndex(n => { return n.uuid === data.qtgateConnectImapAccount; });
                     this.QTGateConnectSelectImap(uu);
                 }
+                this.QTGateConnecting(data.qtGateConnecting);
+                if (data.qtGateConnecting === 3) {
+                    this.QTGateConnectActive(false);
+                    this.QTGateConnectRegionActive(false);
+                    this.menuClick(2, true);
+                    const index = this.emailPool().findIndex(n => { return n.uuid === data.qtgateConnectImapAccount; });
+                    const imapData = this.emailPool()[index];
+                    imapData.appPaassword(true);
+                    return imapData.callBackError(3);
+                    /*
+                    this.showActiveMail ( true )
+                    this.QTGateConnecting ( data.qtGateConnecting )
+                    this.QTGateConnectActive ( true )
+
+                    this.QTGateConnectError ( data.error )
+                    return $( '.activating.element' ).popup({
+                        on: 'click',
+                        onHidden: () => {
+                            this.emailPool()[ this.QTGateConnectSelectImap()].callBackError ( data.error )
+                            this.MenuItems ([ false, false, true, false, false ])
+                            this.QTGateConnectActive ( false )
+                        },
+                        position: 'bottom left'
+                    })
+                    */
+                }
                 if (!this.keyPair().verified) {
                     if (data.qtGateConnecting === 6) {
                         return this.connectQTGateShow(true);
                     }
                     this.showActiveMail(true);
-                    this.QTGateConnecting(data.qtGateConnecting);
                     this.QTGateConnectActive(true);
                     this.QTGateConnectError(data.error);
                     //      connected to QTGate system
@@ -3166,18 +3194,6 @@ var view_layout;
                             position: 'bottom left'
                         });
                     }
-                    //      IMAP connect error!
-                    if (data.qtGateConnecting === 3) {
-                        return $('.activating.element').popup({
-                            on: 'click',
-                            onHidden: () => {
-                                this.emailPool()[this.QTGateConnectSelectImap()].callBackError(data.error);
-                                this.MenuItems([false, false, true, false, false]);
-                                this.QTGateConnectActive(false);
-                            },
-                            position: 'bottom left'
-                        });
-                    }
                     //      send verified ERROR!
                     if (data.qtGateConnecting === 5) {
                         return $('.activating.element').popup({
@@ -3187,8 +3203,14 @@ var view_layout;
                             position: 'bottom left'
                         });
                     }
-                    $('.QTGateConnect').accordion('refresh');
-                    return $('#QTGateConnecting').removeClass('transition hidden');
+                    return $('.QTGateConnect').accordion('refresh');
+                }
+                if (data.qtGateConnecting === 2) {
+                    return setTimeout(() => {
+                        return socketIo.emit('getAvaliableRegion', (region, dataTransfer, config) => {
+                            return this.getAvaliableRegionCallBack(region, dataTransfer, config);
+                        });
+                    }, 2000);
                 }
                 this.showActiveMail(false);
                 const process = $('#connectImformationProcess');
@@ -3222,13 +3244,6 @@ var view_layout;
                     process.addClass('error');
                     this.emailPool()[this.QTGateConnectSelectImap()].callBackError(data.error);
                     return this.QTGateRegionERROR(0);
-                }
-                if (data.qtGateConnecting === 2) {
-                    setTimeout(() => {
-                        return socketIo.emit('getAvaliableRegion', (region, dataTransfer, config) => {
-                            return this.getAvaliableRegionCallBack(region, dataTransfer, config);
-                        });
-                    }, 2000);
                 }
                 if (data.qtGateConnecting === 3 && data.error === 10) {
                     const index = this.emailPool().findIndex(n => { return availableImapServer.test(n.iMapServerName()); });
@@ -3717,6 +3732,9 @@ var view_layout;
             $('.ui.dropdown').dropdown();
             this.QTTransferData(dataTransfer);
             this.config(config);
+            this.showRegionData(true);
+            this.QTGateRegionInfo(false);
+            return clearTimeout(this.doingProcessBarTime);
         }
         desconnectCallBack() {
             this.selectedQTGateRegion().showConnectedArea(false);
@@ -3777,6 +3795,12 @@ var view_layout;
                 return;
             const _reg = this.QTGateRegions()[index];
             _reg.ping(ping);
+            const fromIInputData = $(`#card-${_reg.qtRegion.replace('.', '-')}`);
+            const uu = ping;
+            const _ping = Math.round((500 - ping) / 100);
+            fromIInputData.rating({
+                initialRating: _ping > 0 ? _ping : 0
+            }).rating('disable');
         }
         appPassword(imapServer) {
             const { shell } = require('electron');

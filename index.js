@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const DEBUG = true;
+const DEBUG = false;
 const Fs = require("fs");
 const Os = require("os");
 const path_1 = require("path");
@@ -396,6 +396,7 @@ const appReady = () => {
                 localServer1 = new BrowserWindow({ show: DEBUG });
                 localServer1.setIgnoreMouseEvents(!DEBUG);
                 localServer1.rendererSidePort = exports.port;
+                localServer1.debug = DEBUG;
                 localServer1.createWindow = createWindow;
                 localServer1.takeScreen = takeScreen;
                 localServer1._doUpdate = _doUpdate;

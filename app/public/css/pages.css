@@ -389,6 +389,14 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   margin: 0px;
   display: block;
   width: 100%;
+  position: absolute;
+}
+.coverNextButton {
+  opacity: 0.5;
+  background: cadetblue;
+}
+.coverNextButton:hover {
+  opacity: 0.8;
 }
 .languageText {
   width: 100%;
@@ -400,7 +408,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   opacity: 0.4;
 }
 .titleText{
-  top:120px;
+  top: 5em;
   text-align: center;
   z-index: 99;
   position: relative;
@@ -426,7 +434,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   color: white!important;
 }
 .VideoBoxButtom {
-  top: 230px;
+  top: 22em;
   position: relative;
   width: 100%;
   z-index: 98;
@@ -438,7 +446,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
 }
 .company {
   top: -110px;
-  left: 80%;
+  left: 82%;
   width: 130px;
   font-weight: lighter!important;
   color: white;

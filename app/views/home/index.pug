@@ -3,7 +3,7 @@ block jumbotron
 
 	.content
 		#cover1
-			.VideoBox
+			//-.VideoBox
 				.VideoBackground
 					video.video( autoplay loop preload = "auto" )
 						source( src="/images/typing-keyboard_720p.mp4" type="video/mp4" )
@@ -16,6 +16,18 @@ block jumbotron
 					buttom.ui.basic.button.positive.column.header.item.center
 						span( data-bind = " text: infoDefine [ languageIndex() ].cover.start ")
 				img.company( src="/images/QTLogo_purple.png")
+			.VideoBox()
+				iframe( src="/html/canada150.html" allowfullscreen="true" allowtransparency="true" style="border: 0; width: 100%; height: 100%; top: -10em;")
+			
+			.titleText
+				h1( data-bind = " text: infoDefine [ languageIndex() ].cover.firstTitle1, animate:{ animation: 'rubberBand', state: languageIndex() + 1 }")
+				h1( data-bind = " text: infoDefine [ languageIndex() ].cover.firstTitle2, animate: { animation: 'rubberBand', state: languageIndex() + 1 }")
+			
+			.VideoBoxButtom.ui.one.column.right.aligned.grid
+				.column
+					button.circular.ui.icon.button.inverted.coverNextButton( href="#" data-bind = " click: startClick ")
+						i.icon.arrow.right
+			img.company( src="/images/150.svg")
 		#firstNode()
 			.content.firstNodeContent
 				.ui.header( data-bind = " text: infoDefine[ languageIndex() ].firstNote.title " style = " margin-left: 30px; margin-right: 100px;")
@@ -160,7 +172,7 @@ block jumbotron1
 						.menuItem
 							i.address.card.outline.icon.large.blue
 					//-		QTGate connect & region area
-					a.item( data-bind = "css:{ active: MenuItems() [3]}, click: () => { return menuClick ( 3, true )}, visible: QTGateConnectActive() || QTGateConnectRegionActive ")
+					a.item( data-bind = "css:{ active: MenuItems() [3]}, click: () => { return menuClick ( 3, true )}, visible: QTGateConnectActive() || QTGateConnectRegionActive() ")
 						.menuItem
 							i.exchange.icon.large.purple
 					//-		QTGate file storage
@@ -171,7 +183,7 @@ block jumbotron1
 					a.item( data-bind = "css:{ active: MenuItems() [5]}, click: () => { return menuClick ( 5, false )}, visible: false")
 						.menuItem
 							i.talk.outline.icon.large.pink
-					a.item( data-bind = "css:{ active: MenuItems() [8]}, , visible: QTGateConnectActive() || QTGateConnectRegionActive, click: () => { return menuClick ( 8, true )}")
+					a.item( data-bind = "css:{ active: MenuItems() [8]}, visible: keyPair().verified && !QTGateRegionInfo() && (QTGateConnectActive() || QTGateConnectRegionActive()), click: () => { return menuClick ( 8, true )}")
 						.menuItem
 							i.icon.handshake.large.orange
 					a.item( data-bind = "css:{ active: MenuItems() [6]}, click: () => { return menuClick ( 6, true )}")
@@ -312,7 +324,7 @@ block jumbotron1
 					.area( data-bind = " css: { 'AccordionBox-shadow-delete title': emailPool().length && emailPool()[ emailPool().length - 1].emailAddress().length } ")
 						a.ui.top.right.attached.label.background-clolr-white
 							i.icon.close
-						p.fg-grayLight( style="margin-top: 0!important;" data-bind = " html: infoDefine[ languageIndex() ].imapInformation.infomation, animate:{ animation: 'pulse', state: languageIndex() + 1 }" )
+						p.fg-grayLight( style="margin-top: 0!important;cursor: auto;" data-bind = " html: infoDefine[ languageIndex() ].imapInformation.infomation, animate:{ animation: 'pulse', state: languageIndex() + 1 }" )
 				.ui.cards.ImapItemAccordionCards
 					<!-- ko foreach : { data: emailPool, afterAdd: showPlanetElement } -->
 						.ui.card.imapItemCard( data-bind = " css: { imapItemEdit: imapDataEditShow (), imapItemUncheckShow: ! imapDataEditShow () && ! smtpCheckOk () && ! imapCheckOk(), imapItemCheckOKShow: ! imapDataEditShow () && smtpCheckOk () && imapCheckOk() }, attr: { id: uuid }")
@@ -520,7 +532,7 @@ block jumbotron1
 												.ui.purple.button( style = "position: absolute; right: 2em; top: 0em;" data-bind="text: infoDefine [ $root.languageIndex() ].emailConform.conformButtom, click: checkActiveEmailSubmit, visible: conformButtom ()" )
 								.row( style = "background-color: #FAFAFA;padding-top: 0px;")
 				.SendToQTGateIMAPInformation.ui.attached.segment.hideArea.AccordionBox-shadow-delete( data-bind = "css: { 'accordion AccordionBox-shadow-delete': QTGateConnecting ()}, visible: !QTGateConnecting () ")
-					.SendToQTGateIMAPInformationTitle( data-bind = " css: { 'AccordionBox-shadow-delete title': QTGateConnecting()}, visible: !QTGateConnecting()")
+					.SendToQTGateIMAPInformationTitle( data-bind = " css: { 'AccordionBox-shadow-delete title': QTGateConnecting()}, visible: QTGateConnecting() === 0")
 						p( data-bind = " html: infoDefine [ languageIndex() ].imapInformation.imapAccountConform" style=" color: rgba(255,0,0,.5)")
 						.ui.buttons
 							button.ui.button( data-bind=" text: infoDefine [ languageIndex() ].home_index_view.cancel, click: () => { $('.SendToQTGateIMAPInformation').transition('slide down')}")
@@ -542,7 +554,11 @@ block jumbotron1
 						p( data-bind = " html: infoDefine [ languageIndex() ].imapInformation.imapAccountConform" style=" color: rgba(255,0,0,.5)")
 						button.ui.button.positive( data-bind = " text: infoDefine [ languageIndex() ].imapInformation.agree, click: connectQTGate1 ")
 			.content( data-bind = " visible: MenuItems()[3] && !reSendConnectMail() && !showActiveMail() && !ConnectGatewayShow()" style = "margin-top: 3em;")
-				h4( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.title " style="color: #a333c8;")
+				
+				span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.title " style="color: #a333c8;font-size: 1rem;font-weight:bold;")
+				span.testButton( data-bind = " visible: showRegionData()" style="margin-left:1em;")
+					a( data-bind = "click: pingCheck " href="#")
+						i.icon.line.chart
 				.content( data-bind = " visible: QTGateRegionInfo (), css: { active: QTGateRegionInfo ()} ")
 					.connectImformation
 						span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.connectQTGate ")
@@ -553,26 +569,33 @@ block jumbotron1
 							span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.QTGateRegionERROR[QTGateRegionERROR()]" style = "color: red;")
 						#connectImformationProcess.olive.ui.tiny.progress(style = " margin-top: 10px; ")
 							.bar
-				.testButton( data-bind = " visible: !QTGateRegionInfo()" style="margin-bottom:1em;")
+				//-.testButton( data-bind = " visible: !QTGateRegionInfo()" style="margin-bottom:1em;")
 					a.ui.blue.basic.label( data-bind = "click: pingCheck " )
 						i.terminal.icon( style="margin:0px;" data-bind = " visible: !pingCheckLoading ()")
 							span( style="margin-left:0.3em;") ping
 						i.blue.notched.circle.loading.icon( data-bind = " visible: pingCheckLoading ()" style="margin:0px;" )
 					//-a.ui.blue.basic.label( data-bind="click: downloadCheck " style="margin-left:1em;")
 						i.download.icon( style="margin:0px;" )
-				.ui.cards(data-bind = " visible: !QTGateRegionInfo(),foreach: QTGateRegions " )
+				.ui.cards(data-bind = " visible: showRegionData(), foreach: QTGateRegions " style="margin-top: 0.1em;")
 					.ui.card( data-bind = " css: { 'raised link': available(), 'unavailable': ! available() }, click: () => { if ( !available()){ return }; $root.QTGateRegionCardClick ( $index()) }")
 						.content
 							i( data-bind = " attr: { class: 'right floated flag ' + icon }")
 							.header.QTGateGatewayCardHeader( data-bind = " text: content[ $root.languageIndex() ], css: { active: available() } " )
 							.meta( data-bind = " text: meta [ $root.languageIndex() ] ")
 							.description
-								span( style = " color: mediumseagreen!important;" data-bind = "visible: available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.available")
-								span( style = " color: palevioletred!important;" data-bind = "visible: !available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.unavailable" )
-								span( data-bind = "visible: canVoe() && ! selected() " style = " color: purple!important; font-size: small!important; margin-left: 10px!important;" ) @OPN
-								span( data-bind = "visible: canVoH() && ! selected() " style = " color:rebeccapurple!important; font-size: small!important; margin-left: 10px!important;" ) iOPN
-								i.blue.notched.circle.loading.icon( data-bind = " visible: ping() === -1 " style="margin-left: 15px!important;" )
-								span( data-bind = "visible: ping() > -1, text: `[${ ping() === 0 ? 'err' : '<' + ping() + 'ms'}]`" style = " color: cornflowerblue!important; font-size: small!important; margin-left: 10px!important;")
+								.ui.one.column.grid
+									.row( style="padding: 0px;padding-top: 0.5em;")
+										.column
+											span( style = " color: mediumseagreen!important;" data-bind = "visible: available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.available")
+											span( style = " color: palevioletred!important;" data-bind = "visible: !available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.unavailable" )
+											span( data-bind = "visible: canVoe() && ! selected() " style = " color: purple!important; font-size: small!important; margin-left: 10px!important;" ) @OPN
+											span( data-bind = "visible: canVoH() && ! selected() " style = " color:rebeccapurple!important; font-size: small!important; margin-left: 10px!important;" ) iOPN
+											i.blue.notched.circle.loading.icon( data-bind = " visible: ping() === -1 " style="margin-left: 15px!important;" )
+									.row( style="padding: 0px;padding-bottom: 0.8em;")
+										.column
+											span( data-bind = "visible: ping() > 0")
+												.ui.mini.star.rating.disabled( data-bind="attr: { id: 'card-' + qtRegion.replace('.','-') }" data-max-rating="5")
+												span( data-bind = "text: `[${ ping() === 0 ? 'err' : '<' + ping() + 'ms'}]`" style = " color: cornflowerblue!important; font-size: small!important; margin-left: 5px!important;")
 			//-
 			.content( data-bind="visible: MenuItems()[8]" style = "margin-top: 3em;")
 				h4( data-bind = " text: infoDefine [ languageIndex() ].QTGateDonate.title " style="color: #a333c8;")
