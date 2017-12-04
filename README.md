@@ -16,7 +16,7 @@ QTGATE提供本地Proxy服務器對應HTTP, HTTPS, SOCKS 4,4a,5。其他設備�
 このプロジェクトはQTGATE端末用ソフトです.
 QTGATEとは、eMailの通信プロトコルIMAPを使用して、端末とサーバの間に、仮想のネットワークトンネルを構築し、さらにVPNをカプセル化にしたことで、どんな端末からも利用することができます。QTGATEの一番重要な特徴は，端末とサーバの通信がIPアドレスではなく、一つのeMailアカウントを使います。それによって世界中に安全と自由な通信ができるようになります。
 QTGATEはローカルプロキシサーバを提供して、HTTP, HTTPS, SOCKS 4,4a,5をカバーすることで、他のデバイスはローカルプロキシサーバを経由QTGATEサービスをご利用いただきます。
-![http protocol](/app/public/html/canada150.html?raw=true)
+![http protocol](/resources/canada150.png?raw=true)
 
 ![http protocol](/resources/vpn.email11.jpg?raw=true)
 
