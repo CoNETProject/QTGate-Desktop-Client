@@ -34,7 +34,7 @@ import * as Stream from 'stream'
 import { start } from 'repl'
 import { imapAccountTest } from './imap'
 //import * as Ping from 'net-ping'
-import * as netPing from 'net-ping'
+
 import { Buffer } from 'buffer'
 
 const openpgp = require ( 'openpgp' )
@@ -716,6 +716,8 @@ export class localServer {
 		})
 
 		socket.on ( 'pingCheck', CallBack => {
+			if ( process.platform === 'linux')
+				return CallBack ( -1 )
 			saveLog (`socket.on ( 'pingCheck' )`)
 			if ( !this.regionV1 || this.pingChecking ) {
 				saveLog (`!this.regionV1 [${ !this.regionV1 }] || this.pingChecking [${ this.pingChecking }]`)
@@ -724,6 +726,7 @@ export class localServer {
 				
 			this.pingChecking = true
 			try {
+				const netPing = require ('net-ping')
 				const session = netPing.createSession ()
 			} catch (ex) {
 				console.log (`netPing.createSession err`, ex )
@@ -2007,7 +2010,7 @@ const testPing = ( hostIp: string, CallBack ) => {
 	test.fill ( hostIp )
 	saveLog (`start testPing [${ hostIp }]`)
 	return Async.eachSeries ( test, ( n, next ) => {
-		
+		const netPing = require ('net-ping')
 		const session = netPing.createSession ()
 		session.pingHost ( hostIp, ( err, target, sent, rcvd ) => {
 			

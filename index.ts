@@ -50,11 +50,11 @@ const handleSquirrelEvent = () => {
       } catch (error) {}
   
       return spawnedProcess;
-    };
-  
+    }
+
     const spawnUpdate = function(args) {
       return spawn(updateDotExe, args);
-    };
+    }
   
     const squirrelEvent = process.argv[1];
     switch (squirrelEvent) {
@@ -86,8 +86,8 @@ const handleSquirrelEvent = () => {
         // we update to the new version - it's the opposite of
         // --squirrel-updated
   
-        app.quit();
-        return true;
+        app.quit()
+        return true
     }
   }
 

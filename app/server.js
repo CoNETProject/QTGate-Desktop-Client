@@ -30,7 +30,6 @@ const Imap = require("./imap");
 const freePort = require("portastic");
 const Stream = require("stream");
 //import * as Ping from 'net-ping'
-const netPing = require("net-ping");
 const buffer_1 = require("buffer");
 const openpgp = require('openpgp');
 const Express = require('express');
@@ -675,6 +674,8 @@ class localServer {
             remote.app.exit();
         });
         socket.on('pingCheck', CallBack => {
+            if (process.platform === 'linux')
+                return CallBack(new Error('not support'));
             saveLog(`socket.on ( 'pingCheck' )`);
             if (!this.regionV1 || this.pingChecking) {
                 saveLog(`!this.regionV1 [${!this.regionV1}] || this.pingChecking [${this.pingChecking}]`);
@@ -682,6 +683,7 @@ class localServer {
             }
             this.pingChecking = true;
             try {
+                const netPing = require('net-ping');
                 const session = netPing.createSession();
             }
             catch (ex) {
@@ -1727,6 +1729,7 @@ const testPing = (hostIp, CallBack) => {
     test.fill(hostIp);
     saveLog(`start testPing [${hostIp}]`);
     return Async.eachSeries(test, (n, next) => {
+        const netPing = require('net-ping');
         const session = netPing.createSession();
         session.pingHost(hostIp, (err, target, sent, rcvd) => {
             session.close();
