@@ -7,7 +7,7 @@
 This is QTGATE client software install build  
 QTGATE is a service that use email IMAP protocol to make a virtual tunnel that exchanges packets between clients and servers. [QTGATE](https://www.qtgate.com).
 The excellent point is QTGATE exchanges data by email account, client and server do not need IP address. Nobody know where you from even QTGATE system.
-QTGate have a local proxy server support HTTP HTTPS SOCKS 4,4a,5. All other devices can use QTGate via ths local proxy server.
+QTGate have a local proxy server support HTTP HTTPS SOCKS 4,4a,5. All other devices can use QTGate via this local proxy server.
 
 這是 QTGATE 客戶端 install.  
 QTGATE是一种安全通讯手段，通过eMail的IMAP协议建立一个虚拟的专用通道，连接客户端和代理服务器，它的奇妙之处在于客户端和服务器彼此不用知道相互的IP地址，而是通过共用一个eMail账号进行数据交换，QTGATE系统把VPN包加密后，利用IMAP进行通讯，能最大限度的保护您的网络通讯不被检测和干扰，建立一个私密的网络安全环境。

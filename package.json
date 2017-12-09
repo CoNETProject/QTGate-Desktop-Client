@@ -17,9 +17,6 @@
     "node": ">=50.9"
   },
   "build": {
-    "squirrelWindows": {
-      "remoteReleases": "https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v0.8.51/"
-    },
     "appId": "com.qtgate.client",
     "win": {
       "target": [
@@ -53,7 +50,7 @@
   },
   "homepage": "https://www.qtgate.com",
   "devDependencies": {
-    "electron-builder-squirrel-windows": "^19.47.0"
+    "electron-builder-squirrel-windows": "^19.48.0"
   },
   "dependencies": {
     "async": "^2.6.0",
@@ -63,7 +60,7 @@
     "net-ping": "^1.2.1",
     "node-uuid": "^1.4.8",
     "nodemailer": "^4.4.0",
-    "openpgp": "^2.5.14",
+    "openpgp": "^2.6.0",
     "portastic": "^1.0.1",
     "pug": "^2.0.0-rc.4",
     "raw-socket": "1.5.1",

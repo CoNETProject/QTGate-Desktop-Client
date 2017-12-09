@@ -375,22 +375,6 @@ interface IQTGateRegionsSetup {
     title: string
 }
 
-const transfer: iTransferData = {
-    productionPackage: 'free',
-    usedMonthlyOverTransfer: 1073741824,
-    account: null,
-    availableDayTransfer: 104857600,
-    power: 1,
-    usedMonthlyTransfer: 0,
-    timeZoneOffset: 420,
-    usedDayTransfer: 0,
-    resetTime: new Date (),
-    availableMonthlyTransfer: 1073741824,
-    startDate: new Date (),
-    transferMonthly: 1073741824,
-    transferDayLimit: 104857600
-}
-
 const QTGateRegionsSetup: IQTGateRegionsSetup[] = [
     {
         title: '@OPN'
@@ -402,6 +386,25 @@ const QTGateRegionsSetup: IQTGateRegionsSetup[] = [
 
 const infoDefine = [
 	{
+        account:{
+            title: '账户管理',
+            segmentTitle:'账户: ',
+            currentPlan:'当前订阅: ',
+            MonthBandwidthTitle:'月度代理服務器数据传送限额：',
+            dayBandwidthTitle:'毎日限额：',
+            upgradeTitle:'升级账户选项',
+            DowngradeTitle:'降级账户选项',
+            cancelPlan:'终止月度订阅计划',
+            MonthBandwidthTitle1:'传送限额',
+            serverShareData:['共享服务器','一台独占*','二台独占*','四台独占'],
+            continue:'下一步',
+            monthlyPay:'月收费',
+            serverShareData1:'使用同时链接多台代理技术，同时使用台数大于独占数时，会相应分享您所独占的资源',
+            internetShareData:['共享高速带宽','独享单线高速带宽*','独享双线高速带宽*','独享四线高速带宽'],
+            maxmultigateway: ['最大同时可二条并发代理数','最大同时可使用四条并发代理数'],
+            downGradeMessage:'您正在操作降级您的订阅，如果操作成功您将从下月您的订阅之日起，实行新的订阅，如果您是。',
+            cancelPlanMessage:'QTGate的订阅是以月为基本的单位。您的月订阅将在下月您的订阅起始日前被终止，您可以继续使用您的本月订阅计划，您将自动回到免费用户。如果您是每月自动扣款，则下月将不再扣款。如果您是年度订阅计划，您的退款将按普通每月订阅费，扣除您已经使用的月份后计算的差额，将自动返还您所支付的信用卡账号，如果您是使用促销码，或您是测试用户，您的终止订阅将不能被接受。'
+        },
         QTGateDonate: {
             title: 'QTGate赞助商提供的免流量网站',
             meta_title:'捐赠者：'
@@ -620,7 +623,8 @@ const infoDefine = [
                 'Email伺服器提示IMAP用户名或密码错！这个错误通常是由于您使用的密码是普通密码，或者您的APP密码已失效，请到您的Email帐户检查您的APP密码，然后再试一次。',
                 'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！<a href="data-html"></a>',
                 '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在IMAP详细设定中选择忽略证书错误。','无法获得Email服务器域名信息，请检查您的Email服务器设定！',
-                '此Email伺服器不能使用QTGate通訊技术。请选择其他email服务供应商！','email服务器提示SMTP用户名或密码错！ ',
+                '此Email服务器看来可能不能使用QTGate通讯技术，请再测试一次或选择其他email服务供应商！',
+                'Email服务器提示SMTP用户名或密码错！ ',
                 '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在SMTP详细设定中选择忽略证书错误。 ','SMTP连结提示未知错误', '存在相同Email账号']
         },
 
@@ -657,12 +661,13 @@ const infoDefine = [
             title: 'QTGate代理服务器区域选择',
             speedTest: '代理服务器速度测试：',
             error: [],
+            pingError:'代理服务区域速度检测发生错误，请退出QTGate，以管理员身份再次打开QTGate后，再执行速度检测！',
             connectQTGate:'正在获得代理服务器区域信息...',
             available: '服务中',
             unavailable: '准备中',
             proxyDomain: '域名解释全程使用QTGate代理服务器端',
             setupCardTitle: '使用连接技术:',
-            MultipleGateway: '同时使用代理服务器数：',
+            MultipleGateway: '同时并发使用代理数：',
             dataTransfer: '数据通讯：',
             dataTransfer_datail: ['全程使用代理服务器','当本地不能够到达目标主机时使用'],
             proxyDataCache: '浏览数据本地缓存:',
@@ -849,7 +854,26 @@ const infoDefine = [
                 '正在获得QTGate信任签署中','系统错误，请重启QTGate后再试，如果仍然存在，请尝试重新安装QTGate。','QTGate系统错误!']
         
         }
+        
 	},{
+        account:{
+            title: 'アカウト管理',
+            segmentTitle:　'アカウトタ: ',
+            currentPlan:　'現在加入中のプラン: ',
+            MonthBandwidthTitle:'月ゲットウェイ利用可能データ量：',
+            dayBandwidthTitle:'毎日利用可能データ量：',
+            upgradeTitle:'アップグレードオプション',
+            DowngradeTitle:'ダウングレードオプション',
+            cancelPlan:'キャンセルプラン',
+            MonthBandwidthTitle1:'データ量',
+            continue:'次へ',
+            serverShareData:['シェアゲットウェイ','一台独占*','二台独占*','四台独占'],
+            internetShareData:['シェアハイスピード回線','独占ハイスピード一回線*','独占ハイスピード二回線*','独占ハイスピード四回線'],
+            monthlyPay:'プラン月額利用料',
+            serverShareData1:'並列ゲットウェイ技術を使う際に、同時使う台数が独占台数を超える場合には、独占リソースを他人と割合にチェアします。',
+            maxmultigateway: ['最大二つ並列ゲットウェイ','最大四つ並列ゲットウェイ'],
+            cancelPlanMessage:'QTGateプランは月毎に計算し、来月のあなたの最初加入した日まで、今のプランのままご利用ですます。キャンセルした日から自動的にQTGateの無料ユーザーになります。おアカウトは(月)払いの場合は、来月の自動払いは中止となります。年払いの場合は、ご使った分に月普通料金と計算し控除してから、お支払いを使ったクレジットカードに戻ります。販促コードまたはテストユーザーにはキャンセルすることができません。'
+        },
         QTGateDonate: {
             title: 'スポンサーが提供する無料アクセスウェブサイト',
             meta_title:'ドナー：'
@@ -1204,7 +1228,7 @@ const infoDefine = [
                 '指定したPORTでemailサーバへIMAPの接続ができませんでした、PORT番号をチェックしてください、ファイヤウォールの中にいる場合、指定したPORTはファイアウォールにフィルタした可能性があ裏ます、IMAPサーバーのその他有効PORT番号にチェッジしてください。<a href="https://tw.help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick (`https://tw.help.yahoo.com/kb/SLN15241.html`)">应用密码</a>',
                 'IMAPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
                 'emailサーバドメインは有効ではありません、emailサーバの設定を修正してください。',
-                'このemailサーバはQTGate通信技術サポートしていません、他のemailプロバイダにチェンジをしてください。',
+                'このemailサーバはQTGate通信技術サポートしていません、もう一度テストをするか、他のemailプロバイダにチェンジをしてください。',
                 'emailサーバはSMTPユーザー名又はパスワードに間違いがあると提示しました！',
                 'SMTPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
                 'SMTPサーバへ接続ができません。',
@@ -1247,7 +1271,7 @@ const infoDefine = [
             unavailable: '準備しています',
             proxyDomain:'ドメイン検索はQTGateゲットウェイ側に依頼します。',
             setupCardTitle: '接続技術:',
-            MultipleGateway: '同時使用ゲットウェイ数：',
+            MultipleGateway: '並列使うゲットウェイ数：',
             dataTransfer: '通信データは：',
             dataTransfer_datail: ['全てのデータをOPN経由','ターゲットサーバ到達不能時だけ'],
             proxyDataCache: 'Webキャッシュ:',
@@ -1257,6 +1281,7 @@ const infoDefine = [
             localPort: 'ローカルプロキシポート番号:',
             localPath: 'ローカルプロキシポートPATHを指定します。',
             outDoormode: '接受外網訪問',
+            pingError:'QTGateゲットウェイエリアスピードチェックエラーが発生しました。一回QTGateを終了して、管理者としてQTGateを再起動をして、スピードチェックをしてください。',
             QTGateRegionERROR:['QTGateへ接続要請メールの送信ができなかったです。IMAPアカウントの設定を調べてください。',
             ''],
             sendConnectRequestMail: ['QTGateクライアントはQTGateシステムとの接続が切れた。再接続要請メールをQTGateシステムへ送信しました、接続を完了するまで時間がかかるのためしばらくお待ちおください。',
@@ -1312,6 +1337,25 @@ const infoDefine = [
         },
 
 	},{
+        account:{
+            title: 'Manage account',
+            segmentTitle:'Account: ',
+            currentPlan:'Current Plan: ',
+            MonthBandwidthTitle:'Gateway Month Bandwidth：',
+            dayBandwidthTitle:'Day limited：',
+            upgradeTitle:'Upgrade Option',
+            DowngradeTitle:'Downgrade Option',
+            cancelPlan:'Cancel plan',
+            MonthBandwidthTitle1:'Bandwidth',
+            serverShare:'Gateway',
+            continue:'Next step',
+            serverShareData:['Share gateway','1 Dedicated*','2 Dedicated*','4 Dedicated'],
+            internetShareData:['Share high speed internet','Dedicated 1 high speed internet*','Dedicated 2 high speed internet*','Dedicated 4 high speed internet'],
+            maxmultigateway: ['Max 2 multi-gateway','Max 4 multi-gateway'],
+            monthlyPay:'Monthly pricing',
+            cancelPlanMessage: 'You may cancel your QTGate subscription at any time, and you will continue to have access to the QTGate services through the end of your paid period until all remaining subscription time in your account is used up. Restrictions apply to free accounts and accounts using promotions.',
+            serverShareData1:'Your dedicated server will be share ratio when you connected over your dedicated count via use Multi-gateway technology.'
+        },
         QTGateDonate: {
             title: 'Free access website provided by sponsor.',
             meta_title:'Donor：'
@@ -1693,7 +1737,7 @@ const infoDefine = [
                 `Can't connect to email server with the port. Please check the IMAP port number. This port may be filtered by a firewall in your network.`, 
                 `There is a problem with this IMAP email server's security certificate!`, 
                 `Error in email server’s address. Please check the email server’s domain.`, 
-                'This email provider currently does not support QTGate’s @OPN technology, please try another email provider.', 
+                'This email provider currently looks does not support QTGate’s @OPN technology, please try do test again, or change to another email provider.', 
                 `Email server did respond to SMTP's username or an error in password.`, 
                 `There is a problem with this SMTP email server’s security certificate!`, 
                 `Connecting to SMTP Email server received an unknown error!`, 'Please check email account!']
@@ -1736,7 +1780,7 @@ const infoDefine = [
             unavailable: 'Unavailable',
             proxyDomain:'Domain lookup via QTGate gateway side.',
             setupCardTitle: 'connecting with:',
-            MultipleGateway: 'Gateway count:',
+            MultipleGateway: 'multi-gateway count:',
             dataViaGateway:'All internet data transfered via QTGate gateway.',
             dataTransfer: 'Data:',
             dataTransfer_datail: ['All data on QTGate gateway.',`Only when cannot connect to target server.`],
@@ -1746,6 +1790,7 @@ const infoDefine = [
             localPort:'Local proxy port number:',
             localPath:'HTTP/HTTPS conect path name:',
             GlobalIp: 'Global IP:',
+            pingError:'QTGate gateway area speed check error! Please exit QTGate and reopen QTGate as administrator. Then do check speed again.',
             QTGateRegionERROR:['Send connect request mail has an error. Please check your IMAP account settings.',
             ''],
             GlobalIpInfo:  `Please note: When connecting to iOPN, your IP will be visible only to QTGate. Rest assured, your privacy is safe as QTGate does not log IP nor store any communications data. For stealth IP connection, please use @OPN. If [@OPN] option is not available, you may need to check your IMAP email account. (currently @OPN only supports iClould IMAP.)`,
@@ -1809,6 +1854,26 @@ const infoDefine = [
         },
 
 	}, {
+        account:{
+            title: '賬戶管理',
+            segmentTitle:'賬戶Email: ',
+            currentPlan:'當前訂閱: ',
+            MonthBandwidthTitle:'月度可使用代理伺服器數據傳送限額：',
+            dayBandwidthTitle:'每日限額：',
+            upgradeTitle:'升級賬戶選項',
+            DowngradeTitle:'降級賬戶選項',
+            cancelPlan:'終止當前月租',
+            MonthBandwidthTitle1:'傳送限額',
+            serverShare:'代理伺服器',
+            continue:'下一步',
+            serverShareData:['共享伺服器','獨佔一台*','獨佔二台*','獨佔四台'],
+            monthlyPay:'月租費',
+            internetShareData:['共享高速帶寬','獨享高速帶寬*','獨享雙線高速帶寬*','獨享四線高速帶寬'],
+            serverShareData1:'使用同時鏈接多台代理技術，使用台數大於獨占數時，會相應分享您所獨占的資源',
+            maxmultigateway: ['最大同時可二條並發代理','最大同時可四條並發代理'],
+            cancelPlanMessage:'QTGate的訂閱是以月為基本的單位。您的月訂閱將在下月您的訂閱起始日前被終止，您可以繼續使用您的本月訂閱計劃，您將自動回到免費用戶。如果您是每月自動扣款，則下月將不再扣款。如果您是年度訂閱計劃，您的退款將按普通每月訂閱費，扣除您已經使用的月份後計算的差額，將自動返還您所支付的信用卡賬號，如果您是使用促銷碼，或您是測試用戶，您的終止訂閱將不能被接受。 '
+
+        },
         QTGateDonate: {
             title: 'QTGate贊助商提供的免流量網站',
             meta_title:'捐贈者：'
@@ -2146,8 +2211,10 @@ const infoDefine = [
                 'Email伺服器提示IMAP用戶名或密碼錯！這個錯誤通常是由於您使用的密碼是普通密碼，或者您的APP密碼已失效，請到您的Email帳戶檢查您的APP密碼，然後再試一次。',
                 'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！',
                 '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在IMAP詳細設定中選擇忽略證書錯誤。',
-                '無法獲得Email伺服器域名信息，請檢查您的Email伺服器設定！','此Email伺服器不能使用QTGate通訊技术。请选择其他email服务供应商！',
-                'email伺服器提示SMTP用戶名或密碼錯！','伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在SMTP詳細設定中選擇忽略證書錯誤。',
+                '無法獲得Email伺服器域名信息，請檢查您的Email伺服器設定！',
+                '此Email伺服器看來不能使用QTGate通訊技术，請再測試一次或选择其他email服务供应商！',
+                'email伺服器提示SMTP用戶名或密碼錯！',
+                '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在SMTP詳細設定中選擇忽略證書錯誤。',
                 'SMTP連結提示未知錯誤',
                 '您已有相同的Email賬戶']
         },
@@ -2188,7 +2255,7 @@ const infoDefine = [
             unavailable: '準備中',
             proxyDomain: '域名解釋全程使用QTGate代理伺服器端',
             setupCardTitle: '使用連接技術:',
-            MultipleGateway: '同時使用代理服務器數：',
+            MultipleGateway: '同時併發使用代理數：',
             connectQTGate:'正在獲得代理伺服器區域信息...',
             dataTransfer: '數據通訊:',
             dataTransfer_datail: ['全程使用QTGate代理伺服器','當本地不能夠到達目標伺服器時使用'],
@@ -2198,6 +2265,7 @@ const infoDefine = [
             cacheDatePlaceholder: '緩存失效時間',
             clearCache: '立即清除所有緩存',
             GlobalIp: '本機互聯網IP地址:',
+            pingError:'代理服務區域速度檢測錯誤發生，請退出QTGate，以管理員身份再次打開QTGate後，再執行速度檢測！',
             QTGateRegionERROR:['發送連接請求Email到QTGate系統發生送信錯誤， 請檢查您的IMAP賬號的設定。 ',
                               ''],
             sendConnectRequestMail: ['您的QTGate客戶端沒有和QTgate系統聯機，客戶端已向QTgate系統重新發出聯機請求Email。和QTgate系統聯機需要額外的時間，請耐心等待。 ',
@@ -2301,6 +2369,23 @@ const _QTGateRegions: QTGateRegions[] = [
         showExtraContent: ko.observable ( false ),
         QTGateRegionsSetup: QTGateRegionsSetup,
         qtRegion: 'tokyo',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2)
+    },{
+        icon: 'france',
+        content: ['巴黎','パリ','Paris','巴黎'],
+        meta: ['欧洲・法国','ヨーロッパ・フランス','France. Europe.','歐洲・法國'],
+        description: ['','','',''],
+        canVoe: ko.observable(true),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'paris',
         error: ko.observable(-1),
         showRegionConnectProcessBar: ko.observable ( false ),
         showConnectedArea: ko.observable ( false ),
@@ -2574,7 +2659,7 @@ const checkSmtpImapAccountSetup = ( email: string, uuid: string, imap: view_layo
     }
     
     const data = getImapSmtpHost ( email )
-    if ( !imap.root.QTGateConnectSelectImap() && ! availableImapServer.test ( data.imap )) {
+    if ( !imap.root.haveQTGateImapAccount() && ! availableImapServer.test ( data.imap )) {
         imap.emailAddressShowError ( true )
         imap.EmailAddressErrorType ( 2 )
         $('.activating.element').popup({
@@ -2786,6 +2871,9 @@ module view_layout {
             public process = $(`#${ this.uuid }>.progress`)
             public edited = false
             public appPaassword = ko.observable ( false )
+            public isQTGateImapAccount = ko.computed (() => {
+                return availableImapServer.test ( this.iMapServerName())
+            })
             
             
         // * view
@@ -3023,7 +3111,6 @@ module view_layout {
             return this.MakeNotify ( note, 'Success', 'success', addNote, 5000 )
         }
 
-       
         private CancelCreateKeyPairSent = false
         public modalContent = ko.observable('')
         public menu = Menu
@@ -3137,8 +3224,8 @@ module view_layout {
             public QTGateGatewayActive = ko.observable ( false )
             public QTGateGatewayActiveProcess = ko.observable ( false )
             public QTGateGatewayError = ko.observable ( -1 )
-            public QTTransferData = ko.observable ( transfer )
-            public QTConnectData: KnockoutObservable< IConnectCommand > = ko.observable ( dummyIConnectCommand )
+            public QTTransferData: KnockoutObservable < iTransferData > = ko.observable ( )
+            public QTConnectData: KnockoutObservable < IConnectCommand > = ko.observable ( dummyIConnectCommand )
             public MenuItems = ko.observable ([ false, true, false, false, false ])
             public showKeyPairPorcess = ko.observable ( false )
             public showDisconnectbutton = ko.observable ( true )
@@ -3147,6 +3234,7 @@ module view_layout {
             public canDoAtEmail = ko.observable ( false )
             public reSendConnectMail = ko.observable ( false )
             public showRegionData = ko.observable ( false )
+            public QTGateAccountPlan = ko.observable ()
 
         //-
         //- Donate
@@ -3345,7 +3433,7 @@ module view_layout {
                 this.imapInputFormActive ( true )
                 this.QTGateConnectActive ( true )
                 this.reSendConnectMail ( false )
-                
+                $ ('.ui.dropdown').dropdown()
                 this.menuClick ( 3, true )
                 //      have no imap data
                 
@@ -3359,7 +3447,6 @@ module view_layout {
                 if ( data && data.qtgateConnectImapAccount ) {
                     const uu = this.emailPool().findIndex ( n => { return n.uuid === data.qtgateConnectImapAccount })
                     this.QTGateConnectSelectImap ( uu )
-                    
                 }
 
                 this.QTGateConnecting ( data.qtGateConnecting )
@@ -3426,6 +3513,8 @@ module view_layout {
     
                     return $('.QTGateConnect').accordion ( 'refresh' )
                 }
+                
+                this.showActiveMail( false )
                 if ( data.qtGateConnecting === 2 ) {
                     return setTimeout (() => {
                         return socketIo.emit ( 'getAvaliableRegion', ( region: string [], dataTransfer: iTransferData, config: install_config ) => {
@@ -3433,7 +3522,6 @@ module view_layout {
                         })
                     }, 2000 )
                 }
-                this.showActiveMail( false )
                 const process = $ ( '#connectImformationProcess' )
                 let percent = 0
                 const doingProcessBar = () => {
@@ -3622,10 +3710,9 @@ module view_layout {
         public feedBackAttachImgPath = ko.observable ('')
         public attachedLog = ko.observable ('')
 
-        
-        
         public feedBackTextArea = ko.observable ('')
         public hacked = ko.observable ( false )
+        public UserPermentShape = ko.observable ( false )
         public takeScreen () {
             return socketIo.emit ('takeScreen', ( err, img ) => {
                 if ( err ) {
@@ -3916,7 +4003,7 @@ module view_layout {
 
             return ( check )
         })
-
+        public cancelPlan = ko.observable (false)
         public checkActiveEmailSubmit () {
             this.checkActiveEmailError ( false )
             this.checkingActiveEmail ( true )
@@ -4072,7 +4159,7 @@ module view_layout {
         }
 
         public disconnecting = ko.observable ( false )
-
+        
         private getAvaliableRegionCallBack ( region: string [], dataTransfer: iTransferData, config: install_config ) {
             this.QTGateRegions().forEach( n => {
                 const index = region.findIndex ( nn => { return nn === n.qtRegion })
@@ -4102,7 +4189,15 @@ module view_layout {
             this.config ( config )
             this.showRegionData ( true )
             this.QTGateRegionInfo ( false )
+            this.pingCheckLoading( false )
             return clearTimeout ( this.doingProcessBarTime )
+        }
+
+        public getAvaliableRegion () {
+            this.pingCheckLoading( true )
+            socketIo.emit ( 'getAvaliableRegion', ( region: string [], dataTransfer: iTransferData, config: install_config ) => {
+                return this.getAvaliableRegionCallBack ( region, dataTransfer, config )
+            })
         }
 
         private desconnectCallBack () {
@@ -4115,6 +4210,41 @@ module view_layout {
                 return this.getAvaliableRegionCallBack ( region, dataTransfer, config )
             })
         }
+
+        public getCurrentPlan = ko.computed (() => {
+            if ( !this.QTTransferData())
+                return null
+            return planArray[ planArray.findIndex ( n => {
+                return n.name === this.QTTransferData().productionPackage
+            })]
+        })
+
+        public getPaymentPlan = ko.computed(() => {
+            if ( !this.QTGateAccountPlan())
+                return null
+            return planArray[ planArray.findIndex ( n => {
+                return n.name === this.QTGateAccountPlan()
+            })]
+        })
+
+       
+        public getNextPlanArray = ko.computed (() => {
+            if ( !this.QTTransferData())
+                return ko.observableArray([])
+            const index = planArray.findIndex ( n => {
+                return n.name === this.QTTransferData().productionPackage
+            })
+            return ko.observableArray(planArray.slice( index+1 ))
+        })
+
+        public getBackPlanArray = ko.computed (() => {
+            if ( !this.QTTransferData())
+                return ko.observableArray([])
+            const index =  planArray.findIndex ( n => {
+                return n.name === this.QTTransferData().productionPackage
+            })
+            return ko.observableArray( planArray.slice( 0, index ))
+        })
   
         public disconnectClick () {
             this.disconnecting ( true )
@@ -4133,7 +4263,7 @@ module view_layout {
         }
 
         public pingCheckLoading = ko.observable ( false )
-
+        public pingError = ko.observable ( false )
         public pingCheck () {
             if ( this.pingCheckLoading()) {
                 return
@@ -4145,7 +4275,14 @@ module view_layout {
                 return n.ping ( -1 )
             })
             return socketIo.emit ( 'pingCheck', CallBack => {
-                this.QTGateRegions.sort (( a, b ) => {
+                this.pingCheckLoading ( false )
+                if ( CallBack === -1 ) {
+                    this.QTGateRegions().forEach ( n => {
+                        n.ping ( -2 )
+                    })
+                    return this.pingError ( true )
+                }
+                return this.QTGateRegions.sort (( a, b ) => {
                     const _a = a.ping()
                     const _b = b.ping()
                     if ( a.available() === b.available()) {
@@ -4161,7 +4298,7 @@ module view_layout {
                     }
                     return -1
                 })
-                return this.pingCheckLoading ( false )
+                
             })
         }
 
@@ -4174,6 +4311,8 @@ module view_layout {
             if ( index < 0 )
                 return
             const _reg = this.QTGateRegions()[index]
+            if ( !_reg.available )
+                return
             _reg.ping ( ping )
             const fromIInputData = $(`#card-${ _reg.qtRegion.replace('.','-')}`)
             const uu = ping
@@ -4290,11 +4429,73 @@ module view_layout {
             event.preventDefault ()
             shell.openExternal ( url )
         }
+
+        public haveQTGateImapAccount = ko.computed (() => {
+            const index = this.emailPool ().findIndex ( n => { return availableImapServer.test ( n.iMapServerName()) })
+            return index > -1
+        })
     
     }
 
 }
+const planArray = [
+    {
+        name:'free',
+        monthly:1,
+        day:100,
+        monthlyPay: 0,
+        annually: 0,
+        next:'p1',
+        share: 0,
+        internet: 0,
+        multi_gateway:0
 
+    },{
+        name:'p1',
+        monthly:50,
+        monthlyPay: 3.88,
+        annually:34.56,
+        next:'p2',
+        share: 0,
+        internet: 0,
+        multi_gateway:0
+    },{
+        name:'p2',
+        monthly:300,
+        monthlyPay: 6.88,
+        annually: 60,
+        next:'p3',
+        share: 0,
+        internet: 0,
+        multi_gateway:0
+    },{
+        name:'p3',
+        monthly: 1000,
+        monthlyPay: 19.88,
+        annually: 199.88,
+        next:'p4',
+        share: 1,
+        internet: 1,
+        multi_gateway:1
+    },{
+        name:'p4',
+        monthly: 2000,
+        monthlyPay: 39.88,
+        annually: 399.88,
+        next:'p5',
+        share: 2,
+        internet: 2,
+        multi_gateway:1
+    },{
+        name:'p5',
+        monthly: 4000,
+        monthlyPay: 79.88,
+        annually: 799.88,
+        share: 3,
+        internet: 3,
+        multi_gateway:1
+    }
+]
 const linkClick = ( url: string ) => {
     const { shell } = require ( 'electron' )
     event.preventDefault ()

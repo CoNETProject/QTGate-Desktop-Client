@@ -681,6 +681,13 @@ class localServer {
                 return CallBack();
             }
             this.pingChecking = true;
+            try {
+                const session = netPing.createSession();
+            }
+            catch (ex) {
+                console.log(`netPing.createSession err`, ex);
+                return CallBack(-1);
+            }
             Async.eachSeries(this.regionV1, (n, next) => {
                 return testPing(n.testHostIp, (err, ping) => {
                     saveLog(`testPing [${n.regionName}] return ping [${ping}]`);
@@ -698,6 +705,7 @@ class localServer {
                 return CallBack();
         });
         socket.on('checkActiveEmailSubmit', (text) => {
+            saveLog(`checkActiveEmailSubmit`);
             if (!text || !text.length || !/^-----BEGIN PGP MESSAGE-----/.test(text)) {
                 socket.emit('checkActiveEmailError', 0);
                 return saveLog(`checkActiveEmailSubmit, no text.length !`);
@@ -725,11 +733,12 @@ class localServer {
                 };
                 console.log(`QTClass.request!`);
                 this.QTClass.request(com, (err, res) => {
-                    console.log(res);
+                    saveLog(`QTClass.request return res[${JSON.stringify(res)}]`);
                     if (err) {
                         return socket.emit('qtGateConnect', 5);
                     }
                     if (res.error > -1) {
+                        saveLog(`socket.emit ( 'checkActiveEmailError', res.error )`);
                         return socket.emit('checkActiveEmailError', res.error);
                     }
                     if (res.Args && res.Args.length) {
@@ -1117,6 +1126,7 @@ class localServer {
     checkConfig() {
         Fs.access(configPath, err => {
             if (err) {
+                saveLog(`config file error! err [${err.message ? err.message : null}] \r\nInitConfig\r\n`);
                 createWindow();
                 return this.config = InitConfig(true, this.version, this.port);
             }
@@ -1468,26 +1478,50 @@ class localServer {
         imapData.imapCheck = imapData.smtpCheck = false;
         imapData.imapTestResult = 0;
         this.saveImapData();
-        return this.imapTest(imapData, (err, code) => {
-            saveLog(`imapTest finished! [${id}]`);
-            socket.emit(id + '-imap', err ? err : null, code);
-            imapData.imapTestResult = code;
-            imapData.imapCheck = code > 0;
-            this.saveImapData();
-            if (err)
-                return;
-            this.smtpVerify(imapData, (err1, newImapData) => {
-                socket.emit(id + '-smtp', err1 ? err1 : null);
-                imapData.smtpCheck = !err1;
+        if (availableImapServer.test(imapData.imapServer))
+            return this.imapTest(imapData, (err, code) => {
+                saveLog(`imapTest finished! [${id}]`);
+                socket.emit(id + '-imap', err ? err : null, code);
+                imapData.imapTestResult = code;
+                imapData.imapCheck = code > 0;
                 this.saveImapData();
-                if (err1)
+                if (err)
                     return;
-                imapData = this.imapDataPool[this.addInImapData(newImapData)];
-                saveLog(`smtpVerify finished! [${JSON.stringify(imapData)}]`);
-                this.saveImapData();
-                if (!this.QTClass || this.imapDataPool.length < 2)
-                    return this.emitQTGateToClient(socket, null);
+                this.smtpVerify(imapData, (err1, newImapData) => {
+                    socket.emit(id + '-smtp', err1 ? err1 : null);
+                    imapData.smtpCheck = !err1;
+                    this.saveImapData();
+                    if (err1)
+                        return;
+                    imapData = this.imapDataPool[this.addInImapData(newImapData)];
+                    saveLog(`smtpVerify finished! [${JSON.stringify(imapData)}]`);
+                    this.saveImapData();
+                    if (!this.QTClass || this.imapDataPool.length < 2)
+                        return this.emitQTGateToClient(socket, null);
+                });
             });
+        return Imap.imapBasicTest(imapData, (err, data) => {
+            if (err) {
+                saveLog(`imapTest error [${err.message}]`);
+                const message = err.message;
+                if (message && message.length) {
+                    if (/Auth|Lookup failed|Invalid|Login|username/i.test(message))
+                        return socket.emit(id + '-imap', 3);
+                    if (/ECONNREFUSED/i.test(message))
+                        return socket.emit(id + '-imap', 4);
+                    if (/certificate/i.test(message))
+                        return socket.emit(id + '-imap', 5);
+                    if (/timeout/i.test(message)) {
+                        return socket.emit(id + '-imap', 7);
+                    }
+                    if (/ENOTFOUND/i.test(message)) {
+                        return socket.emit(id + '-imap', 6);
+                    }
+                }
+                return socket.emit(id + '-imap', 4);
+            }
+            socket.emit(id + '-imap', null, 100);
+            socket.emit(id + '-smtp', null);
         });
     }
     shutdown() {
@@ -1629,7 +1663,7 @@ class ImapConnect extends Imap.imapPeer {
         }, sentRequestMailWaitTimeOut);
     }
     doSendConnectMail() {
-        console.log(`doSendConnectMail`);
+        saveLog(`doSendConnectMail`);
         clearTimeout(this.timeOutWhenSendConnectRequestMail);
         //this.clearServerListenFolder ()
         return this.localServer.sendEmailTest(this.imapData, err => {

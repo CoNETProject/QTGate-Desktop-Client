@@ -434,7 +434,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   color: white!important;
 }
 .VideoBoxButtom {
-  top: 22em;
+  top: 20em;
   position: relative;
   width: 100%;
   z-index: 98;
@@ -468,7 +468,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
 .feedBack {
   position: fixed;
   z-index: 100;
-  top: 0.6em;
+  top: 0em;
   right: 1.1em;
   opacity: 0.5;
 }

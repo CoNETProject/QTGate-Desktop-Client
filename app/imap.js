@@ -27,6 +27,7 @@ const Crypto = require("crypto");
 const path_1 = require("path");
 const os_1 = require("os");
 const timers_1 = require("timers");
+const buffer_1 = require("buffer");
 const MAX_INT = 9007199254740992;
 const debug = true;
 const QTGateFolder = path_1.join(os_1.homedir(), '.QTGate');
@@ -53,7 +54,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         this.eachMail = eachMail;
         this.exitWithDeleteBox = exitWithDeleteBox;
         this.debug = debug;
-        this._buffer = Buffer.alloc(0);
+        this._buffer = buffer_1.Buffer.alloc(0);
         this.Tag = null;
         this.cmd = null;
         this.callback = false;
@@ -63,7 +64,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         this.idleCallBack = null;
         this.waitLogout = false;
         this.waitLogoutCallBack = null;
-        this._newMailChunk = Buffer.alloc(0);
+        this._newMailChunk = buffer_1.Buffer.alloc(0);
         this.idleResponsrTime = null;
         this.canDoLogout = false;
         this.ready = false;
@@ -170,7 +171,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         //console.log ('************************************** ImapServerSwitchStream _transform chunk **************************************')
         //console.log ( chunk.toString ())
         //console.log ('************************************** ImapServerSwitchStream _transform chunk **************************************')
-        this._buffer = Buffer.concat([this._buffer, chunk]);
+        this._buffer = buffer_1.Buffer.concat([this._buffer, chunk]);
         const doLine = () => {
             const __CallBack = () => {
                 let index = -1;
@@ -233,6 +234,10 @@ class ImapServerSwitchStream extends Stream.Transform {
                     }
                     if (this.waitLogout) {
                         return this.logout_process(this.waitLogoutCallBack);
+                    }
+                    if (/^inbox$/i.test(this.imapServer.listenFolder)) {
+                        this.canDoLogout = this.ready = true;
+                        return this.imapServer.emit('ready');
                     }
                     if (newMail) {
                         return this.doNewMail();
@@ -399,7 +404,6 @@ class ImapServerSwitchStream extends Stream.Transform {
     login(text, cmdArray, next, _callback) {
         this.doCommandCallback = (err) => {
             if (!err) {
-                saveLog(`login this.doCommandCallback no err `);
                 return this.capability();
             }
             return this.imapServer.destroyAll(err);
@@ -686,7 +690,7 @@ class ImapServerSwitchStream extends Stream.Transform {
             console.log(`logout_process doLogout()`);
             if (this.imapServer.listenFolder && this.imapServer.deleteBoxWhenEnd) {
                 return Async.series([
-                        next => this.deleteBox(next),
+                        next => { /^INBOX$/i.test(this.imapServer.listenFolder) ? next() : this.deleteBox(next); },
                         next => this._logout(next)
                 ], callback);
             }
@@ -766,12 +770,6 @@ class qtGateImap extends Event.EventEmitter {
         this.once(`error`, err => {
             saveLog(`qtGateImap on error [${err.messag}]`);
         });
-        /*
-        process.once ( 'uncaughtException', err => {
-            console.log ( err )
-            this.destroyAll ( err )
-        })
-        */
     }
     get TagCount() {
         if (++this.tagcount < MAX_INT)
@@ -856,9 +854,9 @@ class qtGateImapwrite extends qtGateImap {
             return _callback(new Error('not ready!'));
         if (this.canAppend) {
             this.canAppend = false;
-            return this.imapStream.append(text, err => {
+            return this.imapStream.append(text, (err, code) => {
                 this.canAppend = true;
-                _callback(err);
+                _callback(err, code);
                 const uu = this.appendPool.pop();
                 if (uu) {
                     return this.append(uu.text, uu.callback);
@@ -876,9 +874,20 @@ exports.qtGateImapwrite = qtGateImapwrite;
 class qtGateImapRead extends qtGateImap {
     constructor(IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, newMail) {
         super(IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, null, debug, newMail);
+        this.openBox = false;
         this.once('ready', () => {
+            this.openBox = true;
             console.log(`qtGateImapRead [${listenFolder}] ready`);
         });
+    }
+    fetchAndDelete(Uid, CallBack) {
+        if (!this.openBox)
+            return CallBack(new Error('not ready!'));
+        return Async.series([
+                next => this.imapStream.fetch(Uid, next),
+                next => this.imapStream.flagsDeleted(Uid, next),
+                next => this.imapStream.expunge(next)
+        ], CallBack);
     }
 }
 exports.qtGateImapRead = qtGateImapRead;
@@ -889,26 +898,16 @@ exports.getMailAttached = (email) => {
         return null;
     }
     const attachment = email.slice(attachmentStart + 4);
-    return Buffer.from(attachment.toString(), 'base64');
+    return buffer_1.Buffer.from(attachment.toString(), 'base64');
 };
 exports.imapBasicTest = (IMapConnect, CallBack) => {
     saveLog(`start imapBasicTest imap [${JSON.stringify(IMapConnect)}]`);
     let callbackCall = false;
-    let startTime = null;
-    let wImap = null;
-    const listenFolder = Crypto.randomBytes(20).toString('hex');
-    const ramdomText = Crypto.randomBytes(20);
-    const timeout = timers_1.setTimeout(() => {
-        if (rImap) {
-            rImap.logout();
-        }
-        rImap = null;
-        if (wImap) {
-            wImap.logout();
-        }
-        wImap = null;
-        doCallBack(new Error('timeout'), null);
-    }, 15000);
+    let append = false;
+    let timeout = null;
+    const listenFolder = 'INBOX';
+    let getText = false;
+    const ramdomText = Crypto.randomBytes(1024 * 100);
     const doCallBack = (err, ret) => {
         if (!callbackCall) {
             callbackCall = true;
@@ -916,33 +915,69 @@ exports.imapBasicTest = (IMapConnect, CallBack) => {
             return CallBack(err, ret);
         }
     };
-    let rImap = new qtGateImapRead(IMapConnect, listenFolder, true, true, () => {
-    });
-    rImap.once('ready', () => {
-        console.log(`imapBasicTest rImap.once ( 'ready' )`);
-        rImap.logout();
-        rImap = null;
-        wImap = new qtGateImapwrite(IMapConnect, listenFolder);
-        wImap.once('ready', () => {
-            console.log(`imapBasicTest wImap.once ( 'ready' )`);
-            startTime = new Date().getTime();
-            wImap.append(ramdomText.toString('base64'), (err, info) => {
-                if (err) {
-                    console.log(` imapBasicTest wImap.append err`, err);
+    let wImap = new qtGateImapwrite(IMapConnect, listenFolder);
+    const doCatchMail = (id, _CallBack) => {
+        let didFatch = false;
+        let err = null;
+        let rImap = new qtGateImapRead(IMapConnect, listenFolder, false, false, mail => {
+            saveLog(`new mail`);
+            const attach = exports.getMailAttached(mail);
+            if (!attach) {
+                err = new Error(`imapAccountTest ERROR: can't read attachment!`);
+            }
+            else if (ramdomText.compare(attach) !== 0) {
+                err = new Error(`imapAccountTest ERROR: attachment changed!`);
+            }
+            else {
+                getText = true;
+            }
+        });
+        rImap.once('ready', () => {
+            rImap.fetchAndDelete(id, _err => {
+                didFatch = true;
+                if (_err) {
+                    err = _err;
                 }
-                else {
-                    console.log(`imapBasicTest wImap.append success [${info}]`);
-                }
-                wImap.logout();
-                wImap = null;
+                saveLog(`rImap.fetchAndDelete finished by err [${err && err.message ? err.message : null}]`);
+                rImap.logout();
+                rImap = null;
             });
         });
+        rImap.once('end', err => {
+            if (!didFatch) {
+                saveLog(`doCatchMail rImap.once end but didFatch = false try again!`);
+                return doCatchMail(id, _CallBack);
+            }
+            _CallBack(err, getText);
+        });
+    };
+    wImap.once('ready', () => {
+        saveLog(`imapBasicTest wImap.once ( 'ready' )`);
+        wImap.append(ramdomText.toString('base64'), (err, code) => {
+            append = true;
+            if (err) {
+                saveLog(`wImap.append got error [${err.message}]`);
+                return doCallBack(err, null);
+            }
+            if (!code) {
+                saveLog(`wImap.append got no append id!`);
+                return doCallBack(new Error(`no append id!`), null);
+            }
+            const uid = code.substring(code.search(/\[/), code.search(/\]/)).split(' ')[2];
+            wImap.logout();
+            wImap = null;
+            doCatchMail(uid, doCallBack);
+        });
     });
-    rImap.once('end', err => {
-        doCallBack(err, null);
+    wImap.once('end', err => {
+        if (!append && !err) {
+            saveLog(`imapBasicTest wImap.once ( 'end', err = [${err && err.message ? err.message : 'undefine'}] but !startTime do imapBasicTest again! )`);
+            return exports.imapBasicTest(IMapConnect, CallBack);
+        }
+        return doCallBack(err, null);
     });
-    rImap.once('error', err => {
-        doCallBack(err, null);
+    wImap.once('error', err => {
+        return doCallBack(err, null);
     });
 };
 exports.imapAccountTest = (IMapConnect, CallBack) => {
@@ -952,17 +987,11 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
     let wImap = null;
     const listenFolder = Uuid.v4();
     const ramdomText = Crypto.randomBytes(20);
-    const timeout = timers_1.setTimeout(() => {
-        if (rImap) {
-            rImap.logout();
-        }
-        if (wImap) {
-            wImap.logout();
-        }
-        doCallBack(new Error('timeout'), null);
-    }, 15000);
+    let timeout = null;
     const doCallBack = (err, ret) => {
         if (!callbackCall) {
+            console.trace('imapAccountTest doCallBack');
+            saveLog(`imapAccountTest doing callback err [${err && err.messgae ? err.messgae : `undefine `}] ret [${ret ? ret : 'undefine'}]`);
             callbackCall = true;
             timers_1.clearTimeout(timeout);
             return CallBack(err, ret);
@@ -972,41 +1001,67 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
         rImap.logout();
         rImap = null;
         const attach = exports.getMailAttached(mail);
-        console.log(`rImap on new mail!`, attach);
-        if (!attach && !callbackCall) {
+        saveLog(`test rImap on new mail! `);
+        if (!attach) {
             return doCallBack(new Error(`imapAccountTest ERROR: can't read attachment!`), null);
         }
-        if (ramdomText.compare(attach) !== 0 && !callbackCall) {
+        if (ramdomText.compare(attach) !== 0) {
             return doCallBack(new Error(`imapAccountTest ERROR: attachment changed!`), null);
         }
         return doCallBack(null, new Date().getTime() - startTime);
     });
     rImap.once('ready', () => {
-        console.log(`rImap.once ( 'ready' )`);
+        saveLog(`rImap.once ( 'ready' ) do new qtGateImapwrite`);
         wImap = new qtGateImapwrite(IMapConnect, listenFolder);
+        let sendMessage = false;
         wImap.once('ready', () => {
-            console.log(`wImap.once ( 'ready' )`);
-            startTime = new Date().getTime();
+            saveLog(`wImap.once ( 'ready' )`);
             wImap.append(ramdomText.toString('base64'), err => {
-                if (err) {
-                    console.log(`wImap.append err`, err);
-                }
-                else {
-                    console.log(`wImap.append success`);
-                }
+                sendMessage = true;
                 wImap.logout();
                 wImap = null;
+                if (err) {
+                    rImap.logout();
+                    rImap = null;
+                    saveLog(`wImap.append err [${err.message ? err.message : 'none err.message'}]`);
+                    return doCallBack(err, null);
+                }
+                startTime = new Date().getTime();
+                timeout = timers_1.setTimeout(() => {
+                    if (rImap) {
+                        rImap.logout();
+                    }
+                    if (wImap) {
+                        wImap.logout();
+                    }
+                    saveLog(`imapAccountTest doing timeout`);
+                    doCallBack(new Error('timeout'), null);
+                }, pingPongTimeOut);
             });
+        });
+        wImap.once('end', () => {
+            if (!sendMessage) {
+                rImap.logout();
+                rImap = null;
+                saveLog(`wImap.once ( 'end') before send message! do imapAccountTest again!`);
+                return exports.imapAccountTest(IMapConnect, CallBack);
+            }
         });
     });
     rImap.once('end', err => {
-        doCallBack(err, null);
+        saveLog(`rImap.once ( 'end' ) [${err && err.message ? err.message : 'err = undefine'}]`);
+        if (!callbackCall && !err) {
+            saveLog(`rImap.once ( 'end') before finished test! do imapAccountTest again!`);
+            return exports.imapAccountTest(IMapConnect, CallBack);
+        }
+        return doCallBack(err, null);
     });
     rImap.once('error', err => {
-        doCallBack(err, null);
+        saveLog(`rImap.once ( 'error' ) [${err.message}]`);
+        return doCallBack(err, null);
     });
 };
-const pingPongTimeOut = 1000 * 15;
+const pingPongTimeOut = 1000 * 30;
 class imapPeer extends Event.EventEmitter {
     constructor(imapData, listenBox, writeBox, enCrypto, deCrypto, exit) {
         super();
@@ -1090,12 +1145,15 @@ class imapPeer extends Event.EventEmitter {
     }
     replyPing(uu) {
         return this.enCrypto(JSON.stringify({ pong: uu.ping }), (err, data) => {
-            this.trySendToRemote(Buffer.from(data), () => {
+            this.trySendToRemote(buffer_1.Buffer.from(data), () => {
             });
         });
     }
     setTimeOutOfPing() {
+        saveLog(`setTimeOutOfPing`);
+        timers_1.clearTimeout(this.waitingReplyTimeOut);
         return this.waitingReplyTimeOut = timers_1.setTimeout(() => {
+            saveLog(`ON setTimeOutOfPing this.emit ( 'pingTimeOut' ) `);
             this.emit('pingTimeOut');
         }, pingPongTimeOut);
     }
@@ -1106,7 +1164,7 @@ class imapPeer extends Event.EventEmitter {
             if (err) {
                 return saveLog(`Ping enCrypto error: [${err.message}]`);
             }
-            return this.trySendToRemote(Buffer.from(data), () => {
+            return this.trySendToRemote(buffer_1.Buffer.from(data), () => {
                 return this.setTimeOutOfPing();
             });
         });
@@ -1229,7 +1287,7 @@ class imapPeer extends Event.EventEmitter {
     sendDone() {
         return Async.waterfall([
                 next => this.enCrypto(JSON.stringify({ done: new Date().toISOString() }), next),
-            (data, next) => this.trySendToRemote(Buffer.from(data), next)
+            (data, next) => this.trySendToRemote(buffer_1.Buffer.from(data), next)
         ], err => {
             if (err)
                 return saveLog(`sendDone got error [${err.message}]`);

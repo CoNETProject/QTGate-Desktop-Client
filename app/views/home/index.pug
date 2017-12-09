@@ -183,7 +183,7 @@ block jumbotron1
 					a.item( data-bind = "css:{ active: MenuItems() [5]}, click: () => { return menuClick ( 5, false )}, visible: false")
 						.menuItem
 							i.talk.outline.icon.large.pink
-					a.item( data-bind = "css:{ active: MenuItems() [8]}, visible: keyPair().verified && !QTGateRegionInfo() && (QTGateConnectActive() || QTGateConnectRegionActive()), click: () => { return menuClick ( 8, true )}")
+					a.item( data-bind = "css:{ active: MenuItems() [8]}, visible: false && keyPair().verified && !QTGateRegionInfo() && (QTGateConnectActive() || QTGateConnectRegionActive()), click: () => { return menuClick ( 8, true )}")
 						.menuItem
 							i.icon.handshake.large.orange
 					a.item( data-bind = "css:{ active: MenuItems() [6]}, click: () => { return menuClick ( 6, true )}")
@@ -288,7 +288,7 @@ block jumbotron1
 													i.icon.tiny.checkmark( data-bind = " visible: keyPair().verified " style = " color: white; margin-top: -4px;margin-left: -1px;")
 										.meta
 											
-											a( href="#" data-bind="click: () => { if ( !keyPair().passwordOK ) return; UserPerment ( true )}" )
+											a( href="#" data-bind="click: () => { if ( !keyPair().passwordOK || !getCurrentPlan() ) return; UserPerment ( true ); UserPermentShape(true)}" )
 												i.icon.user
 												span( data-bind = " text: keyPair().nikeName " )
 												span( data-bind = "visible: keyPair().passwordOK ,text: infoDefine[ languageIndex() ].QTGateGateway.userType[config().freeUser ? 0 : 1]")
@@ -317,8 +317,85 @@ block jumbotron1
 									p( data-bind = " text : infoDefine[ languageIndex() ].Home_keyPairInfo_view.deleteKeyPairInfo ")
 								.ui.negative.message( data-bind = "visible: showSystemError(), animate:{ animation: 'pulse', state: languageIndex() + 1} ")
 									p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.systemError")
-					.UserPerment( data-bind="visible: UserPerment()")
-						
+			#UserPerment.content( data-bind="visible: UserPerment()" style="margin-top: -3.3em;")
+				#UserPermentShape.ui.raised.segment(data-bind="visible: UserPermentShape()")
+					a( href="#" data-bind="visible: !cancelPlan(), click: () => {UserPerment(false)}" style="position: relative;left: 98%;top: -6px;" )
+						i.close.icon.grey
+					.ui.one.column.grid(style="margin: -1em 0em 0em 0em;")
+						.row(style="padding: 0px;")
+							.column
+								span( data-bind="text: infoDefine[ languageIndex() ].account.segmentTitle" )
+								span( data-bind="text: keyPair().email" style="color: gray;")
+						.row(style="padding: 0px;padding-top: 0.5em;")
+							.column
+								span( data-bind="text: infoDefine[ languageIndex() ].account.currentPlan" )
+								span( data-bind="text: infoDefine[ languageIndex() ].QTGateGateway.userType[config().freeUser ? 0 : 1]" style="color: gray;")
+						.row(style="padding: 0px;padding-top: 0.5em;")
+							.column( data-bind="visible: getCurrentPlan()")
+								span( data-bind = "text: infoDefine[ languageIndex() ].account.MonthBandwidthTitle" )
+								.ui.green.label( data-bind = "text: getCurrentPlan() ? ( getCurrentPlan().monthly + 'GB') : null ")
+								span( data-bind = "visible: getCurrentPlan() && getCurrentPlan().day, text: infoDefine[ languageIndex() ].account.dayBandwidthTitle" style="padding-left: 0.5em;padding-right: 0.5em;")
+								.ui.green.label( data-bind = "visible: getCurrentPlan() && getCurrentPlan().day, text: getCurrentPlan() && getCurrentPlan().day ? ( getCurrentPlan().day + 'MB') : null ")
+								//-span( data-bind = " text: getCurrentPlan() ? 'us' : null " style="padding-left: 0.5em;" )
+								
+								.ui.green.label( data-bind = "text: getCurrentPlan() ? infoDefine[ languageIndex() ].account.serverShareData[ getCurrentPlan().share ]: null")
+								span( data-bind = " visible: getCurrentPlan() &&  getCurrentPlan().monthlyPay > 0, text: getCurrentPlan() &&  getCurrentPlan().monthlyPay ? ( '$'+ getCurrentPlan().monthlyPay ) : null " style="padding-left: 0.5em;")
+						.row( data-bind="visible: !cancelPlan()" style="padding: 0px;padding-top: 0.5em;")
+							.column
+								//-#getNextBackArray.ui.floating.dropdown.basic.brown.button( data-bind = "visible: getBackPlanArray()().length, click: () => { $('#getNextBackArray').dropdown({ onChange: value => { QTGateAccountPlan(value);UserPermentShape(false)}});}")
+								#getNextBackArray.ui.floating.dropdown.basic.brown.button( data-bind = "visible: getBackPlanArray()().length, click: () => { cancelPlan(true)}")
+
+									span( data-bind = "text: $root.infoDefine[ $root.languageIndex() ].account.cancelPlan")
+									//-.menu( data-bind = " foreach: getBackPlanArray() " )
+										.item( data-bind=" attr: {'data-value': name }")
+											.ui.one.column.grid
+												.row
+													.column
+														.ui.brown.label( data-bind="text: monthly + 'GB' ")
+														span( data-bind=" text: '$'+monthlyPay " style="padding-left: 0.5em; padding-right: 0.5em;")
+														.ui.brown.label( data-bind="text: $root.infoDefine[ $root.languageIndex() ].account.serverShareData[share]")
+								#getNextPlanArray.ui.floating.dropdown.basic.green.button( data-bind = "visible: getNextPlanArray()().length, click: () => { $('#getNextPlanArray').dropdown({ onChange: value => { QTGateAccountPlan(value);UserPermentShape(false)}});}")
+									span( data-bind = "text: $root.infoDefine[ $root.languageIndex() ].account.upgradeTitle")
+									.menu( data-bind = " foreach: getNextPlanArray() " )
+										.item( data-bind=" attr: {'data-value': name }")
+											.ui.one.column.grid
+												.row
+													.column
+														.ui.green.label( data-bind="text: monthly + 'GB' " )
+														span( data-bind=" text: '$'+monthlyPay " style="padding-left: 0.5em; padding-right: 0.5em;")
+														.ui.green.label( data-bind="text: $root.infoDefine[ $root.languageIndex() ].account.serverShareData[share]")
+						.row( data-bind="visible: cancelPlan()" )
+							.column
+								.ui.red.segment
+									a( href="#" data-bind="click: () => { cancelPlan ( false )}" style = " position: relative;left: 98%;top: -6px;" )
+										i.close.icon.grey
+									p( data-bind="text: infoDefine[ $root.languageIndex() ].account.cancelPlanMessage" )
+									.ui.positive.button( data-bind="text: infoDefine[ languageIndex() ].account.continue")
+
+
+				.ui.raised.segment.items( data-bind="visible: !UserPermentShape()" )
+					a( href="#" data-bind="click: () => {UserPermentShape(true)}" style="position: relative;left: 98%;top: -6px;" )
+						i.close.icon.grey
+					.item( style="margin-top: -1em;")
+						.ui.massive.label.grey.image( data-bind=" text: getPaymentPlan() ? getPaymentPlan().monthly + 'GB': null " style="padding: 1em 1em;")
+						.content( style="margin-left: 0.5em;")
+							.header
+								span( data-bind = " text: getPaymentPlan() ? ( getPaymentPlan().monthlyPay > 0 ? infoDefine[ languageIndex() ].account.monthlyPay : infoDefine[ languageIndex() ].QTGateGateway.userType[0] ): null ")
+								span( data-bind = " visible: getPaymentPlan() && getPaymentPlan().monthlyPay > 0 " style="padding-left: 0.5em; font-style: italic;font-weight: lighter;font-size: small;") us$
+								span( data-bind = " visible: getPaymentPlan() && getPaymentPlan().monthlyPay > 0, text: getPaymentPlan() && getPaymentPlan().monthlyPay > 0 ? getPaymentPlan().monthlyPay : null")
+							.meta
+								
+								.ui.green.label( data-bind = " text: getPaymentPlan() ? infoDefine[ languageIndex() ].account.serverShareData[ getPaymentPlan().share ]: null" )
+								.ui.green.label( data-bind = " text: getPaymentPlan() ? infoDefine[ languageIndex() ].account.internetShareData[ getPaymentPlan().internet ]: null")
+								.ui.green.label( data-bind = " text: getPaymentPlan() ? infoDefine[ languageIndex() ].account.maxmultigateway[ getPaymentPlan().multi_gateway ]: null")
+
+							.description
+								.ui.secondary.segment( data-bind = " visible: getPaymentPlan() && getPaymentPlan().share > 0 && getPaymentPlan().share < 3, text: getPaymentPlan() ? '*'+infoDefine[ languageIndex() ].account.serverShareData1: null" style="font-size: smaller;font-style: oblique;")
+								
+							.extra
+								.ui.positive.button( data-bind="text: infoDefine[ languageIndex() ].account.continue")
+
+
 			.content( data-bind = "visible: MenuItems()[2] && imapInputFormActive()" style = "margin-top: 3em;")
 				.ui.warning.message.hideArea( data-bind = " visible: showQTGateImapAccount(), css: { 'accordion AccordionBox-shadow-delete': emailPool().length && emailPool()[emailPool().length - 1].emailAddress().length } ")
 					.area( data-bind = " css: { 'AccordionBox-shadow-delete title': emailPool().length && emailPool()[ emailPool().length - 1].emailAddress().length } ")
@@ -476,8 +553,23 @@ block jumbotron1
 						a.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', visible: QTGateConnecting() === 3, attr: { 'data-html': infoDefine[ languageIndex() ].error_message.imapErrorMessage [ QTGateConnectError() ]}")
 						.content
 							.title
-								i.icon.spy.violet
-								span( data-bind = " text: emailPool().length ? emailPool()[ QTGateConnectSelectImap() ].emailAddress() : null" style="color:rgba(0,0,0,.5);")
+								.ui.inline.dropdown
+									input( type="hidden" name="gender" data-bind="value: QTGateConnectSelectImap")
+									.text
+										.ui.one.column.grid
+											.row
+												.column( style="padding: 0px;padding-top: 0.7em;")
+													img.ui.image.cardImageSetup( data-bind = "attr: { src: emailPool().length ? emailPool()[ QTGateConnectSelectImap() ].getMailIcon() : null }")
+												.column( style="padding: 0px;padding-bottom: 0.7em;")
+													span( data-bind = " text: emailPool().length ? emailPool()[ QTGateConnectSelectImap() ].emailAddress() : null" style="color:rgba(0,0,0,.5);")
+									.menu( data-bind = " foreach: emailPool " style="padding: 0.5em;")
+										.item( data-bind="visible: isQTGateImapAccount(), attr:{'data-value': $index()}")
+											.ui.one.column.grid
+												.column( style="padding: 0px;padding-top: 0.7em;")
+													img.ui.cardImageSetup.image( data-bind = "attr: { src: getMailIcon()}")
+												.column( style="padding: 0px;padding-bottom: 0.7em;")
+													span(data-bind = " text: emailAddress()" style="color:rgba(0,0,0,.5);")
+
 					.step( data-bind = " visible: !keyPair().verified, click: () => { if ( QTGateConnecting()) return; $('.SendToQTGateIMAPInformation').transition('slide down')}, css: { link: ! QTGateConnecting(), completed: QTGateConnecting() === 2 || QTGateConnecting() === 4, fixStepAfter: QTGateConnecting() !== 2, stepError: QTGateConnecting() === 3 }" style = "padding: 8px;")
 						//-a#QTGateSignInformationPopupa.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', attr: { 'data-html': infoDefine [ languageIndex() ].qtGateView.QTGateSign[2] }, visible: QTGateConnecting() === 2 ")
 						a#QTGateSignInformationPopupa.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', attr: { 'data-html': infoDefine [ languageIndex() ].qtGateView.QTGateSign[4] }, visible: QTGateConnecting() === 5 ")
@@ -556,9 +648,16 @@ block jumbotron1
 			.content( data-bind = " visible: MenuItems()[3] && !reSendConnectMail() && !showActiveMail() && !ConnectGatewayShow()" style = "margin-top: 3em;")
 				
 				span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.title " style="color: #a333c8;font-size: 1rem;font-weight:bold;")
-				span.testButton( data-bind = " visible: showRegionData()" style="margin-left:1em;")
-					a( data-bind = "click: pingCheck " href="#")
+				span.testButton( data-bind = "visible: showRegionData() && !pingCheckLoading() && ! pingError() " style="margin-left:1em;")
+					a( data-bind = "click: getAvaliableRegion " href="#")
+						i.icon.line.refresh
+					a( data-bind = "click: pingCheck " href="#" style="margin-left:0.5em;")
 						i.icon.line.chart
+				.ui.negative.message( data-bind = " visible: pingError() ")
+					i.close.icon
+					p( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.pingError")
+				
+				i.blue.notched.circle.loading.icon( data-bind = "visible: pingCheckLoading()" style="margin-left:1em;" )
 				.content( data-bind = " visible: QTGateRegionInfo (), css: { active: QTGateRegionInfo ()} ")
 					.connectImformation
 						span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.connectQTGate ")
@@ -633,7 +732,7 @@ block jumbotron1
 							.ui.divider
 							p
 								i.icon.spy.grey
-								span( data-bind = " text: infoDefine [ languageIndex() ].QTGateGateway.userType [ QTTransferData().productionPackage === 'free' ? 0 : 1 ]" style="font-size: small;" )
+								span( data-bind = "visible: QTTransferData(), text: QTTransferData() ? (infoDefine [ languageIndex() ].QTGateGateway.userType [ QTTransferData().productionPackage === 'free' ? 0 : 1 ]) : null" style="font-size: small;" )
 								span( data-bind = " text: QTConnectData().connectType === 2 ? 'iOPN' : '@OPN'" style="margin: 10px;font-size: small;color:darkmagenta;")
 								i.small.icon.random.grey
 								//-span( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateGateway.gatewayInfo[0] " style="margin-left: 10px;" )
@@ -645,21 +744,21 @@ block jumbotron1
 								//-.three.wide.column( style="padding-bottom: 0px!important;")
 									span( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateGateway.todaysDatatransfer " )
 								.sixteen.wide.column( data-bind="visible: config().freeUser " style="padding-bottom: 0px!important;")
-									.userDetail.ui.tiny.progress.success( data-bind="attr: { 'data-total': QTTransferData().transferDayLimit / ( 1024 * 1024 ), 'data-value':( QTTransferData().transferDayLimit - $root.QTTransferData().usedDayTransfer) /( 1024 * 1024 )}")
+									.userDetail.ui.tiny.progress.success( data-bind="attr: { 'data-total': QTTransferData() ? (QTTransferData().transferDayLimit / ( 1024 * 1024 )): '', 'data-value': QTTransferData() ? (( QTTransferData().transferDayLimit - QTTransferData().usedDayTransfer) /( 1024 * 1024 )): '' }")
 										.bar
 											.progress
 										.label(style="margin-top: -3px;")
 											span( data-bind="text: infoDefine [ languageIndex() ].QTGateGateway.datatransferToday " style = "font-size: smaller;font-weight: lighter;")
-											span( data-bind=" text: QTTransferData().transferDayLimit / ( 1024 * 1024 ) + ' Mbyte'" style = "font-size: smaller;font-weight: lighter;")
+											span( data-bind=" text: QTTransferData() ? (QTTransferData().transferDayLimit / ( 1024 * 1024 ) + ' Mbyte') : null" style = "font-size: smaller;font-weight: lighter;")
 								//-.three.wide.column( style="padding-top: 0px!important;")
 									span( data-bind = "text: infoDefine [ $root.languageIndex() ].QTGateGateway.monthDatatransfer " )
 								.sixteen.wide.column( data-bind="style:{ 'padding-top' : config().freeUser ? '0px!important': '' }" style="padding-top: 0px!important;")
-									.userDetail.ui.tiny.progress.success( data-bind = "attr: { 'data-total': QTTransferData().transferMonthly / ( 1024 * 1024 ), 'data-value':( QTTransferData().transferMonthly - $root.QTTransferData().usedMonthlyTransfer)/( 1024 * 1024 )}")
+									.userDetail.ui.tiny.progress.success( data-bind = "attr: { 'data-total': QTTransferData() ? (QTTransferData().transferMonthly / ( 1024 * 1024 )) : '', 'data-value':QTTransferData() ? ( QTTransferData().transferMonthly - QTTransferData().usedMonthlyTransfer)/( 1024 * 1024 ): ''}")
 										.bar
 											.progress
 										.label(style="margin-top: -3px;")
 											span( data-bind=" text: infoDefine [ languageIndex() ].QTGateGateway.datatransferMonth " style = "font-size: smaller;font-weight: lighter;")
-											span( data-bind=" text: QTTransferData().transferMonthly / ( 1024 * 1024 ) + ' Mbyte'" style = "font-size: smaller;font-weight: lighter;")
+											span( data-bind=" text: QTTransferData() ? ( QTTransferData().transferMonthly / ( 1024 * 1024 ) + ' Mbyte') : null " style = "font-size: smaller;font-weight: lighter;")
 							.ui.divider
 							.useInfo
 								.ui.grid
