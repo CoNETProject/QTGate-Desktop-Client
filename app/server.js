@@ -31,6 +31,7 @@ const freePort = require("portastic");
 const Stream = require("stream");
 //import * as Ping from 'net-ping'
 const buffer_1 = require("buffer");
+const timers_1 = require("timers");
 const openpgp = require('openpgp');
 const Express = require('express');
 const cookieParser = require('cookie-parser');
@@ -655,7 +656,8 @@ class localServer {
                 requestSerial: Crypto1.randomBytes(8).toString('hex')
             };
             return this.QTClass.request(com, (err, res) => {
-                this.config.freeUser = /free/i.test(res.dataTransfer.productionPackage);
+                if (res && res.dataTransfer && res.dataTransfer.productionPackage)
+                    this.config.freeUser = /free/i.test(res.dataTransfer.productionPackage);
                 CallBack(res.Args[0], res.dataTransfer, this.config);
                 saveLog(`getAvaliableRegion ${JSON.stringify(res)} `);
                 //		Have gateway connect!
@@ -675,32 +677,35 @@ class localServer {
         });
         socket.on('pingCheck', CallBack => {
             if (process.platform === 'linux')
-                return CallBack(new Error('not support'));
-            saveLog(`socket.on ( 'pingCheck' )`);
-            if (!this.regionV1 || this.pingChecking) {
-                saveLog(`!this.regionV1 [${!this.regionV1}] || this.pingChecking [${this.pingChecking}]`);
-                return CallBack();
-            }
-            this.pingChecking = true;
-            try {
-                const netPing = require('net-ping');
-                const session = netPing.createSession();
-            }
-            catch (ex) {
-                console.log(`netPing.createSession err`, ex);
                 return CallBack(-1);
+            /*
+            saveLog (`socket.on ( 'pingCheck' )`)
+            if ( !this.regionV1 || this.pingChecking ) {
+                saveLog (`!this.regionV1 [${ !this.regionV1 }] || this.pingChecking [${ this.pingChecking }]`)
+                return CallBack()
             }
-            Async.eachSeries(this.regionV1, (n, next) => {
-                return testPing(n.testHostIp, (err, ping) => {
-                    saveLog(`testPing [${n.regionName}] return ping [${ping}]`);
-                    socket.emit('pingCheck', n.regionName, err ? 9999 : ping);
-                    return next();
-                });
+                
+            this.pingChecking = true
+            try {
+                const netPing = require ('net-ping')
+                const session = netPing.createSession ()
+            } catch (ex) {
+                console.log (`netPing.createSession err`, ex )
+                return CallBack ( -1 )
+            }
+            Async.eachSeries ( this.regionV1, ( n: regionV1, next ) => {
+                
+                return testPing ( n.testHostIp, ( err, ping ) => {
+                    saveLog( `testPing [${ n.regionName }] return ping [${ ping }]`)
+                    socket.emit ( 'pingCheck', n.regionName, err? 9999: ping )
+                    return next ()
+                })
             }, () => {
-                saveLog(`pingCheck success!`);
-                this.pingChecking = false;
-                return CallBack();
-            });
+                saveLog (`pingCheck success!`)
+                this.pingChecking = false
+                return CallBack ()
+            })
+            */
         });
         socket.once('downloadCheck', CallBack => {
             if (!this.regionV1)
@@ -1539,6 +1544,7 @@ const findQTGateImap = (imapPool) => {
     });
 };
 const sentRequestMailWaitTimeOut = 1000 * 60 * 1.5;
+const commandRequestTimeOutTime = 1000 * 30;
 class ImapConnect extends Imap.imapPeer {
     constructor(imapData, qtGateConnectEmitData, timeOutSendRequestMail, localServer, password, _exit, socket) {
         super(imapData, imapData.clientFolder, imapData.serverFolder, (text, CallBack) => {
@@ -1613,12 +1619,13 @@ class ImapConnect extends Imap.imapPeer {
                     }
                 }
             }
-            const CallBack = this.commandCallBackPool.get(ret.requestSerial);
-            if (!CallBack || typeof CallBack !== 'function') {
+            const poolData = this.commandCallBackPool.get(ret.requestSerial);
+            if (!poolData || typeof poolData.CallBack !== 'function') {
                 return saveLog(`QTGateAPIRequestCommand got commandCallBackPool ret.requestSerial [${ret.requestSerial}] have not callback `);
             }
+            timers_1.clearTimeout(poolData.timeOut);
             saveLog(`QTGateAPIRequestCommand got [${ret.requestSerial}] callback`);
-            return CallBack(null, ret);
+            return poolData.CallBack(null, ret);
         };
     }
     errNumber(err) {
@@ -1658,15 +1665,15 @@ class ImapConnect extends Imap.imapPeer {
     */
     makeTimeOutEvent() {
         saveLog(`doing makeTimeOutEvent`);
-        clearTimeout(this.timeOutWhenSendConnectRequestMail);
-        return this.timeOutWhenSendConnectRequestMail = setTimeout(() => {
+        timers_1.clearTimeout(this.timeOutWhenSendConnectRequestMail);
+        return this.timeOutWhenSendConnectRequestMail = timers_1.setTimeout(() => {
             saveLog('timeOutWhenSendConnectRequestMail UP!');
             this.socket.emit('checkActiveEmailError', 2);
         }, sentRequestMailWaitTimeOut);
     }
     doSendConnectMail() {
         saveLog(`doSendConnectMail`);
-        clearTimeout(this.timeOutWhenSendConnectRequestMail);
+        timers_1.clearTimeout(this.timeOutWhenSendConnectRequestMail);
         //this.clearServerListenFolder ()
         return this.localServer.sendEmailTest(this.imapData, err => {
             if (err) {
@@ -1681,8 +1688,15 @@ class ImapConnect extends Imap.imapPeer {
     }
     request(command, CallBack) {
         saveLog(`request command [${command.command}] requestSerial [${command.requestSerial}]`);
-        if (command.requestSerial)
-            this.commandCallBackPool.set(command.requestSerial, CallBack);
+        if (command.requestSerial) {
+            const poolData = {
+                CallBack: CallBack,
+                timeOut: timers_1.setTimeout(() => {
+                    return CallBack(new Error('timeout'));
+                }, commandRequestTimeOutTime)
+            };
+            this.commandCallBackPool.set(command.requestSerial, poolData);
+        }
         return this._enCrypto(JSON.stringify(command), (err1, data) => {
             if (err1) {
                 saveLog(`request _deCrypto got error [${JSON.stringify(err1)}]`);
@@ -1700,7 +1714,7 @@ class ImapConnect extends Imap.imapPeer {
         return this.once('ready', () => {
             CallBack();
             saveLog('ImapConnect got response from QTGate imap server, connect ready!');
-            clearTimeout(this.timeOutWhenSendConnectRequestMail);
+            timers_1.clearTimeout(this.timeOutWhenSendConnectRequestMail);
             this.QTGateServerready = true;
             this.imapData.canDoDelete = false;
             this.qtGateConnectEmitData.qtGateConnecting = 2;
@@ -1723,31 +1737,36 @@ class ImapConnect extends Imap.imapPeer {
         return this.doReady(socket, () => { });
     }
 }
-const testPing = (hostIp, CallBack) => {
-    let pingTime = 0;
-    const test = new Array(testPingTimes);
-    test.fill(hostIp);
-    saveLog(`start testPing [${hostIp}]`);
-    return Async.eachSeries(test, (n, next) => {
-        const netPing = require('net-ping');
-        const session = netPing.createSession();
-        session.pingHost(hostIp, (err, target, sent, rcvd) => {
-            session.close();
-            if (err) {
-                saveLog(`session.pingHost ERROR, ${err.message}`);
-                return next(err);
+/*
+const testPing = ( hostIp: string, CallBack ) => {
+    let pingTime = 0
+    const test = new Array ( testPingTimes )
+    test.fill ( hostIp )
+    saveLog (`start testPing [${ hostIp }]`)
+    return Async.eachSeries ( test, ( n, next ) => {
+        const netPing = require ('net-ping')
+        const session = netPing.createSession ()
+        session.pingHost ( hostIp, ( err, target, sent, rcvd ) => {
+            
+            session.close ()
+            if ( err ) {
+                saveLog (`session.pingHost ERROR, ${ err.message }`)
+                return next ( err )
             }
-            const ping = rcvd.getTime() - sent.getTime();
-            pingTime += ping;
-            return next();
-        });
+            const ping = rcvd.getTime () - sent.getTime ()
+            pingTime += ping
+            return next ()
+        })
     }, err => {
-        if (err) {
-            return CallBack(new Error('ping error'));
+        if ( err ) {
+            return CallBack ( new Error ('ping error'))
         }
-        return CallBack(null, Math.round(pingTime / testPingTimes));
-    });
-};
+
+        return CallBack ( null, Math.round ( pingTime/testPingTimes ))
+    })
+    
+}
+*/
 const makeFeedBackDataToQTGateAPIRequestCommand = (data, Callback) => {
     const ret = {
         command: 'feedBackData',

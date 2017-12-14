@@ -910,6 +910,7 @@ export class qtGateImap extends Event.EventEmitter {
                     saveLog (`jj.once ( 'error' ) listenFolder[${ this.listenFolder }] writeFolder [${ this.writeFolder }]`)
                     this.destroyAll ( err )
                 })
+                
                 jj.once ( 'end', () => {
                     saveLog (`jj.once ( 'end' ) listenFolder[${ this.listenFolder }] writeFolder [${ this.writeFolder }]`)
                     this.destroyAll ( null )

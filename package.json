@@ -61,12 +61,10 @@
     "express": "^4.16.2",
     "jquery": "^3.2.1",
     "node-uuid": "^1.4.8",
-    "nodemailer": "^4.4.0",
+    "nodemailer": "^4.4.1",
     "openpgp": "^2.6.0",
     "portastic": "^1.0.1",
     "pug": "^2.0.0-rc.4",
-    "raw-socket": "1.5.1",
-    "net-ping": "^1.2.1",
     "socket.io": "^2.0.4"
   }
 }

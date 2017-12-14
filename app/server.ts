@@ -36,6 +36,7 @@ import { imapAccountTest } from './imap'
 //import * as Ping from 'net-ping'
 
 import { Buffer } from 'buffer'
+import { setTimeout, clearTimeout } from 'timers';
 
 const openpgp = require ( 'openpgp' )
 const Express = require ( 'express' )
@@ -692,7 +693,8 @@ export class localServer {
 			}
 			return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
 
-				this.config.freeUser = /free/i.test ( res.dataTransfer.productionPackage )
+				if ( res && res.dataTransfer && res.dataTransfer.productionPackage )
+					this.config.freeUser = /free/i.test ( res.dataTransfer.productionPackage )
 				CallBack ( res.Args[0], res.dataTransfer, this.config )
 				saveLog ( `getAvaliableRegion ${ JSON.stringify ( res )} `)
 				
@@ -714,10 +716,11 @@ export class localServer {
 		socket.once ( 'exit', () => {
 			remote.app.exit()
 		})
-
+		
 		socket.on ( 'pingCheck', CallBack => {
 			if ( process.platform === 'linux')
 				return CallBack ( -1 )
+			/*
 			saveLog (`socket.on ( 'pingCheck' )`)
 			if ( !this.regionV1 || this.pingChecking ) {
 				saveLog (`!this.regionV1 [${ !this.regionV1 }] || this.pingChecking [${ this.pingChecking }]`)
@@ -744,8 +747,9 @@ export class localServer {
 				this.pingChecking = false
 				return CallBack ()
 			})
-			
+			*/
 		})
+		
 
 		socket.once ( 'downloadCheck', CallBack => {
 			if ( !this.regionV1 )
@@ -1792,6 +1796,11 @@ const findQTGateImap = ( imapPool: IinputData_server[] ) => {
 }
 
 const sentRequestMailWaitTimeOut = 1000 * 60 * 1.5
+const commandRequestTimeOutTime = 1000 * 30
+interface requestPoolData {
+	CallBack: ( err?: Error, returnData?: any ) => void
+	timeOut: NodeJS.Timer 
+}
 
 class ImapConnect extends Imap.imapPeer {
 	private QTGatePublicKey: string = null
@@ -1831,7 +1840,9 @@ class ImapConnect extends Imap.imapPeer {
 		return deCryptoWithKey ( text, this.QTGatePublicKey, this.localServer.config.keypair.privateKey, this.password, CallBack )
 	}
 
-	private commandCallBackPool: Map <string, ( err?: Error, response?: QTGateAPIRequestCommand ) => void > = new Map ()
+
+
+	private commandCallBackPool: Map <string, requestPoolData > = new Map ()
 
 	/*
 	private clearServerListenFolder () {
@@ -1942,22 +1953,33 @@ class ImapConnect extends Imap.imapPeer {
 				}
 				
 			}
-			const CallBack = this.commandCallBackPool.get ( ret.requestSerial )
+			const poolData = this.commandCallBackPool.get ( ret.requestSerial )
 
-			if ( ! CallBack || typeof CallBack !== 'function' ) {
+			if ( ! poolData || typeof poolData.CallBack !== 'function' ) {
 				return saveLog ( `QTGateAPIRequestCommand got commandCallBackPool ret.requestSerial [${ ret.requestSerial }] have not callback `)
 			}
+			clearTimeout ( poolData.timeOut )
 			saveLog ( `QTGateAPIRequestCommand got [${ ret.requestSerial }] callback`)
-			return CallBack ( null, ret )
+			return poolData.CallBack ( null, ret )
 			
 		}
 
 	}
 
 	public request ( command: QTGateAPIRequestCommand, CallBack ) {
+
 		saveLog ( `request command [${ command.command }] requestSerial [${ command.requestSerial }]` )
-		if ( command.requestSerial )
-			this.commandCallBackPool.set ( command.requestSerial, CallBack )
+		if ( command.requestSerial ) {
+			const poolData: requestPoolData = {
+				CallBack: CallBack,
+				timeOut: setTimeout (() => {
+					return CallBack ( new Error ('timeout'))
+				}, commandRequestTimeOutTime )
+			}
+			this.commandCallBackPool.set ( command.requestSerial, poolData )
+			
+		}
+			
 		return this._enCrypto ( JSON.stringify ( command ), ( err1, data: string ) => {
 			if ( err1 ) {
 				saveLog ( `request _deCrypto got error [${ JSON.stringify ( err1 )}]` )
@@ -2003,7 +2025,7 @@ class ImapConnect extends Imap.imapPeer {
 	}
  	
 }
-
+/*
 const testPing = ( hostIp: string, CallBack ) => {
 	let pingTime = 0
 	const test = new Array ( testPingTimes )
@@ -2032,7 +2054,7 @@ const testPing = ( hostIp: string, CallBack ) => {
 	})
 	
 }
-
+*/
 const makeFeedBackDataToQTGateAPIRequestCommand = ( data: feedBackData, Callback ) => {
 	const ret: QTGateAPIRequestCommand = {
 		command: 'feedBackData',
