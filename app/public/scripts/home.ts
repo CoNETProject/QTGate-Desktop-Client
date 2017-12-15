@@ -640,6 +640,8 @@ const infoDefine = [
             bottom1_1: '此致',
             buttom1_2: 'QTGate团队',
             conformButtom: '验 证',
+            requestReturn: ['错误！您的请求被拒绝，这可能是您在短时间内多次请求所致，请稍后再试','QTGate系统已发送激活邮件！'],
+            reSendRequest:'重发验证Email',
             formatError: [
                 '内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。 ',
                 '提供的内容不能被解密，请确认这是在您收到的最后一封从QTGate发送过来的激活信。如果还是没法完成激活，请删除您的密钥重新生成和设定。 ',
@@ -1237,6 +1239,7 @@ const infoDefine = [
 
         emailConform: {
             activeViewTitle:'鍵ペア検証',
+            requestReturn: ['エラー発生しました、それは短時間内多数の請求をしたことです。','検証メールを発送しました。'],
             info1_1:`鍵ペア検証は未完成です。QTGateは宛先 「`,
             info1_2: `」 に検証メールをしました。メールボックスをチェックしてください。QTGateから多数メールの場合は、最後のを選んでください。QTGateからのメールが見つからない場合は鍵ペアを生成するメールアドレスを正しいかどうかダブチェックしてください。または鍵ペアを削除して新しい鍵ペアを再作成をしてください。`,
             info2: 'コピーするのは「-----BEGIN PGP MESSAGE-----」から「-----END PGP MESSAGE-----」まで全ての内容をしてください。',
@@ -1247,6 +1250,7 @@ const infoDefine = [
             bottom1_1: '以上',
             bottom1_2: 'QTGateチームより',
             conformButtom: '検 証',
+            reSendRequest:'検証Emailを再発行',
             formatError: [
                 'フォーマットエラー、コピーするのは「-----BEGIN PGP MESSAGE-----」から「-----END PGP MESSAGE-----」まで全ての内容をしてください。',
                 'この内容で暗号化解除ができませんでした。鍵ペアEmailアカンウトメールボックス再検査し、QTGateから最後のを選んでください。または鍵ペアを削除して、鍵ペア再発行してください。',
@@ -1754,7 +1758,9 @@ const infoDefine = [
             emailDetail2: 'This is your secret verification code to validate your QTGate account. Please copy and paste all the content in the text area.',
             bottom1_1: 'Best regards,',
             bottom1_2: 'The QTGate team',
+            requestReturn: ['ERROR! QTGate system refuse your request, may be you did request repeatedly, please try again late.','Verification mail has been sent.'],
             conformButtom: 'Conform',
+            reSendRequest:'Request another verification email',
             formatError: [
                         'Format error! Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
                         'Oops. Find the lasest mail from QTGate in your key pair email mailbox. Or delete this key pair and rebuild new key pair please.',
@@ -1861,7 +1867,7 @@ const infoDefine = [
             MonthBandwidthTitle:'月度可使用代理伺服器數據傳送限額：',
             dayBandwidthTitle:'每日限額：',
             upgradeTitle:'升級賬戶選項',
-            DowngradeTitle:'降級賬戶選項',
+            DowngradeTitle:'降級賬戶選項',
             cancelPlan:'終止當前月租',
             MonthBandwidthTitle1:'傳送限額',
             serverShare:'代理伺服器',
@@ -1872,7 +1878,6 @@ const infoDefine = [
             serverShareData1:'使用同時鏈接多台代理技術，使用台數大於獨占數時，會相應分享您所獨占的資源',
             maxmultigateway: ['最大同時可二條並發代理','最大同時可四條並發代理'],
             cancelPlanMessage:'QTGate的訂閱是以月為基本的單位。您的月訂閱將在下月您的訂閱起始日前被終止，您可以繼續使用您的本月訂閱計劃，您將自動回到免費用戶。如果您是每月自動扣款，則下月將不再扣款。如果您是年度訂閱計劃，您的退款將按普通每月訂閱費，扣除您已經使用的月份後計算的差額，將自動返還您所支付的信用卡賬號，如果您是使用促銷碼，或您是測試用戶，您的終止訂閱將不能被接受。 '
-
         },
         QTGateDonate: {
             title: 'QTGate贊助商提供的免流量網站',
@@ -2227,6 +2232,8 @@ const infoDefine = [
             info2: '複制內容從“-----BEGIN PGP MESSAGE----- （ 開始，一直到 ）----- END PGP MESSAGE-----” 結束的完整內容，粘貼到此輸入框中',
             emailDetail1: '尊敬的 ',
             emailDetail1_1: '',
+            reSendRequest:'再次發送驗證Email',
+            requestReturn: ['錯誤！您的請求被拒絕，這可能是您在短時間內多次請求所致，請稍後再試','QTGate系統已發送激活郵件！'],
             emailDetail2: '這是您的QTGate帳號激活密碼，請複制下列框內的全部內容:',
             bottom1_1:'此致',
             bottom1_2:'QTGate團隊',
@@ -3517,9 +3524,7 @@ module view_layout {
                 this.showActiveMail( false )
                 if ( data.qtGateConnecting === 2 ) {
                     return setTimeout (() => {
-                        return socketIo.emit ( 'getAvaliableRegion', ( region: string [], dataTransfer: iTransferData, config: install_config ) => {
-                            return  this.getAvaliableRegionCallBack ( region, dataTransfer, config )
-                        })
+                        return this.getAvaliableRegion ()
                     }, 2000 )
                 }
                 const process = $ ( '#connectImformationProcess' )
@@ -4303,7 +4308,7 @@ module view_layout {
         }
 
         public downloadCheck () {
-           return  socketIo.emit ( 'downloadCheck')
+           return socketIo.emit ( 'downloadCheck')
         }
 
         public pingCheckReturn ( region: string, ping: number ) {
@@ -4434,6 +4439,19 @@ module view_layout {
             const index = this.emailPool ().findIndex ( n => { return availableImapServer.test ( n.iMapServerName()) })
             return index > -1
         })
+        public requestActivEmailrunning = ko.observable ( false )
+        public showSentActivEmail = ko.observable (-1)
+        public requestActivEmail () {
+            this.requestActivEmailrunning ( true )
+            this.showSentActivEmail (-1)
+            return socketIo.emit ( 'requestActivEmail', CallBack => {
+                this.requestActivEmailrunning ( false )
+                if ( CallBack < 0 ){
+                    return this.showSentActivEmail (1)
+                }
+                return this.showSentActivEmail (CallBack)
+            })
+        }
     
     }
 

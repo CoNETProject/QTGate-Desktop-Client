@@ -713,6 +713,21 @@ export class localServer {
 			})
 		})
 
+		socket.on ( 'requestActivEmail', CallBack => {
+			if ( this.config.keypair.verified )
+				return CallBack (0)
+			
+			const com: QTGateAPIRequestCommand = {
+				command: 'requestActivEmail',
+				Args: [],
+				error: null,
+				requestSerial: Crypto1.randomBytes(8).toString('hex')
+			}
+			return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
+				return CallBack (res.error)
+			})
+		})
+
 		socket.once ( 'exit', () => {
 			remote.app.exit()
 		})
@@ -720,7 +735,7 @@ export class localServer {
 		socket.on ( 'pingCheck', CallBack => {
 			if ( process.platform === 'linux')
 				return CallBack ( -1 )
-			/*
+			
 			saveLog (`socket.on ( 'pingCheck' )`)
 			if ( !this.regionV1 || this.pingChecking ) {
 				saveLog (`!this.regionV1 [${ !this.regionV1 }] || this.pingChecking [${ this.pingChecking }]`)
@@ -747,7 +762,7 @@ export class localServer {
 				this.pingChecking = false
 				return CallBack ()
 			})
-			*/
+			
 		})
 		
 
@@ -2025,7 +2040,7 @@ class ImapConnect extends Imap.imapPeer {
 	}
  	
 }
-/*
+
 const testPing = ( hostIp: string, CallBack ) => {
 	let pingTime = 0
 	const test = new Array ( testPingTimes )
@@ -2054,7 +2069,7 @@ const testPing = ( hostIp: string, CallBack ) => {
 	})
 	
 }
-*/
+
 const makeFeedBackDataToQTGateAPIRequestCommand = ( data: feedBackData, Callback ) => {
 	const ret: QTGateAPIRequestCommand = {
 		command: 'feedBackData',

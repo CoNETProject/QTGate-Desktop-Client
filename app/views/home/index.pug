@@ -287,7 +287,7 @@ block jumbotron1
 													i.icon.tiny.warning( data-bind = " visible: ! keyPair().verified " style = " color: white; margin-top: -4px;margin-left: -1px;")
 													i.icon.tiny.checkmark( data-bind = " visible: keyPair().verified " style = " color: white; margin-top: -4px;margin-left: -1px;")
 										.meta
-											
+											//-a( href="#" data-bind="click: () => { if ( !keyPair().passwordOK || !getCurrentPlan() ) return; UserPerment ( true );}" )
 											a( href="#" data-bind="click: () => { if ( !keyPair().passwordOK || !getCurrentPlan() ) return; UserPerment ( true );}" )
 												i.icon.user
 												span( data-bind = " text: keyPair().nikeName " )
@@ -353,7 +353,7 @@ block jumbotron1
 															span( data-bind=" text: '$'+monthlyPay " style="padding-left: 0.5em; padding-right: 0.5em;")
 															.ui.green.label( data-bind="text: $root.infoDefine[ $root.languageIndex() ].account.serverShareData[share]")
 								
-					.ui.raised.segment
+					.ui.raised.segment()
 						.item
 							.ui.massive.label.grey.image( data-bind=" text: getPaymentPlan() ? getPaymentPlan().monthly + 'GB': null ")
 							.content
@@ -567,12 +567,14 @@ block jumbotron1
 						span( data-bind = " text: keyPair().email" style="color:rgba(0,0,0,.5);")
 						span( data-bind = " text: infoDefine [ $root.languageIndex() ].emailConform.info1_2"  style="color:rgba(0,0,0,.5);")
 						.ui.raised.segment
-							.ui.grid.equal.width
+							.ui.grid.equal.width.right.aligned
 								.row( style = "background-color: #D94235; padding-bottom: 0px;")
-									.column
+									.column.left.aligned
 										img( src = "/images/512x512.png" style = "margin-left: 1em; height: 50px;")
-									.column.right.floated
-										
+									.column
+										.ui.inverted.red.button( data-bind="visible: !requestActivEmailrunning() && showSentActivEmail() < 0, click: requestActivEmail, text: infoDefine [ $root.languageIndex() ].emailConform.reSendRequest")
+										i.yellow.notched.circle.loading.icon( data-bind="visible: requestActivEmailrunning() && showSentActivEmail() < 0")
+										span(data-bind="text: showSentActivEmail() > -1 ? infoDefine [ $root.languageIndex() ].emailConform.requestReturn[showSentActivEmail()]: '', visible: showSentActivEmail() > -1" style="color: cornsilk;")
 								.row( style = "background-color: #D94235; padding-top: .5em;")
 									h2( style = "color: white; margin-left: 2em; padding-top: 0px;" data-bind = "text: infoDefine [ $root.languageIndex() ].emailConform.emailTitle " )
 								.row( style = "background-color: #FAFAFA; font-weight: bold; padding-bottom: 0px")
@@ -589,7 +591,7 @@ block jumbotron1
 								.row( style = "background-color: #FAFAFA;padding-top: 0px;")
 									.ui.two.column.grid
 										.stretched.row( style ="padding-top: 0px;")
-											.column(style = "padding-top: 0px;padding-bottom: 0.2em")
+											.column.left.aligned(style = "padding-top: 0px;padding-bottom: 0.2em")
 												span( data-bind=" text: infoDefine [ languageIndex() ].emailConform.bottom1_1" style="margin-left: 20px;color:rgba(0,0,0,.5);" )
 												span( data-bind=" text: infoDefine [ languageIndex() ].emailConform.bottom1_2" style="margin-left: 20px;color:rgba(0,0,0,.5);" )
 											.column.right.floated

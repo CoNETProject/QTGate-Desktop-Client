@@ -672,40 +672,50 @@ class localServer {
                 this.regionV1 = res.Args[2];
             });
         });
+        socket.on('requestActivEmail', CallBack => {
+            if (this.config.keypair.verified)
+                return CallBack(0);
+            const com = {
+                command: 'requestActivEmail',
+                Args: [],
+                error: null,
+                requestSerial: Crypto1.randomBytes(8).toString('hex')
+            };
+            return this.QTClass.request(com, (err, res) => {
+                return CallBack(res.error);
+            });
+        });
         socket.once('exit', () => {
             remote.app.exit();
         });
         socket.on('pingCheck', CallBack => {
             if (process.platform === 'linux')
                 return CallBack(-1);
-            /*
-            saveLog (`socket.on ( 'pingCheck' )`)
-            if ( !this.regionV1 || this.pingChecking ) {
-                saveLog (`!this.regionV1 [${ !this.regionV1 }] || this.pingChecking [${ this.pingChecking }]`)
-                return CallBack()
+            saveLog(`socket.on ( 'pingCheck' )`);
+            if (!this.regionV1 || this.pingChecking) {
+                saveLog(`!this.regionV1 [${!this.regionV1}] || this.pingChecking [${this.pingChecking}]`);
+                return CallBack();
             }
-                
-            this.pingChecking = true
+            this.pingChecking = true;
             try {
-                const netPing = require ('net-ping')
-                const session = netPing.createSession ()
-            } catch (ex) {
-                console.log (`netPing.createSession err`, ex )
-                return CallBack ( -1 )
+                const netPing = require('net-ping');
+                const session = netPing.createSession();
             }
-            Async.eachSeries ( this.regionV1, ( n: regionV1, next ) => {
-                
-                return testPing ( n.testHostIp, ( err, ping ) => {
-                    saveLog( `testPing [${ n.regionName }] return ping [${ ping }]`)
-                    socket.emit ( 'pingCheck', n.regionName, err? 9999: ping )
-                    return next ()
-                })
+            catch (ex) {
+                console.log(`netPing.createSession err`, ex);
+                return CallBack(-1);
+            }
+            Async.eachSeries(this.regionV1, (n, next) => {
+                return testPing(n.testHostIp, (err, ping) => {
+                    saveLog(`testPing [${n.regionName}] return ping [${ping}]`);
+                    socket.emit('pingCheck', n.regionName, err ? 9999 : ping);
+                    return next();
+                });
             }, () => {
-                saveLog (`pingCheck success!`)
-                this.pingChecking = false
-                return CallBack ()
-            })
-            */
+                saveLog(`pingCheck success!`);
+                this.pingChecking = false;
+                return CallBack();
+            });
         });
         socket.once('downloadCheck', CallBack => {
             if (!this.regionV1)
@@ -1737,36 +1747,31 @@ class ImapConnect extends Imap.imapPeer {
         return this.doReady(socket, () => { });
     }
 }
-/*
-const testPing = ( hostIp: string, CallBack ) => {
-    let pingTime = 0
-    const test = new Array ( testPingTimes )
-    test.fill ( hostIp )
-    saveLog (`start testPing [${ hostIp }]`)
-    return Async.eachSeries ( test, ( n, next ) => {
-        const netPing = require ('net-ping')
-        const session = netPing.createSession ()
-        session.pingHost ( hostIp, ( err, target, sent, rcvd ) => {
-            
-            session.close ()
-            if ( err ) {
-                saveLog (`session.pingHost ERROR, ${ err.message }`)
-                return next ( err )
+const testPing = (hostIp, CallBack) => {
+    let pingTime = 0;
+    const test = new Array(testPingTimes);
+    test.fill(hostIp);
+    saveLog(`start testPing [${hostIp}]`);
+    return Async.eachSeries(test, (n, next) => {
+        const netPing = require('net-ping');
+        const session = netPing.createSession();
+        session.pingHost(hostIp, (err, target, sent, rcvd) => {
+            session.close();
+            if (err) {
+                saveLog(`session.pingHost ERROR, ${err.message}`);
+                return next(err);
             }
-            const ping = rcvd.getTime () - sent.getTime ()
-            pingTime += ping
-            return next ()
-        })
+            const ping = rcvd.getTime() - sent.getTime();
+            pingTime += ping;
+            return next();
+        });
     }, err => {
-        if ( err ) {
-            return CallBack ( new Error ('ping error'))
+        if (err) {
+            return CallBack(new Error('ping error'));
         }
-
-        return CallBack ( null, Math.round ( pingTime/testPingTimes ))
-    })
-    
-}
-*/
+        return CallBack(null, Math.round(pingTime / testPingTimes));
+    });
+};
 const makeFeedBackDataToQTGateAPIRequestCommand = (data, Callback) => {
     const ret = {
         command: 'feedBackData',
