@@ -3342,6 +3342,9 @@ var view_layout;
                     return $('.QTGateConnect').accordion('refresh');
                 }
                 this.showActiveMail(false);
+                if (data.qtGateConnecting === 0) {
+                    return this.reSendConnectMail(true);
+                }
                 if (data.qtGateConnecting === 2) {
                     return setTimeout(() => {
                         return this.getAvaliableRegion();

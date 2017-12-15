@@ -417,7 +417,7 @@ const appReady = () => {
                         protocol: 'file:',
                         slashes: true
                     }));
-                }, 5000);
+                }, 2000);
             });
         }
         else {

@@ -1247,7 +1247,11 @@ class localServer {
         Async.each(testArray, (n, next) => {
             this._smtpVerify(n, (err) => {
                 if (err > 0) {
-                    err1 = err;
+                    saveLog(`smtpVerify ERROR: err number = [${err}]`);
+                    if ((!err1 || err === 8)) {
+                        saveLog(`smtpVerify let err1 = err [${err}]`);
+                        err1 = err;
+                    }
                     return next();
                 }
                 next();

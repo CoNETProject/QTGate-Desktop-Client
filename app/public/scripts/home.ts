@@ -3522,11 +3522,16 @@ module view_layout {
                 }
                 
                 this.showActiveMail( false )
+                if ( data.qtGateConnecting === 0 ) {
+                    return this.reSendConnectMail(true)
+                }
+
                 if ( data.qtGateConnecting === 2 ) {
                     return setTimeout (() => {
                         return this.getAvaliableRegion ()
                     }, 2000 )
                 }
+
                 const process = $ ( '#connectImformationProcess' )
                 let percent = 0
                 const doingProcessBar = () => {
