@@ -1223,7 +1223,7 @@ const pingPongTimeOut = 1000 * 30
 
 export class imapPeer extends Event.EventEmitter {
     private mailPool = []
-    private rImapReady = false
+    public rImapReady = false
     private waitingReplyTimeOut: NodeJS.Timer = null
     private pingUuid = null
     private doingDestroy = false
@@ -1400,7 +1400,6 @@ export class imapPeer extends Event.EventEmitter {
         saveLog (`newReadImap!`)
         this.rImap = new qtGateImapRead ( this.imapData, this.listenBox, false, false, email => {
             this.mail ( email )
-            this.rImap.emit ('nextNewMail')
         })
 
         this.rImap.once ( 'ready', () => {
@@ -1477,7 +1476,9 @@ export class imapPeer extends Event.EventEmitter {
             this.rImap.destroyAll ( null )
             this.rImap = null
         }
-        if  (this.exit && typeof this.exit === 'function' ) {
+        if ( this.removeAllListeners && typeof this.removeAllListeners === 'function' )
+            this.removeAllListeners ()
+        if  ( this.exit && typeof this.exit === 'function' ) {
             this.exit ( err )
             this.exit = null
         }

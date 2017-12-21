@@ -439,6 +439,9 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   width: 100%;
   z-index: 98;
 }
+.removeButton{
+  margin-left: 97%!important;
+}
 
 .languageItemSpan {
   font-size: small!important;

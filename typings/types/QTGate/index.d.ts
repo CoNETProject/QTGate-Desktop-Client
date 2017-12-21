@@ -55,10 +55,12 @@ interface newReleaseData {
 }
 
 interface IQtgateConnect {
-    qtgateConnectImapAccount: string
-    qtGateConnecting: number
-    isKeypairQtgateConform: boolean
-    error: number
+    qtgateConnectImapAccount?: string
+    qtGateConnecting?: number
+    isKeypairQtgateConform?: boolean
+    error?: number
+    sentMail?: boolean
+    haveImapUuid?: boolean
 }
 
 interface IinputData extends imapConnect {
@@ -83,6 +85,7 @@ interface IinputData extends imapConnect {
     canDoDelete: boolean
     clientIpAddress: string
     ciphers: string
+    confirmRisk: boolean
 }
 interface IinputData_server extends IinputData {
     connectEmail: boolean;

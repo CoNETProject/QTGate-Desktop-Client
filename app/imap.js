@@ -1222,7 +1222,6 @@ class imapPeer extends Event.EventEmitter {
         saveLog(`newReadImap!`);
         this.rImap = new qtGateImapRead(this.imapData, this.listenBox, false, false, email => {
             this.mail(email);
-            this.rImap.emit('nextNewMail');
         });
         this.rImap.once('ready', () => {
             saveLog(`this.rImap.once on ready `);
@@ -1279,6 +1278,8 @@ class imapPeer extends Event.EventEmitter {
             this.rImap.destroyAll(null);
             this.rImap = null;
         }
+        if (this.removeAllListeners && typeof this.removeAllListeners === 'function')
+            this.removeAllListeners();
         if (this.exit && typeof this.exit === 'function') {
             this.exit(err);
             this.exit = null;

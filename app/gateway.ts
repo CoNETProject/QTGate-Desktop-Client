@@ -93,7 +93,7 @@ export default class gateWay {
 		const decrypt = new Compress.decryptStream ( gateway.password )
 		
 
-		const _socket = Net.createConnection ({ port: gateway.gateWayPort, host: gateway.gateWayIpAddress }, () => {
+		const _socket = Net.createConnection ( gateway.gateWayPort,gateway.gateWayIpAddress, () => {
 			encrypt.write ( _data )
 		})
 
@@ -125,7 +125,7 @@ export default class gateWay {
 		httpBlock.once ( 'error', err => {
 			socket.end ( res._HTTP_404 )
 		})
-		const _socket = Net.createConnection ({ port: gateway.gateWayPort||80, host: gateway.gateWayIpAddress }, () => {
+		const _socket = Net.createConnection ( gateway.gateWayPort||80, gateway.gateWayIpAddress, () => {
 			
 			encrypt.write ( Buffer.from ( JSON.stringify ( uuuu ), 'utf8' ))
 		})

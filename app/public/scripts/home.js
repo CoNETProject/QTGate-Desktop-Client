@@ -473,7 +473,8 @@ const infoDefine = [
             step2_detail1: '右键点击已下载的QTGate图标，选择菜单里的文件属性',
             step2_detail2: '在权限选项里，选勾“允许档案文件执行”。',
             step3: '退出旧版本QTGate后，双击QTGate文件执行安装',
-            exit: '退出QTGate'
+            exit: '退出QTGate',
+            tryAgain: '再次尝试'
         },
         imapInformation: {
             title: '通讯专用Email邮箱设置',
@@ -563,7 +564,8 @@ const infoDefine = [
             SystemPasswordError: '密钥对密码错误，请重试！如果您已忘记您的密钥对密码，请删除现有的密钥对，重新生成新的密钥对。但您的原有设定将全部丢失！',
             finishedDeleteKeyPair: '密钥对完成删除!',
             offlineError: '您的电脑未连接到互联网，请检查网络后再次尝试！',
-            imapErrorMessage: ['',
+            imapErrorMessage: [
+                '未能够与QTGate服务器对接成功。 QTGate系统可能存在问题，请稍後再次尝试。或联系QTGate服务。',
                 '数据格式错误，请重试',
                 '您的电脑未连接到互联网，请检查网络后再次尝试！',
                 'Email伺服器提示IMAP用户名或密码错！这个错误通常是由于您使用的密码是普通密码，或者您的APP密码已失效，请到您的Email帐户检查您的APP密码，然后再试一次。',
@@ -571,7 +573,10 @@ const infoDefine = [
                 '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在IMAP详细设定中选择忽略证书错误。', '无法获得Email服务器域名信息，请检查您的Email服务器设定！',
                 '此Email服务器看来可能不能使用QTGate通讯技术，请再测试一次或选择其他email服务供应商！',
                 'Email服务器提示SMTP用户名或密码错！ ',
-                '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在SMTP详细设定中选择忽略证书错误。 ', 'SMTP连结提示未知错误', '存在相同Email账号']
+                '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在SMTP详细设定中选择忽略证书错误。 ',
+                'SMTP连结提示未知错误',
+                '存在相同Email账号'
+            ]
         },
         emailConform: {
             activeViewTitle: '验证您的密钥',
@@ -1047,7 +1052,8 @@ const infoDefine = [
             step2_detail1: '右クリックダウンロードしたQTGateファイル、プロパティを選んでください。',
             step2_detail2: 'アクセス権にポログラムとして実行可能をチェック',
             step3: '旧バージョンQTGateを退出して、新しいQTGateバージョンをダブクリックしてインストールをします。',
-            exit: '旧QTGateを退出'
+            exit: '旧QTGateを退出',
+            tryAgain: 'もう一度'
         },
         topWindow: {
             title: 'カナダ１５０周年特別提供'
@@ -1141,7 +1147,8 @@ const infoDefine = [
             SystemPasswordError: '暗号鍵パスワードが違います。パースワードが忘れた場合、現在の鍵ペアを削除してください。この場合は、現有の設定はなくなって、一からシステム設定をやり直しが必要です。',
             finishedDeleteKeyPair: '暗号鍵ペア削除しました。',
             offlineError: 'インターネット接続されていないらしいですが、ネットワークをチェックしてもう一度お試しください！',
-            imapErrorMessage: ['',
+            imapErrorMessage: [
+                'QTGateと接続ができませんでした。QTGateサービスが一時停止しています。後ほどもう一度してみてください。またはQTGateサービスにお問い合わせしてください。',
                 'データフーマットエラー！',
                 'インターネット接続されていないらしいですが、ネットワークをチェックしてもう一度お試しください！',
                 'mailサーバはIMAPユーザー名又はパスワードに間違いがあると提示しました！このエラーは普通パスワードを使っていましたか、またはAPPパスワードが失効と可能性もありますが、メールプロバイダのアカウトページへチェックをしてください。',
@@ -1152,7 +1159,8 @@ const infoDefine = [
                 'emailサーバはSMTPユーザー名又はパスワードに間違いがあると提示しました！',
                 'SMTPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
                 'SMTPサーバへ接続ができません。',
-                '同じEmailアカンウトが既に存在します。']
+                '同じEmailアカンウトが既に存在します。'
+            ]
         },
         emailConform: {
             activeViewTitle: '鍵ペア検証',
@@ -1526,7 +1534,8 @@ const infoDefine = [
             step2_detail1: 'Right click downloaded QTGate file and select the properties.',
             step2_detail2: 'Check allow executing file as program in Permissions tab.',
             step3: 'Exit old version of QTGate and double click the new QTGate file to run install.',
-            exit: 'Exit QTGate.'
+            exit: 'Exit QTGate',
+            tryAgain: 'Try again'
         },
         imapInformation: {
             title: 'Email account to use by OPN.',
@@ -1617,7 +1626,7 @@ const infoDefine = [
             finishedDeleteKeyPair: 'Key pair deleted!',
             offlineError: 'There is no internet connection detected. Please check your network and try again!',
             imapErrorMessage: [
-                '',
+                'QTGate did not respond your connection request. QTGate system may stopping service. Try do connection request late again. Or connect QTGate support please.',
                 'Data format error!',
                 'This computer does not detect an internet connection. Please check your network and try again!',
                 `Email server did respond to username or an error in password. You may need use APP password to pass this test if you did normal password. Or your app passwords need to be updated.`,
@@ -1979,7 +1988,8 @@ const infoDefine = [
             step2_detail1: '右鍵點擊已下載的QTGate圖標，選擇菜單裡的文件屬性',
             step2_detail2: '在權限選項裡，選勾“允許檔案文件執行”。',
             step3: '退出舊版本QTGate後，雙擊QTGate文件執行安裝',
-            exit: '退出QTGate'
+            exit: '退出QTGate',
+            tryAgain: '再次嘗試'
         },
         imapInformation: {
             title: '通訊專用Email郵箱設置',
@@ -2069,7 +2079,8 @@ const infoDefine = [
             SystemPasswordError: '密鑰對密碼錯誤，請重試！如果您已忘記您的密鑰對密碼，請刪除現有的密鑰對，重新生成新的密鑰對。',
             finishedDeleteKeyPair: '密鑰對完成刪除!',
             offlineError: '您的電腦視乎未連結到互聯網，請檢查網路連結',
-            imapErrorMessage: ['',
+            imapErrorMessage: [
+                '未能夠與QTGate伺服器對接成功。QTGate系統可能存在問題，請稍後再次嘗試建立連結。或聯繫QTGate服務。',
                 '數據格式錯誤，請重試',
                 '您的電腦未連接到互聯網，請檢查網絡後再次嘗試！',
                 'Email伺服器提示IMAP用戶名或密碼錯！這個錯誤通常是由於您使用的密碼是普通密碼，或者您的APP密碼已失效，請到您的Email帳戶檢查您的APP密碼，然後再試一次。',
@@ -2080,7 +2091,8 @@ const infoDefine = [
                 'email伺服器提示SMTP用戶名或密碼錯！',
                 '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在SMTP詳細設定中選擇忽略證書錯誤。',
                 'SMTP連結提示未知錯誤',
-                '您已有相同的Email賬戶']
+                '您已有相同的Email賬戶'
+            ]
         },
         emailConform: {
             activeViewTitle: '驗證您的密鑰',
@@ -2978,6 +2990,8 @@ var view_layout;
             this.QTGateConnectActive = ko.observable(false);
             this.QTGateConnectRegionActive = ko.observable(false);
             this.QTGateConnectError = ko.observable(0);
+            this.showTimeoutMessage = ko.observable(false);
+            this.UserPermentShapeDetail = ko.observable(false);
             //-
             //- QTGate connect
             this.showSendIMAPToQTGateInfo = ko.observable(false);
@@ -3073,21 +3087,8 @@ var view_layout;
                 this.conformTextError(false);
                 const text = this.conformText();
                 if (!text.length)
-                    return;
-                const check = /^-----BEGIN PGP MESSAGE-----/.test(text);
-                this.conformTextErrorNumber(0);
-                if (!check) {
-                    this.conformTextError(true);
-                    $('.activating.element').popup({
-                        on: 'click',
-                        position: 'left center',
-                        target: '#SendToQTGateTextArea',
-                        onHidden: () => {
-                            this.conformTextError(false);
-                        }
-                    });
-                }
-                return (check);
+                    return false;
+                return true;
             });
             this.cancelPlan = ko.observable(false);
             this.connectQTGateShow = ko.observable(false);
@@ -3247,7 +3248,7 @@ var view_layout;
             });
             socketIo.on('checkActiveEmailError', err => {
                 if (err !== null && err > -1) {
-                    if (err === 3 || err === 4 || err === 2 || err === 9) {
+                    if (err === 9) {
                         //      err = 3     password have not match from QTGate system
                         //      err = 4     unformat data from QTGate system
                         //      err = 6     QTGate connect pair timeout from server.js
@@ -3269,11 +3270,26 @@ var view_layout;
                 return this.QTGateConnecting(4);
             });
             socketIo.on('qtGateConnect', (data) => {
+                this.showTimeoutMessage(false);
                 this.imapInputFormActive(true);
+                //      show send mail message
+                this.connectQTGateShow(false);
                 this.QTGateConnectActive(true);
                 this.reSendConnectMail(false);
                 $('.ui.dropdown').dropdown();
                 this.menuClick(3, true);
+                const process = $('#connectImformationProcess');
+                let percent = 0;
+                const doingProcessBar = () => {
+                    clearTimeout(this.doingProcessBarTime);
+                    this.doingProcessBarTime = setTimeout(() => {
+                        process.progress({
+                            percent: ++percent
+                        });
+                        if (percent < 100)
+                            return doingProcessBar();
+                    }, 1000);
+                };
                 //      have no imap data
                 if (!data) {
                     //      show imap manager area
@@ -3283,6 +3299,16 @@ var view_layout;
                 if (data && data.qtgateConnectImapAccount) {
                     const uu = this.emailPool().findIndex(n => { return n.uuid === data.qtgateConnectImapAccount; });
                     this.QTGateConnectSelectImap(uu);
+                }
+                if (data.qtGateConnecting === 6) {
+                    if (this.keyPair().verified)
+                        return this.sendConnectRequestMail(true);
+                    return this.connectQTGateShow(true);
+                }
+                if (data.qtGateConnecting === 0) {
+                    clearTimeout(this.doingProcessBarTime);
+                    process.progress('reset');
+                    return this.showTimeoutMessage(true);
                 }
                 this.QTGateConnecting(data.qtGateConnecting);
                 if (data.qtGateConnecting === 3) {
@@ -3311,9 +3337,6 @@ var view_layout;
                     */
                 }
                 if (!this.keyPair().verified) {
-                    if (data.qtGateConnecting === 6) {
-                        return this.connectQTGateShow(true);
-                    }
                     this.showActiveMail(true);
                     this.QTGateConnectActive(true);
                     this.QTGateConnectError(data.error);
@@ -3350,18 +3373,6 @@ var view_layout;
                         return this.getAvaliableRegion();
                     }, 2000);
                 }
-                const process = $('#connectImformationProcess');
-                let percent = 0;
-                const doingProcessBar = () => {
-                    clearTimeout(this.doingProcessBarTime);
-                    this.doingProcessBarTime = setTimeout(() => {
-                        process.progress({
-                            percent: ++percent
-                        });
-                        if (percent < 100)
-                            return doingProcessBar();
-                    }, 1000);
-                };
                 this.QTGateConnectRegionActive(true);
                 //      first connect 
                 if (data.qtGateConnecting === 1) {
@@ -3370,10 +3381,6 @@ var view_layout;
                     this.QTGateRegionInfo(true);
                     this.menuClick(3, true);
                     return this.QTGateConnectActive(false);
-                }
-                //          timeout!
-                if (data.qtGateConnecting === 6) {
-                    return this.sendConnectRequestMail(true);
                 }
                 //          send request mail error
                 if (data.qtGateConnecting === 5) {
@@ -3877,7 +3884,8 @@ var view_layout;
         getAvaliableRegion() {
             this.pingCheckLoading(true);
             socketIo.emit('getAvaliableRegion', (region, dataTransfer, config) => {
-                return this.getAvaliableRegionCallBack(region, dataTransfer, config);
+                if (region && region.length)
+                    return this.getAvaliableRegionCallBack(region, dataTransfer, config);
             });
         }
         desconnectCallBack() {

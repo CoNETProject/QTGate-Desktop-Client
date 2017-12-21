@@ -374,7 +374,7 @@ export class proxyServer {
 		if ( this.getGlobalIpRunning )
 			return 
 		this.getGlobalIpRunning = true
-
+		saveLog(`doing getGlobalIp!`)
 		gateWay.hostLookup ( testGatewayDomainName, null, ( err, data ) => {
 			if ( err )
 				return console.log ( 'getGlobalIp ERROR:', err.message )
@@ -488,7 +488,7 @@ const saveLog = ( log: string ) => {
 let server: proxyServer = null
 remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
 	saveLog ( `************************** start proxyServer *****************************\r\n ${ JSON.stringify( data )}\r\n` )
-	console.log (`with gateway = [${data.multipleGateway}]`)
+	console.log (`with gateway = [${ data.multipleGateway }]`)
 	server = new proxyServer ( [], new Map(), data.localServerIp, data.localServerPort, 'pac', 5000, data.multipleGateway, 50000, data.AllDataToGateway, [] )
 })
 

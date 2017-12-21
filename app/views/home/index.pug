@@ -320,7 +320,8 @@ block jumbotron1
 			#UserPerment.content( data-bind="visible: UserPerment()" style="margin-top: -3em;")
 				#UserPermentShape
 					.ui.raised.segment
-						.ui.one.column.grid(style="margin: 0.1em;")
+						i.icon.link.remove.circle.large.outline.removeButton( data-bind="click: ()=>{UserPerment(false)}")
+						.ui.one.column.grid(style="margin: 0.1em;margin-top: -1em;")
 							.row(style="padding: 0px;")
 								.column
 									span( data-bind="text: infoDefine[ languageIndex() ].account.segmentTitle" )
@@ -342,7 +343,7 @@ block jumbotron1
 										.text.ui.label.red( data-bind = "text: infoDefine[ languageIndex() ].account.DowngradeTitle")
 										.menu( data-bind="foreach: getBackPlanArray()")
 											.item
-									#getNextPlanArray.ui.floating.dropdown.button( data-bind = "visible: getNextPlanArray()().length, click: () => { $('#getNextPlanArray').dropdown({ onChange: value => { QTGateAccountPlan(value);$('#UserPermentShape').shape('flip left')}});}")
+									#getNextPlanArray.ui.floating.dropdown.button( data-bind = "visible: getNextPlanArray()().length, click: () => { $('#getNextPlanArray').dropdown({ onChange: value => { QTGateAccountPlan(value);}")
 										span( data-bind = "text: $root.infoDefine[ $root.languageIndex() ].account.upgradeTitle")
 										.menu( data-bind = " foreach: getNextPlanArray() " )
 											.item( data-bind=" attr: {'data-value': name }")
@@ -353,8 +354,9 @@ block jumbotron1
 															span( data-bind=" text: '$'+monthlyPay " style="padding-left: 0.5em; padding-right: 0.5em;")
 															.ui.green.label( data-bind="text: $root.infoDefine[ $root.languageIndex() ].account.serverShareData[share]")
 								
-					.ui.raised.segment()
-						.item
+					.ui.raised.segment( data-bind="visible: UserPermentShapeDetail()")
+						i.icon.link.remove.large.circle.outline.removeButton( data-bind="click: ()=>{UserPermentShapeDetail(false)}")
+						.item( style="margin-top: -1em;")
 							.ui.massive.label.grey.image( data-bind=" text: getPaymentPlan() ? getPaymentPlan().monthly + 'GB': null ")
 							.content
 								.header( data-bind=" text: getPaymentPlan() ? ( getPaymentPlan().monthlyPay > 0 ? '$' + getPaymentPlan().monthlyPay : infoDefine[ $root.languageIndex() ].QTGateGateway.userType[0]): null ")
@@ -391,9 +393,8 @@ block jumbotron1
 									a
 										i.edit.outline.icon.large.blue
 								.description
-									.QTGateImapAccount
 									form.ui.form.fluid( data-bind = " visible: imapDataEditShow () ")
-										p.ui.dividing.header.imapItemCardTitle
+										p.ui.dividing.header.imapItemCardTitle()
 											span( data-bind = " text: infoDefine [ $root.languageIndex() ].imapInformation.title, visible: $root.showQTGateImapAccount()")
 											a.pull-right( data-bind="visible: appPaassword, text: infoDefine [ $root.languageIndex() ].imapInformation.appPassword, click: () => { $root.appPassword ( iMapServerName())} " href="#" style="color: red;")
 										.two.fields
@@ -527,7 +528,7 @@ block jumbotron1
 							.title
 								.ui.inline.dropdown
 									input( type="hidden" name="gender" data-bind="value: QTGateConnectSelectImap")
-									.text
+									.text( style="margin-left: 1em;")
 										.ui.one.column.grid
 											.row
 												.column( style="padding: 0px;padding-top: 0.7em;")
@@ -559,8 +560,7 @@ block jumbotron1
 							//-.description
 								span( data-bind = " text: infoDefine [ languageIndex() ].qtGateView.QTGateSign [ QTGateConnecting() === 2 ? 1: QTGateConnecting() === 5 ? 5 : 3 ] " style="color:rgba(0,0,0,.5);")
 							.loader( data-bind = " css: { 'ui active': QTGateConnecting() === 4 } ")
-				.LongTimeWaitting.ui.segment( data-bind = "visible: connectQTGateShow()")
-					span( data-bind=" text: infoDefine [ languageIndex() ].qtGateView.QTGateConnectResultWaiting " style = "color:red;")
+				
 				.KeypairSign.ui.attached.segment( data-bind = " visible: QTGateConnecting() === 2" )
 					.KeypairSignTitle.AccordionBox-shadow-delete.title( data-bind = " visible: QTGateConnecting() === 2" )
 						span( data-bind = " text: infoDefine [ $root.languageIndex() ].emailConform.info1_1 " style="color:rgba(0,0,0,.5);")
@@ -572,9 +572,10 @@ block jumbotron1
 									.column.left.aligned
 										img( src = "/images/512x512.png" style = "margin-left: 1em; height: 50px;")
 									.column
-										.ui.inverted.red.button( data-bind="visible: !requestActivEmailrunning() && showSentActivEmail() < 0, click: requestActivEmail, text: infoDefine [ $root.languageIndex() ].emailConform.reSendRequest")
-										i.yellow.notched.circle.loading.icon( data-bind="visible: requestActivEmailrunning() && showSentActivEmail() < 0")
-										span(data-bind="text: showSentActivEmail() > -1 ? infoDefine [ $root.languageIndex() ].emailConform.requestReturn[showSentActivEmail()]: '', visible: showSentActivEmail() > -1" style="color: cornsilk;")
+										.ui.purple.button( style = "position: absolute; right: 2em; top: 0em;" data-bind="text: infoDefine [ $root.languageIndex() ].emailConform.conformButtom, click: checkActiveEmailSubmit, visible: conformButtom ()" )
+										.ui.inverted.red.button( data-bind="visible: !requestActivEmailrunning() && showSentActivEmail() < 0 && !conformButtom(), click: requestActivEmail, text: infoDefine [ $root.languageIndex() ].emailConform.reSendRequest")
+										i.yellow.notched.circle.loading.icon( data-bind="visible: requestActivEmailrunning() && showSentActivEmail() < 0 && !conformButtom()")
+										span(data-bind="text: showSentActivEmail() > -1 ? infoDefine [ $root.languageIndex() ].emailConform.requestReturn[showSentActivEmail()]: '', visible: showSentActivEmail() > -1 && !conformButtom()" style="color: cornsilk;")
 								.row( style = "background-color: #D94235; padding-top: .5em;")
 									h2( style = "color: white; margin-left: 2em; padding-top: 0px;" data-bind = "text: infoDefine [ $root.languageIndex() ].emailConform.emailTitle " )
 								.row( style = "background-color: #FAFAFA; font-weight: bold; padding-bottom: 0px")
@@ -586,7 +587,7 @@ block jumbotron1
 								.row( style = "background-color: #FAFAFA; padding-top: .2em; padding-bottom: 0.2em")
 									.ui.form( style="margin: 20px;width: 100%;")
 										.field( data-bind = " css: { error: conformTextError() }")
-											textarea#SendToQTGateTextArea( data-position="right center" data-bind = "value: conformText, attr: { placeholder: infoDefine [ $root.languageIndex() ].emailConform.info2 }" )
+											textarea#SendToQTGateTextArea( data-position="right center" data-bind = "textInput: conformText, attr: { placeholder: infoDefine [ $root.languageIndex() ].emailConform.info2 }" )
 											a.floating.ui.red.circular.label( data-bind = " text: '!', visible: conformTextError(), attr: { 'data-content': conformTextError () ? infoDefine[ languageIndex() ].emailConform.formatError[ conformTextErrorNumber() ] : null }, css: { 'activating element1': conformTextError() } ")
 								.row( style = "background-color: #FAFAFA;padding-top: 0px;")
 									.ui.two.column.grid
@@ -597,7 +598,19 @@ block jumbotron1
 											.column.right.floated
 												.ui.purple.button( style = "position: absolute; right: 2em; top: 0em;" data-bind="text: infoDefine [ $root.languageIndex() ].emailConform.conformButtom, click: checkActiveEmailSubmit, visible: conformButtom ()" )
 								.row( style = "background-color: #FAFAFA;padding-top: 0px;")
-				.SendToQTGateIMAPInformation.ui.attached.segment.hideArea.AccordionBox-shadow-delete( data-bind = "css: { 'accordion AccordionBox-shadow-delete': QTGateConnecting ()}, visible: !QTGateConnecting () ")
+				
+				.ui.TimeOutErrorInformation.negative.icon.message( data-bind ="visible: showTimeoutMessage ()")
+					i.icon.heartbeat
+					.content
+						.header(data-bind="text:infoDefine [ languageIndex() ].error_message.title")
+						p(data-bind="text:infoDefine [ languageIndex() ].error_message.imapErrorMessage[0]")
+						.ui.buttons
+							.ui.red.button(data-bind="click: exit, text: infoDefine [ languageIndex() ].linuxUpdate.exit")
+							.or( data-text= "or")
+							.ui.button.positive( data-bind="text: infoDefine [ languageIndex() ].linuxUpdate.tryAgain ,click: connectQTGate1")
+				.LongTimeWaitting.ui.segment( data-bind = "visible: connectQTGateShow()")
+					span( data-bind=" text: infoDefine [ languageIndex() ].qtGateView.QTGateConnectResultWaiting " style = "color:red;")
+				.SendToQTGateIMAPInformation.ui.attached.segment.hideArea.AccordionBox-shadow-delete( data-bind = "css: { 'accordion AccordionBox-shadow-delete': QTGateConnecting ()}, visible: !QTGateConnecting () && !showTimeoutMessage()")
 					.SendToQTGateIMAPInformationTitle( data-bind = " css: { 'AccordionBox-shadow-delete title': QTGateConnecting()}, visible: QTGateConnecting() === 0")
 						p( data-bind = " html: infoDefine [ languageIndex() ].imapInformation.imapAccountConform" style=" color: rgba(255,0,0,.5)")
 						.ui.buttons
@@ -649,6 +662,15 @@ block jumbotron1
 						i.blue.notched.circle.loading.icon( data-bind = " visible: pingCheckLoading ()" style="margin:0px;" )
 					//-a.ui.blue.basic.label( data-bind="click: downloadCheck " style="margin-left:1em;")
 						i.download.icon( style="margin:0px;" )
+				.ui.TimeOutErrorInformation.negative.icon.message( data-bind ="visible: showTimeoutMessage ()")
+					i.icon.heartbeat
+					.content
+						.header(data-bind="text:infoDefine [ languageIndex() ].error_message.title")
+						p(data-bind="text:infoDefine [ languageIndex() ].error_message.imapErrorMessage[0]")
+						.ui.buttons
+							.ui.red.button(data-bind="click: exit, text: infoDefine [ languageIndex() ].linuxUpdate.exit")
+							.or( data-text= "or")
+							.ui.button.positive( data-bind="text: infoDefine [ languageIndex() ].linuxUpdate.tryAgain ,click: connectQTGate1")
 				.ui.cards(data-bind = " visible: showRegionData(), foreach: QTGateRegions " style="margin-top: 0.1em;")
 					.ui.card( data-bind = " css: { 'raised link': available(), 'unavailable': ! available() }, click: () => { if ( !available()){ return }; $root.QTGateRegionCardClick ( $index()) }")
 						.content

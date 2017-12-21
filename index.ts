@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-const DEBUG = false
+const DEBUG = true
 
 import * as Fs from 'fs'
 import * as Os from 'os'
