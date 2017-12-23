@@ -902,10 +902,28 @@ export class qtGateImap extends Event.EventEmitter {
             
         }
 
+        
         if ( ! this.IMapConnect.imapSsl ) {
             this.socket = Net.createConnection ({ port: this.port, host: this.IMapConnect.imapServer }, onConnect )
         } else {
+            
+
+            
+            //      for Uncaught Error: socket hang up
+            //      https://stackoverflow.com/questions/40228074/nodejs-tlssocket-onhangup
+            //  
+            const catchUncaughtException = err => {
+                saveLog (`qtGateImap got process uncaught Exception [${ err && err.message ? err.messgae : 'err message null '}]`)
+                this.destroyAll ( null )
+            }
+
+            process.once ( 'uncaughtException', catchUncaughtException )
+               
             const jj = Tls.connect ({ rejectUnauthorized: ! this.IMapConnect.imapIgnoreCertificate, host: this.IMapConnect.imapServer, port: this.port }, () => {
+                
+                //      remove Listener when Transport Layer Security connected success!
+                process.removeListener ( 'uncaughtException', catchUncaughtException )
+
                 jj.once ( 'error', err => {
                     saveLog (`jj.once ( 'error' ) listenFolder[${ this.listenFolder }] writeFolder [${ this.writeFolder }]`)
                     this.destroyAll ( err )
@@ -919,6 +937,8 @@ export class qtGateImap extends Event.EventEmitter {
                 this.socket = jj
                 clearTimeout ( this.connectTimeOut )
             })
+
+            
             
             jj.pipe ( this.imapStream ).pipe ( jj )
         }

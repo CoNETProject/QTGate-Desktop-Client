@@ -439,9 +439,6 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   width: 100%;
   z-index: 98;
 }
-.removeButton{
-  margin-left: 97%!important;
-}
 
 .languageItemSpan {
   font-size: small!important;
@@ -737,4 +734,17 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   display: block!important;
   height: 25px!important;
   width: 25px!important;
+}
+
+.priceFont {
+    font-size: small;
+    font-style: italic;
+    font-weight: lighter;
+}
+
+.hideCardImage {
+  opacity: 0.1
+}
+.showCardImage {
+  opacity: 1
 }

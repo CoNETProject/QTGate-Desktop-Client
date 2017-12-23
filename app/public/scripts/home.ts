@@ -22,6 +22,7 @@ interface languageMenu {
     LanguageJsonName: string;
 }
 declare const semantic
+declare const Cleave
 
 interface StringValidator {
     isAcceptable(s: string): boolean;
@@ -332,6 +333,7 @@ class EmailValidator implements StringValidator {
 
 const testVal = new IsNullValidator()
 const testEmail = new EmailValidator()
+const oneDayTime = 186400000 
 /**
  *      check email address
  *      @param email <string>
@@ -386,6 +388,10 @@ const QTGateRegionsSetup: IQTGateRegionsSetup[] = [
 
 const infoDefine = [
 	{
+        perment:{
+            serverTitle:'服务器'
+        },
+
         account:{
             title: '账户管理',
             segmentTitle:'账户: ',
@@ -396,15 +402,25 @@ const infoDefine = [
             DowngradeTitle:'降级账户选项',
             cancelPlan:'终止月度订阅计划',
             MonthBandwidthTitle1:'传送限额',
-            serverShareData:['共享服务器','一台独占*','二台独占*','四台独占'],
+            serverShareData:['共享服务器','一台独占服务器*','二台独占服务器*','四台独占服务器'],
+            networkShareTitle:'代理服务器网络',
+            multiOpn:'OPN并发多代理技术',
             continue:'下一步',
+            monthlyAutoPay:'每月自动扣款',
+            annualPay:'年付费每月只需',
             monthlyPay:'月收费',
-            serverShareData1:'使用同时链接多台代理技术，同时使用台数大于独占数时，会相应分享您所独占的资源',
+            expirationYear: '信用卡期限',
+            payAmountTitile:'合计支付金额',
+            cardNumber: '信用卡号',
+            cvcNumber: '信用卡安全码',
+            serverShareData1:'使用OPN并发多代理技术，同时使用数大于独占数时，会相应分享您所独占的资源',
             internetShareData:['共享高速带宽','独享单线高速带宽*','独享双线高速带宽*','独享四线高速带宽'],
-            maxmultigateway: ['最大同时可二条并发代理数','最大同时可使用四条并发代理数'],
+            maxmultigateway: ['最大同时可二条并发代理数','最大同时可使用四条并发代理数*','最大同时可使用四条并发代理数'],
+            multiRegion:['单一代理区域并发代理','多代理区域混合并发代理','多代理区域混合并发代理','多代理区域混合并发代理'],
             downGradeMessage:'您正在操作降级您的订阅，如果操作成功您将从下月您的订阅之日起，实行新的订阅，如果您是。',
             cancelPlanMessage:'QTGate的订阅是以月为基本的单位。您的月订阅将在下月您的订阅起始日前被终止，您可以继续使用您的本月订阅计划，您将自动回到免费用户。如果您是每月自动扣款，则下月将不再扣款。如果您是年度订阅计划，您的退款将按普通每月订阅费，扣除您已经使用的月份后计算的差额，将自动返还您所支付的信用卡账号，如果您是使用促销码，或您是测试用户，您的终止订阅将不能被接受。'
         },
+
         QTGateDonate: {
             title: 'QTGate赞助商提供的免流量网站',
             meta_title:'捐赠者：'
@@ -862,6 +878,9 @@ const infoDefine = [
         }
         
 	},{
+        perment:{
+            serverTitle:'サーバー'
+        },
         account:{
             title: 'アカウト管理',
             segmentTitle:　'アカウトタ: ',
@@ -871,15 +890,25 @@ const infoDefine = [
             upgradeTitle:'アップグレードオプション',
             DowngradeTitle:'ダウングレードオプション',
             cancelPlan:'キャンセルプラン',
+            networkShareTitle:'ゲットウェイ回線',
             MonthBandwidthTitle1:'データ量',
+            payAmountTitile:'お支払い金額合計',
+            cardNumber: 'クレジットカード番号',
+            multiOpn:'OPN並列ゲットウェイ技術',
+            monthlyAutoPay:'月払い',
+            cvcNumber: 'セキュリティコード',
+            annualPay:'年払いで月あたり',
+            expirationYear: 'カード期限',
             continue:'次へ',
-            serverShareData:['シェアゲットウェイ','一台独占*','二台独占*','四台独占'],
+            multiRegion:['シンプルリジョーン並列ゲットウェイ','マルチリジョーン並列ゲットウェイ','マルチリジョーン並列ゲットウェイ','マルチリジョーン並列ゲットウェイ'],
+            serverShareData:['シェアゲットウェイ','一台ゲットウェイ独占*','二台ゲットウェイ独占*','四台ゲットウェイ独占'],
             internetShareData:['シェアハイスピード回線','独占ハイスピード一回線*','独占ハイスピード二回線*','独占ハイスピード四回線'],
             monthlyPay:'プラン月額利用料',
-            serverShareData1:'並列ゲットウェイ技術を使う際に、同時使う台数が独占台数を超える場合には、独占リソースを他人と割合にチェアします。',
-            maxmultigateway: ['最大二つ並列ゲットウェイ','最大四つ並列ゲットウェイ'],
+            serverShareData1:'並列ゲットウェイ技術を使う際に、同時使う数が独占数を超える場合には、独占リソースを他人と割合にチェアする場合もあります。',
+            maxmultigateway: ['最大二つ並列ゲットウェイ','最大四つ並列ゲットウェイ*','最大四つ並列ゲットウェイ'],
             cancelPlanMessage:'QTGateプランは月毎に計算し、来月のあなたの最初加入した日まで、今のプランのままご利用ですます。キャンセルした日から自動的にQTGateの無料ユーザーになります。おアカウトは(月)払いの場合は、来月の自動払いは中止となります。年払いの場合は、ご使った分に月普通料金と計算し控除してから、お支払いを使ったクレジットカードに戻ります。販促コードまたはテストユーザーにはキャンセルすることができません。'
         },
+
         QTGateDonate: {
             title: 'スポンサーが提供する無料アクセスウェブサイト',
             meta_title:'ドナー：'
@@ -1347,7 +1376,11 @@ const infoDefine = [
         },
 
 	},{
+        perment:{
+            serverTitle:'Server'
+        },
         account:{
+            networkShareTitle:'Bandwidth',
             title: 'Manage account',
             segmentTitle:'Account: ',
             currentPlan:'Current Plan: ',
@@ -1356,12 +1389,20 @@ const infoDefine = [
             upgradeTitle:'Upgrade Option',
             DowngradeTitle:'Downgrade Option',
             cancelPlan:'Cancel plan',
+            multiOpn:'OPN multi-gateway technology',
             MonthBandwidthTitle1:'Bandwidth',
             serverShare:'Gateway',
+            monthlyAutoPay:'Monthly',
+            cardNumber: 'Card number',
+            expirationYear: 'Expiration',
+            payAmountTitile:'Amount',
+            cvcNumber: 'Card Security Code',
+            annualPay:'Annual per month only',
+            multiRegion:['multi-gateway via simple region','multi-gateway via multi region','multi-gateway via multi region','multi-gateway via multi region'],
             continue:'Next step',
-            serverShareData:['Share gateway','1 Dedicated*','2 Dedicated*','4 Dedicated'],
+            serverShareData:['Share gateway','1 dedicated gateway server*','2 dedicated gateway server*','4 dedicated gateway server'],
             internetShareData:['Share high speed internet','Dedicated 1 high speed internet*','Dedicated 2 high speed internet*','Dedicated 4 high speed internet'],
-            maxmultigateway: ['Max 2 multi-gateway','Max 4 multi-gateway'],
+            maxmultigateway: ['Max 2 multi-gateway','Max 4 multi-gateway*','Max 4 multi-gateway'],
             monthlyPay:'Monthly pricing',
             cancelPlanMessage: 'You may cancel your QTGate subscription at any time, and you will continue to have access to the QTGate services through the end of your paid period until all remaining subscription time in your account is used up. Restrictions apply to free accounts and accounts using promotions.',
             serverShareData1:'Your dedicated server will be share ratio when you connected over your dedicated count via use Multi-gateway technology.'
@@ -1867,7 +1908,11 @@ const infoDefine = [
         },
 
 	}, {
+        perment:{
+            serverTitle:'伺服器'
+        },
         account:{
+            networkShareTitle:'代理伺服器網絡',
             title: '賬戶管理',
             segmentTitle:'賬戶Email: ',
             currentPlan:'當前訂閱: ',
@@ -1875,15 +1920,24 @@ const infoDefine = [
             dayBandwidthTitle:'每日限額：',
             upgradeTitle:'升級賬戶選項',
             DowngradeTitle:'降級賬戶選項',
+            multiOpn:'OPN併發多代理技術',
             cancelPlan:'終止當前月租',
             MonthBandwidthTitle1:'傳送限額',
+            monthlyAutoPay:'每月自動扣款',
+            annualPay:'年付費每月只需',
+            expirationYear: '信用卡期限',
             serverShare:'代理伺服器',
+            cardNumber: '信用卡號',
+            cvcNumber: '信用卡安全碼',
+            postcode: '信用卡名義人郵編號碼',
+            payAmountTitile:'價格',
+            multiRegion:['單一代理區域並發代理','多代理區域混合併發代理','多代理區域混合併發代理','多代理區域混合併發代理'],
+            maxmultigateway: ['最大同時可二條並發代理數','最大同時可使用四條並發代理數*','最大同時可使用四條並發代理數'],
             continue:'下一步',
-            serverShareData:['共享伺服器','獨佔一台*','獨佔二台*','獨佔四台'],
+            serverShareData:['共享伺服器','獨佔一台伺服器*','獨佔二台伺服器*','獨佔四台伺服器'],
             monthlyPay:'月租費',
             internetShareData:['共享高速帶寬','獨享高速帶寬*','獨享雙線高速帶寬*','獨享四線高速帶寬'],
-            serverShareData1:'使用同時鏈接多台代理技術，使用台數大於獨占數時，會相應分享您所獨占的資源',
-            maxmultigateway: ['最大同時可二條並發代理','最大同時可四條並發代理'],
+            serverShareData1:'OPN併發多代理技術，同時使用數大於獨占數時，會相應分享您所獨占的資源',
             cancelPlanMessage:'QTGate的訂閱是以月為基本的單位。您的月訂閱將在下月您的訂閱起始日前被終止，您可以繼續使用您的本月訂閱計劃，您將自動回到免費用戶。如果您是每月自動扣款，則下月將不再扣款。如果您是年度訂閱計劃，您的退款將按普通每月訂閱費，扣除您已經使用的月份後計算的差額，將自動返還您所支付的信用卡賬號，如果您是使用促銷碼，或您是測試用戶，您的終止訂閱將不能被接受。 '
         },
         QTGateDonate: {
@@ -3150,6 +3204,8 @@ module view_layout {
             return socketIo.emit ( 'newVersionInstall' )
         }
 
+
+
         // - new keyPair FORM manager
             public SystemAdministratorEmailAddress = ko.observable ( '' )
             public EmailAddressError = ko.observable ( false )
@@ -3290,10 +3346,17 @@ module view_layout {
                     })
                 }
                 return socketIo.emit ( 'checkPort', newValue, err => {
-
                     return this.localProxyPortError ( err )
-
                 })
+            })
+
+            this.cardExpirationYear.subscribe ( newValue => {
+                this.cardExpirationYearFolder_Error ( false )
+                const now = new Date().getTime ()
+                const value = new Date ( new Date ( '1/'+ newValue ).getTime() + oneDayTime ).getTime()
+                if ( value - now > 0 )
+                    return
+                this.cardExpirationYearFolder_Error ( true )
             })
 
             socketIo = io ({ reconnectionAttempts: 5, timeout: 1000 })
@@ -3419,7 +3482,6 @@ module view_layout {
                 return this.config( config ) 
             })
 
-
             socketIo.on ( 'checkActiveEmailError', err => {
                 if ( err !== null && err > -1 ) {
                     if ( err === 9 ) {
@@ -3446,92 +3508,65 @@ module view_layout {
             })
 
             socketIo.on ( 'qtGateConnect', ( data: IQtgateConnect ) => {
-                this.showTimeoutMessage ( false)
-                this.imapInputFormActive ( true )
-                //      show send mail message
-                this.connectQTGateShow ( false )
+
+                return this.qtGateConnectEvent ( data )
+                /*
+                this.showTimeoutMessage ( false )
+                
+                //      active account email form
                 this.QTGateConnectActive ( true )
+                
+                //      show IMAP account send to QTGate worry comfirm
                 this.reSendConnectMail ( false )
+
                 $ ('.ui.dropdown').dropdown()
                 this.menuClick ( 3, true )
-                const process = $ ( '#connectImformationProcess' )
-                let percent = 0
-                const doingProcessBar = () => {
-                    clearTimeout ( this.doingProcessBarTime )
-                    this.doingProcessBarTime = setTimeout (() => {
-                        process.progress ({
-                            percent: ++ percent
-                        })
-                        if ( percent < 100 )
-                            return doingProcessBar ()
-                    }, 1000 )
-                }
-                //      have no imap data
+
                 
-                if ( ! data ) {
-                    //      show imap manager area
-                    this.menuClick ( 2, true )
-                    return this.QTGateConnectActive ( false )
-                }
+                
                 
                 if ( data && data.qtgateConnectImapAccount ) {
                     const uu = this.emailPool().findIndex ( n => { return n.uuid === data.qtgateConnectImapAccount })
                     this.QTGateConnectSelectImap ( uu )
                 }
+                //          comfirm IMAP account send worry
                 if ( data.qtGateConnecting === 6 ) {
-                    if ( this.keyPair().verified )
-                        return this.sendConnectRequestMail ( true )
-                    return this.connectQTGateShow ( true )
+                    
                 }
-                if ( data.qtGateConnecting === 0 ) {
-                    clearTimeout ( this.doingProcessBarTime )
-                    process.progress ( 'reset' )
+                //          QTGate connecting disconnect
+                if ( data.qtGateConnecting === 11 ) {
+                    this.stopGetRegionProcessBar()
                     return this.showTimeoutMessage ( true )
                 }
-                this.QTGateConnecting ( data.qtGateConnecting )
+
+
+                
+
+                //          IMAP account or password error
                 if ( data.qtGateConnecting === 3 ) {
                     this.QTGateConnectActive ( false )
                     this.QTGateConnectRegionActive ( false )
                     this.menuClick ( 2, true )
-                    const index = this.emailPool().findIndex ( n => { return n.uuid === data.qtgateConnectImapAccount })
-                    const imapData = this.emailPool()[index]
+                    
+                    const imapData = this.emailPool()[ this.QTGateConnectSelectImap ()]
                     imapData.appPaassword ( true )
                     return imapData.callBackError( 3 )
-                    /*
-                    this.showActiveMail ( true )
-                    this.QTGateConnecting ( data.qtGateConnecting )
-                    this.QTGateConnectActive ( true )
-
-                    this.QTGateConnectError ( data.error )
-                    return $( '.activating.element' ).popup({
-                        on: 'click',
-                        onHidden: () => {
-                            this.emailPool()[ this.QTGateConnectSelectImap()].callBackError ( data.error )
-                            this.MenuItems ([ false, false, true, false, false ])
-                            this.QTGateConnectActive ( false )
-                        },
-                        position: 'bottom left'
-                    })
-                    */
-
                 }
                 
                 if ( !this.keyPair().verified ) {
-
+                    
+                    //      show send connecting request mail risk confirm
                     this.showActiveMail ( true )
-                    this.QTGateConnectActive ( true )
+
                     this.QTGateConnectError ( data.error )
 
-                    //      connected to QTGate system
-                    if ( data.qtGateConnecting > 1 ) {
-                        this.connectQTGateShow ( false )
-                    }
+                    
                     if ( data.qtGateConnecting === 2 ) {
                         
                         return $( '.activating.element' ).popup ({
                             on: 'click',
                             onHidden: () => {
-                                $('#QTGateSignInformationPopupa').hide()
+                                $( '#QTGateSignInformationPopupa').hide()
                             },
                             position: 'bottom left'
                         })
@@ -3547,37 +3582,31 @@ module view_layout {
                         })
                     }
     
-                    return $('.QTGateConnect').accordion ( 'refresh' )
-                }
-                
-                this.showActiveMail( false )
-                if ( data.qtGateConnecting === 0 ) {
-                    return this.reSendConnectMail(true)
+                    return 
                 }
 
-                if ( data.qtGateConnecting === 2 ) {
-                    return setTimeout (() => {
-                        return this.getAvaliableRegion ()
-                    }, 2000 )
+                this.QTGateConnectActive ( false )
+                this.showActiveMail( false )
+
+                if ( data.qtGateConnecting === 11 ) {
+                    return this.reSendConnectMail(true)
                 }
 
                
                 
                 this.QTGateConnectRegionActive ( true )
+
                 //      first connect 
                 if ( data.qtGateConnecting === 1 ) {
-                    process.progress ( 'reset' )
-                    doingProcessBar ()
+                    this.showGetRegionProcessBarStart ()
                     this.QTGateRegionInfo ( true )
-                    this.menuClick ( 3, true )
-                    
-                    return this.QTGateConnectActive ( false )
+                    return 
                 }
 
                 //          send request mail error
                 if ( data.qtGateConnecting === 5 ) {
-                    clearTimeout ( this.doingProcessBarTime )
-                    process.addClass ('error')
+                    this.stopGetRegionProcessBar ()
+                    
                     this.emailPool()[ this.QTGateConnectSelectImap()].callBackError ( data.error )
                     return this.QTGateRegionERROR ( 0 )
                     
@@ -3596,6 +3625,7 @@ module view_layout {
                 this.QTGateRegionInfo ( false )
                 //$('.mainAccordion').accordion('refresh')
                 return this.QTGateConnectActive( false )
+                */
             })
 
             //          gateway disconnect!
@@ -3629,6 +3659,112 @@ module view_layout {
             socketIo.on ( 'pingCheck', ( region: string, ping: number ) => {
                 return this.pingCheckReturn ( region, ping )
             })
+        }
+        public showSendImapDataConfirm = ko.observable ( false )
+        private qtGateConnectEvent (  data: IQtgateConnect ) {
+
+            //     reset show send request mail need more time
+            this.connectQTGateShow ( false )
+            //      have no imap data
+            if ( ! data ) {
+                //      show imap manager area
+                this.menuClick ( 2, true )
+                return this.QTGateConnectActive ( false )
+            }
+            this.menuClick ( 3, true )
+            this.QTGateConnectActive ( !this.keyPair().verified )
+            this.QTGateConnectRegionActive ( this.keyPair().verified )
+            if ( data && data.qtgateConnectImapAccount && data.qtgateConnectImapAccount.length ) {
+                const uu = this.emailPool().findIndex ( n => { return n.uuid === data.qtgateConnectImapAccount })
+                this.QTGateConnectSelectImap ( uu )
+            }
+            const imapData = this.QTGateConnecting ( this.QTGateConnectSelectImap ())
+            this.QTGateConnecting ( data.qtGateConnecting )
+            switch ( data.qtGateConnecting ) {
+
+                //          show send imap data 
+                case 0: {
+                    return this.showSendImapDataConfirm ( true )
+                }
+
+                //          show send request mail need more time
+                case 6: {
+                    return this.connectQTGateShow ( true )
+                }
+
+                //          connecting finished
+                case 2: {
+                    this.stopGetRegionProcessBar ()
+                    if ( this.keyPair().verified ) {
+                        return setTimeout (() => {
+                            return this.getAvaliableRegion ()
+                        }, 1000 )
+                    }
+                        
+                    return 
+                }
+
+                case 1: {
+                    if ( this.keyPair().verified ) {
+                        this.showSendImapDataConfirm ( false )
+                        this.showGetRegionProcessBarStart ()
+                    }
+                    return 
+                }
+
+                //      QTGate connecting disconnect
+                case 11: {
+                    this.stopGetRegionProcessBar()
+                    return this.showTimeoutMessage ( true )
+                }
+
+                default : {
+                    return alert ( `switch data.qtGateConnecting goto default! data.qtGateConnecting = [${ data.qtGateConnecting }]`)
+                }
+            }
+        }
+
+        private stopGetRegionProcessBar () {
+            const process = $ ( '#connectImformationProcess' )
+            clearTimeout ( this.doingProcessBarTime )
+            return process.progress ( 'reset' )
+        }
+
+        private showActiveAccountForm () {
+            this.menuClick ( 3, true )
+            return this.imapInputFormActive ( false )
+        }
+
+        private showWillSendImapInfoEmailToQTGateComfirm () {
+            this.showActiveAccountForm ()
+            
+        }
+
+        private percent = 0
+
+        private showGetRegionProcessBarStart () {
+
+            const process = $ ( '#connectImformationProcess' )
+            const doingProcessBar = () => {
+                clearTimeout ( this.doingProcessBarTime )
+                this.doingProcessBarTime = setTimeout (() => {
+                    process.progress ({
+                        percent: ++ this.percent
+                    })
+                    if ( this.percent < 100 )
+                        return doingProcessBar ()
+                }, 1000 )
+            }
+            return doingProcessBar()
+        }
+
+        private showSentImapMail_waitingConnecting () {
+            this.showActiveAccountForm ()
+            this.showTimeoutMessage ( false )
+            
+            if ( this.keyPair().verified )
+                return this.sendConnectRequestMail ( true )
+            return this.connectQTGateShow ( true )
         }
 
         public sendConnectRequestMail = ko.observable (false)
@@ -3737,6 +3873,7 @@ module view_layout {
         public feedBackTextArea = ko.observable ('')
         public hacked = ko.observable ( false )
         public UserPermentShape = ko.observable ( false )
+
         public takeScreen () {
             return socketIo.emit ('takeScreen', ( err, img ) => {
                 if ( err ) {
@@ -4013,7 +4150,9 @@ module view_layout {
                 return false
             return true
         })
+
         public cancelPlan = ko.observable (false)
+
         public checkActiveEmailSubmit () {
             this.checkActiveEmailError ( false )
             this.checkingActiveEmail ( true )
@@ -4034,6 +4173,9 @@ module view_layout {
         }
         */
         public connectQTGate1 () {
+            this.showActiveMail ( false )
+            this.showSendImapDataConfirm ( false )
+            this.showGetRegionProcessBarStart ()
             socketIo.emit ( 'connectQTGate1', this.emailPool()[ this.QTGateConnectSelectImap() ].uuid )
         }
 
@@ -4077,8 +4219,8 @@ module view_layout {
         }
 
         public QTGateConnect1Click (em) {
-            const uu = $(em).val ()
-            this.QTGateConnect1 (uu.toString ())
+            const uu = $( em ).val ()
+            this.QTGateConnect1 ( uu.toString ())
         }
 
         public QTGateGatewayConnectRequest () {
@@ -4447,6 +4589,7 @@ module view_layout {
         })
         public requestActivEmailrunning = ko.observable ( false )
         public showSentActivEmail = ko.observable (-1)
+
         public requestActivEmail () {
             this.requestActivEmailrunning ( true )
             this.showSentActivEmail (-1)
@@ -4458,7 +4601,33 @@ module view_layout {
                 return this.showSentActivEmail (CallBack)
             })
         }
-    
+        public cardType = ko.observable ()
+        public showPayment ( paice: number ) {
+            this.cardpay ( true )
+            this.cardPayAmount ( paice )
+            new Cleave ('.paymaneCardNumber', {
+                creditCard: true,
+                onCreditCardTypeChanged: type => {
+                    this.cardType ( type )
+                }
+            })
+            new Cleave ('.paymaneExpiration', {
+                date: true,
+                datePattern: ['m', 'Y'],
+                delimiter: '/'
+            })
+            new Cleave ('.paymaneCVC', {
+                numeral: true,
+                numeralIntegerScale: 4,
+                delimiter:''
+            })
+        }
+        public cardPayAmount = ko.observable (0)
+        public cardpay = ko.observable ( false )
+        public cardNumber = ko.observable ('')
+        public cardcvc = ko.observable ('')
+        public cardExpirationYear = ko.observable ('')
+        public cardExpirationYearFolder_Error = ko.observable ( false )
     }
 
 }
@@ -4472,52 +4641,58 @@ const planArray = [
         next:'p1',
         share: 0,
         internet: 0,
-        multi_gateway:0
+        multi_gateway:0,
+        showNote: false
 
     },{
         name:'p1',
         monthly:50,
-        monthlyPay: 3.88,
-        annually:34.56,
+        monthlyPay: '2.88',
+        annually: '23.00',
         next:'p2',
         share: 0,
         internet: 0,
-        multi_gateway:0
+        multi_gateway:0,
+        showNote: false
     },{
         name:'p2',
-        monthly:300,
-        monthlyPay: 6.88,
-        annually: 60,
+        monthly: 300,
+        monthlyPay: '6.88',
+        annually: '58.00',
         next:'p3',
         share: 0,
         internet: 0,
-        multi_gateway:0
+        multi_gateway:0,
+        showNote: false
     },{
         name:'p3',
         monthly: 1000,
-        monthlyPay: 19.88,
-        annually: 199.88,
+        monthlyPay: '19.88',
+        annually: '167.00',
         next:'p4',
         share: 1,
         internet: 1,
-        multi_gateway:1
+        multi_gateway:1,
+        showNote: true
     },{
         name:'p4',
         monthly: 2000,
-        monthlyPay: 39.88,
-        annually: 399.88,
+        monthlyPay: '39.88',
+        annually: '335.00',
         next:'p5',
         share: 2,
         internet: 2,
-        multi_gateway:1
+        multi_gateway:1,
+        showNote: true
     },{
         name:'p5',
         monthly: 4000,
-        monthlyPay: 79.88,
-        annually: 799.88,
+        monthlyPay: '79.88',
+        annually: '670.00',
         share: 3,
         internet: 3,
-        multi_gateway:1
+        multi_gateway:2,
+        showNote: true
     }
 ]
 const linkClick = ( url: string ) => {

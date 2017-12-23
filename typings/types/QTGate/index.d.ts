@@ -59,7 +59,7 @@ interface IQtgateConnect {
     qtGateConnecting?: number
     isKeypairQtgateConform?: boolean
     error?: number
-    sentMail?: boolean
+    needSentMail?: boolean
     haveImapUuid?: boolean
 }
 

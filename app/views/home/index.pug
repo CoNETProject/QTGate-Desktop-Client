@@ -183,7 +183,7 @@ block jumbotron1
 					a.item( data-bind = "css:{ active: MenuItems() [5]}, click: () => { return menuClick ( 5, false )}, visible: false")
 						.menuItem
 							i.talk.outline.icon.large.pink
-					a.item( data-bind = "css:{ active: MenuItems() [8]}, visible: false && keyPair().verified && !QTGateRegionInfo() && (QTGateConnectActive() || QTGateConnectRegionActive()), click: () => { return menuClick ( 8, true )}")
+					a.item( data-bind = "css:{ active: MenuItems() [8]}, visible: false && keyPair().verified && !QTGateRegionInfo() && ( QTGateConnectActive() || QTGateConnectRegionActive()), click: () => { return menuClick ( 8, true )}")
 						.menuItem
 							i.icon.handshake.large.orange
 					a.item( data-bind = "css:{ active: MenuItems() [6]}, click: () => { return menuClick ( 6, true )}")
@@ -221,7 +221,7 @@ block jumbotron1
 						i( data-bind = " attr: { class: 'pull-right icon ' + icon }, style: { color: color }" style="margin-top: -1.7em;" )
 					.ui.attached.segment
 						span( data-bind = " html: detail "  style = "color: rgba(0,0,0,0.5)" )
-
+			//-				MenuItems()[1]
 			.keyPairGenerate( data-bind = " visible: MenuItems()[1]" )
 				.ketPairGenerateForm( data-bind = " visible: keyPairGenerateFormActive ()" )
 					.ui.segment.teal( data-bind = "html: infoDefine [ languageIndex() ].home_index_view.inputEmail" style = "color: rgba(200,150,30,0.9)")
@@ -288,7 +288,7 @@ block jumbotron1
 													i.icon.tiny.checkmark( data-bind = " visible: keyPair().verified " style = " color: white; margin-top: -4px;margin-left: -1px;")
 										.meta
 											//-a( href="#" data-bind="click: () => { if ( !keyPair().passwordOK || !getCurrentPlan() ) return; UserPerment ( true );}" )
-											a( href="#" data-bind="click: () => { if ( !keyPair().passwordOK || !getCurrentPlan() ) return; UserPerment ( true );}" )
+											a( href="#" data-bind="click: () => { if ( !keyPair().passwordOK || !getCurrentPlan() ) return; UserPerment ( true );return $('#getNextPlanArray').dropdown({ onChange: value => { QTGateAccountPlan(value);UserPermentShapeDetail(true)}});}" )
 												i.icon.user
 												span( data-bind = " text: keyPair().nikeName " )
 												span( data-bind = "visible: keyPair().passwordOK ,text: infoDefine[ languageIndex() ].QTGateGateway.userType[config().freeUser ? 0 : 1]")
@@ -317,11 +317,14 @@ block jumbotron1
 									p( data-bind = " text : infoDefine[ languageIndex() ].Home_keyPairInfo_view.deleteKeyPairInfo ")
 								.ui.negative.message( data-bind = "visible: showSystemError(), animate:{ animation: 'pulse', state: languageIndex() + 1} ")
 									p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.systemError")
-			#UserPerment.content( data-bind="visible: UserPerment()" style="margin-top: -3em;")
+			
+			//-				UserPerment
+			#UserPerment.content( data-bind = "visible: UserPerment()" style = "margin-top: -3em;")
 				#UserPermentShape
-					.ui.raised.segment
-						i.icon.link.remove.circle.large.outline.removeButton( data-bind="click: ()=>{UserPerment(false)}")
-						.ui.one.column.grid(style="margin: 0.1em;margin-top: -1em;")
+					.ui.raised.segment( data-bind = "visible: !UserPermentShapeDetail()")
+						.rePosition( style="position: relative;z-index: 1000;")
+							i.icon.link.remove.circle.big.grey( data-bind = "click: () => { UserPerment( false )}" style="margin-top: -1.7em;margin-left: -1em;")
+						.ui.one.column.grid( style = "margin: 0.1em;margin-top: -1em;")
 							.row(style="padding: 0px;")
 								.column
 									span( data-bind="text: infoDefine[ languageIndex() ].account.segmentTitle" )
@@ -333,43 +336,89 @@ block jumbotron1
 							.row(style="padding: 0px;padding-top: 0.5em;")
 								.column
 									span( data-bind="text: infoDefine[ languageIndex() ].account.MonthBandwidthTitle" )
-									.ui.green.label( data-bind="text: getCurrentPlan() ? ( getCurrentPlan().monthly + 'GB') : null ")
+									.ui.green.label( data-bind = "text: getCurrentPlan() ? ( getCurrentPlan().monthly + 'GB') : null ")
 									span( data-bind="visible: getCurrentPlan() && getCurrentPlan().day, text: infoDefine[ languageIndex() ].account.dayBandwidthTitle" style="padding-left: 0.5em;")
-									.ui.green.label( data-bind="visible: getCurrentPlan() && getCurrentPlan().day, text: getCurrentPlan() && getCurrentPlan().day ? ( getCurrentPlan().day + 'MB') : null ")
+									.ui.green.label( data-bind = "visible: getCurrentPlan() && getCurrentPlan().day, text: getCurrentPlan() && getCurrentPlan().day ? ( getCurrentPlan().day + 'MB') : null ")
 									span( data-bind="visible: getCurrentPlan() && getCurrentPlan().monthlyPay > 0, text: getCurrentPlan() ? ( '$'+ getCurrentPlan().monthlyPay) : null " style="padding-left: 0.5em;")
 							.row(style="padding: 0px;padding-top: 0.5em;")
 								.column
 									.ui.dropdown.item( data-bind = "visible: getBackPlanArray().length" )
 										.text.ui.label.red( data-bind = "text: infoDefine[ languageIndex() ].account.DowngradeTitle")
-										.menu( data-bind="foreach: getBackPlanArray()")
+										.menu( data-bind = "foreach: getBackPlanArray()")
 											.item
-									#getNextPlanArray.ui.floating.dropdown.button( data-bind = "visible: getNextPlanArray()().length, click: () => { $('#getNextPlanArray').dropdown({ onChange: value => { QTGateAccountPlan(value);}")
+									#getNextPlanArray.ui.floating.dropdown.button( data-bind = "visible: getNextPlanArray()().length")
 										span( data-bind = "text: $root.infoDefine[ $root.languageIndex() ].account.upgradeTitle")
 										.menu( data-bind = " foreach: getNextPlanArray() " )
-											.item( data-bind=" attr: {'data-value': name }")
+											.item( data-bind = " attr: {'data-value': name }")
 												.ui.one.column.grid
 													.row
 														.column
-															.ui.green.label( data-bind="text: monthly + 'GB' ")
-															span( data-bind=" text: '$'+monthlyPay " style="padding-left: 0.5em; padding-right: 0.5em;")
-															.ui.green.label( data-bind="text: $root.infoDefine[ $root.languageIndex() ].account.serverShareData[share]")
-								
-					.ui.raised.segment( data-bind="visible: UserPermentShapeDetail()")
-						i.icon.link.remove.large.circle.outline.removeButton( data-bind="click: ()=>{UserPermentShapeDetail(false)}")
-						.item( style="margin-top: -1em;")
-							.ui.massive.label.grey.image( data-bind=" text: getPaymentPlan() ? getPaymentPlan().monthly + 'GB': null ")
-							.content
-								.header( data-bind=" text: getPaymentPlan() ? ( getPaymentPlan().monthlyPay > 0 ? '$' + getPaymentPlan().monthlyPay : infoDefine[ $root.languageIndex() ].QTGateGateway.userType[0]): null ")
-								.meta
+															.ui.green.label( data-bind = "text: monthly + 'GB' ")
+															span( data-bind = " text: '$'+monthlyPay " style="padding-left: 0.5em; padding-right: 0.5em;")
+															.ui.green.label( data-bind = "text: $root.infoDefine[ $root.languageIndex() ].account.serverShareData[share]")
+						
+					.ui.segments( data-bind = " visible: UserPermentShapeDetail()")
+						.ui.raised.segment
+							.rePosition( style="position: relative;z-index: 1000;")
+								i.icon.link.remove.big.circle.grey( data-bind = "click: () => { UserPermentShapeDetail(false);return cardpay(false) }" style = "margin-top: -1.7em;margin-left: -1em;")
+							.ui.items( style = "margin: 0.1em;margin-top: -1em;")
+								.item
+									.ui.massive.label.grey.image( data-bind=" text: getPaymentPlan() ? getPaymentPlan().monthly + 'GB': null " style="padding: 1em;background-color: green!important;")
+									.content
+										.header( style = "margin-top: 0.2em;")
+											span.priceFont( data-bind = "text: getPaymentPlan() ? ( getPaymentPlan().monthlyPay > 0 ? 'us$':null):null")
+											span( data-bind = " text: getPaymentPlan() ? ( getPaymentPlan().monthlyPay > 0 ? getPaymentPlan().monthlyPay : infoDefine[ $root.languageIndex() ].QTGateGateway.userType[0]): null " style="padding-left: 0.2em;font-size: x-large;color: darkolivegreen;")
+										.description( style = "line-height: 2em;")
 
-								.description
-								.extra
-									.ui.buttons
-										.ui.button(data-bind="text: infoDefine[ languageIndex() ].home_index_view.cancel, click:()=>{$('#UserPermentShape').shape('flip right')}")
-										.or
-										.ui.positive.button(data-bind="text: infoDefine[ languageIndex() ].account.continue")
+											//-span( data-bind="text: infoDefine[ $root.languageIndex() ].perment.serverTitle + ':'")
+											.ui.blue.label( data-bind = "text: getPaymentPlan() ? infoDefine[ $root.languageIndex() ].account.serverShareData [ getPaymentPlan().share ]: null")
 
+											//-span( data-bind = "text: $root.infoDefine[ $root.languageIndex() ].account.networkShareTitle+':'")
+											.ui.blue.label( data-bind = "text: getPaymentPlan() ? infoDefine[ $root.languageIndex() ].account.internetShareData [ getPaymentPlan().internet ]: null")
+											
+											//-span( data-bind = "text: $root.infoDefine[ $root.languageIndex() ].account.multiOpn+':'")
+											.ui.blue.label( data-bind = "text: getPaymentPlan() ? infoDefine[ $root.languageIndex() ].account.maxmultigateway [ getPaymentPlan().multi_gateway ]: null")
+											.ui.blue.label( data-bind = "text: getPaymentPlan() ? infoDefine[ $root.languageIndex() ].account.multiRegion [ getPaymentPlan().multi_gateway ]: null")
+										.extra
+											.meta( data-bind = "visible: getPaymentPlan() && getPaymentPlan().showNote, text: '*'+infoDefine[ $root.languageIndex() ].account.serverShareData1" style="font-style: italic;font-size: smaller;")
+											.ui.positive.basic.button( data-bind = "click: () => { return showPayment ( getPaymentPlan().monthlyPay )}" )
+												span( data-bind = "text: infoDefine[ languageIndex() ].account.monthlyAutoPay")
+												span( data-bind = "text: getPaymentPlan() ? ( getPaymentPlan().monthlyPay > 0 ? ' us$':null):null")
+												span( data-bind = " text: getPaymentPlan() ? ( getPaymentPlan().monthlyPay > 0 ? getPaymentPlan().monthlyPay : infoDefine[ $root.languageIndex() ].QTGateGateway.userType[0]): null ")
+											.ui.primary.basic.button( data-bind = "click: () => { return showPayment ( getPaymentPlan().annually )}" )
+												span( data-bind = "text: infoDefine[ languageIndex() ].account.annualPay")
+												span( data-bind = "text: getPaymentPlan() ? ( getPaymentPlan().annually > 0 ? ' us$':null):null")
+												span( data-bind = " text: getPaymentPlan() ?  Math.round(getPaymentPlan().annually*100/12)/100 : null ")
+						.ui.blue.segment.form( data-bind = "visible: cardpay()")
+							.ui.dividing.header
+								.ui.grid
+									.eight.wide.column
+										span( data-bind = "text: infoDefine[ $root.languageIndex() ].account.payAmountTitile")
+										span( style="padding-left: 1em;padding-right: 0.2em;font-style: italic;font-weight: lighter;font-size: medium;") us$
+										span( data-bind = "text: cardPayAmount()" style="color: darkolivegreen;font-size: larger;")
+									.right.aligned.eight.wide.column
+										span.ui.mini.images
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='visa', showCardImage: cardType()==='visa' }" src="/images/visa.svg")
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='mastercard', showCardImage: cardType()==='mastercard' }" src="/images/mastercard.svg")
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='amex', showCardImage: cardType()==='amex' }" src="/images/amex.svg")
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='discover', showCardImage: cardType()==='discover' }" src="/images/discover.svg")
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='jcb', showCardImage: cardType()==='jcb' }" src="/images/jcb.svg")
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='diners', showCardImage: cardType()==='diners' }" src="/images/diners.svg")
+							.fields
+								.six.wide.field
+									label( data-bind = "text: infoDefine[ $root.languageIndex() ].account.cardNumber")
+									input.paymaneCardNumber( data-bind = "value: cardNumber" )
+								.three.wide.field( data-bind = "css: { error: cardExpirationYearFolder_Error()} ")
+									label( data-bind="text: infoDefine[ $root.languageIndex() ].account.expirationYear")
+									input.paymaneExpiration( data-bind = "value: cardExpirationYear" placeholder = "MM/YYYY" )
+								.three.wide.field
+									label( data-bind=" text: infoDefine[ $root.languageIndex() ].account.cvcNumber")
+									input.paymaneCVC( data-bind = "value: cardcvc" placeholder="CVC")
+								.four.wide.field
+									label( data-bind=" text: infoDefine[ $root.languageIndex() ].account.cvcNumber")
+									input.paymaneCVC( data-bind = "value: cardcvc" placeholder="CVC")
 
+			//-				MenuItems()[2]  && imapInputFormActive() 
 			.content( data-bind = "visible: MenuItems()[2] && imapInputFormActive()" style = "margin-top: 3em;")
 				.ui.warning.message.hideArea( data-bind = " visible: showQTGateImapAccount(), css: { 'accordion AccordionBox-shadow-delete': emailPool().length && emailPool()[emailPool().length - 1].emailAddress().length } ")
 					.area( data-bind = " css: { 'AccordionBox-shadow-delete title': emailPool().length && emailPool()[ emailPool().length - 1].emailAddress().length } ")
@@ -519,8 +568,8 @@ block jumbotron1
 									button.ui.icon.button( data-bind= " click: () => { $root.addANewImapData( $root ) }")
 										i.icon.add.user( style = " color: white!important;")
 
-				//-
-			#QTGateConnectContent.content( data-bind = "  visible: QTGateConnectActive() && MenuItems()[3] && showActiveMail () " style = "margin-top: 3em;")
+			//-				QTGateConnectActive() && MenuItems()[3]
+			#QTGateConnectContent.content( data-bind = "  visible: QTGateConnectActive() && MenuItems()[3] " style = "margin-top: 3em;")
 				#QTGateConnecting.ui.tiny.steps.top.attached.hideArea( data-bind = "css: { 'two': QTGateConnecting() < 2, 'three': QTGateConnecting () === 2 || QTGateConnecting () > 3 && QTGateConnecting() < 6 }")
 					.step.completed( style = "padding: 8px;")
 						a.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', visible: QTGateConnecting() === 3, attr: { 'data-html': infoDefine[ languageIndex() ].error_message.imapErrorMessage [ QTGateConnectError() ]}")
@@ -543,7 +592,7 @@ block jumbotron1
 												.column( style="padding: 0px;padding-bottom: 0.7em;")
 													span(data-bind = " text: emailAddress()" style="color:rgba(0,0,0,.5);")
 
-					.step( data-bind = " visible: !keyPair().verified, click: () => { if ( QTGateConnecting()) return; $('.SendToQTGateIMAPInformation').transition('slide down')}, css: { link: ! QTGateConnecting(), completed: QTGateConnecting() === 2 || QTGateConnecting() === 4, fixStepAfter: QTGateConnecting() !== 2, stepError: QTGateConnecting() === 3 }" style = "padding: 8px;")
+					.step( data-bind = " click: () => { if ( QTGateConnecting()) return; $('.SendToQTGateIMAPInformation').transition('slide down')}, css: { link: ! QTGateConnecting(), completed: QTGateConnecting() === 2 || QTGateConnecting() === 4, fixStepAfter: QTGateConnecting() !== 2, stepError: QTGateConnecting() === 3 }" style = "padding: 8px;")
 						//-a#QTGateSignInformationPopupa.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', attr: { 'data-html': infoDefine [ languageIndex() ].qtGateView.QTGateSign[2] }, visible: QTGateConnecting() === 2 ")
 						a#QTGateSignInformationPopupa.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', attr: { 'data-html': infoDefine [ languageIndex() ].qtGateView.QTGateSign[4] }, visible: QTGateConnecting() === 5 ")
 						.content
@@ -609,15 +658,19 @@ block jumbotron1
 							.or( data-text= "or")
 							.ui.button.positive( data-bind="text: infoDefine [ languageIndex() ].linuxUpdate.tryAgain ,click: connectQTGate1")
 				.LongTimeWaitting.ui.segment( data-bind = "visible: connectQTGateShow()")
-					span( data-bind=" text: infoDefine [ languageIndex() ].qtGateView.QTGateConnectResultWaiting " style = "color:red;")
-				.SendToQTGateIMAPInformation.ui.attached.segment.hideArea.AccordionBox-shadow-delete( data-bind = "css: { 'accordion AccordionBox-shadow-delete': QTGateConnecting ()}, visible: !QTGateConnecting () && !showTimeoutMessage()")
-					.SendToQTGateIMAPInformationTitle( data-bind = " css: { 'AccordionBox-shadow-delete title': QTGateConnecting()}, visible: QTGateConnecting() === 0")
+					span( data-bind=" text: infoDefine [ languageIndex() ].qtGateView.QTGateConnectResultWaiting " style = "color: cornflowerblue;")
+					
+				//-			show send Imap data comfirm 
+				.SendToQTGateIMAPInformation.ui.attached.segment.hideArea( data-bind = " visible: showSendImapDataConfirm ()")
+					.SendToQTGateIMAPInformationTitle( data-bind = "visible: QTGateConnecting() === 0")
 						p( data-bind = " html: infoDefine [ languageIndex() ].imapInformation.imapAccountConform" style=" color: rgba(255,0,0,.5)")
 						.ui.buttons
 							button.ui.button( data-bind=" text: infoDefine [ languageIndex() ].home_index_view.cancel, click: () => { $('.SendToQTGateIMAPInformation').transition('slide down')}")
 							.or
 							button.ui.button.positive( data-bind = " text: infoDefine [ languageIndex() ].imapInformation.agree, click: connectQTGate1 ")
-			#reSendConnectMail.content( data-bind = "visible: MenuItems()[3] && reSendConnectMail ()")
+			
+			//-				MenuItems()[3] && reSendConnectMail ()
+			#reSendConnectMail.content( data-bind = "visible: MenuItems()[3] && ! QTGateConnectActive() && reSendConnectMail ()")
 				.ui.form
 					.field
 						span( data-bind = "text: infoDefine [ languageIndex() ].qtGateView.QTGateDisconnectInfo ")
@@ -629,16 +682,18 @@ block jumbotron1
 							.menu( data-bind="foreach: emailPool")
 								.item( data-bind=" text: iMapServerLoginName(),visible: availableImapServer.test (iMapServerName()), attr: { 'data-text': iMapServerLoginName (), 'data-value': $index() }")
 					.field
-						.SendToQTGateIMAPInformationTitle( data-bind = " css: { 'AccordionBox-shadow-delete title': QTGateConnecting()}")
+						.SendToQTGateIMAPInformationTitle
 						p( data-bind = " html: infoDefine [ languageIndex() ].imapInformation.imapAccountConform" style=" color: rgba(255,0,0,.5)")
 						button.ui.button.positive( data-bind = " text: infoDefine [ languageIndex() ].imapInformation.agree, click: connectQTGate1 ")
-			.content( data-bind = " visible: MenuItems()[3] && !reSendConnectMail() && !showActiveMail() && !ConnectGatewayShow()" style = "margin-top: 3em;")
+			
+			//-				 MenuItems()[3] && !reSendConnectMail() && !showActiveMail() && !ConnectGatewayShow()
+			.content( data-bind = " visible: MenuItems()[3] && ! QTGateConnectActive() && !reSendConnectMail()&& !ConnectGatewayShow()" style = "margin-top: 3em;")
 				
 				span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.title " style="color: #a333c8;font-size: 1rem;font-weight:bold;")
-				span.testButton( data-bind = "visible: showRegionData() && !pingCheckLoading() && ! pingError() " style="margin-left:1em;")
+				span.testButton( data-bind = "visible: showRegionData() && !pingCheckLoading() && ! pingError() && ! showTimeoutMessage ()" style="margin-left:1em;")
 					a( data-bind = "click: getAvaliableRegion " href="#")
 						i.icon.refresh
-				span.testButton( data-bind = "visible: showRegionData() && !pingCheckLoading() && ! pingError() " style="margin-left:0.5em;")
+				span.testButton( data-bind = "visible: showRegionData() && !pingCheckLoading() && ! pingError() && ! showTimeoutMessage ()" style="margin-left:0.5em;")
 					a( data-bind = "click: pingCheck " href="#")
 						i.icon.line.chart
 				.ui.negative.message( data-bind = " visible: pingError() ")
@@ -671,7 +726,7 @@ block jumbotron1
 							.ui.red.button(data-bind="click: exit, text: infoDefine [ languageIndex() ].linuxUpdate.exit")
 							.or( data-text= "or")
 							.ui.button.positive( data-bind="text: infoDefine [ languageIndex() ].linuxUpdate.tryAgain ,click: connectQTGate1")
-				.ui.cards(data-bind = " visible: showRegionData(), foreach: QTGateRegions " style="margin-top: 0.1em;")
+				.ui.cards(data-bind = " visible: showRegionData() && ! showTimeoutMessage (), foreach: QTGateRegions " style="margin-top: 0.1em;")
 					.ui.card( data-bind = " css: { 'raised link': available(), 'unavailable': ! available() }, click: () => { if ( !available()){ return }; $root.QTGateRegionCardClick ( $index()) }")
 						.content
 							i( data-bind = " attr: { class: 'right floated flag ' + icon }")
@@ -691,6 +746,7 @@ block jumbotron1
 											span( data-bind = "visible: ping() > 0")
 												.ui.mini.star.rating.disabled( data-bind="attr: { id: 'card-' + qtRegion.replace('.','-') }" data-max-rating="5")
 												span( data-bind = "text: `[${ ping() === 0 ? 'err' : '<' + ping() + 'ms'}]`" style = " color: cornflowerblue!important; font-size: small!important; margin-left: 5px!important;")
+			
 			//-
 			.content( data-bind="visible: MenuItems()[8]" style = "margin-top: 3em;")
 				h4( data-bind = " text: infoDefine [ languageIndex() ].QTGateDonate.title " style="color: #a333c8;")
@@ -704,7 +760,8 @@ block jumbotron1
 								span( data-bind="text: $root.infoDefine [ $root.languageIndex() ].QTGateDonate.meta_title")
 								span( data-bind = "text: meta[ $root.languageIndex()]")
 							.description( data-bind="text: description[ $root.languageIndex()]")
-			//-
+			
+			//-				ConnectGatewayShow() && MenuItems()[3] && selectedQTGateRegion() && !reSendConnectMail ()
 			ConnectGateway.content( data-bind="visible: ConnectGatewayShow() && MenuItems()[3] && selectedQTGateRegion() && !reSendConnectMail ()")
 				.ui.card( style = "width:100%;")
 					.content
