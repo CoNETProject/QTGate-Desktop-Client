@@ -117,6 +117,10 @@ interface iTransferData {
     downloaded?: number
     power: number
     timeZoneOffset: number
+    expire: Date
+    isAnnual: boolean
+    paidID: string[]
+    automatically: boolean
 }
 interface QTGate_DnsAddress {
 	dnsName: string,
@@ -240,3 +244,15 @@ interface QTGateRegions {
     ping: KnockoutObservable <number >
     downloadSpeed: KnockoutObservable <number >
 }
+interface iQTGatePayment {
+    cardNumber?: string
+    cardExpirationYear?: string
+    cardPostcode?: string
+    cardcvc?: string
+    tokenID?: string
+    isAnnual: boolean
+    plan: string
+    Amount: number
+    autoRenew: boolean
+}
+                

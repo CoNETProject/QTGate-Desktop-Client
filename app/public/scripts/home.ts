@@ -23,6 +23,8 @@ interface languageMenu {
 }
 declare const semantic
 declare const Cleave
+declare const StripeCheckout
+declare const Stripe
 
 interface StringValidator {
     isAcceptable(s: string): boolean;
@@ -53,11 +55,13 @@ const uuID = () => {
 
 const isElectronRender = typeof process === 'object'
 let socketIo: SocketIOClient.Socket = null
+const Stripe_publicKey = 'pk_test_pSOYZa8ABXjatNN5jHb2UTdN'
 /**
  * 			getImapSmtpHost
  * 		@param email <string>
  * 		@return Imap & Smtp info
  */
+
 const getImapSmtpHost = ( _email: string ) => {
 	const email = _email.toLowerCase()
 	const yahoo = ( domain: string ) => {
@@ -201,85 +205,86 @@ const getImapSmtpHost = ( _email: string ) => {
 }
 
 const Menu = {
-            'zh':[{
-                LanguageJsonName: 'zh',
-                showName: '简体中文',
-                icon: 'flag-icon-cn'
-            },
-            {
-                LanguageJsonName: 'en',
-                showName: '英文/English',
-                icon: 'flag-icon-gb'
-            },
-            {
-                LanguageJsonName: 'ja',
-                showName: '日文/日本語',
-                icon: 'flag-icon-jp'
-            },{
-                LanguageJsonName: 'tw',
-                showName: '繁体字中文/正體字中文',
-                icon: 'flag-icon-tw'
-            }],
-            'ja': [{
-                LanguageJsonName: 'ja',
-                showName: '日本語',
-                icon: 'flag-icon-jp'
-            },
-            {
-                LanguageJsonName: 'en',
-                showName: '英語/English',
-                icon: 'flag-icon-gb'
-            },
-            {
-                LanguageJsonName: 'zh',
-                showName: '簡体字中国語/简体中文',
-                icon: 'flag-icon-cn'
-            },{
-                LanguageJsonName: 'tw',
-                showName: '繁体字中国語/正體字中文',
-                icon: 'flag-icon-tw'
-            }],
-            'en': [{
-                LanguageJsonName: 'en',
-                showName: 'English',
-                icon: 'flag-icon-gb'
-            },
-            {
-                LanguageJsonName: 'ja',
-                showName: 'Japanese/日本語',
-                icon: 'flag-icon-jp'
-            },
-            {
-                LanguageJsonName: 'zh',
-                showName: 'Simplified Chinese/简体中文',
-                icon: 'flag-icon-cn'
-            },
-            {
-                LanguageJsonName: 'tw',
-                showName: 'Traditional Chinese/正體字中文',
-                icon: 'flag-icon-tw'
-            }],
-            'tw':[
-            {
-                LanguageJsonName: 'tw',
-                showName: '正體字中文',
-                icon: 'flag-icon-tw'
-            },{
-                LanguageJsonName: 'en',
-                showName: '英文/English',
-                icon: 'flag-icon-gb'
-            },
-            {
-                LanguageJsonName: 'ja',
-                showName: '日文/日本語',
-                icon: 'flag-icon-jp'
-            },
-            {
-                LanguageJsonName: 'zh',
-                showName: '簡體字中文/简体中文',
-                icon: 'flag-icon-cn'
-            }]
-        }
+    'zh':[{
+        LanguageJsonName: 'zh',
+        showName: '简体中文',
+        icon: 'flag-icon-cn'
+    },
+    {
+        LanguageJsonName: 'en',
+        showName: '英文/English',
+        icon: 'flag-icon-gb'
+    },
+    {
+        LanguageJsonName: 'ja',
+        showName: '日文/日本語',
+        icon: 'flag-icon-jp'
+    },{
+        LanguageJsonName: 'tw',
+        showName: '繁体字中文/正體字中文',
+        icon: 'flag-icon-tw'
+    }],
+    'ja': [{
+        LanguageJsonName: 'ja',
+        showName: '日本語',
+        icon: 'flag-icon-jp'
+    },
+    {
+        LanguageJsonName: 'en',
+        showName: '英語/English',
+        icon: 'flag-icon-gb'
+    },
+    {
+        LanguageJsonName: 'zh',
+        showName: '簡体字中国語/简体中文',
+        icon: 'flag-icon-cn'
+    },{
+        LanguageJsonName: 'tw',
+        showName: '繁体字中国語/正體字中文',
+        icon: 'flag-icon-tw'
+    }],
+    'en': [{
+        LanguageJsonName: 'en',
+        showName: 'English',
+        icon: 'flag-icon-gb'
+    },
+    {
+        LanguageJsonName: 'ja',
+        showName: 'Japanese/日本語',
+        icon: 'flag-icon-jp'
+    },
+    {
+        LanguageJsonName: 'zh',
+        showName: 'Simplified Chinese/简体中文',
+        icon: 'flag-icon-cn'
+    },
+    {
+        LanguageJsonName: 'tw',
+        showName: 'Traditional Chinese/正體字中文',
+        icon: 'flag-icon-tw'
+    }],
+    'tw':[
+    {
+        LanguageJsonName: 'tw',
+        showName: '正體字中文',
+        icon: 'flag-icon-tw'
+    },{
+        LanguageJsonName: 'en',
+        showName: '英文/English',
+        icon: 'flag-icon-gb'
+    },
+    {
+        LanguageJsonName: 'ja',
+        showName: '日文/日本語',
+        icon: 'flag-icon-jp'
+    },
+    {
+        LanguageJsonName: 'zh',
+        showName: '簡體字中文/简体中文',
+        icon: 'flag-icon-cn'
+    }]
+}
+
 const cookieName = 'langEH'
 const passwdCookieName = 'QTGate'
 const EmailRegexp = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i
@@ -386,6 +391,31 @@ const QTGateRegionsSetup: IQTGateRegionsSetup[] = [
     }
 ]
 
+const nextExpirDate = ( expire: Date ) => {
+    const now = new Date () 
+    now.setHours ( 0,0,0,0 )
+    if ( now.getTime() > expire.getTime ()) {
+        return expire
+    }
+    const nextExpirDate = new Date ( expire )
+    nextExpirDate.setMonth ( now.getMonth())
+    nextExpirDate.setFullYear ( now.getFullYear())
+
+    if ( nextExpirDate.getTime() < now.getTime ()) {
+        nextExpirDate.setMonth ( now.getMonth() + 1 )
+    }
+
+    if ( nextExpirDate.getTime () >= expire.getTime ()) {
+        return expire
+    }
+    return nextExpirDate
+}
+
+const getRemainingMonth = ( expire: Date ) => {
+    const _nextExpirDate = nextExpirDate( expire )
+    return expire.getFullYear () === _nextExpirDate.getFullYear () ? expire.getMonth() - _nextExpirDate.getMonth() : ( 11 - _nextExpirDate.getMonth() + expire.getMonth() )
+}
+
 const infoDefine = [
 	{
         perment:{
@@ -395,30 +425,64 @@ const infoDefine = [
         account:{
             title: '账户管理',
             segmentTitle:'账户: ',
+            stripePayment: '银行网关支付',
+            promoButton: '我有促销码',
+            qtgatePayment:'QTGate网关支付',
+            paymentProblem1: '支付遇到问题',
+            paymentProblem:'您的当前所在区域看上去银行网关被和谐，您可以使用QTGate网关支付来完成支付',
+            QTGatePayRisk: '使用QTGate网关支付，您的个人信息有被泄漏的危险，如果非必要请使用Stript网关支付。',
+            CancelSuccess: ( PlanExpire: Date, isAnnual: boolean, returnAmount: number ) => {
+                return `中止订阅成功。您可以一直使用您的原订阅到${ PlanExpire.toLocaleDateString() }为止。以后您将会自动成为QTGate免费用户可以继续使用QTGate的各项免费功能。${ isAnnual ? `您的余款us$${ returnAmount }会在5个工作日内退还到您的支付卡。`: '下月起QTGate系统不再自动扣款。'} 祝您网络冲浪愉快。`
+            },
             currentPlan:'当前订阅: ',
-            MonthBandwidthTitle:'月度代理服務器数据传送限额：',
+            cardPaymentErrorMessage:['输入的信用卡号有误，或支付系统不支持您的信用卡！','输入的信用卡期限有误！','输入的信用卡安全码有误！','输入的信用卡持有人邮编有误！','支付失败，支付无法完成请稍后再试','支付数据存在错误','您的付款被发卡行所拒绝'],
+            planPrice: '订阅原价：',
+            cancelPlanButton:'中止当前订阅',
+            needPay: '应付金额：',
+            
+            currentPlanExpire: ['订阅截止日期：','下次自动续订日'],
+            monthResetDay:'月数据重置日：',
+            monthResetDayAfter:'',
+            oldPlanBalance: '原计划剩余价值：',
+            currentAnnualPlan: ['月度订阅','年度订阅'],
+            MonthBandwidthTitle:'月度代理服務器限额：',
             dayBandwidthTitle:'毎日限额：',
             upgradeTitle:'升级账户选项',
+            paymentProcessing:'正在通讯中...',
+            cantUpgradeMonthly: '年度计划不可降级为月度计划。请先终止您当前订阅的年度计划，再重新申请此月度订阅',
             DowngradeTitle:'降级账户选项',
-            cancelPlan:'终止月度订阅计划',
+            cancelPlan:'终止订阅计划',
+            cantCancelInformation: '您的账户如果是免费用户，QTGate测试用户，或使用优惠码产生的订阅用户，此类账户可以升级但不能被中止',
             MonthBandwidthTitle1:'传送限额',
+            bandwidthBalance:'月度数据剩余量：',
             serverShareData:['共享服务器','一台独占服务器*','二台独占服务器*','四台独占服务器'],
             networkShareTitle:'代理服务器网络',
             multiOpn:'OPN并发多代理技术',
             continue:'下一步',
+            paymentSuccessTitile: '謝謝您',
+            paymentSuccess:'您的订阅已经完成，数据流量限制已经被更新。祝您网络冲浪愉快。',
+            qtgateTeam: 'QTGate开发团队敬上',
             monthlyAutoPay:'每月自动扣款',
             annualPay:'年付费每月只需',
             monthlyPay:'月收费',
             expirationYear: '信用卡期限',
             payAmountTitile:'合计支付金额',
+            calcelPayment:'中止付款',
+            doPayment:'确认付款',
             cardNumber: '信用卡号',
+            canadaCard:'*加拿大持卡人将被加收GST(BC)5%',
             cvcNumber: '信用卡安全码',
+            aboutCancel: '关于中止订阅',
+            postcodeTitle: '信用卡持有人邮编',
             serverShareData1:'使用OPN并发多代理技术，同时使用数大于独占数时，会相应分享您所独占的资源',
             internetShareData:['共享高速带宽','独享单线高速带宽*','独享双线高速带宽*','独享四线高速带宽'],
             maxmultigateway: ['最大同时可二条并发代理数','最大同时可使用四条并发代理数*','最大同时可使用四条并发代理数'],
             multiRegion:['单一代理区域并发代理','多代理区域混合并发代理','多代理区域混合并发代理','多代理区域混合并发代理'],
             downGradeMessage:'您正在操作降级您的订阅，如果操作成功您将从下月您的订阅之日起，实行新的订阅，如果您是。',
-            cancelPlanMessage:'QTGate的订阅是以月为基本的单位。您的月订阅将在下月您的订阅起始日前被终止，您可以继续使用您的本月订阅计划，您将自动回到免费用户。如果您是每月自动扣款，则下月将不再扣款。如果您是年度订阅计划，您的退款将按普通每月订阅费，扣除您已经使用的月份后计算的差额，将自动返还您所支付的信用卡账号，如果您是使用促销码，或您是测试用户，您的终止订阅将不能被接受。'
+            cancelPlanMessage:'QTGate的订阅是以月为基本的单位。您的月订阅将在下月您的订阅起始日前被终止，您可以继续使用您的本月订阅计划，您将自动回到免费用户。如果您是每月自动扣款，则下月将不再扣款。如果您是年度订阅计划，您的退款将按普通每月订阅费，扣除您已经使用的月份后计算的差额，将自动返还您所支付的信用卡账号，如果您是使用促销码，或您是测试用户，您的终止订阅将不能被接受。',
+            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: Date ) => {
+                return `您的订阅计划是${ isAnnual ? `年度订阅，退还金额将按照您已付年订阅费 us$[${ getPlanPrice ( planName, true )}] - 您已使用月份原价 us$[${ getPlanPrice( planName, false )}] X 已使用月数[${ 12 - getRemainingMonth ( expire )}] = 余额 us$[${ getCurrentPlanCancelBalance ( expire, planName )}]将退还到您用来支付的信用卡。`: `月订阅，您的订阅将下次更新日${ nextExpirDate(expire).toLocaleDateString() }时不再被自动扣款和更新。`}`
+            }
         },
 
         QTGateDonate: {
@@ -430,7 +494,7 @@ const infoDefine = [
             title:'QTGate功能简介',
             version:'本机QTGate版本：v',
             detail:[{
-                header: '隐身匿名自由上网',
+                header: '隐身匿名自由上网OPN',
                 color: '#a333c8',
                 icon: 'exchange',
                 detail: 'QTGate通过使用<a onclick="return linkClick (`https://zh.wikipedia.org/wiki/%E9%AB%98%E7%BA%A7%E5%8A%A0%E5%AF%86%E6%A0%87%E5%87%86`)" href="#" target="_blank">AES256-GCM</a>和<a onclick="return linkClick (`https://zh.wikipedia.org/wiki/PGP`)" href="#" target="_blank">OpenPGP</a>加密Email通讯，创造了OPN匿名网络通讯技术，QTGate公司首创的@OPN技术，它全程使用加密Email通讯，客户端和代理服务器彼此不用交换IP地址来实现高速通讯。iOPN通讯技术是利用普通HTTP协议下的混淆流量加密技术，能够隐藏变换您的IP地址高速通讯。二种通讯方式都能够让您，隐身和安全及不被检出的上网，保护您的隐私，具有超强对抗网络监控,网络限制和网络阻断。'
@@ -842,6 +906,7 @@ const infoDefine = [
                     '错误：您的账号已经无可使用流量，如果您需要继续使用QTGate代理服务器，请升级您的账户类型。如果是免费用户已经使用当天100M流量，请等待到明天继续使用，如您是免费用户已经用完当月1G流量，请等待到下月继续使用。',
                     '错误：数据错误，请退出并重新启动QTGate！','非常抱歉，您请求的代理区域无资源，请选择其他区域或稍后再试','对不起，您所请求连接的区域不支持这样的连接技术，请换其他连接方法或选择其他区域连接'],
             connected:'已连接。',
+            upgrade:'升级账号',
             userType:['免费用户','付费用户'],
             datatransferToday:'每日可使用流量限额：',
             datatransferMonth:'每月可使用流量限额：',
@@ -882,11 +947,41 @@ const infoDefine = [
             serverTitle:'サーバー'
         },
         account:{
+            paymentSuccessTitile: '有難うございました。',
+            stripePayment: 'オンライン支払い',
+            promoButton: 'プロモーション入力',
+            qtgatePayment:'QTGate経由でのお支払い',
+            QTGatePayRisk: 'QTGate経由でのお支払いは、あなたの個人情報漏洩の恐れがあります。必要でなければStripeでのお支払いをください。',
+            paymentProblem1:'支払い支障がある',
+            paymentProblem:'あなた現在いる所在地ではバンク支払いがブラックされている模様です。QTGate経由でのお支払いをしてください。',
+            CancelSuccess:( PlanExpire: Date, isAnnual: boolean, returnAmount: number ) => {
+                return `プランキャンセルしました。${ PlanExpire.toLocaleDateString() }まで、元プランのままQTGateサービスが使えます。そのあとはQTGateのフリーユーザーと戻ります。${ isAnnual? `元プラン残りus$ ${ returnAmount }は５日ウォキンデイ内お支払い使ったカードに戻ります`:`プラン代自動落しは中止されます`}。これからもよろしくお願い申し上げます。`
+            },
+            paymentSuccess:'あなたのプランをアップグレードしました。これからもよろしくお願い申し上げます。',
+            qtgateTeam: 'QTGateチーム全員より',
+            cardPaymentErrorMessage:['ご入力したカード番号に間違いがあるか、又支払いシステムはこのタイプのカードがサポートしておりません！','ご入力したカードの期限に間違いがあります！',
+                'ご入力したカードのセキュリティコードに間違いがあります！','ご入力したカード所有者の郵便番号に間違いがあります！',
+                '原因不明けど、支払いが失敗しました。後ほどもう一度してみてください。',
+                'お支払いデータに間違いがあります。',
+                'お支払いは銀行から拒否されました。'],
             title: 'アカウト管理',
             segmentTitle:　'アカウトタ: ',
+            cancelPlanButton:'キャンセルプラン',
+            planPrice: 'プラン価値：',
+            needPay: 'お支払い残高：',
+            currentPlanExpire: ['プラン終了日：','次の引落とし日'],
+            cantUpgradeMonthly: '年契約は月契約に戻れないです。一回年契約を中止してから月契約をしてください。',
+            currentAnnualPlan: ['月契約','一年契約'],
+            bandwidthBalance:'月残りデータ量：',
+            paymentProcessing:'サーバーとの通信中...',
+            oldPlanBalance: '元プラン残り価値：',
             currentPlan:　'現在加入中のプラン: ',
-            MonthBandwidthTitle:'月ゲットウェイ利用可能データ量：',
-            dayBandwidthTitle:'毎日利用可能データ量：',
+            MonthBandwidthTitle:'ゲットウェイ月制限：',
+            monthResetDayAfter:'',
+            cantCancelInformation: 'あなたのプランはフリーユーザー、又はQTGateテストユーザーか、クーポンを使ったのためキャンセルすることはできません。',
+            monthResetDay:'月レセット日：',
+
+            dayBandwidthTitle:'日制限：',
             upgradeTitle:'アップグレードオプション',
             DowngradeTitle:'ダウングレードオプション',
             cancelPlan:'キャンセルプラン',
@@ -897,8 +992,13 @@ const infoDefine = [
             multiOpn:'OPN並列ゲットウェイ技術',
             monthlyAutoPay:'月払い',
             cvcNumber: 'セキュリティコード',
+            calcelPayment:'キャンセル',
+            doPayment:'お支払い',
+            postcodeTitle: 'カード所有者郵便番号',
             annualPay:'年払いで月あたり',
+            aboutCancel: 'プランをキャンセルについて',
             expirationYear: 'カード期限',
+            canadaCard:'*カナダおカード所有者はGST(BC)5.0% 自動加算されます',
             continue:'次へ',
             multiRegion:['シンプルリジョーン並列ゲットウェイ','マルチリジョーン並列ゲットウェイ','マルチリジョーン並列ゲットウェイ','マルチリジョーン並列ゲットウェイ'],
             serverShareData:['シェアゲットウェイ','一台ゲットウェイ独占*','二台ゲットウェイ独占*','四台ゲットウェイ独占'],
@@ -906,7 +1006,10 @@ const infoDefine = [
             monthlyPay:'プラン月額利用料',
             serverShareData1:'並列ゲットウェイ技術を使う際に、同時使う数が独占数を超える場合には、独占リソースを他人と割合にチェアする場合もあります。',
             maxmultigateway: ['最大二つ並列ゲットウェイ','最大四つ並列ゲットウェイ*','最大四つ並列ゲットウェイ'],
-            cancelPlanMessage:'QTGateプランは月毎に計算し、来月のあなたの最初加入した日まで、今のプランのままご利用ですます。キャンセルした日から自動的にQTGateの無料ユーザーになります。おアカウトは(月)払いの場合は、来月の自動払いは中止となります。年払いの場合は、ご使った分に月普通料金と計算し控除してから、お支払いを使ったクレジットカードに戻ります。販促コードまたはテストユーザーにはキャンセルすることができません。'
+            cancelPlanMessage:'QTGateプランは月毎に計算し、来月のあなたの最初加入した日まで、今のプランのままご利用ですます。キャンセルした日から自動的にQTGateの無料ユーザーになります。おアカウトは(月)払いの場合は、来月の自動払いは中止となります。年払いの場合は、ご使った分に月普通料金と計算し控除してから、お支払いを使ったクレジットカードに戻ります。販促コードまたはテストユーザーにはキャンセルすることができません。',
+            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: Date ) => {
+                return `あなたのプランは${ isAnnual ? `一年契約です。キャンセルをした場合は、ご利用して頂いた月に普通料金と請求を計算されます。お返し金額はプラン年契約料金 us$[${ getPlanPrice ( planName, true )}] - プラン普通月料金 us$[${ getPlanPrice( planName, false )}] X ご利用頂いた月[${ 12 - getRemainingMonth ( expire )}] = 戻る金額 us$[${ getCurrentPlanCancelBalance ( expire, planName )}]となります。`: `月プランです。キャンセルにすると次の更新日[${ nextExpirDate(expire).toLocaleDateString() }]に自動更新はしませんです。`}`
+            }
         },
 
         QTGateDonate: {
@@ -920,7 +1023,7 @@ const infoDefine = [
             detail:[{
                 color: '#a333c8',
                 icon: 'exchange',
-                header: '自由匿名なインターネットへ',
+                header: '自由匿名なインターネットへOPN',
                 detail: '@OPNは本社の世界初のIP不要な通信技術です、<a onclick="return linkClick (`https://ja.wikipedia.org/wiki/Advanced_Encryption_Standard`)" href="#" target="_blank">AES256-GCM</a>と<a onclick="return linkClick (`https://ja.wikipedia.org/wiki/Pretty_Good_Privacy`)" href="#" target="_blank">OpenPGP</a>暗号化したEmailメッセージを通じたゲットウェイに接続します、iOPNは本社の独自のHTTPゲットウェイ暗号化高速通信技術です。どちらとも身を隠して誰も知らないうちにインターネットへ、プライバシー、ネットワーク監視とアクセスを制限・遮断にうまくすり抜けることができます。'
             },{
                 color: '#e03997',
@@ -1345,7 +1448,8 @@ const infoDefine = [
                     'エラー：データフォーマットエラー、QTGateをリスタートしてください。','ごめんなさい、ご請求したゲットウェイエリアは準備中です。そのたのエリアを選ぶか、後ほど接続をしてください。',
                     'エラー：請求した接続方法はこのエリアに対応しておりません、他のエリアに変更するか他の接続方法へください。'],
             connected:'接続しました。',
-            userType: ['無料ユーザー','月契約ユーザー'],
+            upgrade:'アップグレードアカンウト',
+            userType: ['無料ユーザー','月契約'],
             datatransferToday:'毎日使える通信量：',
             datatransferMonth:'毎月使える通信量：',
             todaysDatatransfer: '今日使える量',
@@ -1380,33 +1484,69 @@ const infoDefine = [
             serverTitle:'Server'
         },
         account:{
+            QTGatePayRisk: 'Your private information may leak to QTGate. Please chooses Stript to finish payment.',
+            paymentSuccessTitile: 'Thank you.',
+            stripePayment: 'Bank gateway payment',
+            paymentProblem1:'Payment problem',
+            promoButton: 'Have Promo',
+            paymentProblem:'Looks bank payment gateway was block in your area. You can payment via QTGate gateway.',
+            qtgatePayment:'Payment via QTGate system',
+            paymentSuccess:'Your plan has beed upgraded. Happy every day.',
+            qtgateTeam: 'The QTGate Team',
             networkShareTitle:'Bandwidth',
+            CancelSuccess: ( PlanExpire: Date, isAnnual: boolean, returnAmount: number ) => {
+                return `Your subscriptions was cancelled. You may keep use QTGate service with this plan until ${ PlanExpire.toLocaleDateString() }. Restrictions apply to free accounts and accounts using promotions. ${ isAnnual ? `us$${ returnAmount } will return to your paid card in 5 working day.` : `Automatically canceled.` } `
+            },
+            currentPlanExpire: ['Plan expires at：','Renews at'],
+            currentAnnualPlan: ['Monthly plan','Annual plan'],
+            cardPaymentErrorMessage:['Error: card number or have an unsupported card type.','Error: expiration!','Error: Card Security Code','Error: Card owner postcode',
+                    'Error: payment failed. Please try again late.',
+                    'Error: Payment data format error!','Error: Payment failed from bank.'],
             title: 'Manage account',
             segmentTitle:'Account: ',
+            needPay: 'The balance: ',
+            cancelPlanButton:'Cancel plan',
             currentPlan:'Current Plan: ',
-            MonthBandwidthTitle:'Gateway Month Bandwidth：',
+            oldPlanBalance: 'Remaining of old plan: ',
+            MonthBandwidthTitle:'Gateway Bandwidth：',
             dayBandwidthTitle:'Day limited：',
-            upgradeTitle:'Upgrade Option',
+            bandwidthBalance:'Bandwidth remaining: ',
+            upgradeTitle: 'Upgrade Option',
+            planPrice: 'Plan price：',
+            monthResetDay:'Monthly reset day: ',
+            monthResetDayAfter:'th',
+            cantUpgradeMonthly: 'Annual may not downgrade to monthly plan. Please cancel current plan, then select this one.',
             DowngradeTitle:'Downgrade Option',
             cancelPlan:'Cancel plan',
+            cantCancelInformation: 'Your plan may not be cancelled, free user, plan was create via QTGate test program, used redeem code.',
             multiOpn:'OPN multi-gateway technology',
             MonthBandwidthTitle1:'Bandwidth',
             serverShare:'Gateway',
             monthlyAutoPay:'Monthly',
             cardNumber: 'Card number',
+            paymentProcessing:'Connecting...',
+            calcelPayment:'Cancel',
+            doPayment:'Payment',
             expirationYear: 'Expiration',
+            postcodeTitle: 'Card owner postcode',
             payAmountTitile:'Amount',
             cvcNumber: 'Card Security Code',
             annualPay:'Annual per month only',
+            canadaCard:'*GST(BC) 5.0% will be applied automatically if your billing address located in Canada.',
             multiRegion:['multi-gateway via simple region','multi-gateway via multi region','multi-gateway via multi region','multi-gateway via multi region'],
             continue:'Next step',
             serverShareData:['Share gateway','1 dedicated gateway server*','2 dedicated gateway server*','4 dedicated gateway server'],
             internetShareData:['Share high speed internet','Dedicated 1 high speed internet*','Dedicated 2 high speed internet*','Dedicated 4 high speed internet'],
             maxmultigateway: ['Max 2 multi-gateway','Max 4 multi-gateway*','Max 4 multi-gateway'],
             monthlyPay:'Monthly pricing',
+            aboutCancel: 'About cancel subscription',
             cancelPlanMessage: 'You may cancel your QTGate subscription at any time, and you will continue to have access to the QTGate services through the end of your paid period until all remaining subscription time in your account is used up. Restrictions apply to free accounts and accounts using promotions.',
-            serverShareData1:'Your dedicated server will be share ratio when you connected over your dedicated count via use Multi-gateway technology.'
+            serverShareData1:'Your dedicated server will be share ratio when you connected over your dedicated count via use Multi-gateway technology.',
+            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: Date ) => {
+                return `Your plan is ${ isAnnual ? `annual paid ${ getPlanPrice ( planName, true )}. The passed ${ 12 - getRemainingMonth ( expire )} month will being normal price us$${ getPlanPrice( planName, false )}, QTGate will refunds us$${ getCurrentPlanCancelBalance ( expire, planName )} to your paid card.`: `monthly, it will not be renew at ${ nextExpirDate(expire).toLocaleDateString() } if you cancel this plan.`}`
+            }
         },
+
         QTGateDonate: {
             title: 'Free access website provided by sponsor.',
             meta_title:'Donor：'
@@ -1418,7 +1558,7 @@ const infoDefine = [
             detail:[{
                 color: '#a333c8',
                 icon: 'exchange',
-                header: 'Security and Privacy while accessing the Open Internet',
+                header: 'OPN: Security and Privacy while accessing the Open Internet.',
                 detail: `@OPN@ uses QTGate’s “Quiet” technology to create a obfuscated private network by refracting encrypted data packets thru email servers. @OPN provides true stealth internet communications where your IP address is hidden to client or proxy servers. iOPN uses QTGate’s technology to obfuscate data traffic over HTTP. Both @OPN and iOPN offer security, protection and privacy while allowing access to the open internet. All data is kept private with encryption using <a onclick="return linkClick('https://en.wikipedia.org/wiki/Advanced_Encryption_Standard')" href="#" target="_blank">AES256-GCM</a> and <a onclick="return linkClick ('https://en.wikipedia.org/wiki/Pretty_Good_Privacy')" href="#" target="_blank">OpenPGP</a> along with QTGate’s proprietary security measures.`
             },{
                 color: '#e03997',
@@ -1875,7 +2015,8 @@ const infoDefine = [
                     'Error: Data format error. Please restart QTGate.','Error: This area does not have the resources. Please select another area or try connecting again later.',
                     'Error: This region does not support OPN technology. Please select another area, or change other connect type.'],
             connected:'connected.',
-            userType:['Free user', 'Subscript'],
+            upgrade:'Upgrade account',
+            userType:['Free user', 'Subscription'],
             datatransferToday:'The daily bandith limit.：',
             datatransferMonth:'The monthly bandwidth limit.：',
             todaysDatatransfer: 'Available today.',
@@ -1912,16 +2053,43 @@ const infoDefine = [
             serverTitle:'伺服器'
         },
         account:{
+            QTGatePayRisk:'使用QTGate網關支付，您的個人信息有被洩漏的危險，如果非必要請使用Stript網關支付。',
+            paymentSuccessTitile: '謝謝您',
             networkShareTitle:'代理伺服器網絡',
+            stripePayment: '銀行網關支付',
+            promoButton: '我有促銷碼',
+            promoCode: 'XXXX-XXXX-XXXX-XXXX',
+            qtgatePayment:'QTGate網關支付',
+            paymentProblem1:'支付遇到問題',
+            paymentProblem:'您目前的所在區域看上去銀行網關被和諧，您可以使用QTGate網關支付來完成支付',
             title: '賬戶管理',
+            currentPlanExpire: ['訂閱截止日期：','下一次自動續訂日'],
+            CancelSuccess: ( PlanExpire: Date, isAnnual: boolean, returnAmount: number ) => {
+                return `中止訂閱成功。您可以一直使用您的原訂閱到${ PlanExpire.toLocaleDateString() }為止。以後您將會自動成為QTGate免費用戶可以繼續使用QTGate的各項免費功能。 ${ isAnnual ? `您的餘款us$${ returnAmount }會在5個工作日內退還到您的支付卡。 `: '下月起QTGate系統不再自動扣款。 '} 祝您網絡衝浪愉快。`
+            },
+            currentAnnualPlan: ['月度訂閱','年度訂閱'],
+            cardPaymentErrorMessage:['輸入的信用卡號有誤！','輸入的信用卡期限有誤！','輸入的信用卡安全碼有誤！','輸入的信用卡持有人郵編有誤！','支付失敗，支付無法完成請稍後再試',
+                '支付數據存在錯誤','您的付款被銀行所拒絕'],
+            cantUpgradeMonthly: '年度計劃不可降級為月度計劃。請先終止您當前訂閱的年度計劃，再重新申請此月度訂閱',
             segmentTitle:'賬戶Email: ',
             currentPlan:'當前訂閱: ',
-            MonthBandwidthTitle:'月度可使用代理伺服器數據傳送限額：',
+            oldPlanBalance: '原計劃剩餘價值：',
+            needPay: '應付金額：',
+            monthResetDay:'月重置日：',
+            cancelPlanButton:'中止當前訂閱',
+            monthResetDayAfter:'',
+            bandwidthBalance:'月度數據剩余量：',
+            planPrice: '訂閱價格：',
+            MonthBandwidthTitle:'月度代理伺服器限額：',
             dayBandwidthTitle:'每日限額：',
             upgradeTitle:'升級賬戶選項',
+            paymentSuccess:'您的訂閱已經完成，數據流量限制已經被更新。祝您網絡衝浪愉快。',
+            qtgateTeam: 'QTGate開發團隊敬上',
+            paymentProcessing:'正在通訊中...',
             DowngradeTitle:'降級賬戶選項',
             multiOpn:'OPN併發多代理技術',
-            cancelPlan:'終止當前月租',
+            cancelPlan:'終止當前訂閱',
+            cantCancelInformation: '您的賬戶可能是QTGate測試用戶，或使用優惠碼產生的訂閱用戶，此類賬戶可以升級但不能被中止',
             MonthBandwidthTitle1:'傳送限額',
             monthlyAutoPay:'每月自動扣款',
             annualPay:'年付費每月只需',
@@ -1929,8 +2097,12 @@ const infoDefine = [
             serverShare:'代理伺服器',
             cardNumber: '信用卡號',
             cvcNumber: '信用卡安全碼',
-            postcode: '信用卡名義人郵編號碼',
-            payAmountTitile:'價格',
+            calcelPayment:'中止付款',
+            doPayment:'確認付款',
+            postcodeTitle: '信用卡擁有者郵編',
+            aboutCancel: '關於中止訂閱',
+            payAmountTitile:'支付合計',
+            canadaCard:'*加拿大持卡人將被加收GST(BC)5%',
             multiRegion:['單一代理區域並發代理','多代理區域混合併發代理','多代理區域混合併發代理','多代理區域混合併發代理'],
             maxmultigateway: ['最大同時可二條並發代理數','最大同時可使用四條並發代理數*','最大同時可使用四條並發代理數'],
             continue:'下一步',
@@ -1938,8 +2110,13 @@ const infoDefine = [
             monthlyPay:'月租費',
             internetShareData:['共享高速帶寬','獨享高速帶寬*','獨享雙線高速帶寬*','獨享四線高速帶寬'],
             serverShareData1:'OPN併發多代理技術，同時使用數大於獨占數時，會相應分享您所獨占的資源',
-            cancelPlanMessage:'QTGate的訂閱是以月為基本的單位。您的月訂閱將在下月您的訂閱起始日前被終止，您可以繼續使用您的本月訂閱計劃，您將自動回到免費用戶。如果您是每月自動扣款，則下月將不再扣款。如果您是年度訂閱計劃，您的退款將按普通每月訂閱費，扣除您已經使用的月份後計算的差額，將自動返還您所支付的信用卡賬號，如果您是使用促銷碼，或您是測試用戶，您的終止訂閱將不能被接受。 '
+            cancelPlanMessage:'可隨時終止您的訂閱，QTGate的訂閱是以月為基本的單位。您的月訂閱將在下月您的訂閱起始日前被終止，您可以繼續使用您的本月訂閱計劃，您將自動回到免費用戶。如果您是每月自動扣款，則下月將不再扣款。如果您是年度訂閱計劃，您的退款將按普通每月訂閱費，扣除您已經使用的月份後計算的差額，將自動返還您所支付的信用卡賬號，如果您是使用促銷碼，或您是測試用戶，您的終止訂閱將不能被接受。 ',
+            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: Date ) => {
+                return `您的訂閱計劃是${ isAnnual ? `年度訂閱，退還金額將按照您已付年訂閱費 us$[${ getPlanPrice ( planName, true )}] - 您已使用月份原價 us$[${ getPlanPrice( planName, false )}] X 已使用月數[${ 12 - getRemainingMonth ( expire )}] = 餘額 us$[${ getCurrentPlanCancelBalance ( expire, planName )}]將退還到您用來支付的信用卡。`: `月訂閱，您的訂閱將下次更新日${ nextExpirDate(expire).toLocaleDateString() }時不再被自動扣款和更新。`}`
+            }
+        
         },
+
         QTGateDonate: {
             title: 'QTGate贊助商提供的免流量網站',
             meta_title:'捐贈者：'
@@ -2358,6 +2535,7 @@ const infoDefine = [
             error: ['錯誤：您的賬號下已經有一個正在使用QTGate代理伺服器的連接，請先把它斷開後再嘗試連接。', '錯誤：您的賬號已經無可使用流量，如果您需要繼續使用QTGate代理伺服器，請升級您的賬戶類型。如果是免費用戶已經使用當天100M流量，請等待到明天繼續使用，如您是免費用戶已經用完當月1G流量，請等待到下月繼續使用。',
                     '錯誤：數據錯誤，請退出並重新啟動QTGate！','非常抱歉，您請求的代理區域無資源，請選擇其他區域或稍後再試','對不起，您所請求連接的區域不支持這樣的連接技術，請換其他連接方法或選擇其他區域連接'],
             connected:'已連接。',
+            upgrade:'升級賬號',
             userType:['免費用戶','付費用戶'],
             datatransferToday:'當日可使用流量限額：',
             datatransferMonth:'本月可使用流量限額：',
@@ -2669,6 +2847,7 @@ const _QTGateRegions: QTGateRegions[] = [
         downloadSpeed: ko.observable (-2)
     }
 ]
+
 const checkCanDoAtQTGateReg = /^imap\.mail\.me\.com$/
 const checkCanDoAtQTGate = ( imapArray: KnockoutObservableArray < view_layout.emailPoolData > ) => {
     return imapArray().findIndex ( n => { return checkCanDoAtQTGateReg.test ( n.iMapServerName()) && n.imapCheckResult() > 0 })
@@ -2860,7 +3039,8 @@ module view_layout {
                 uuid: this.uuid,
                 canDoDelete: false,
                 clientIpAddress: null,
-                ciphers: null
+                ciphers: null,
+                confirmRisk: null
                 
             }
             return data 
@@ -2955,6 +3135,7 @@ module view_layout {
                 this.smtpAuthenticationFailed ( false )
                 checkSmtpImapAccountSetup ( newValue, this.uuid, this )
                 this.imapDataEnited ( true )
+                this.appPaassword ( true )
             })
 
             this.password.subscribe ( newValue => {
@@ -3352,11 +3533,28 @@ module view_layout {
 
             this.cardExpirationYear.subscribe ( newValue => {
                 this.cardExpirationYearFolder_Error ( false )
+                if ( !newValue || !newValue.length)
+                    return
+                if ( newValue.length < 7 )
+                    return this.cardExpirationYearFolder_Error ( true )
+
                 const now = new Date().getTime ()
                 const value = new Date ( new Date ( '1/'+ newValue ).getTime() + oneDayTime ).getTime()
                 if ( value - now > 0 )
                     return
                 this.cardExpirationYearFolder_Error ( true )
+            })
+
+            this.cardNumber.subscribe ( newValue => {
+                return this.cardNumberFolder_Error ( false )
+            })
+
+            this.cardPostcode.subscribe ( newValue => {
+                this.postcode_Error ( false )
+            })
+
+            this.cardcvc.subscribe ( newValue => {
+                this.cvcNumber_Error ( false )
             })
 
             socketIo = io ({ reconnectionAttempts: 5, timeout: 1000 })
@@ -3660,7 +3858,12 @@ module view_layout {
                 return this.pingCheckReturn ( region, ping )
             })
         }
+
+        public showBrokenHeart () {
+            return $( '.ui.basic.modal').modal ('setting', 'closable', false ).modal ( 'show' )
+        }
         public showSendImapDataConfirm = ko.observable ( false )
+
         private qtGateConnectEvent (  data: IQtgateConnect ) {
 
             //     reset show send request mail need more time
@@ -3671,29 +3874,42 @@ module view_layout {
                 this.menuClick ( 2, true )
                 return this.QTGateConnectActive ( false )
             }
+            this.sendConnectRequestMail ( false )
+            this.reSendConnectMail ( false )
+            this.connectQTGateShow ( false )
+            this.reSendConnectMail( false )
             this.menuClick ( 3, true )
             this.QTGateConnectActive ( !this.keyPair().verified )
             this.QTGateConnectRegionActive ( this.keyPair().verified )
+            //      progress bar area
+            this.QTGateRegionInfo ( this.keyPair().verified )
+
             if ( data && data.qtgateConnectImapAccount && data.qtgateConnectImapAccount.length ) {
                 const uu = this.emailPool().findIndex ( n => { return n.uuid === data.qtgateConnectImapAccount })
                 this.QTGateConnectSelectImap ( uu )
             }
             const imapData = this.QTGateConnecting ( this.QTGateConnectSelectImap ())
             this.QTGateConnecting ( data.qtGateConnecting )
+            
             switch ( data.qtGateConnecting ) {
 
                 //          show send imap data 
                 case 0: {
+
+                    this.QTGateRegionInfo ( false )
+                    this.reSendConnectMail ( true )
                     return this.showSendImapDataConfirm ( true )
                 }
 
                 //          show send request mail need more time
                 case 6: {
+                    this.sendConnectRequestMail(true)
                     return this.connectQTGateShow ( true )
                 }
 
                 //          connecting finished
                 case 2: {
+                    this.QTGateRegionInfo ( true )
                     this.stopGetRegionProcessBar ()
                     if ( this.keyPair().verified ) {
                         return setTimeout (() => {
@@ -3835,6 +4051,7 @@ module view_layout {
         }
 
         private showMainScreenBackOverflowShow = null
+
         public showFeedBackWin() {
             $( '.mainScreen').hide ()
             $( '#feedBackView').addClass ( 'animated bounceIn' ).show().one ( animationEnd, () => {
@@ -4151,8 +4368,6 @@ module view_layout {
             return true
         })
 
-        public cancelPlan = ko.observable (false)
-
         public checkActiveEmailSubmit () {
             this.checkActiveEmailError ( false )
             this.checkingActiveEmail ( true )
@@ -4173,6 +4388,7 @@ module view_layout {
         }
         */
         public connectQTGate1 () {
+            this.showTimeoutMessage ( false )
             this.showActiveMail ( false )
             this.showSendImapDataConfirm ( false )
             this.showGetRegionProcessBarStart ()
@@ -4306,6 +4522,8 @@ module view_layout {
             data.showExtraContent ( false )
             data.available ( true )
             this.ConnectGatewayShow ( true )
+            this.config().freeUser = /free/.test(_data.transferData.productionPackage) ? true : false
+            this.config(this.config())
             return data.showConnectedArea ( true )
 
         }
@@ -4417,6 +4635,7 @@ module view_layout {
 
         public pingCheckLoading = ko.observable ( false )
         public pingError = ko.observable ( false )
+
         public pingCheck () {
             if ( this.pingCheckLoading()) {
                 return
@@ -4587,6 +4806,7 @@ module view_layout {
             const index = this.emailPool ().findIndex ( n => { return availableImapServer.test ( n.iMapServerName()) })
             return index > -1
         })
+
         public requestActivEmailrunning = ko.observable ( false )
         public showSentActivEmail = ko.observable (-1)
 
@@ -4601,17 +4821,203 @@ module view_layout {
                 return this.showSentActivEmail (CallBack)
             })
         }
-        public cardType = ko.observable ()
-        public showPayment ( paice: number ) {
-            this.cardpay ( true )
+
+        private clearPaymentError () {
+            this.cardNumberFolder_Error ( false )
+            this.cvcNumber_Error ( false )
+            this.postcode_Error ( false )
+            this.cardPayment_Error ( false )
+            this.paymentDataFormat_Error ( false )
+            
+            return this.paymentCardFailed ( false )
+        }
+
+        public showStripeError = ko.observable ( false )
+        public cardType = ko.observable ('')
+        private tokenId = null
+
+        private clearAllPaymentErrorTimeUP () {
+            return setTimeout (() => {
+                this.showSuccessPayment ( false )
+                this.showCancelSuccess ( false )
+                return this.clearPaymentError ()
+            }, 5000)
+        }
+
+        private paymentCallBackFromQTGate ( err, data: QTGateAPIRequestCommand ) {
+            this.stopShowWaitPaymentFinished ()
+                if ( err ) {
+                    return this.showBrokenHeart()
+                }
+                if ( data.error === -1 ) {
+                    this.paymentSelect ( false )
+                    data.command === 'cancelPlan' ? this.showCancelSuccess ( true ) : this.showSuccessPayment ( true )
+                    if ( data.command === 'cancelPlan' && data.Args[1]) {
+                        this.cancel_Amount ( data.Args[1])
+                    }
+                    this.config().freeUser = false
+                    const dataTrans: iTransferData = data.Args[0]
+
+                    this.QTTransferData ( dataTrans )
+                    this.config().freeUser = false
+                    this.config( this.config ())
+                    this.clearAllPaymentErrorTimeUP ()
+                    return this.UserPermentShapeDetail ( false )
+                }
+                
+                const errMessage = data.Args[0]
+                if ( data.error === 0 ) {
+                    this.paymentSelect ( true )
+                    this.clearAllPaymentErrorTimeUP()
+                    return this.paymentDataFormat_Error ( true )
+                }
+                    
+                if ( /expiration/i.test ( errMessage )) {
+                    this.clearAllPaymentErrorTimeUP()
+                    return this.cardExpirationYearFolder_Error ( true )
+                }
+
+                if ( /card number/i.test ( errMessage )) {
+                    this.clearAllPaymentErrorTimeUP()
+                    return this.cardNumberFolder_Error ( true )
+                }
+
+                if ( /format/i.test ( errMessage )) {
+                    this.clearAllPaymentErrorTimeUP()
+                    return this.cardPayment_Error ( true )
+                }
+                this.clearAllPaymentErrorTimeUP()
+                this.paymentSelect ( true )
+                return this.paymentCardFailed ( true )
+        }
+
+        private getGoogleCountry () {
+            switch ( this.tLang() ) {
+                case 'ja': {
+                    return 'JP'
+                }
+                case 'zh': {
+                    return 'GB'
+                }
+                case 'tw': {
+                    return 'HK'
+                }
+                case 'en': {
+                    return 'US'
+                }
+                default : {
+                    return 'US'
+                }
+
+            }
+        }
+
+        public openGooglePay () {
+            this.clearPaymentError ()
+            if ( Stripe && typeof Stripe ==='function' ) {
+                const stripe = Stripe( Stripe_publicKey )
+                const paymentRequest = stripe.paymentRequest ({
+                    country: this.getGoogleCountry(),
+                    currency: 'usd',
+                    total: {
+                        label: 'QTGate Systems Inc',
+                        amount: ( this.selectPlanPrice() - this.showCurrentPlanBalance()) * 100
+                    }
+                })
+                const elements = stripe.elements()
+                const prButton = elements.create ( 'paymentRequestButton', {
+                    paymentRequest,
+                })
+                paymentRequest.canMakePayment().then( result => {
+                    if ( result ) {
+                        prButton.mount('#payment-request-button')
+                    } else {
+                        document.getElementById('payment-request-button').style.display = 'none'
+                    }
+                })
+                paymentRequest.once( 'token', ev => {
+                    const token = ev.token.id
+                })
+            }
+        }
+
+        public openStripeCard () {
+            this.clearPaymentError ()
+            let handler = null
+            if ( StripeCheckout && typeof StripeCheckout.configure === 'function' ){
+                handler = StripeCheckout.configure ({
+                    key: Stripe_publicKey,
+                    image: 'images/512x512.png',
+                    email: this.config().account,
+                    zipCode: true,
+                    locale: this.tLang() === 'tw' ? 'zh': this.tLang(),
+                    token: token => {
+                        
+                        const payment: iQTGatePayment = {
+                            tokenID: token.id,
+                            Amount: this.selectPlanPrice() - this.showCurrentPlanBalance(),
+                            plan: this.getPaymentPlan().name,
+                            isAnnual: this.isAnnual (),
+                            autoRenew: this.autoRenew ()
+                            
+                        }
+                        this.showWaitPaymentFinished () 
+                        return socketIo.emit ( 'cardToken', payment, ( err, data: QTGateAPIRequestCommand ) => {
+                            return this.paymentCallBackFromQTGate ( err, data )
+                        })
+                    }
+                })
+                handler.open ({
+                    name: 'QTGate Systems Inc',
+                    description: `${ this.getPaymentPlan().name }:${ this.getPaymentPlan().monthly }GB`,
+                    amount: ( this.selectPlanPrice() - this.showCurrentPlanBalance()) * 100
+                })
+
+                return window.addEventListener( 'popstate', () => {
+                    handler.close()
+                })
+                
+            }
+        }
+
+        public cancelSubscriptionButton () {
+            if ( this.QTTransferData() && !this.QTTransferData().paidID ) {
+                return
+            }
+            this.cancelPlanButton ( true )
+        }
+
+        public canShowCancelSubscriptionButton = ko.computed(() => {
+            return this.QTTransferData() && this.QTTransferData().paidID && ( this.QTTransferData().isAnnual || this.QTTransferData().automatically )
+        })
+
+        public paymentSelect = ko.observable ( false )
+
+        public showPayment ( paice: number, isAnnual: boolean ) {
+            this.clearPaymentError ()
+            if ( !StripeCheckout || typeof StripeCheckout.configure !== 'function' || !Stripe || typeof Stripe !== 'function' ) {
+                this.showStripeError ( true )
+                $('.showStripeError').popup ({
+                    position: 'top center',
+                    delay: {
+                        show: 300,
+                        hide: 800
+                    }
+                })
+            }
+            this.cardpaStripe ( true )
             this.cardPayAmount ( paice )
-            new Cleave ('.paymaneCardNumber', {
+            this.autoRenew ( !isAnnual )
+            this.isAnnual ( isAnnual )
+            this.paymentSelect ( true )
+            
+            new Cleave ( '.paymaneCardNumber', {
                 creditCard: true,
                 onCreditCardTypeChanged: type => {
                     this.cardType ( type )
                 }
             })
-            new Cleave ('.paymaneExpiration', {
+            new Cleave ( '.paymaneExpiration', {
                 date: true,
                 datePattern: ['m', 'Y'],
                 delimiter: '/'
@@ -4619,18 +5025,266 @@ module view_layout {
             new Cleave ('.paymaneCVC', {
                 numeral: true,
                 numeralIntegerScale: 4,
-                delimiter:''
+                delimiter: ''
             })
+            
+            $('.CancelMessage').popup ({
+                position: 'center right',
+                on: 'click',
+                delay: {
+                    show: 300,
+                    hide: 800
+                }
+            })
+            
         }
+
+        private showWaitPaymentFinished () {
+
+            this.doingPayment ( true )
+            this.paymentSelect ( false )
+            this.clearPaymentError ()
+            $('.paymentProcess').progress ('reset')
+            let percent = 0
+            const doingProcessBar = () => {
+                clearTimeout ( this.doingProcessBarTime )
+                this.doingProcessBarTime = setTimeout (() => {
+                    $('.paymentProcess').progress ({
+                        percent: ++ percent
+                    })
+                    if ( percent < 100 )
+                        return doingProcessBar ()
+                }, 1000 )
+            }
+            return doingProcessBar ()
+        }
+
+        private stopShowWaitPaymentFinished () {
+            this.doingPayment ( false  )
+            clearTimeout ( this.doingProcessBarTime )
+            return $('.paymentProcess').progress ('reset')
+        }
+
         public cardPayAmount = ko.observable (0)
+        public paymentPlan = ko.observable ()
+        public isAnnual = ko.observable (false)
         public cardpay = ko.observable ( false )
         public cardNumber = ko.observable ('')
         public cardcvc = ko.observable ('')
         public cardExpirationYear = ko.observable ('')
         public cardExpirationYearFolder_Error = ko.observable ( false )
+        public cardPostcode = ko.observable ('')
+        public doingPayment = ko.observable ( false )
+        public cardpaStripe = ko.observable ( false )
+        public stripeCheckoutEnable = ko.observable ( false )
+        public Alipay_error = ko.observable ( false )
+        public autoRenew = ko.observable ( false )
+
+        public doPayment () {
+            this.clearPaymentError ()
+            if ( this.cardType() === 'discover' || this.cardType() === 'diners' || this.cardType() === 'jcb') {
+                this.cardNumberFolder_Error ( true )
+                return this.cardNotSupport ( true )
+            }
+            const payment: iQTGatePayment = {
+                Amount: this.selectPlanPrice() - this.showCurrentPlanBalance(),
+                cardNumber: this.cardNumber (),
+                cardExpirationYear: this.cardExpirationYear(),
+                cardPostcode: this.cardPostcode (),
+                cardcvc: this.cardcvc (),
+                isAnnual: this.isAnnual (),
+                plan: this.getPaymentPlan().name,
+                autoRenew: this.autoRenew ()
+
+            }
+            this.showWaitPaymentFinished ()
+            return socketIo.emit ( 'payment', payment, ( err, data: QTGateAPIRequestCommand ) => {
+                return this.paymentCallBackFromQTGate ( err, data )
+                
+            })
+        }
+
+        public openStripeAlipay () {
+            this.clearPaymentError ()
+            if ( Stripe && typeof Stripe ==='function' ) {
+                const stripe = Stripe ( Stripe_publicKey )
+                stripe.createSource ({
+                    type: 'alipay',
+                    amount: ( this.selectPlanPrice() - this.showCurrentPlanBalance()) * 100,
+                    currency: 'usd',
+                    redirect: {
+                        return_url: 'https://www.amazon.ca/error-image/kailey-kitty._V402336460_.gif',
+                    },
+                }).then( result => {
+                    // handle result.error or result.source
+                    if ( result.error ) {
+                        return this.Alipay_error ( true )
+                    }
+                    const source = result.source
+                })
+            }
+        }
+
+        public currentPlanPrice = ko.computed (() => {
+            if ( !this.getCurrentPlan() || ! this.getCurrentPlan().monthlyPay )
+                return ''
+            return ' $' + this.getCurrentPlan().monthlyPay
+        })
+
+        public showCurrentPlanExpire = ko.computed (() => {
+            if ( this.config().freeUser|| !this.getCurrentPlan() || !this.QTTransferData() ||  !this.QTTransferData().expire )
+                return null
+            return new Date (this.QTTransferData().expire).toLocaleDateString()
+        })
+
+        public showBandwidthRemaining = ko.computed (() => {
+            if ( !this.getCurrentPlan() || !this.QTTransferData())
+                return null
+            return Math.round (this.QTTransferData().availableMonthlyTransfer * 100 / this.QTTransferData().transferMonthly) + '%'
+        })
+
+        public showUserDetail () {
+            if ( ! this.keyPair().passwordOK || ! this.getCurrentPlan()) {
+                return
+            }
+            this.UserPerment ( true )
+            if ( !this.QTTransferData().paidID ) {
+                $('.CancelPlanButton').popup({
+                    position: 'top right',
+                    delay: {
+                        show: 300,
+                        hide: 800
+                    }
+                })
+            }
+            if ( this.QTTransferData().isAnnual ) {
+                $('.MonthlyPlanButton').popup ({
+                    position: 'top right',
+                    delay: {
+                        show: 300,
+                        hide: 800
+                    }
+                })
+            }
+            return $('#getNextPlanArray').dropdown({ 
+                onChange: value => { 
+                    this.QTGateAccountPlan ( value )
+                    this.UserPermentShapeDetail( true )
+                    return $('.CancelMessage').popup({
+                        position: 'Right Center',
+                        on: 'click',
+                        delay: {
+                            show: 300,
+                            hide: 800
+                        }
+                    })
+                }
+            })
+            
+        }
+
+        public showCurrentPlanBalance = ko.computed (() => {
+            if ( !this.getCurrentPlan() || !this.QTTransferData())
+                return null
+            return getCurrentPlanUpgradelBalance ( new Date(this.QTTransferData().expire), this.QTTransferData().productionPackage, this.QTTransferData().isAnnual )
+        })
+
+        public selectPlanPrice = ko.computed (() => {
+            if ( !this.getPaymentPlan ())
+                return null
+            return getPlanPrice ( this.getPaymentPlan ().name, this.isAnnual ())
+        })
+
+        public totalAmount = ko.computed (() => {
+            const amount = ( Math.round (( this.selectPlanPrice() - this.showCurrentPlanBalance()) * 100 ) / 100 ).toString ()
+            if ( !/\./.test( amount )) {
+                return amount + '.00'
+            }
+            return amount
+        })
+
+        public showSuccessPayment = ko.observable ( false )
+        public cancelPlanButton = ko.observable ( false )
+        public cancelPlanProcess = ko.observable ( false )
+        public cardNumberFolder_Error = ko.observable ( false )
+        public cvcNumber_Error = ko.observable ( false )
+        public postcode_Error = ko.observable ( false )
+        public cardPayment_Error = ko.observable ( false )
+        public paymentDataFormat_Error = ko.observable ( false )
+        public paymentCardFailed = ko.observable ( false )
+        public cardNotSupport = ko.observable ( false )
+
+        public cardErrorMessage = ko.computed (() => {
+            //輸入的信用卡號有誤！'，'輸入的信用卡期限有誤！'，'輸入的信用卡安全碼有誤！'，'輸入的信用卡持有人郵編有誤！
+            if ( this.cardNumberFolder_Error())
+                return 0
+            if ( this.cvcNumber_Error())
+                return 2
+            if ( this.postcode_Error())
+                return 3
+            if ( this.cardExpirationYearFolder_Error())
+                return 1
+            if ( this.cardPayment_Error ())
+                return 4
+            if ( this.paymentDataFormat_Error())
+                return 5
+            if ( this.paymentCardFailed ())
+                return 6
+            return null
+        })
+
+        public cancelPlan () {
+            this.cancelPlanProcess ( true )
+            return socketIo.emit ( 'cancelPlan', callback => {
+                this.cancelPlanProcess ( false )
+            })
+        }
+
+        public upgradeAccount () {
+            this.menuClick ( 1, false )
+            this.UserPerment ( true )
+            return this.showUserDetail()
+        }
+
+        public showCancelSuccess = ko.observable ( false )
+        public cancel_PlanExpire = ko.observable (new Date())
+        public cancel_Amount = ko.observable (0)
+
+        public doCancelPlan () {
+            
+            this.showWaitPaymentFinished ()
+            return socketIo.emit ( 'cancelPlan', ( err, data: QTGateAPIRequestCommand ) => {
+                return this.paymentCallBackFromQTGate ( err, data )
+                
+            })
+        }
+
+        public promoButton = ko.observable ( false )
+        public promoInput = ko.observable ('')
+
+        public showPromoForm () {
+            this.promoButton ( true )
+            return new Cleave ( '.promoCodeInput', {
+                uppercase: true,
+                delimiter: '-',
+                blocks: [4, 4, 4, 4]
+            })
+
+        }
+
+        public promoApplication () {
+            this.clearPaymentError ()
+            this.promoButton ( false )
+            this.showWaitPaymentFinished ()
+            return socketIo.emit ( 'promoCode', this.promoInput(), ( err, data: QTGateAPIRequestCommand ) => {
+                return this.paymentCallBackFromQTGate ( err, data )
+                
+            })
+        }
     }
 
 }
+
 const planArray = [
     {
         name:'free',
@@ -4647,8 +5301,8 @@ const planArray = [
     },{
         name:'p1',
         monthly:50,
-        monthlyPay: '2.88',
-        annually: '23.00',
+        monthlyPay: '3.88',
+        annually: '34.56',
         next:'p2',
         share: 0,
         internet: 0,
@@ -4692,9 +5346,76 @@ const planArray = [
         share: 3,
         internet: 3,
         multi_gateway:2,
-        showNote: true
+        showNote: false
     }
 ]
+const DayTime = 1000 * 60 * 60 * 24
+const monthTime = 30 * DayTime
+const yearTime = 12 * monthTime
+const getPlanPrice = ( plan: string, isAnnualPlan: boolean ) => {
+	switch ( plan ) {
+		//		1GB/month 100MB/day
+		case 'free': {
+			return 0
+		}
+		//		50GB/month
+		case 'p1': {
+			return isAnnualPlan ? 34.56: 3.88
+		}
+		//		300GB/month
+		case 'p2': {
+			return isAnnualPlan ? 58.00: 6.88
+		}
+		//		1TB/month
+		case 'p3': {
+			return isAnnualPlan ? 167.00: 19.88
+		}
+		//		2TB/month
+		case 'p4': {
+			return isAnnualPlan ? 335.00: 39.88
+		}
+		//		4TB/month
+		case 'p5': {
+			return isAnnualPlan ? 670.00: 79.88
+		}
+		//		ERROR
+		default: {
+			return parseInt ('none')
+		}
+
+	}
+}
+
+const getCurrentPlanCancelBalance = ( expiration: Date, planName: string ) => {
+	
+    const price = getPlanPrice ( planName, true )
+    const normalPrice = getPlanPrice ( planName, false )
+    const usedMonth = 12 - getRemainingMonth ( expiration )
+	const passedCost = Math.round (( price - normalPrice * usedMonth ) * 100 ) / 100
+	return passedCost > 0 ? passedCost : 0
+}
+
+const getExpire = ( startDate: Date, isAnnual: boolean ) => {
+	const start = new Date( startDate )
+	const now = new Date ()
+	const passedMonth = Math.round (( now.getTime () - start.getTime () ) / monthTime - 0.5 )
+	isAnnual ? start.setFullYear ( start.getFullYear() + 1 ) : start.setMonth ( passedMonth + 1 )
+	return start
+}
+
+const getCurrentPlanUpgradelBalance = ( expiration: Date, planName: string, isAnnual: boolean ) => {
+	if ( !isAnnual ) {
+        return getPlanPrice ( planName, false )
+    }
+    const price = getPlanPrice ( planName, true )
+    if ( !price )
+        return null
+    const usedMonth = 12 - getRemainingMonth ( expiration )
+	const passedCost = Math.round (( price -  price * usedMonth ) * 100 / 12 ) / 100
+	return passedCost
+}
+
+
 const linkClick = ( url: string ) => {
     const { shell } = require ( 'electron' )
     event.preventDefault ()

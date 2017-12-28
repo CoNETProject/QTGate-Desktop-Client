@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const DEBUG = true;
+const DEBUG = false;
 const Fs = require("fs");
 const Os = require("os");
 const path_1 = require("path");
@@ -373,16 +373,17 @@ const findPort = (CallBack) => {
         return findPort(CallBack);
     });
 };
-const template = [
-    {
-        label: 'Edit',
+const isMacOS = process.platform === 'darwin';
+const template = [{
         submenu: [
-            { role: 'copy' },
-            { role: 'paste' },
-            { role: 'quit' }
+            { role: 'undo', visible: isMacOS },
+            { role: 'redo', visible: isMacOS },
+            { role: 'selectall', visible: isMacOS },
+            { role: 'copy', visible: isMacOS },
+            { role: 'paste', visible: isMacOS },
+            { role: 'quit', visible: isMacOS }
         ]
-    }
-];
+    }];
 const appReady = () => {
     async_1.series([
             next => checkFolder(QTGateFolder, next),

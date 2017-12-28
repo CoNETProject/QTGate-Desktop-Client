@@ -689,6 +689,7 @@ export class localServer {
 			}
 			return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
 				if ( err ) {
+					console.log ( err )
 					return saveLog ('getAvaliableRegion QTClass.request callback error! STOP')
 				}
 				if ( res && res.dataTransfer && res.dataTransfer.productionPackage )
@@ -709,6 +710,97 @@ export class localServer {
 
 				this.regionV1 = res.Args[2]
 			})
+		})
+
+		socket.on ( 'payment', ( payment: iQTGatePayment, CallBack ) => {
+			const com: QTGateAPIRequestCommand = {
+				command: 'payment',
+				Args: [ payment ],
+				error: null,
+				requestSerial: Crypto1.randomBytes(8).toString('hex')
+			}
+			saveLog( `socket.on payment = [${JSON.stringify ( payment )}] send to QTGate!`)
+			
+			return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
+				saveLog ( `payment got callBack: [${ JSON.stringify ( res )}]`)
+				if ( err ) {
+					return saveLog (`payment got QTClass.request error!`)
+				}
+				if ( res.error === -1 ) {
+					saveLog ( 'payment success!')
+					this.config.freeUser = false
+					this.saveConfig ()
+				}
+				return CallBack ( err, res )
+			})
+			
+		})
+
+		socket.on ( 'cancelPlan', CallBack => {
+			const com: QTGateAPIRequestCommand = {
+				command: 'cancelPlan',
+				error: null,
+				Args: [],
+				requestSerial: Crypto1.randomBytes(8).toString ('hex')
+			}
+			saveLog( `socket.on cancelPlan send to QTGate!`)
+			
+			return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
+				saveLog ( `cancelPlan got callBack: [${ JSON.stringify ( res )}]`)
+				if ( err ) {
+					return saveLog (`cancelPlan got QTClass.request  error!`)
+				}
+				if ( res.error === -1 ) {
+					saveLog ( 'cancelPlan success!' )
+				}
+				return CallBack ( err, res )
+			})
+		})
+
+		socket.on ( 'cardToken', ( payment: iQTGatePayment, CallBack ) => {
+			const com: QTGateAPIRequestCommand = {
+				command: 'cardToken',
+				error: null,
+				Args: [ payment ],
+				requestSerial: Crypto1.randomBytes(8).toString ('hex')
+			}
+			saveLog( `socket.on cardToken send to QTGate!`)
+			
+			return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
+				saveLog ( `cardToken got callBack: [${ JSON.stringify ( res )}]`)
+				if ( err ) {
+					return saveLog ( `cardToken got QTClass.request  error!`)
+				}
+				if ( res.error === -1 ) {
+					saveLog ( 'cancelPlan success!' )
+					this.config.freeUser = false
+					this.saveConfig ()
+				}
+				return CallBack ( err, res )
+			})
+		})
+
+		socket.on ( 'promoCode', ( promoCode, CallBack ) => {
+			const com: QTGateAPIRequestCommand = {
+				command: 'promoCode',
+				error: null,
+				Args: [ promoCode ],
+				requestSerial: Crypto1.randomBytes(8).toString ('hex')
+			}
+			
+			return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
+				saveLog ( `promoCode got callBack: [${ JSON.stringify ( res )}]`)
+				if ( err ) {
+					return saveLog (`promoCode got QTClass.request  error!`)
+				}
+				if ( res.error === -1 ) {
+					saveLog ( 'promoCode success!' )
+					this.config.freeUser = false
+					this.saveConfig ()
+				}
+				return CallBack ( err, res )
+			})
+			
 		})
 
 		socket.on ( 'requestActivEmail', CallBack => {
@@ -807,7 +899,7 @@ export class localServer {
 				this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
 					saveLog (`QTClass.request return res[${ JSON.stringify ( res )}]`)
 					if ( err ) {
-						return socket.emit ( 'qtGateConnect', 5 )
+						return saveLog (`checkActiveEmailSubmit got QTClass.request error!`)
 					}
 					if ( res.error > -1 ) {
 						saveLog (`socket.emit ( 'checkActiveEmailError', res.error )`)
@@ -913,6 +1005,11 @@ export class localServer {
 		})
 	}
 
+	public requestHaveNotResponseError () {
+		this.qtGateConnectEmitData.qtGateConnecting = 11
+		this.socketServer.emit ( 'qtGateConnect', this.qtGateConnectEmitData )
+	}
+
 	public makeOpnConnect ( arg: IConnectCommand ) {
 		
 		this.connectCommand = arg
@@ -983,7 +1080,8 @@ export class localServer {
 				uuid: imapData.uuid,
 				canDoDelete: imapData.canDoDelete,
 				clientIpAddress: null,
-				ciphers: imapData.ciphers
+				ciphers: imapData.ciphers,
+				confirmRisk: imapData.confirmRisk
 			}
 			this.imapDataPool.unshift ( data )
 			return 0
@@ -1349,9 +1447,11 @@ export class localServer {
         this.ex_app.get ( '/', ( req, res ) => {
             res.render( 'home', { title: 'home' })
 		})
+
 		this.ex_app.get ( '/canada150', ( req, res ) => {
             res.render( 'home/canada150', { title: 'home' })
 		})
+
 		this.ex_app.get ( '/doingUpdate', ( req, res ) => {
 			res.json()
 			
@@ -1704,6 +1804,8 @@ export class localServer {
 		this.qtGateConnectEmitData.isKeypairQtgateConform = this.config.keypair.verified
 		this.qtGateConnectEmitData.error = null
 		if ( !imapData.confirmRisk ) {
+			saveLog (`imapData.confirmRisk false stop connect!`)
+			this.qtGateConnectEmitData.qtGateConnecting = 0
 			return socket.emit ( 'qtGateConnect', this.qtGateConnectEmitData )
 		}
 			
@@ -1750,6 +1852,7 @@ export class localServer {
 				this.qtGateConnectEmitData.qtGateConnecting = 11
 				return socket.emit ( 'qtGateConnect', this.qtGateConnectEmitData )
 			}, socket )
+			
 		}
 		
 		return doConnect ( !this.qtGateConnectEmitData.needSentMail )
@@ -1905,6 +2008,7 @@ class ImapConnect extends Imap.imapPeer {
 					return n.CallBack ( new Error ('tiemout'))
 				})
 				this.commandCallBackPool = new Map()
+				return this.localServer.requestHaveNotResponseError ()
 			}
 			return this.destroy (0)
 		}, request ? commandRequestTimeOutTime : sentRequestMailWaitTimeOut )
@@ -1972,8 +2076,6 @@ class ImapConnect extends Imap.imapPeer {
 			saveLog (`ImapConnect qtGateConnectEmitData.sentMail = [true], this.doSendConnectMail ()`)
 			this.doSendConnectMail ()
 		} else {
-			
-
 			saveLog (`ImapConnect qtGateConnectEmitData.sentMail = [false], this.doSendConnectMail ()`)
 			this.on ( 'pingTimeOut', () => {
 				saveLog ( `ImapConnect on pingTimeOut!` )
@@ -2044,7 +2146,7 @@ class ImapConnect extends Imap.imapPeer {
 			return poolData.CallBack ( null, ret )
 			
 		}
-
+		saveLog (`Class ImapConnect start up!`)
 	}
 
 	public request ( command: QTGateAPIRequestCommand, CallBack ) {

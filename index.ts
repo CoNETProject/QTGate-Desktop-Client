@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-const DEBUG = true
+const DEBUG = false
 
 import * as Fs from 'fs'
 import * as Os from 'os'
@@ -429,17 +429,19 @@ const findPort = ( CallBack ) => {
         return findPort ( CallBack )
     })
 }
+const isMacOS = process.platform === 'darwin'
 
-const template = [
-    {
-        label: 'Edit',
-        submenu: [
-          {role: 'copy' },
-          {role: 'paste' },
-          { role: 'quit' }
+const template = [{
+        submenu:[
+        { role: 'undo', visible: isMacOS },
+        { role: 'redo', visible: isMacOS },
+        { role: 'selectall', visible: isMacOS },
+        { role: 'copy', visible: isMacOS },
+        { role: 'paste', visible: isMacOS },
+        { role: 'quit', visible: isMacOS }
         ]
-    }
-]
+    }]
+
 
 const appReady = () => {
     series([

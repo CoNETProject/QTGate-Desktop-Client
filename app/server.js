@@ -651,6 +651,7 @@ class localServer {
             };
             return this.QTClass.request(com, (err, res) => {
                 if (err) {
+                    console.log(err);
                     return saveLog('getAvaliableRegion QTClass.request callback error! STOP');
                 }
                 if (res && res.dataTransfer && res.dataTransfer.productionPackage)
@@ -667,6 +668,87 @@ class localServer {
                     return socket.emit('QTGateGatewayConnectRequest', this.connectCommand);
                 }
                 this.regionV1 = res.Args[2];
+            });
+        });
+        socket.on('payment', (payment, CallBack) => {
+            const com = {
+                command: 'payment',
+                Args: [payment],
+                error: null,
+                requestSerial: Crypto1.randomBytes(8).toString('hex')
+            };
+            saveLog(`socket.on payment = [${JSON.stringify(payment)}] send to QTGate!`);
+            return this.QTClass.request(com, (err, res) => {
+                saveLog(`payment got callBack: [${JSON.stringify(res)}]`);
+                if (err) {
+                    return saveLog(`payment got QTClass.request error!`);
+                }
+                if (res.error === -1) {
+                    saveLog('payment success!');
+                    this.config.freeUser = false;
+                    this.saveConfig();
+                }
+                return CallBack(err, res);
+            });
+        });
+        socket.on('cancelPlan', CallBack => {
+            const com = {
+                command: 'cancelPlan',
+                error: null,
+                Args: [],
+                requestSerial: Crypto1.randomBytes(8).toString('hex')
+            };
+            saveLog(`socket.on cancelPlan send to QTGate!`);
+            return this.QTClass.request(com, (err, res) => {
+                saveLog(`cancelPlan got callBack: [${JSON.stringify(res)}]`);
+                if (err) {
+                    return saveLog(`cancelPlan got QTClass.request  error!`);
+                }
+                if (res.error === -1) {
+                    saveLog('cancelPlan success!');
+                }
+                return CallBack(err, res);
+            });
+        });
+        socket.on('cardToken', (payment, CallBack) => {
+            const com = {
+                command: 'cardToken',
+                error: null,
+                Args: [payment],
+                requestSerial: Crypto1.randomBytes(8).toString('hex')
+            };
+            saveLog(`socket.on cardToken send to QTGate!`);
+            return this.QTClass.request(com, (err, res) => {
+                saveLog(`cardToken got callBack: [${JSON.stringify(res)}]`);
+                if (err) {
+                    return saveLog(`cardToken got QTClass.request  error!`);
+                }
+                if (res.error === -1) {
+                    saveLog('cancelPlan success!');
+                    this.config.freeUser = false;
+                    this.saveConfig();
+                }
+                return CallBack(err, res);
+            });
+        });
+        socket.on('promoCode', (promoCode, CallBack) => {
+            const com = {
+                command: 'promoCode',
+                error: null,
+                Args: [promoCode],
+                requestSerial: Crypto1.randomBytes(8).toString('hex')
+            };
+            return this.QTClass.request(com, (err, res) => {
+                saveLog(`promoCode got callBack: [${JSON.stringify(res)}]`);
+                if (err) {
+                    return saveLog(`promoCode got QTClass.request  error!`);
+                }
+                if (res.error === -1) {
+                    saveLog('promoCode success!');
+                    this.config.freeUser = false;
+                    this.saveConfig();
+                }
+                return CallBack(err, res);
             });
         });
         socket.on('requestActivEmail', CallBack => {
@@ -751,7 +833,7 @@ class localServer {
                 this.QTClass.request(com, (err, res) => {
                     saveLog(`QTClass.request return res[${JSON.stringify(res)}]`);
                     if (err) {
-                        return socket.emit('qtGateConnect', 5);
+                        return saveLog(`checkActiveEmailSubmit got QTClass.request error!`);
                     }
                     if (res.error > -1) {
                         saveLog(`socket.emit ( 'checkActiveEmailError', res.error )`);
@@ -837,6 +919,10 @@ class localServer {
             this.stopGetwayConnect();
         });
     }
+    requestHaveNotResponseError() {
+        this.qtGateConnectEmitData.qtGateConnecting = 11;
+        this.socketServer.emit('qtGateConnect', this.qtGateConnectEmitData);
+    }
     makeOpnConnect(arg) {
         this.connectCommand = arg;
         const runCom = arg.connectType === 1 ? '@Opn' : 'iOpn';
@@ -901,7 +987,8 @@ class localServer {
                 uuid: imapData.uuid,
                 canDoDelete: imapData.canDoDelete,
                 clientIpAddress: null,
-                ciphers: imapData.ciphers
+                ciphers: imapData.ciphers,
+                confirmRisk: imapData.confirmRisk
             };
             this.imapDataPool.unshift(data);
             return 0;
@@ -1465,6 +1552,8 @@ class localServer {
         this.qtGateConnectEmitData.isKeypairQtgateConform = this.config.keypair.verified;
         this.qtGateConnectEmitData.error = null;
         if (!imapData.confirmRisk) {
+            saveLog(`imapData.confirmRisk false stop connect!`);
+            this.qtGateConnectEmitData.qtGateConnecting = 0;
             return socket.emit('qtGateConnect', this.qtGateConnectEmitData);
         }
         const doConnect = (sendMailIftimeOut) => {
@@ -1668,6 +1757,7 @@ class ImapConnect extends Imap.imapPeer {
             console.log(Util.inspect(ret));
             return poolData.CallBack(null, ret);
         };
+        saveLog(`Class ImapConnect start up!`);
     }
     errNumber(err) {
         if (typeof err === 'number')
@@ -1717,6 +1807,7 @@ class ImapConnect extends Imap.imapPeer {
                     return n.CallBack(new Error('tiemout'));
                 });
                 this.commandCallBackPool = new Map();
+                return this.localServer.requestHaveNotResponseError();
             }
             return this.destroy(0);
         }, request ? commandRequestTimeOutTime : sentRequestMailWaitTimeOut);
