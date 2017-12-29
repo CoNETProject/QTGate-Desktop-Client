@@ -5352,6 +5352,7 @@ const planArray = [
 const DayTime = 1000 * 60 * 60 * 24
 const monthTime = 30 * DayTime
 const yearTime = 12 * monthTime
+
 const getPlanPrice = ( plan: string, isAnnualPlan: boolean ) => {
 	switch ( plan ) {
 		//		1GB/month 100MB/day
