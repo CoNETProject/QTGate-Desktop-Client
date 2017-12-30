@@ -322,49 +322,43 @@ block jumbotron1
 			//-				UserPerment
 			#UserPerment.content( data-bind = "visible: UserPerment()" style = "margin-top: -3em;")
 				#UserPermentShape
+					.rePosition( data-bind = "visible: !UserPermentShapeDetail(), click: () => { UserPerment( false )}" style="position: relative;z-index: 1000;")
+						i.icon.link.remove.circle.big.grey( style="position: absolute;margin-left: -0.5em;margin-top: -0.5em;")
 					.ui.segments
 						.ui.raised.segment( data-bind = "visible: !UserPermentShapeDetail()")
-							.rePosition( style="position: relative;z-index: 1000;")
-								i.icon.link.remove.circle.big.grey( data-bind = "click: () => { UserPerment( false )}" style="margin-top: -1.7em;margin-left: -1em;")
+							h3.ui.dividing.header( data-bind="text: keyPair().email" style="color: mediumblue;")
 							.ui.one.column.grid( style = "margin: 0.1em;margin-top: -1em;")
-								.row( style = "padding: 0px;" )
-									.column
-										//-span( data-bind="text: infoDefine[ languageIndex() ].account.segmentTitle" )
-										.ui.basic.label
-											span( data-bind="text: keyPair().email" style="margin-left: 0.5em;color: mediumblue;font-size: medium;font-weight: normal;")
-								.row( style = "padding: 0px;padding-top: 0.5em;")
-									.column
-										//-span( data-bind="text: infoDefine[ languageIndex() ].account.currentPlan" style="font-size: small;")
-										span.ui.labels( style = "margin-left: 0.5em;")
-											.ui.teal.tag.label( data-bind = " text: infoDefine[ languageIndex() ].QTGateGateway.userType [ config().freeUser ? 0 : 1 ] + currentPlanPrice ()" style="color: gray;")
-											.ui.teal.tag.label( data-bind = "visible: QTTransferData() && QTTransferData().productionPackage !== 'free', text: QTTransferData() ? (infoDefine[ languageIndex() ].account.currentPlanExpire[ (QTTransferData().automatically ? 1 : 0)] + new Date(QTTransferData().expire).toLocaleDateString()): null ")
-											
-											
-											.ui.tag.purple.label( data-bind = "text: getCurrentPlan() ? ( getCurrentPlan().monthly + 'GB') : null ")
-											.ui.tag.purple.label( data-bind = "visible: getCurrentPlan() && getCurrentPlan().day, text: getCurrentPlan() && getCurrentPlan().day ? (infoDefine[ languageIndex() ].account.dayBandwidthTitle +  getCurrentPlan().day + 'MB' ): null" )
-											.ui.purple.tag.label( data-bind = "text: infoDefine[ languageIndex() ].account.bandwidthBalance + showBandwidthRemaining()")
-											.ui.purple.tag.label( data-bind = "text: getCurrentPlan() ? infoDefine[ languageIndex() ].account.serverShareData [ getCurrentPlan().share ]: null")
+								.row( style = "padding: 0px;padding-top: 1em;")
+									//-span( data-bind="text: infoDefine[ languageIndex() ].account.currentPlan" style="font-size: small;")
+									span.ui.labels( style = "margin-left: 0.5em;")
+										.ui.teal.tag.label( data-bind = " text: infoDefine[ languageIndex() ].QTGateGateway.userType [ config().freeUser ? 0 : 1 ] + currentPlanPrice ()" style="color: gray;")
+										.ui.teal.tag.label( data-bind = "visible: QTTransferData() && QTTransferData().productionPackage !== 'free', text: QTTransferData() ? ( infoDefine[ languageIndex() ].account.currentPlanExpire[ ( QTTransferData().automatically ? 1 : 0 )] + new Date( QTTransferData().expire ).toLocaleDateString()): null ")
+										.ui.teal.tag.label( data-bind = "visible: QTTransferData() && QTTransferData().productionPackage === 'free', text: QTTransferData() ? infoDefine[ languageIndex() ].account.monthResetDay + new Date( QTTransferData().expire ).getDate() + infoDefine[ languageIndex() ].account.monthResetDayAfter: null ")
+										
+										.ui.tag.purple.label( data-bind = "text: getCurrentPlan() ? ( getCurrentPlan().monthly + 'GB') : null ")
+										.ui.tag.purple.label( data-bind = "visible: getCurrentPlan() && getCurrentPlan().day, text: getCurrentPlan() && getCurrentPlan().day ? (infoDefine[ languageIndex() ].account.dayBandwidthTitle +  getCurrentPlan().day + 'MB' ): null" )
+										.ui.purple.tag.label( data-bind = "text: infoDefine[ languageIndex() ].account.bandwidthBalance + showBandwidthRemaining()")
+										.ui.purple.tag.label( data-bind = "text: getCurrentPlan() ? infoDefine[ languageIndex() ].account.serverShareData [ getCurrentPlan().share ]: null")
 								.row( data-bind = "visible: !cancelPlanButton()&& !promoButton() && ! doingPayment()" style="padding: 0px;padding-top: 0.5em;")
-									.column
-										span( data-bind = "visible: getNextPlanArray()().length")
-											//-.ui.dropdown.item( data-bind = "visible: getBackPlanArray().length" )
-												.text.ui.label.red( data-bind = "text: infoDefine[ languageIndex() ].account.DowngradeTitle")
-												.menu( data-bind = "foreach: getBackPlanArray()")
-													.item
-											#getNextPlanArray.ui.floating.dropdown.button.primary.basic
-												span( data-bind = "text: infoDefine[ $root.languageIndex() ].account.upgradeTitle")
-												.menu( data-bind = " foreach: getNextPlanArray() " )
-													.item( data-bind = " attr: {'data-value': name }")
-														.ui.one.column.grid
-															.row
-																.column
-																	.ui.green.label( data-bind = "text: monthly + 'GB' ")
-																	span( data-bind = " text: '$'+monthlyPay " style="padding-left: 0.5em; padding-right: 0.5em;")
-																	.ui.green.label( data-bind = "text: $root.infoDefine[ $root.languageIndex() ].account.serverShareData[share]" )
-										span( data-bind=" visible: canShowCancelSubscriptionButton()")
-											button.ui.negative.basic.button.CancelPlanButton( data-bind="click: cancelSubscriptionButton, text: infoDefine[ $root.languageIndex() ].account.cancelPlan ")
-										span( data-bind = "visible: getNextPlanArray()().length")
-											button.ui.basic.orange.button.Promo( data-bind = " text: infoDefine[ languageIndex() ].account.promoButton, click: showPromoForm")
+									span( data-bind = "visible: getNextPlanArray()().length")
+										//-.ui.dropdown.item( data-bind = "visible: getBackPlanArray().length" )
+											.text.ui.label.red( data-bind = "text: infoDefine[ languageIndex() ].account.DowngradeTitle")
+											.menu( data-bind = "foreach: getBackPlanArray()")
+												.item
+										#getNextPlanArray.ui.floating.dropdown.button.primary.basic
+											span( data-bind = "text: infoDefine[ $root.languageIndex() ].account.upgradeTitle")
+											.menu( data-bind = " foreach: getNextPlanArray() " )
+												.item( data-bind = " attr: {'data-value': name }")
+													.ui.one.column.grid
+														.row
+															.column
+																.ui.green.label( data-bind = "text: monthly + 'GB' ")
+																span( data-bind = " text: '$'+monthlyPay " style="padding-left: 0.5em; padding-right: 0.5em;")
+																.ui.green.label( data-bind = "text: $root.infoDefine[ $root.languageIndex() ].account.serverShareData[share]" )
+									span( data-bind=" visible: canShowCancelSubscriptionButton()")
+										button.ui.negative.basic.button.CancelPlanButton( data-bind="click: cancelSubscriptionButton, text: infoDefine[ $root.languageIndex() ].account.cancelPlan ")
+									span( data-bind = "visible: getNextPlanArray()().length")
+										button.ui.basic.orange.button.Promo( data-bind = " text: infoDefine[ languageIndex() ].account.promoButton, click: showPromoForm")
 								.row.ui.divider( data-bind = " visible: promoButton()" style="padding-bottom: 2em;")
 									form.ui.form
 										.fields
@@ -380,13 +374,13 @@ block jumbotron1
 									i.link.remove.circle.big.icon( data-bind="click: () => { cancelPlanButton (false); return false;}, clickBubble: false" style="position: absolute;margin-left: 23.7em;z-index: 999;color: gray;")
 									.ui.olive.message.transition( data-bind="css: { hidden: !cancelPlanButton ()}")
 										p( data-bind = "text: infoDefine[ languageIndex() ].account.cancelPlanMessage, visible: !showCancelSuccess()")
-										p( data-bind = "text: QTTransferData() ? infoDefine[ languageIndex() ].account.cancelPlanMessage1 ( QTTransferData().productionPackage, QTTransferData().isAnnual, new Date(QTTransferData().expire) ): null, visible: !showCancelSuccess()")
+										p( data-bind = "text: QTTransferData() ? infoDefine[ languageIndex() ].account.cancelPlanMessage1 ( QTTransferData().productionPackage, QTTransferData().isAnnual, QTTransferData().expire ): null, visible: !showCancelSuccess()")
 										p( data-bind="visible: showCancelSuccess(), text:infoDefine[ languageIndex() ].account.CancelSuccess( cancel_PlanExpire(), QTTransferData() ? QTTransferData().isAnnual: false, cancel_Amount())")
 										p( data-bind="visible: showCancelSuccess(), text:infoDefine[ languageIndex() ].account.qtgateTeam")
 										button.ui.button.negative( data-bind = "visible: !showCancelSuccess(), text: infoDefine[ languageIndex() ].account.cancelPlanButton, click: doCancelPlan, css: { loading: doingPayment() } ")
 						.ui.raised.green.segment( data-bind = "visible: showSuccessPayment()")
 							.ui.olive.message
-								i.close.icon( data-bind = "click: () => { $(this).closest('.message').transition('fade')}")
+								i.close.icon( data-bind = "click: () => { showSuccessPayment(false); $(this).closest('.message').transition('fade')}")
 								.header( data-bind="text:infoDefine[ languageIndex() ].account.paymentSuccessTitile")
 								p( data-bind="text:infoDefine[ languageIndex() ].account.paymentSuccess")
 								p( data-bind="text:infoDefine[ languageIndex() ].account.qtgateTeam")

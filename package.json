@@ -6,8 +6,8 @@
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "win": "electron-builder --x64 --ia32",
-    "win32": "electron-builder --win --ia32",
+    "win": "electron-builder --x64",
+    "win32": "electron-builder --ia32",
     "linux": "electron-builder --linux",
     "mac": "electron-builder",
     "pre": "electron-builder install-app-deps",
@@ -16,7 +16,7 @@
   "engines": {
     "node": ">=50.9"
   },
-  "build": {
+  "build": {    
     "squirrelWindows": {
       "remoteReleases": "https://github.com/QTGate/atOPN/releases/download/0.2.0/"
     },

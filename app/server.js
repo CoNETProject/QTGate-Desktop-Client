@@ -654,8 +654,9 @@ class localServer {
                     console.log(err);
                     return saveLog('getAvaliableRegion QTClass.request callback error! STOP');
                 }
-                if (res && res.dataTransfer && res.dataTransfer.productionPackage)
+                if (res && res.dataTransfer && res.dataTransfer.productionPackage) {
                     this.config.freeUser = /free/i.test(res.dataTransfer.productionPackage);
+                }
                 CallBack(res.Args[0], res.dataTransfer, this.config);
                 saveLog(`getAvaliableRegion ${JSON.stringify(res)} `);
                 //		Have gateway connect!
@@ -1750,6 +1751,7 @@ class ImapConnect extends Imap.imapPeer {
                     }
                 }
             }
+            saveLog(`on newMail command [${ret.command}] have requestSerial [${ret.requestSerial}]`);
             const poolData = this.commandCallBackPool.get(ret.requestSerial);
             if (!poolData || typeof poolData.CallBack !== 'function') {
                 return saveLog(`QTGateAPIRequestCommand got commandCallBackPool ret.requestSerial [${ret.requestSerial}] have not callback `);

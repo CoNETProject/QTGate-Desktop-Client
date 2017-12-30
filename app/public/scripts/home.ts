@@ -391,11 +391,12 @@ const QTGateRegionsSetup: IQTGateRegionsSetup[] = [
     }
 ]
 
-const nextExpirDate = ( expire: Date ) => {
-    const now = new Date () 
+const nextExpirDate = ( expire: string ) => {
+    const now = new Date ()
+    const _expire = new Date ( expire )
     now.setHours ( 0,0,0,0 )
-    if ( now.getTime() > expire.getTime ()) {
-        return expire
+    if ( now.getTime() > _expire.getTime ()) {
+        return _expire
     }
     const nextExpirDate = new Date ( expire )
     nextExpirDate.setMonth ( now.getMonth())
@@ -403,17 +404,16 @@ const nextExpirDate = ( expire: Date ) => {
 
     if ( nextExpirDate.getTime() < now.getTime ()) {
         nextExpirDate.setMonth ( now.getMonth() + 1 )
+        return nextExpirDate
     }
 
-    if ( nextExpirDate.getTime () >= expire.getTime ()) {
-        return expire
-    }
-    return nextExpirDate
+    return _expire
 }
 
-const getRemainingMonth = ( expire: Date ) => {
-    const _nextExpirDate = nextExpirDate( expire )
-    return expire.getFullYear () === _nextExpirDate.getFullYear () ? expire.getMonth() - _nextExpirDate.getMonth() : ( 11 - _nextExpirDate.getMonth() + expire.getMonth() )
+const getRemainingMonth = ( expire: string ) => {
+    const _expire = new Date ( expire )
+    const _nextExpirDate = nextExpirDate ( expire )
+    return _expire.getFullYear () === _nextExpirDate.getFullYear () ? _expire.getMonth() - _nextExpirDate.getMonth() : ( 11 - _nextExpirDate.getMonth() + _expire.getMonth() )
 }
 
 const infoDefine = [
@@ -480,8 +480,8 @@ const infoDefine = [
             multiRegion:['单一代理区域并发代理','多代理区域混合并发代理','多代理区域混合并发代理','多代理区域混合并发代理'],
             downGradeMessage:'您正在操作降级您的订阅，如果操作成功您将从下月您的订阅之日起，实行新的订阅，如果您是。',
             cancelPlanMessage:'QTGate的订阅是以月为基本的单位。您的月订阅将在下月您的订阅起始日前被终止，您可以继续使用您的本月订阅计划，您将自动回到免费用户。如果您是每月自动扣款，则下月将不再扣款。如果您是年度订阅计划，您的退款将按普通每月订阅费，扣除您已经使用的月份后计算的差额，将自动返还您所支付的信用卡账号，如果您是使用促销码，或您是测试用户，您的终止订阅将不能被接受。',
-            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: Date ) => {
-                return `您的订阅计划是${ isAnnual ? `年度订阅，退还金额将按照您已付年订阅费 us$[${ getPlanPrice ( planName, true )}] - 您已使用月份原价 us$[${ getPlanPrice( planName, false )}] X 已使用月数[${ 12 - getRemainingMonth ( expire )}] = 余额 us$[${ getCurrentPlanCancelBalance ( expire, planName )}]将退还到您用来支付的信用卡。`: `月订阅，您的订阅将下次更新日${ nextExpirDate(expire).toLocaleDateString() }时不再被自动扣款和更新。`}`
+            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
+                return `您的订阅计划是${ isAnnual ? `年度订阅，退还金额将按照您已付年订阅费 us$[${ getPlanPrice ( planName, true )}] - 您已使用月份原价 us$[${ getPlanPrice( planName, false )}] X 已使用月数[${ 12 - getRemainingMonth ( expire )}] = 余额 us$[${ getCurrentPlanCancelBalance ( expire, planName )}]将退还到您用来支付的信用卡。`: `月订阅，您的订阅将下次更新日${ nextExpirDate( expire ).toLocaleDateString() }时不再被自动扣款和更新。`}`
             }
         },
 
@@ -1007,7 +1007,7 @@ const infoDefine = [
             serverShareData1:'並列ゲットウェイ技術を使う際に、同時使う数が独占数を超える場合には、独占リソースを他人と割合にチェアする場合もあります。',
             maxmultigateway: ['最大二つ並列ゲットウェイ','最大四つ並列ゲットウェイ*','最大四つ並列ゲットウェイ'],
             cancelPlanMessage:'QTGateプランは月毎に計算し、来月のあなたの最初加入した日まで、今のプランのままご利用ですます。キャンセルした日から自動的にQTGateの無料ユーザーになります。おアカウトは(月)払いの場合は、来月の自動払いは中止となります。年払いの場合は、ご使った分に月普通料金と計算し控除してから、お支払いを使ったクレジットカードに戻ります。販促コードまたはテストユーザーにはキャンセルすることができません。',
-            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: Date ) => {
+            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
                 return `あなたのプランは${ isAnnual ? `一年契約です。キャンセルをした場合は、ご利用して頂いた月に普通料金と請求を計算されます。お返し金額はプラン年契約料金 us$[${ getPlanPrice ( planName, true )}] - プラン普通月料金 us$[${ getPlanPrice( planName, false )}] X ご利用頂いた月[${ 12 - getRemainingMonth ( expire )}] = 戻る金額 us$[${ getCurrentPlanCancelBalance ( expire, planName )}]となります。`: `月プランです。キャンセルにすると次の更新日[${ nextExpirDate(expire).toLocaleDateString() }]に自動更新はしませんです。`}`
             }
         },
@@ -1497,7 +1497,7 @@ const infoDefine = [
             CancelSuccess: ( PlanExpire: Date, isAnnual: boolean, returnAmount: number ) => {
                 return `Your subscriptions was cancelled. You may keep use QTGate service with this plan until ${ PlanExpire.toLocaleDateString() }. Restrictions apply to free accounts and accounts using promotions. ${ isAnnual ? `us$${ returnAmount } will return to your paid card in 5 working day.` : `Automatically canceled.` } `
             },
-            currentPlanExpire: ['Plan expires at：','Renews at'],
+            currentPlanExpire: ['Plan expires at：','Renews at','monthly reset day '],
             currentAnnualPlan: ['Monthly plan','Annual plan'],
             cardPaymentErrorMessage:['Error: card number or have an unsupported card type.','Error: expiration!','Error: Card Security Code','Error: Card owner postcode',
                     'Error: payment failed. Please try again late.',
@@ -1542,8 +1542,8 @@ const infoDefine = [
             aboutCancel: 'About cancel subscription',
             cancelPlanMessage: 'You may cancel your QTGate subscription at any time, and you will continue to have access to the QTGate services through the end of your paid period until all remaining subscription time in your account is used up. Restrictions apply to free accounts and accounts using promotions.',
             serverShareData1:'Your dedicated server will be share ratio when you connected over your dedicated count via use Multi-gateway technology.',
-            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: Date ) => {
-                return `Your plan is ${ isAnnual ? `annual paid ${ getPlanPrice ( planName, true )}. The passed ${ 12 - getRemainingMonth ( expire )} month will being normal price us$${ getPlanPrice( planName, false )}, QTGate will refunds us$${ getCurrentPlanCancelBalance ( expire, planName )} to your paid card.`: `monthly, it will not be renew at ${ nextExpirDate(expire).toLocaleDateString() } if you cancel this plan.`}`
+            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
+                return `Your plan is ${ isAnnual ? `annual paid ${ getPlanPrice ( planName, true )}. The passed ${ 12 - getRemainingMonth ( expire )} month will being normal price us$${ getPlanPrice( planName, false )}, QTGate will refunds us$${ getCurrentPlanCancelBalance ( expire, planName )} to your paid card.`: `monthly, it will not be renew at ${ nextExpirDate (expire).toLocaleDateString() } if you cancel this plan.`}`
             }
         },
 
@@ -2063,7 +2063,7 @@ const infoDefine = [
             paymentProblem1:'支付遇到問題',
             paymentProblem:'您目前的所在區域看上去銀行網關被和諧，您可以使用QTGate網關支付來完成支付',
             title: '賬戶管理',
-            currentPlanExpire: ['訂閱截止日期：','下一次自動續訂日'],
+            currentPlanExpire: ['訂閱截止日期：','下一次自動續訂日','每月數據重置日'],
             CancelSuccess: ( PlanExpire: Date, isAnnual: boolean, returnAmount: number ) => {
                 return `中止訂閱成功。您可以一直使用您的原訂閱到${ PlanExpire.toLocaleDateString() }為止。以後您將會自動成為QTGate免費用戶可以繼續使用QTGate的各項免費功能。 ${ isAnnual ? `您的餘款us$${ returnAmount }會在5個工作日內退還到您的支付卡。 `: '下月起QTGate系統不再自動扣款。 '} 祝您網絡衝浪愉快。`
             },
@@ -2111,8 +2111,8 @@ const infoDefine = [
             internetShareData:['共享高速帶寬','獨享高速帶寬*','獨享雙線高速帶寬*','獨享四線高速帶寬'],
             serverShareData1:'OPN併發多代理技術，同時使用數大於獨占數時，會相應分享您所獨占的資源',
             cancelPlanMessage:'可隨時終止您的訂閱，QTGate的訂閱是以月為基本的單位。您的月訂閱將在下月您的訂閱起始日前被終止，您可以繼續使用您的本月訂閱計劃，您將自動回到免費用戶。如果您是每月自動扣款，則下月將不再扣款。如果您是年度訂閱計劃，您的退款將按普通每月訂閱費，扣除您已經使用的月份後計算的差額，將自動返還您所支付的信用卡賬號，如果您是使用促銷碼，或您是測試用戶，您的終止訂閱將不能被接受。 ',
-            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: Date ) => {
-                return `您的訂閱計劃是${ isAnnual ? `年度訂閱，退還金額將按照您已付年訂閱費 us$[${ getPlanPrice ( planName, true )}] - 您已使用月份原價 us$[${ getPlanPrice( planName, false )}] X 已使用月數[${ 12 - getRemainingMonth ( expire )}] = 餘額 us$[${ getCurrentPlanCancelBalance ( expire, planName )}]將退還到您用來支付的信用卡。`: `月訂閱，您的訂閱將下次更新日${ nextExpirDate(expire).toLocaleDateString() }時不再被自動扣款和更新。`}`
+            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
+                return `您的訂閱計劃是${ isAnnual ? `年度訂閱，退還金額將按照您已付年訂閱費 us$[${ getPlanPrice ( planName, true )}] - 您已使用月份原價 us$[${ getPlanPrice( planName, false )}] X 已使用月數[${ 12 - getRemainingMonth ( expire )}] = 餘額 us$[${ getCurrentPlanCancelBalance ( expire, planName )}]將退還到您用來支付的信用卡。`: `月訂閱，您的訂閱將下次更新日${ nextExpirDate (expire).toLocaleDateString() }時不再被自動扣款和更新。`}`
             }
         
         },
@@ -4838,10 +4838,10 @@ module view_layout {
 
         private clearAllPaymentErrorTimeUP () {
             return setTimeout (() => {
-                this.showSuccessPayment ( false )
-                this.showCancelSuccess ( false )
+                //this.showSuccessPayment ( false )
+                //this.showCancelSuccess ( false )
                 return this.clearPaymentError ()
-            }, 5000)
+            }, 5000 )
         }
 
         private paymentCallBackFromQTGate ( err, data: QTGateAPIRequestCommand ) {
@@ -5144,9 +5144,12 @@ module view_layout {
         })
 
         public showUserDetail () {
+            
             if ( ! this.keyPair().passwordOK || ! this.getCurrentPlan()) {
                 return
             }
+            this.showSuccessPayment ( false )
+            this.showCancelSuccess ( false )
             this.UserPerment ( true )
             if ( !this.QTTransferData().paidID ) {
                 $('.CancelPlanButton').popup({
@@ -5171,7 +5174,7 @@ module view_layout {
                     this.QTGateAccountPlan ( value )
                     this.UserPermentShapeDetail( true )
                     return $('.CancelMessage').popup({
-                        position: 'Right Center',
+                        position: 'bottom right',
                         on: 'click',
                         delay: {
                             show: 300,
@@ -5186,7 +5189,7 @@ module view_layout {
         public showCurrentPlanBalance = ko.computed (() => {
             if ( !this.getCurrentPlan() || !this.QTTransferData())
                 return null
-            return getCurrentPlanUpgradelBalance ( new Date(this.QTTransferData().expire), this.QTTransferData().productionPackage, this.QTTransferData().isAnnual )
+            return getCurrentPlanUpgradelBalance ( this.QTTransferData().expire, this.QTTransferData().productionPackage, this.QTTransferData().isAnnual )
         })
 
         public selectPlanPrice = ko.computed (() => {
@@ -5387,7 +5390,7 @@ const getPlanPrice = ( plan: string, isAnnualPlan: boolean ) => {
 	}
 }
 
-const getCurrentPlanCancelBalance = ( expiration: Date, planName: string ) => {
+const getCurrentPlanCancelBalance = ( expiration: string, planName: string ) => {
 	
     const price = getPlanPrice ( planName, true )
     const normalPrice = getPlanPrice ( planName, false )
@@ -5404,7 +5407,7 @@ const getExpire = ( startDate: Date, isAnnual: boolean ) => {
 	return start
 }
 
-const getCurrentPlanUpgradelBalance = ( expiration: Date, planName: string, isAnnual: boolean ) => {
+const getCurrentPlanUpgradelBalance = ( expiration: string, planName: string, isAnnual: boolean ) => {
 	if ( !isAnnual ) {
         return getPlanPrice ( planName, false )
     }

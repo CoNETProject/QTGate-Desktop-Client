@@ -343,24 +343,24 @@ const QTGateRegionsSetup = [
 ];
 const nextExpirDate = (expire) => {
     const now = new Date();
+    const _expire = new Date(expire);
     now.setHours(0, 0, 0, 0);
-    if (now.getTime() > expire.getTime()) {
-        return expire;
+    if (now.getTime() > _expire.getTime()) {
+        return _expire;
     }
     const nextExpirDate = new Date(expire);
     nextExpirDate.setMonth(now.getMonth());
     nextExpirDate.setFullYear(now.getFullYear());
     if (nextExpirDate.getTime() < now.getTime()) {
         nextExpirDate.setMonth(now.getMonth() + 1);
+        return nextExpirDate;
     }
-    if (nextExpirDate.getTime() >= expire.getTime()) {
-        return expire;
-    }
-    return nextExpirDate;
+    return _expire;
 };
 const getRemainingMonth = (expire) => {
+    const _expire = new Date(expire);
     const _nextExpirDate = nextExpirDate(expire);
-    return expire.getFullYear() === _nextExpirDate.getFullYear() ? expire.getMonth() - _nextExpirDate.getMonth() : (11 - _nextExpirDate.getMonth() + expire.getMonth());
+    return _expire.getFullYear() === _nextExpirDate.getFullYear() ? _expire.getMonth() - _nextExpirDate.getMonth() : (11 - _nextExpirDate.getMonth() + _expire.getMonth());
 };
 const infoDefine = [
     {
@@ -1397,7 +1397,7 @@ const infoDefine = [
             CancelSuccess: (PlanExpire, isAnnual, returnAmount) => {
                 return `Your subscriptions was cancelled. You may keep use QTGate service with this plan until ${PlanExpire.toLocaleDateString()}. Restrictions apply to free accounts and accounts using promotions. ${isAnnual ? `us$${returnAmount} will return to your paid card in 5 working day.` : `Automatically canceled.`} `;
             },
-            currentPlanExpire: ['Plan expires at：', 'Renews at'],
+            currentPlanExpire: ['Plan expires at：', 'Renews at', 'monthly reset day '],
             currentAnnualPlan: ['Monthly plan', 'Annual plan'],
             cardPaymentErrorMessage: ['Error: card number or have an unsupported card type.', 'Error: expiration!', 'Error: Card Security Code', 'Error: Card owner postcode',
                 'Error: payment failed. Please try again late.',
@@ -1927,7 +1927,7 @@ const infoDefine = [
             paymentProblem1: '支付遇到問題',
             paymentProblem: '您目前的所在區域看上去銀行網關被和諧，您可以使用QTGate網關支付來完成支付',
             title: '賬戶管理',
-            currentPlanExpire: ['訂閱截止日期：', '下一次自動續訂日'],
+            currentPlanExpire: ['訂閱截止日期：', '下一次自動續訂日', '每月數據重置日'],
             CancelSuccess: (PlanExpire, isAnnual, returnAmount) => {
                 return `中止訂閱成功。您可以一直使用您的原訂閱到${PlanExpire.toLocaleDateString()}為止。以後您將會自動成為QTGate免費用戶可以繼續使用QTGate的各項免費功能。 ${isAnnual ? `您的餘款us$${returnAmount}會在5個工作日內退還到您的支付卡。 ` : '下月起QTGate系統不再自動扣款。 '} 祝您網絡衝浪愉快。`;
             },
@@ -3389,7 +3389,7 @@ var view_layout;
             this.showCurrentPlanBalance = ko.computed(() => {
                 if (!this.getCurrentPlan() || !this.QTTransferData())
                     return null;
-                return getCurrentPlanUpgradelBalance(new Date(this.QTTransferData().expire), this.QTTransferData().productionPackage, this.QTTransferData().isAnnual);
+                return getCurrentPlanUpgradelBalance(this.QTTransferData().expire, this.QTTransferData().productionPackage, this.QTTransferData().isAnnual);
             });
             this.selectPlanPrice = ko.computed(() => {
                 if (!this.getPaymentPlan())
@@ -4502,8 +4502,8 @@ var view_layout;
         }
         clearAllPaymentErrorTimeUP() {
             return setTimeout(() => {
-                this.showSuccessPayment(false);
-                this.showCancelSuccess(false);
+                //this.showSuccessPayment ( false )
+                //this.showCancelSuccess ( false )
                 return this.clearPaymentError();
             }, 5000);
         }
@@ -4746,6 +4746,8 @@ var view_layout;
             if (!this.keyPair().passwordOK || !this.getCurrentPlan()) {
                 return;
             }
+            this.showSuccessPayment(false);
+            this.showCancelSuccess(false);
             this.UserPerment(true);
             if (!this.QTTransferData().paidID) {
                 $('.CancelPlanButton').popup({
@@ -4770,7 +4772,7 @@ var view_layout;
                     this.QTGateAccountPlan(value);
                     this.UserPermentShapeDetail(true);
                     return $('.CancelMessage').popup({
-                        position: 'Right Center',
+                        position: 'bottom right',
                         on: 'click',
                         delay: {
                             show: 300,

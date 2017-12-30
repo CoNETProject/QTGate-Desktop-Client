@@ -102,11 +102,11 @@ interface QTGateAPIRequestCommand {
     dataTransfer?: iTransferData
 }
 interface iTransferData {
-    startDate: Date
+    startDate: string
     transferDayLimit: number
     transferMonthly: number
     account: string
-    resetTime: Date
+    resetTime: string
     usedDayTransfer: number
     productionPackage: string
     usedMonthlyTransfer: number
@@ -117,7 +117,7 @@ interface iTransferData {
     downloaded?: number
     power: number
     timeZoneOffset: number
-    expire: Date
+    expire: string
     isAnnual: boolean
     paidID: string[]
     automatically: boolean
