@@ -296,7 +296,7 @@ block jumbotron1
 											p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.creatDate + keyPair().createDate" )
 											p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.keyLength + keyPair().keyLength" )
 											p( data-bind = " text: infoDefine[ languageIndex() ].Home_keyPairInfo_view.keyID + keyPair().publicKeyID" )
-											.ui.button.positive( data-bind = "visible: QTTransferData(),click: showUserDetail,text: infoDefine[ languageIndex() ].account.upgradeTitle")
+											.ui.button.positive( data-bind = "visible: QTTransferData(),click: showUserDetail,text: infoDefine[ languageIndex() ].account.accountOptionButton")
 										.ui.bottom.right.attached.label.background-clolr-white( data-bind = " click: () => { keyPair_delete_btn_view ( true ); showPasswordErrorMessage ( false ); showSystemError ( false )}, visible: ! keyPair_delete_btn_view()")
 											a
 												i.trash.outline.icon.large( style = " color: red;")
@@ -363,7 +363,7 @@ block jumbotron1
 									form.ui.form
 										.fields
 											.field( style = "width: 17em;")
-												input.promoCodeInput( data-bind="value: promoInput, attr: { placeholder: infoDefine[ languageIndex() ].account.promoCode}")
+												input.promoCodeInput( data-bind="value: promoInput" placeholder ="XXXX-XXXX-XXXX-XXXX" type="text")
 											.field
 												.ui.buttons
 													.ui.button( data-bind="text: infoDefine[ languageIndex() ].home_index_view.cancel, click: ()=> {return promoButton(false)}")
@@ -373,9 +373,9 @@ block jumbotron1
 								.row( data-bind = "visible: cancelPlanButton()" style="padding: 0px;padding-top: 0.5em;")
 									i.link.remove.circle.big.icon( data-bind="click: () => { cancelPlanButton (false); return false;}, clickBubble: false" style="position: absolute;margin-left: 23.7em;z-index: 999;color: gray;")
 									.ui.olive.message.transition( data-bind="css: { hidden: !cancelPlanButton ()}")
-										p( data-bind = "text: infoDefine[ languageIndex() ].account.cancelPlanMessage, visible: !showCancelSuccess()")
-										p( data-bind = "text: QTTransferData() ? infoDefine[ languageIndex() ].account.cancelPlanMessage1 ( QTTransferData().productionPackage, QTTransferData().isAnnual, QTTransferData().expire ): null, visible: !showCancelSuccess()")
-										p( data-bind="visible: showCancelSuccess(), text:infoDefine[ languageIndex() ].account.CancelSuccess( cancel_PlanExpire(), QTTransferData() ? QTTransferData().isAnnual: false, cancel_Amount())")
+										p( data-bind = "html: infoDefine[ languageIndex() ].account.cancelPlanMessage, visible: !showCancelSuccess()")
+										p( data-bind = "html: QTTransferData() ? infoDefine[ languageIndex() ].account.cancelPlanMessage1 ( QTTransferData().productionPackage, QTTransferData().isAnnual, QTTransferData().expire ): '', visible: !showCancelSuccess()" style="color: darkblue;")
+										p( data-bind="visible: showCancelSuccess(), text: QTTransferData() ? infoDefine[ languageIndex() ].account.CancelSuccess( QTTransferData().expire, QTTransferData().isAnnual, cancel_Amount()) : null")
 										p( data-bind="visible: showCancelSuccess(), text:infoDefine[ languageIndex() ].account.qtgateTeam")
 										button.ui.button.negative( data-bind = "visible: !showCancelSuccess(), text: infoDefine[ languageIndex() ].account.cancelPlanButton, click: doCancelPlan, css: { loading: doingPayment() } ")
 						.ui.raised.green.segment( data-bind = "visible: showSuccessPayment()")
@@ -448,7 +448,7 @@ block jumbotron1
 											span( data-bind = "visible: showStripeError()")
 												i.icon.warning.sign.red
 										.hidden.content
-											img( src="/images/Stripe.svg" style="margin-top: -0.6em;width: 60%;")
+											img( src="/images/Stripe.svg" style="margin-top: -0.8em;width: 60%;")
 									//-.ui.animated.fade.basic.button( data-bind = " click: openStripeAlipay, css: { disabled: showStripeError() }")
 										.visible.content
 											img( src="/images/alipay.svg" style="height: 14px;")
@@ -479,62 +479,61 @@ block jumbotron1
 
 							script( data-bind = "attr: { 'data-amount': cardPayAmount()}" src = "https://checkout.stripe.com/checkout.js" class= "stripe-button" data-key = "pk_test_pSOYZa8ABXjatNN5jHb2UTdN" data-name = "QTGate Systems Inc" data-description = "Widget" data-locale = "auto" data-zip-code="true")
 						.ui.blue.segment.form( data-bind = "visible: UserPermentShapeDetail() && cardpay()")
-								.ui.dividing.header
-									.ui.grid
-										.row( style="padding-bottom: 0px;")
-											.eight.wide.column
-												span( data-bind = "text: infoDefine[ $root.languageIndex() ].account.payAmountTitile")
-												span( style="padding-left: 1em;padding-right: 0.2em;font-style: italic;font-weight: lighter;font-size: medium;") us$
-												span( data-bind = "text: totalAmount()" style="color: darkolivegreen;font-size: larger;")
+							.ui.grid
+								.row( style="padding-bottom: 0px;")
+									.eight.wide.column
+										span( data-bind = "text: infoDefine[ $root.languageIndex() ].account.payAmountTitile")
+										span( style="padding-left: 1em;padding-right: 0.2em;font-style: italic;font-weight: lighter;font-size: medium;") us$
+										span( data-bind = "text: totalAmount()" style="color: darkolivegreen;font-size: larger;")
 
-											.right.aligned.eight.wide.column( data-bind="style:{'padding-bottom': showCurrentPlanBalance() ? '0px;' : ''}" style="color: gray;")
-												span.ui.mini.images
-													img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='visa', showCardImage: cardType()==='visa' }" src="/images/visa.svg")
-													img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='mastercard', showCardImage: cardType()==='mastercard' }" src="/images/mastercard.svg")
-													img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='amex', showCardImage: cardType()==='amex' }" src="/images/amex.svg")
-													img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='discover', showCardImage: cardType()==='discover' }" src="/images/discover.svg")
-													img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='jcb', showCardImage: cardType()==='jcb' }" src="/images/jcb.svg")
-													img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='diners', showCardImage: cardType()==='diners' }" src="/images/diners.svg")
-											.sixteen.wide.column(data-bind = "visible: showCurrentPlanBalance()" style="font-size: small;padding-top: 0px;color: gray;font-weight: lighter;")
-												span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.planPrice")
-												span( style="font-size: smaller;") us$
-												span( data-bind=" text: selectPlanPrice()")
-												span( style = "padding: 0.5em;") -
-												spann( data-bind= " text: infoDefine[ $root.languageIndex() ].account.oldPlanBalance")
-												span( style="font-size: smaller;") us$
-												span( data-bind=" text: showCurrentPlanBalance()")
-												span( style = "padding: 0.5em;") =
-												span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.needPay" )
-												span( style="font-size: smaller;") us$
-												span( data-bind = "text: selectPlanPrice() - showCurrentPlanBalance()")
-										.row( data-bind = "visible: !doingPayment()" style = "padding-top: 0px;")
-											.column
-												p( data-bind = "text: infoDefine[ languageIndex() ].account.QTGatePayRisk" style="font-size: smaller;color: red;font-weight: lighter;")
-								.field( data-bind = "visible: cardErrorMessage() > -1 && !doingPayment()")
-									.ui.warning.message
-										p( data-bind = "text: cardErrorMessage() > -1 ? infoDefine[ languageIndex() ].account.cardPaymentErrorMessage[cardErrorMessage()] : null")
-								.fields( data-bind = "visible: !doingPayment()")
+									.right.aligned.eight.wide.column( data-bind="style:{'padding-bottom': showCurrentPlanBalance() ? '0px;' : ''}" style="color: gray;")
+										span.ui.mini.images
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='visa', showCardImage: cardType()==='visa' }" src="/images/visa.svg")
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='mastercard', showCardImage: cardType()==='mastercard' }" src="/images/mastercard.svg")
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='amex', showCardImage: cardType()==='amex' }" src="/images/amex.svg")
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='discover', showCardImage: cardType()==='discover' }" src="/images/discover.svg")
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='jcb', showCardImage: cardType()==='jcb' }" src="/images/jcb.svg")
+											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='diners', showCardImage: cardType()==='diners' }" src="/images/diners.svg")
+									.sixteen.wide.column(data-bind = "visible: showCurrentPlanBalance()" style="font-size: small;padding-top: 0px;color: gray;font-weight: lighter;")
+										span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.planPrice")
+										span( style="font-size: smaller;") us$
+										span( data-bind=" text: selectPlanPrice()")
+										span( style = "padding: 0.5em;") -
+										spann( data-bind= " text: infoDefine[ $root.languageIndex() ].account.oldPlanBalance")
+										span( style="font-size: smaller;") us$
+										span( data-bind=" text: showCurrentPlanBalance()")
+										span( style = "padding: 0.5em;") =
+										span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.needPay" )
+										span( style="font-size: smaller;") us$
+										span( data-bind = "text: selectPlanPrice() - showCurrentPlanBalance()")
+								.row( data-bind = "visible: !doingPayment()" style = "padding-top: 0px;")
+									.column
+										p( data-bind = "text: infoDefine[ languageIndex() ].account.QTGatePayRisk" style="font-size: smaller;color: red;font-weight: lighter;")
+							.field( data-bind = "visible: cardErrorMessage() > -1 && !doingPayment()")
+								.ui.warning.message
+									p( data-bind = "text: cardErrorMessage() > -1 ? infoDefine[ languageIndex() ].account.cardPaymentErrorMessage[cardErrorMessage()] : null")
+							.fields( data-bind = "visible: !doingPayment()")
 
-									.five.wide.field( data-bind = "css: { error: cardNumberFolder_Error()} ")
-										label( data-bind = "text: infoDefine[ $root.languageIndex() ].account.cardNumber")
-										input.paymaneCardNumber( data-bind = "value: cardNumber" )
-									.three.wide.field( data-bind = "css: { error: cardExpirationYearFolder_Error()} ")
-										label( data-bind = "text: infoDefine[ $root.languageIndex() ].account.expirationYear")
-										input.paymaneExpiration( data-bind = "value: cardExpirationYear" placeholder = "MM/YYYY" )
-									.four.wide.field( data-bind = "css: { error: cvcNumber_Error()} ")
-										label( data-bind = " text: infoDefine[ $root.languageIndex() ].account.cvcNumber")
-										input.paymaneCVC( data-bind = "value: cardcvc" placeholder="CVC")
-									.four.wide.field( data-bind = "css: { error: postcode_Error()} ")
-										label( data-bind = " text: infoDefine[ $root.languageIndex() ].account.postcodeTitle")
-										input.paymaneCVC( data-bind = "value: cardPostcode" )
-								.fields( data-bind = "visible: !doingPayment()")
-									.five.wide.field
-										.ui.buttons
-											button.ui.button( data-bind="text: infoDefine[ $root.languageIndex() ].account.calcelPayment, click: () => { cardpay ( false ); paymentSelect(true)}" )
-											.or
-											button.ui.button.positive( data-bind="text: infoDefine[ $root.languageIndex() ].account.doPayment, click: doPayment ")
-									.eleven.wide.field
-										span( data-bind="text: infoDefine[ $root.languageIndex() ].account.canadaCard" style="font-size: small;color:gray;")
+								.five.wide.field( data-bind = "css: { error: cardNumberFolder_Error()} ")
+									label( data-bind = "text: infoDefine[ $root.languageIndex() ].account.cardNumber")
+									input.paymaneCardNumber( data-bind = "value: cardNumber" )
+								.three.wide.field( data-bind = "css: { error: cardExpirationYearFolder_Error()} ")
+									label( data-bind = "text: infoDefine[ $root.languageIndex() ].account.expirationYear")
+									input.paymaneExpiration( data-bind = "value: cardExpirationYear" placeholder = "MM/YYYY" )
+								.four.wide.field( data-bind = "css: { error: cvcNumber_Error()} ")
+									label( data-bind = " text: infoDefine[ $root.languageIndex() ].account.cvcNumber")
+									input.paymaneCVC( data-bind = "value: cardcvc" placeholder="CVC")
+								.four.wide.field( data-bind = "css: { error: postcode_Error()} ")
+									label( data-bind = " text: infoDefine[ $root.languageIndex() ].account.postcodeTitle")
+									input.paymaneCVC( data-bind = "value: cardPostcode" )
+							.fields( data-bind = "visible: !doingPayment()")
+								.five.wide.field
+									.ui.buttons
+										button.ui.button( data-bind="text: infoDefine[ $root.languageIndex() ].account.calcelPayment, click: () => { cardpay ( false ); paymentSelect(true)}" )
+										.or
+										button.ui.button.positive( data-bind="text: infoDefine[ $root.languageIndex() ].account.doPayment, click: doPayment ")
+								.eleven.wide.field
+									span( data-bind="text: infoDefine[ $root.languageIndex() ].account.canadaCard" style="font-size: small;color:gray;")
 						.ui.red.segment( data-bind = " visible: cardErrorMessage()")
 							.ui.negative.message
 								p( data-bind = "text: cardErrorMessage() ? infoDefine[ languageIndex() ].account.cardPaymentErrorMessage[ cardErrorMessage() ] : null")

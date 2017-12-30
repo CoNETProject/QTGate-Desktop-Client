@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const DEBUG = false;
+const DEBUG = true;
 const Fs = require("fs");
 const Os = require("os");
 const path_1 = require("path");
@@ -418,7 +418,7 @@ const appReady = () => {
                         protocol: 'file:',
                         slashes: true
                     }));
-                }, 2000);
+                }, 500);
             });
         }
         else {

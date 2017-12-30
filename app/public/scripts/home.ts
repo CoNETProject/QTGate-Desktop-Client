@@ -394,7 +394,7 @@ const QTGateRegionsSetup: IQTGateRegionsSetup[] = [
 const nextExpirDate = ( expire: string ) => {
     const now = new Date ()
     const _expire = new Date ( expire )
-    now.setHours ( 0,0,0,0 )
+    _expire.setHours ( 0,0,0,0 )
     if ( now.getTime() > _expire.getTime ()) {
         return _expire
     }
@@ -431,8 +431,8 @@ const infoDefine = [
             paymentProblem1: '支付遇到问题',
             paymentProblem:'您的当前所在区域看上去银行网关被和谐，您可以使用QTGate网关支付来完成支付',
             QTGatePayRisk: '使用QTGate网关支付，您的个人信息有被泄漏的危险，如果非必要请使用Stript网关支付。',
-            CancelSuccess: ( PlanExpire: Date, isAnnual: boolean, returnAmount: number ) => {
-                return `中止订阅成功。您可以一直使用您的原订阅到${ PlanExpire.toLocaleDateString() }为止。以后您将会自动成为QTGate免费用户可以继续使用QTGate的各项免费功能。${ isAnnual ? `您的余款us$${ returnAmount }会在5个工作日内退还到您的支付卡。`: '下月起QTGate系统不再自动扣款。'} 祝您网络冲浪愉快。`
+            CancelSuccess: ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) => {
+                return `中止订阅成功。您可以一直使用您的原订阅到${ new Date( PlanExpire) .toLocaleDateString() }为止。以后您将会自动成为QTGate免费用户，可以继续使用QTGate的各项免费功能。${ isAnnual ? `退款金额us$${ returnAmount }会在5个工作日内退还到您的支付卡。`: '下月起QTGate系统不再自动扣款。'} 祝您网络冲浪愉快。`
             },
             currentPlan:'当前订阅: ',
             cardPaymentErrorMessage:['输入的信用卡号有误，或支付系统不支持您的信用卡！','输入的信用卡期限有误！','输入的信用卡安全码有误！','输入的信用卡持有人邮编有误！','支付失败，支付无法完成请稍后再试','支付数据存在错误','您的付款被发卡行所拒绝'],
@@ -447,7 +447,8 @@ const infoDefine = [
             currentAnnualPlan: ['月度订阅','年度订阅'],
             MonthBandwidthTitle:'月度代理服務器限额：',
             dayBandwidthTitle:'毎日限额：',
-            upgradeTitle:'升级账户选项',
+            upgradeTitle:'升级订阅',
+            accountOptionButton: '账户选项',
             paymentProcessing:'正在通讯中...',
             cantUpgradeMonthly: '年度计划不可降级为月度计划。请先终止您当前订阅的年度计划，再重新申请此月度订阅',
             DowngradeTitle:'降级账户选项',
@@ -481,7 +482,7 @@ const infoDefine = [
             downGradeMessage:'您正在操作降级您的订阅，如果操作成功您将从下月您的订阅之日起，实行新的订阅，如果您是。',
             cancelPlanMessage:'QTGate的订阅是以月为基本的单位。您的月订阅将在下月您的订阅起始日前被终止，您可以继续使用您的本月订阅计划，您将自动回到免费用户。如果您是每月自动扣款，则下月将不再扣款。如果您是年度订阅计划，您的退款将按普通每月订阅费，扣除您已经使用的月份后计算的差额，将自动返还您所支付的信用卡账号，如果您是使用促销码，或您是测试用户，您的终止订阅将不能被接受。',
             cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
-                return `您的订阅计划是${ isAnnual ? `年度订阅，退还金额将按照您已付年订阅费 us$[${ getPlanPrice ( planName, true )}] - 您已使用月份原价 us$[${ getPlanPrice( planName, false )}] X 已使用月数[${ 12 - getRemainingMonth ( expire )}] = 余额 us$[${ getCurrentPlanCancelBalance ( expire, planName )}]将退还到您用来支付的信用卡。`: `月订阅，您的订阅将下次更新日${ nextExpirDate( expire ).toLocaleDateString() }时不再被自动扣款和更新。`}`
+                return `<span>您的订阅计划是${ isAnnual ? `年度订阅，退还金额将按照您已付年订阅费 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span> - 该订阅原价 <span class="usDollar">us$</span><span class="amount">${ getPlanPrice( planName, false )}</span><span> X 已使用月数(包括本月) </span><span class="amount">${ 12 - getRemainingMonth ( expire )}</span> = 应该退还的金额 <span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span><span>，将在7个工作日内，退还到您原来支付的信用卡账户。</span>`: `月订阅，您的订阅将下次更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>时不再被自动扣款和更新。</span>`}`
             }
         },
 
@@ -954,8 +955,8 @@ const infoDefine = [
             QTGatePayRisk: 'QTGate経由でのお支払いは、あなたの個人情報漏洩の恐れがあります。必要でなければStripeでのお支払いをください。',
             paymentProblem1:'支払い支障がある',
             paymentProblem:'あなた現在いる所在地ではバンク支払いがブラックされている模様です。QTGate経由でのお支払いをしてください。',
-            CancelSuccess:( PlanExpire: Date, isAnnual: boolean, returnAmount: number ) => {
-                return `プランキャンセルしました。${ PlanExpire.toLocaleDateString() }まで、元プランのままQTGateサービスが使えます。そのあとはQTGateのフリーユーザーと戻ります。${ isAnnual? `元プラン残りus$ ${ returnAmount }は５日ウォキンデイ内お支払い使ったカードに戻ります`:`プラン代自動落しは中止されます`}。これからもよろしくお願い申し上げます。`
+            CancelSuccess:( PlanExpire: string, isAnnual: boolean, returnAmount: number ) => {
+                return `プランキャンセルしました。${ new Date (PlanExpire).toLocaleDateString() }まで、元プランのままQTGateサービスが使えます。そのあとはQTGateのフリーユーザーと戻ります。${ isAnnual? `元プラン残りus$ ${ returnAmount }は５日ウォキンデイ内お支払い使ったカードに戻ります`:`プラン代自動落しは中止されます`}。これからもよろしくお願い申し上げます。`
             },
             paymentSuccess:'あなたのプランをアップグレードしました。これからもよろしくお願い申し上げます。',
             qtgateTeam: 'QTGateチーム全員より',
@@ -982,7 +983,8 @@ const infoDefine = [
             monthResetDay:'月レセット日：',
 
             dayBandwidthTitle:'日制限：',
-            upgradeTitle:'アップグレードオプション',
+            upgradeTitle:'プランをアップグレード',
+            accountOptionButton: 'アカウトオプション',
             DowngradeTitle:'ダウングレードオプション',
             cancelPlan:'キャンセルプラン',
             networkShareTitle:'ゲットウェイ回線',
@@ -1008,7 +1010,7 @@ const infoDefine = [
             maxmultigateway: ['最大二つ並列ゲットウェイ','最大四つ並列ゲットウェイ*','最大四つ並列ゲットウェイ'],
             cancelPlanMessage:'QTGateプランは月毎に計算し、来月のあなたの最初加入した日まで、今のプランのままご利用ですます。キャンセルした日から自動的にQTGateの無料ユーザーになります。おアカウトは(月)払いの場合は、来月の自動払いは中止となります。年払いの場合は、ご使った分に月普通料金と計算し控除してから、お支払いを使ったクレジットカードに戻ります。販促コードまたはテストユーザーにはキャンセルすることができません。',
             cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
-                return `あなたのプランは${ isAnnual ? `一年契約です。キャンセルをした場合は、ご利用して頂いた月に普通料金と請求を計算されます。お返し金額はプラン年契約料金 us$[${ getPlanPrice ( planName, true )}] - プラン普通月料金 us$[${ getPlanPrice( planName, false )}] X ご利用頂いた月[${ 12 - getRemainingMonth ( expire )}] = 戻る金額 us$[${ getCurrentPlanCancelBalance ( expire, planName )}]となります。`: `月プランです。キャンセルにすると次の更新日[${ nextExpirDate(expire).toLocaleDateString() }]に自動更新はしませんです。`}`
+                return `<span>あなたのプランは${ isAnnual ? `一年契約です。キャンセルをした場合は、ご利用して頂いた月に普通料金と請求を計算されます。お返し金額は，お支払って頂いたプラン年契約料金 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span><span> - そのプランの普通月料金 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice( planName, false )}</span><span> X ご利用して頂いた月(本月も含めて)：</span><span class="amount">${ 12 - getRemainingMonth ( expire )}</span><span> = 戻る金額 </span><span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span><span>とまります。７日内お支払って頂いたクレジットカードへ返金とします。</span>`: `月プランです。キャンセルにすると次の更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>に自動更新はしませんです。</span>`}`
             }
         },
 
@@ -1494,10 +1496,10 @@ const infoDefine = [
             paymentSuccess:'Your plan has beed upgraded. Happy every day.',
             qtgateTeam: 'The QTGate Team',
             networkShareTitle:'Bandwidth',
-            CancelSuccess: ( PlanExpire: Date, isAnnual: boolean, returnAmount: number ) => {
-                return `Your subscriptions was cancelled. You may keep use QTGate service with this plan until ${ PlanExpire.toLocaleDateString() }. Restrictions apply to free accounts and accounts using promotions. ${ isAnnual ? `us$${ returnAmount } will return to your paid card in 5 working day.` : `Automatically canceled.` } `
+            CancelSuccess: ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) => {
+                return `Your subscriptions was cancelled. You may keep use QTGate service with this plan until ${ new Date( PlanExpire ).toLocaleDateString() }. Restrictions apply to free accounts and accounts using promotions. ${ isAnnual ? `Refund amount us$${ returnAmount } will return to your paid card account in 5 working day.` : `Automatically canceled.` } `
             },
-            currentPlanExpire: ['Plan expires at：','Renews at','monthly reset day '],
+            currentPlanExpire: ['Plan expires on: ','Renews at','monthly reset day '],
             currentAnnualPlan: ['Monthly plan','Annual plan'],
             cardPaymentErrorMessage:['Error: card number or have an unsupported card type.','Error: expiration!','Error: Card Security Code','Error: Card owner postcode',
                     'Error: payment failed. Please try again late.',
@@ -1511,14 +1513,15 @@ const infoDefine = [
             MonthBandwidthTitle:'Gateway Bandwidth：',
             dayBandwidthTitle:'Day limited：',
             bandwidthBalance:'Bandwidth remaining: ',
-            upgradeTitle: 'Upgrade Option',
+            upgradeTitle: 'Upgrade account plan',
+            accountOptionButton: 'Account option',
             planPrice: 'Plan price：',
             monthResetDay:'Monthly reset day: ',
             monthResetDayAfter:'th',
             cantUpgradeMonthly: 'Annual may not downgrade to monthly plan. Please cancel current plan, then select this one.',
             DowngradeTitle:'Downgrade Option',
             cancelPlan:'Cancel plan',
-            cantCancelInformation: 'Your plan may not be cancelled, free user, plan was create via QTGate test program, used redeem code.',
+            cantCancelInformation: 'This subscription plan may not be cancelled. Free user plans, promotions, special codes and test program plans cannot be cancelled. ',
             multiOpn:'OPN multi-gateway technology',
             MonthBandwidthTitle1:'Bandwidth',
             serverShare:'Gateway',
@@ -1533,17 +1536,17 @@ const infoDefine = [
             cvcNumber: 'Card Security Code',
             annualPay:'Annual per month only',
             canadaCard:'*GST(BC) 5.0% will be applied automatically if your billing address located in Canada.',
-            multiRegion:['multi-gateway via simple region','multi-gateway via multi region','multi-gateway via multi region','multi-gateway via multi region'],
+            multiRegion:['multi-gateway in single region','multi-gateway in multi-regions*','multi-gateway in multi-regions*','multi-gateway in multi-regions'],
             continue:'Next step',
-            serverShareData:['Share gateway','1 dedicated gateway server*','2 dedicated gateway server*','4 dedicated gateway server'],
-            internetShareData:['Share high speed internet','Dedicated 1 high speed internet*','Dedicated 2 high speed internet*','Dedicated 4 high speed internet'],
-            maxmultigateway: ['Max 2 multi-gateway','Max 4 multi-gateway*','Max 4 multi-gateway'],
+            serverShareData:['Shared gateway','Dedicated gateway server*','Dedicated 2 gateway server*','Dedicated 4 gateway server'],
+            internetShareData:['Shared High Speed Bandwidth','Dedicated High Speed Bandwidth*','Dedicated 2 High Speed Bandwidth*','Dedicated 4 High Speed Bandwidth'],
+            maxmultigateway: ['Max: 2 multi-gateway','Max: 4 multi-gateway*','Max: 4 multi-gateway'],
             monthlyPay:'Monthly pricing',
-            aboutCancel: 'About cancel subscription',
-            cancelPlanMessage: 'You may cancel your QTGate subscription at any time, and you will continue to have access to the QTGate services through the end of your paid period until all remaining subscription time in your account is used up. Restrictions apply to free accounts and accounts using promotions.',
+            aboutCancel: '*About Subscription cancellation',
+            cancelPlanMessage: '<span>You may cancel your QTGate subscription at any time from within the this app. You will continue to have access to the QTGate services through the end of your paid period until all remaining subscription time in your account is used up. Please refer to the </span><a class="ui teal tiny label">Terms of Service</a> for cancellation and refund policy. Restrictions may apply to free plans and promotional accounts.',
             serverShareData1:'Your dedicated server will be share ratio when you connected over your dedicated count via use Multi-gateway technology.',
             cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
-                return `Your plan is ${ isAnnual ? `annual paid ${ getPlanPrice ( planName, true )}. The passed ${ 12 - getRemainingMonth ( expire )} month will being normal price us$${ getPlanPrice( planName, false )}, QTGate will refunds us$${ getCurrentPlanCancelBalance ( expire, planName )} to your paid card.`: `monthly, it will not be renew at ${ nextExpirDate (expire).toLocaleDateString() } if you cancel this plan.`}`
+                return `<span>Your plan is ${ isAnnual ? `annual paid </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span><span>. The passed </span><span class="amount">${ 12 - getRemainingMonth ( expire )}</span><span> month ( included this month ) will being normal price about this plan as </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice( planName, false )}</span><span>, QTGate will refunds </span><span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span><span> to your paid card account in 7 working days.</span>`: `monthly, it will not be renew at </span><span class="amount">${ nextExpirDate (expire).toLocaleDateString() }</span><span> if you cancel this plan.</span>`}`
             }
         },
 
@@ -1842,7 +1845,7 @@ const infoDefine = [
             smtpServerInput: 'SMTP server name or IP address',
             emailServerPassword: 'Email account password ( app password )',
             Error_portNumber: 'Port number should be from 1 to 65535.',
-            imapAccountConform: '<p><dt>By clicking submit you are agreeing to this:</dt></p>This email is a temporary account for use with QTGate services. You agree QTGate may have full access to this account for transferring data between you and QTGate.',
+            imapAccountConform: '<p><dt>By clicking submit you are agreeing to:</dt></p>This email is a temporary account for use with QTGate services. QTGate may have full access to this account in use of QTGate’s services.',
             agree: `I understand and agree to continue.`,
             imapOtherCheckError: 'Cannot connect to email server! Server name, IP address or Port number may have a mistake. Please check the details of your email setup!',
             CertificateError: 'Certificate for this email server is not trusted. Please select "Keep connected even if certificate is not trusted" in settings if you still want to connect. Your email login information maybe leaked to this email server!',
@@ -1922,11 +1925,11 @@ const infoDefine = [
             finishedDeleteKeyPair: 'Key pair deleted!',
             offlineError: 'There is no internet connection detected. Please check your network and try again!',
             imapErrorMessage: [
-                'QTGate did not respond your connection request. QTGate system may stopping service. Try do connection request late again. Or connect QTGate support please.',
+                'There was an error in establishing connection to QTGate. Please try to connect again or try at a later time. If you continue to receive this error, please contact QTGate support. ',
                 'Data format error!', 
                 'This computer does not detect an internet connection. Please check your network and try again!', 
                 `Email server did respond to username or an error in password. You may need use APP password to pass this test if you did normal password. Or your app passwords need to be updated.`, 
-                `Can't connect to email server with the port. Please check the IMAP port number. This port may be filtered by a firewall in your network.`, 
+                `Error in connecting to email server with the current IMAP port. Please check the email account to make sure IMAP is enabled and the IMAP port settings. The port may be filtered by a firewall on your network.`, 
                 `There is a problem with this IMAP email server's security certificate!`, 
                 `Error in email server’s address. Please check the email server’s domain.`, 
                 'This email provider currently looks does not support QTGate’s @OPN technology, please try do test again, or change to another email provider.', 
@@ -1938,8 +1941,8 @@ const infoDefine = [
         emailConform: {
             activeViewTitle: 'Active your keypair.',
             emailTitle: 'Welcome to QTGate.',
-            info1_1: 'Key pair verification is not complete. A verification email from QTGate has been sent. Please check your [',
-            info1_2: '] mailbox. If you have one more then one mail from QTGate in your mailbox, please choose the newest one. If you not find the email, please double check your key pair email address! You may delete your key pair and generate a new key pair. ',
+            info1_1: 'Please complete key pair verification. A verification email from QTGate has been sent. Please check your [',
+            info1_2: '] mailbox. If you received more then one email from QTGate, please choose the newest email. If you not find the email, please double check your key pair email address! If you have an error, you may delete your key pair and generate a new key pair.',
             info2: 'Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
             emailDetail1: 'Dear ',
             emailDetail1_1: ' ,',
@@ -1947,7 +1950,7 @@ const infoDefine = [
             bottom1_1: 'Best regards,',
             bottom1_2: 'The QTGate team',
             requestReturn: ['ERROR! QTGate system refuse your request, may be you did request repeatedly, please try again late.','Verification mail has been sent.'],
-            conformButtom: 'Conform',
+            conformButtom: 'Confirm',
             reSendRequest:'Request another verification email',
             formatError: [
                         'Format error! Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
@@ -1989,8 +1992,8 @@ const infoDefine = [
             ''],
             GlobalIpInfo:  `Please note: When connecting to iOPN, your IP will be visible only to QTGate. Rest assured, your privacy is safe as QTGate does not log IP nor store any communications data. For stealth IP connection, please use @OPN. If [@OPN] option is not available, you may need to check your IMAP email account. (currently @OPN only supports iClould IMAP.)`,
             cacheDatePlaceholder: 'Web cache freshness lifetime.',
-            sendConnectRequestMail:['QTGate connection maybe down. A connection request mail was sent to QTGate system. Please wait a moment.',
-                                    'Free user connection will be down when user has not used QTGate in the last 24 hours. QTGate system keeps connected for 1 month for paid users.'],
+            sendConnectRequestMail:['QTGate connection maybe down. Please wait a moment, re-connecting to QTGate gateway.',
+                                    'For users on a free plan, connection will reset after 24 hours of non use. Connection is kept open for 1 month for users on a paid plan.'],
             cacheDatePlaceDate:[{ name:'1 hour', id: 1 }, { name:'12 hour', id: 12 },{ name:'1 day', id: 24 }, { name:'15 days', id: 360 }, { name:'1 month', id: 720 }, { name:'6 months', id: 4320 }, { name:'forever', id: -1 }],
             atQTGateDetail: [
                 `Recommended for full privacy. @OPN@ uses QTGate’s “Quiet” technology to create a obfuscated private network by refracting encrypted data packets thru email servers. @OPN provides stealth internet communications where your IP address is hidden to client or proxy servers. Gaming and video stream my not be supported due to stability and speeds affected by email server choice. Currently iCloud mail is only supported.`, 
@@ -2028,10 +2031,10 @@ const infoDefine = [
         },
         
         qtGateView: {
-            QTGateConnectResultWaiting: 'Please wait. It will take a few minutes to respond to your connection request to QTGate.',
+            QTGateConnectResultWaiting: 'Please wait. It will may take a few minutes to establish your connection to QTGate.',
             title: 'QTGate connect',
             mainImapAccount: 'Email account for communicating with QTGate',
-            QTGateDisconnectInfo: 'Lost QTGate connect. Please select IMAP account to send email for request connect.',
+            QTGateDisconnectInfo: 'QTGate disconnected. Please select an IMAP account to use for connection request. ',
             QTGateConnectStatus: 'Status of QTGate connection',
             QTGateConnectResult: [
                 'QTGate disconnected, click to connect to QTGate.','Connecting to QTGate.','QTGate Connected.','Connection stopped with error! Please check IMAP account settings!',
@@ -2058,14 +2061,13 @@ const infoDefine = [
             networkShareTitle:'代理伺服器網絡',
             stripePayment: '銀行網關支付',
             promoButton: '我有促銷碼',
-            promoCode: 'XXXX-XXXX-XXXX-XXXX',
             qtgatePayment:'QTGate網關支付',
             paymentProblem1:'支付遇到問題',
             paymentProblem:'您目前的所在區域看上去銀行網關被和諧，您可以使用QTGate網關支付來完成支付',
             title: '賬戶管理',
             currentPlanExpire: ['訂閱截止日期：','下一次自動續訂日','每月數據重置日'],
-            CancelSuccess: ( PlanExpire: Date, isAnnual: boolean, returnAmount: number ) => {
-                return `中止訂閱成功。您可以一直使用您的原訂閱到${ PlanExpire.toLocaleDateString() }為止。以後您將會自動成為QTGate免費用戶可以繼續使用QTGate的各項免費功能。 ${ isAnnual ? `您的餘款us$${ returnAmount }會在5個工作日內退還到您的支付卡。 `: '下月起QTGate系統不再自動扣款。 '} 祝您網絡衝浪愉快。`
+            CancelSuccess: ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) => {
+                return `中止訂閱成功。您可以一直使用您的原訂閱到${ new Date (PlanExpire).toLocaleDateString() }為止。以後您將會自動成為QTGate免費用戶，可以繼續使用QTGate的各項免費功能。 ${ isAnnual ? `退款金額us$${ returnAmount }會在5個工作日內退還到您的支付卡。 `: '下月起QTGate系統不再自動扣款。 '} 祝您網絡衝浪愉快。`
             },
             currentAnnualPlan: ['月度訂閱','年度訂閱'],
             cardPaymentErrorMessage:['輸入的信用卡號有誤！','輸入的信用卡期限有誤！','輸入的信用卡安全碼有誤！','輸入的信用卡持有人郵編有誤！','支付失敗，支付無法完成請稍後再試',
@@ -2082,7 +2084,8 @@ const infoDefine = [
             planPrice: '訂閱價格：',
             MonthBandwidthTitle:'月度代理伺服器限額：',
             dayBandwidthTitle:'每日限額：',
-            upgradeTitle:'升級賬戶選項',
+            upgradeTitle:'升級您的訂閱',
+            accountOptionButton: '賬戶選項',
             paymentSuccess:'您的訂閱已經完成，數據流量限制已經被更新。祝您網絡衝浪愉快。',
             qtgateTeam: 'QTGate開發團隊敬上',
             paymentProcessing:'正在通訊中...',
@@ -2091,7 +2094,7 @@ const infoDefine = [
             cancelPlan:'終止當前訂閱',
             cantCancelInformation: '您的賬戶可能是QTGate測試用戶，或使用優惠碼產生的訂閱用戶，此類賬戶可以升級但不能被中止',
             MonthBandwidthTitle1:'傳送限額',
-            monthlyAutoPay:'每月自動扣款',
+            monthlyAutoPay:() => { return '每月自動扣款'},
             annualPay:'年付費每月只需',
             expirationYear: '信用卡期限',
             serverShare:'代理伺服器',
@@ -2112,7 +2115,7 @@ const infoDefine = [
             serverShareData1:'OPN併發多代理技術，同時使用數大於獨占數時，會相應分享您所獨占的資源',
             cancelPlanMessage:'可隨時終止您的訂閱，QTGate的訂閱是以月為基本的單位。您的月訂閱將在下月您的訂閱起始日前被終止，您可以繼續使用您的本月訂閱計劃，您將自動回到免費用戶。如果您是每月自動扣款，則下月將不再扣款。如果您是年度訂閱計劃，您的退款將按普通每月訂閱費，扣除您已經使用的月份後計算的差額，將自動返還您所支付的信用卡賬號，如果您是使用促銷碼，或您是測試用戶，您的終止訂閱將不能被接受。 ',
             cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
-                return `您的訂閱計劃是${ isAnnual ? `年度訂閱，退還金額將按照您已付年訂閱費 us$[${ getPlanPrice ( planName, true )}] - 您已使用月份原價 us$[${ getPlanPrice( planName, false )}] X 已使用月數[${ 12 - getRemainingMonth ( expire )}] = 餘額 us$[${ getCurrentPlanCancelBalance ( expire, planName )}]將退還到您用來支付的信用卡。`: `月訂閱，您的訂閱將下次更新日${ nextExpirDate (expire).toLocaleDateString() }時不再被自動扣款和更新。`}`
+                return `<span>您的訂閱計劃是${ isAnnual ? `年度訂閱，退還金額將按照您已付年訂閱費</span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span><span> - 該訂閱原價 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice( planName, false )}</span><span> X 已使用月數(包括本月) </span><span class="amount">${ 12 - getRemainingMonth ( expire )}</span><span> = 餘額 </span><span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span><span>，將在7個工作日內，退還到您用來支付的信用卡帳戶。</span>`: `月訂閱，您的訂閱將下次更新日</span><span class="amount">${ nextExpirDate (expire).toLocaleDateString() }</span><span>時不再被自動扣款和更新。</span>`}`
             }
         
         },
@@ -5029,7 +5032,7 @@ module view_layout {
             })
             
             $('.CancelMessage').popup ({
-                position: 'center right',
+                position: 'right center',
                 on: 'click',
                 delay: {
                     show: 300,
@@ -5250,7 +5253,6 @@ module view_layout {
         }
 
         public showCancelSuccess = ko.observable ( false )
-        public cancel_PlanExpire = ko.observable (new Date())
         public cancel_Amount = ko.observable (0)
 
         public doCancelPlan () {

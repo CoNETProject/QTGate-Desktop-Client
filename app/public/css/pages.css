@@ -774,3 +774,14 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
 .StripeElement--webkit-autofill {
   background-color: #fefde5 !important;
 }
+.usDollar {
+  font-weight: lighter;
+  font-style: italic;
+  padding-left: 0.5em;
+  font-size: smaller;
+}
+.amount {
+  font-size: large;
+  font-weight: bold;
+  color: darkslategray;
+}

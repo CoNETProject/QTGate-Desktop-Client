@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-const DEBUG = false
+const DEBUG = true
 
 import * as Fs from 'fs'
 import * as Os from 'os'
@@ -478,7 +478,7 @@ const appReady = () => {
                         protocol: 'file:',
                         slashes: true
                     }))
-                }, 2000 )
+                }, 500 )
             })
         } else {
             saveLog ( `app.once ( 'ready') have localServer1 & createWindow()` )

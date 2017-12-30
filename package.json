@@ -16,7 +16,7 @@
   "engines": {
     "node": ">=50.9"
   },
-  "build": {    
+  "build": {
     "squirrelWindows": {
       "remoteReleases": "https://github.com/QTGate/atOPN/releases/download/0.2.0/"
     },
@@ -52,9 +52,7 @@
     "url": "https://github.com/QTGate/QTGate-Desktop-Client/issues"
   },
   "homepage": "https://www.qtgate.com",
-  "devDependencies": {
-    "electron-builder-squirrel-windows": "^19.49.0"
-  },
+  "devDependencies": {},
   "dependencies": {
     "async": "^2.6.0",
     "cleave.js": "^1.0.9",
