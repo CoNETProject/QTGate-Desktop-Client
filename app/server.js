@@ -1726,6 +1726,7 @@ class ImapConnect extends Imap.imapPeer {
         });
         this.newMail = (ret) => {
             //		have not requestSerial that may from system infomation
+            saveLog('clearTimeout timeOutWhenSendConnectRequestMail !');
             timers_1.clearTimeout(this.timeOutWhenSendConnectRequestMail);
             if (!ret.requestSerial) {
                 saveLog(`newMail have not ret.requestSerial, doing switch ( ret.command ) `);

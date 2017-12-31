@@ -183,7 +183,7 @@ block jumbotron1
 					a.item( data-bind = "css:{ active: MenuItems() [5]}, click: () => { return menuClick ( 5, false )}, visible: false")
 						.menuItem
 							i.talk.outline.icon.large.pink
-					a.item( data-bind = "css:{ active: MenuItems() [8]}, visible: false && keyPair().verified && !QTGateRegionInfo() && ( QTGateConnectActive() || QTGateConnectRegionActive()), click: () => { return menuClick ( 8, true )}")
+					a.item( data-bind = "css:{ active: MenuItems() [8]}, visible: keyPair().verified && ! QTGateRegionInfo() && ( QTGateConnectActive() || QTGateConnectRegionActive()), click: () => { return menuClick ( 8, true )}")
 						.menuItem
 							i.icon.handshake.large.orange
 					a.item( data-bind = "css:{ active: MenuItems() [6]}, click: () => { return menuClick ( 6, true )}")
@@ -409,34 +409,30 @@ block jumbotron1
 											.meta( data-bind = "visible: getPaymentPlan() && getPaymentPlan().showNote, text: '*'+infoDefine[ $root.languageIndex() ].account.serverShareData1" style="font-style: italic;font-size: smaller;")
 											.meta
 												a.CancelMessage( href="#" data-bind="text: infoDefine[ $root.languageIndex() ].account.aboutCancel, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.cancelPlanMessage }" style="font-size: smaller;color: firebrick;" )
-											.ui.positive.basic.button.MonthlyPlanButton( data-bind = "click: () => { if (QTTransferData() && !QTTransferData().isAnnual) return showPayment ( getPaymentPlan().monthlyPay, false )}, css: { hideCardImage: QTTransferData() && QTTransferData().isAnnual }, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.cantUpgradeMonthly }" )
+											.ui.positive.basic.button.MonthlyPlanButton( data-bind = "click: () => { cardpay(false); if (QTTransferData() && !QTTransferData().isAnnual ) return showPayment ( getPaymentPlan().monthlyPay, false )}, css: { hideCardImage: QTTransferData() && QTTransferData().isAnnual }, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.cantUpgradeMonthly }" )
 												
-												span( data-bind = "text: infoDefine[ languageIndex() ].account.monthlyAutoPay")
-												span( data-bind = "text: getPaymentPlan() ? ( getPaymentPlan().monthlyPay > 0 ? ' us$':null):null")
-												span( data-bind = " text: getPaymentPlan() ? ( getPaymentPlan().monthlyPay > 0 ? getPaymentPlan().monthlyPay : infoDefine[ $root.languageIndex() ].QTGateGateway.userType[0]): null ")
-												
-											.ui.primary.basic.button( data-bind = "click: () => { return showPayment ( getPaymentPlan().annually, true )}" )
-												span( data-bind = "text: infoDefine[ languageIndex() ].account.annualPay")
-												span( data-bind = "text: getPaymentPlan() ? ( getPaymentPlan().annually > 0 ? ' us$': null ) : null ")
-												span( data-bind = " text: getPaymentPlan() ?  Math.round ( getPaymentPlan().annually * 100 / 12 ) / 100 : null ")
+												span( data-bind = "html: infoDefine[ languageIndex() ].account.monthlyAutoPay( getPaymentPlan() ? getPaymentPlan().monthlyPay: 0 )")
+											.ui.primary.basic.button( data-bind = "click: () => { cardpay(false);return showPayment ( getPaymentPlan().annually, true )}" )
+												span( data-bind = "html: infoDefine[ languageIndex() ].account.annualPay( getPaymentPlan() ? getPaymentPlan().annually: 0 )")
 						.ui.red.segment( data-bind = "visible: UserPermentShapeDetail() && paymentSelect()")
 							.ui.grid( style="padding: 1em;padding-top: 0em;")
 								.row( style="padding-bottom: 0px;")
 									span( data-bind = "text: infoDefine[ $root.languageIndex() ].account.payAmountTitile" style = "font-size: large;font-weight: bold;")
-									span( style="padding-left: 1em;padding-right: 0.2em;font-style: italic;font-weight: lighter;font-size: medium;") us$
-									span( data-bind = "text: totalAmount()" style="color: darkolivegreen;font-size: larger;")
-								.row(data-bind = "visible: showCurrentPlanBalance()" style="font-size: small;padding-top: 0px;padding-bottom: 0px;color: gray;font-weight: lighter;")
+									span.usDollar us$
+									span.amount( data-bind = "text: totalAmount()" )
+									span( data-bind="text: '(' + infoDefine[ $root.languageIndex() ].account.canadaCard + ')'" style="font-size: smaller;color:gray;padding-left: 1em;")
+								.row(data-bind = "visible: showCurrentPlanBalance()" style="font-size: small;padding-top: 0.5em;padding-bottom: 0px;color: gray;font-weight: lighter;")
 									span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.planPrice")
-									span( style="font-size: smaller;") us$
-									span( data-bind=" text: selectPlanPrice()")
+									span.usDollar us$
+									span.amount( data-bind=" text: getAmount ( selectPlanPrice())" style="color:grey")
 									span( style = "padding-left: 0.5em;padding-right: 0.5em;") -
-									spann( data-bind= " text: infoDefine[ $root.languageIndex() ].account.oldPlanBalance")
-									span( style="font-size: smaller;") us$
-									span( data-bind=" text: showCurrentPlanBalance()")
+									span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.oldPlanBalance")
+									span.usDollar us$
+									span.amount( data-bind=" text: getAmount ( showCurrentPlanBalance())" style="color:grey")
 									span( style = "padding-left: 0.5em;padding-right: 0.5em;") =
 									span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.needPay" )
-									span( style="font-size: smaller;") us$
-									span( data-bind = "text: selectPlanPrice() - showCurrentPlanBalance()")
+									span.usDollar us$
+									span.amount( data-bind = "text: getAmount ( selectPlanPrice() - showCurrentPlanBalance())" style="color:grey")
 								.row( style = "padding: 0px;padding-top: 1em;")
 
 									.ui.animated.fade.basic.violet.button( data-bind = " click: openStripeCard, css: { disabled: showStripeError() }")
@@ -475,17 +471,14 @@ block jumbotron1
 											span( data-bind = "text: cardPayAmount()")
 								
 						
-						//-form( action = "/payment" method="POST" data-bind = "visible: cardpaStripe()")
-
-							script( data-bind = "attr: { 'data-amount': cardPayAmount()}" src = "https://checkout.stripe.com/checkout.js" class= "stripe-button" data-key = "pk_test_pSOYZa8ABXjatNN5jHb2UTdN" data-name = "QTGate Systems Inc" data-description = "Widget" data-locale = "auto" data-zip-code="true")
 						.ui.blue.segment.form( data-bind = "visible: UserPermentShapeDetail() && cardpay()")
 							.ui.grid
 								.row( style="padding-bottom: 0px;")
-									.eight.wide.column
+									.column.eight.wide
 										span( data-bind = "text: infoDefine[ $root.languageIndex() ].account.payAmountTitile")
 										span( style="padding-left: 1em;padding-right: 0.2em;font-style: italic;font-weight: lighter;font-size: medium;") us$
-										span( data-bind = "text: totalAmount()" style="color: darkolivegreen;font-size: larger;")
-
+										span.amount( data-bind = "text: totalAmount()" )
+										
 									.right.aligned.eight.wide.column( data-bind="style:{'padding-bottom': showCurrentPlanBalance() ? '0px;' : ''}" style="color: gray;")
 										span.ui.mini.images
 											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='visa', showCardImage: cardType()==='visa' }" src="/images/visa.svg")
@@ -494,18 +487,18 @@ block jumbotron1
 											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='discover', showCardImage: cardType()==='discover' }" src="/images/discover.svg")
 											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='jcb', showCardImage: cardType()==='jcb' }" src="/images/jcb.svg")
 											img.ui.image( data-bind="css:{ hideCardImage: cardType()!=='diners', showCardImage: cardType()==='diners' }" src="/images/diners.svg")
-									.sixteen.wide.column(data-bind = "visible: showCurrentPlanBalance()" style="font-size: small;padding-top: 0px;color: gray;font-weight: lighter;")
+									//-.sixteen.wide.column(data-bind = "visible: showCurrentPlanBalance()" style="font-size: small;padding-top: 0px;color: gray;font-weight: lighter;")
 										span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.planPrice")
-										span( style="font-size: smaller;") us$
+										span.usDollar us$
 										span( data-bind=" text: selectPlanPrice()")
 										span( style = "padding: 0.5em;") -
-										spann( data-bind= " text: infoDefine[ $root.languageIndex() ].account.oldPlanBalance")
-										span( style="font-size: smaller;") us$
-										span( data-bind=" text: showCurrentPlanBalance()")
+										span.amount( data-bind= " text: infoDefine[ $root.languageIndex() ].account.oldPlanBalance")
+										span.usDollar us$
+										span.amount( data-bind = " text: showCurrentPlanBalance()")
 										span( style = "padding: 0.5em;") =
 										span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.needPay" )
-										span( style="font-size: smaller;") us$
-										span( data-bind = "text: selectPlanPrice() - showCurrentPlanBalance()")
+										span.usDollar us$
+										span.amount( data-bind = "text: getAmount(( selectPlanPrice() - showCurrentPlanBalance())")
 								.row( data-bind = "visible: !doingPayment()" style = "padding-top: 0px;")
 									.column
 										p( data-bind = "text: infoDefine[ languageIndex() ].account.QTGatePayRisk" style="font-size: smaller;color: red;font-weight: lighter;")
@@ -542,9 +535,7 @@ block jumbotron1
 							span( data-bind = "text: infoDefine[ $root.languageIndex() ].account.paymentProcessing")
 							.ui.orange.bottom.attached.progress.paymentProcess( data-bind="visible: doingPayment()")
 								.bar
-
-
-							
+	
 
 			//-				MenuItems()[2]  && imapInputFormActive() 
 			.content( data-bind = "visible: MenuItems()[2] && imapInputFormActive()" style = "margin-top: 3em;")
@@ -877,8 +868,12 @@ block jumbotron1
 			
 			//-
 			.content( data-bind="visible: MenuItems()[8]" style = "margin-top: 3em;")
-				h4( data-bind = " text: infoDefine [ languageIndex() ].QTGateDonate.title " style="color: #a333c8;")
+				
+				.ui.info.message
+					.header( data-bind = " text: infoDefine [ languageIndex() ].QTGateDonate.title " style="color: #a333c8;")
+					p( data-bind="text: infoDefine [ languageIndex() ].QTGateDonate.detail")
 				.ui.cards(data-bind = " visible: !QTGateRegionInfo(), foreach: donateDataPool " )
+
 					.ui.card
 						.image
 							img( data-bind="attr: { src: image[ $root.languageIndex ()] }")
@@ -935,13 +930,13 @@ block jumbotron1
 											span( data-bind=" text: QTTransferData() ? (QTTransferData().transferDayLimit / ( 1024 * 1024 ) + ' Mbyte') : null" style = "font-size: smaller;font-weight: lighter;")
 								//-.three.wide.column( style="padding-top: 0px!important;")
 									span( data-bind = "text: infoDefine [ $root.languageIndex() ].QTGateGateway.monthDatatransfer " )
-								.sixteen.wide.column( data-bind="style:{ 'padding-top' : config().freeUser ? '0px!important': '' }" style="padding-top: 0px!important;")
-									.userDetail.ui.tiny.progress.success( data-bind = "attr: { 'data-total': QTTransferData() ? (QTTransferData().transferMonthly / ( 1024 * 1024 )) : '', 'data-value':QTTransferData() ? ( QTTransferData().transferMonthly - QTTransferData().usedMonthlyTransfer)/( 1024 * 1024 ): ''}")
+								.sixteen.wide.column( data-bind = "style: { 'padding-top' : config().freeUser ? '0px!important': '' }" style="padding-top: 0px!important;")
+									.userDetail.ui.tiny.progress.success( data-bind = "attr: { 'data-total': QTTransferData() ? QTTransferData().usedMonthlyTransfer : 0, 'data-value':QTTransferData() ? QTTransferData().transferMonthly - QTTransferData().usedMonthlyTransfer: 0}")
 										.bar
 											.progress
 										.label(style="margin-top: -3px;")
 											span( data-bind=" text: infoDefine [ languageIndex() ].QTGateGateway.datatransferMonth " style = "font-size: smaller;font-weight: lighter;")
-											span( data-bind=" text: QTTransferData() ? ( QTTransferData().transferMonthly / ( 1024 * 1024 ) + ' Mbyte') : null " style = "font-size: smaller;font-weight: lighter;")
+											span( data-bind=" text: getMonthData().data + '/' + getMonthData().ch " style = "font-size: smaller;font-weight: lighter;")
 							.ui.divider
 							.useInfo
 								.ui.grid

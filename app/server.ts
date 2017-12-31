@@ -2106,6 +2106,7 @@ class ImapConnect extends Imap.imapPeer {
 
 		this.newMail = ( ret: QTGateAPIRequestCommand ) => {
 			//		have not requestSerial that may from system infomation
+			saveLog ('clearTimeout timeOutWhenSendConnectRequestMail !')
 			clearTimeout ( this.timeOutWhenSendConnectRequestMail )
 			if ( ! ret.requestSerial ) {
 				saveLog ( `newMail have not ret.requestSerial, doing switch ( ret.command ) `)
@@ -2139,7 +2140,7 @@ class ImapConnect extends Imap.imapPeer {
 				}
 				
 			}
-			saveLog (`on newMail command [${ ret.command }] have requestSerial [${ ret.requestSerial }]`)
+			saveLog ( `on newMail command [${ ret.command }] have requestSerial [${ ret.requestSerial }]`)
 			const poolData = this.commandCallBackPool.get ( ret.requestSerial )
 
 			if ( ! poolData || typeof poolData.CallBack !== 'function' ) {

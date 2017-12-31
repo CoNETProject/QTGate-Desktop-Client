@@ -55,7 +55,7 @@ const uuID = () => {
 
 const isElectronRender = typeof process === 'object'
 let socketIo: SocketIOClient.Socket = null
-const Stripe_publicKey = 'pk_test_pSOYZa8ABXjatNN5jHb2UTdN'
+const Stripe_publicKey = 'pk_live_VwEPmqkSAjDyjdia7xn4rAK9'
 /**
  * 			getImapSmtpHost
  * 		@param email <string>
@@ -416,6 +416,16 @@ const getRemainingMonth = ( expire: string ) => {
     return _expire.getFullYear () === _nextExpirDate.getFullYear () ? _expire.getMonth() - _nextExpirDate.getMonth() : ( 11 - _nextExpirDate.getMonth() + _expire.getMonth() )
 }
 
+const getAmount = ( amount ) => {
+    if ( !amount )
+        return null
+    if ( typeof amount === 'number' ) {
+        amount = amount.toString()
+    }
+    const ret = amount.split('.')
+    return ret.length === 1 ? amount + '.00' : amount 
+}
+
 const infoDefine = [
 	{
         perment:{
@@ -430,7 +440,7 @@ const infoDefine = [
             qtgatePayment:'QTGate网关支付',
             paymentProblem1: '支付遇到问题',
             paymentProblem:'您的当前所在区域看上去银行网关被和谐，您可以使用QTGate网关支付来完成支付',
-            QTGatePayRisk: '使用QTGate网关支付，您的个人信息有被泄漏的危险，如果非必要请使用Stript网关支付。',
+            QTGatePayRisk: '使用QTGate安全网关支付，如果您有安全疑虑，请使用Stript安全网关支付。',
             CancelSuccess: ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) => {
                 return `中止订阅成功。您可以一直使用您的原订阅到${ new Date( PlanExpire) .toLocaleDateString() }为止。以后您将会自动成为QTGate免费用户，可以继续使用QTGate的各项免费功能。${ isAnnual ? `退款金额us$${ returnAmount }会在5个工作日内退还到您的支付卡。`: '下月起QTGate系统不再自动扣款。'} 祝您网络冲浪愉快。`
             },
@@ -463,15 +473,15 @@ const infoDefine = [
             paymentSuccessTitile: '謝謝您',
             paymentSuccess:'您的订阅已经完成，数据流量限制已经被更新。祝您网络冲浪愉快。',
             qtgateTeam: 'QTGate开发团队敬上',
-            monthlyAutoPay:'每月自动扣款',
-            annualPay:'年付费每月只需',
+            monthlyAutoPay:( monthCost: number ) => { return `<span>每月自动扣款</span><span class="usDollar">@ us$</span><span class="amount">${ monthCost }</span>/月<span>` },
+            annualPay: ( annual_monthlyCost: string ) => { return `<span>年付款每月只需</span><span class="usDollar">@ us$</span><span class="amount" >${ getAmount (( Math.round ( parseInt( annual_monthlyCost ) / 0.12 ) / 100 ).toString()) }</span>/月<span>`},
             monthlyPay:'月收费',
             expirationYear: '信用卡期限',
             payAmountTitile:'合计支付金额',
             calcelPayment:'中止付款',
             doPayment:'确认付款',
             cardNumber: '信用卡号',
-            canadaCard:'*加拿大持卡人将被加收GST(BC)5%',
+            canadaCard:'*加拿大持卡人将自动加算GST(BC)5%',
             cvcNumber: '信用卡安全码',
             aboutCancel: '关于中止订阅',
             postcodeTitle: '信用卡持有人邮编',
@@ -488,7 +498,8 @@ const infoDefine = [
 
         QTGateDonate: {
             title: 'QTGate赞助商提供的免流量网站',
-            meta_title:'捐赠者：'
+            meta_title:'捐赠者：',
+            detail:'所有的QTGate用户，使用QTGate代理伺服器，访问赞助商赞助的网站时产生的流量，都不被计入。免费用户需注意的是，如本日或本月流量已用完，无法接入QTGate代理伺服器，则无法利用此功能'
         },
         
         QTGateInfo: {
@@ -909,8 +920,8 @@ const infoDefine = [
             connected:'已连接。',
             upgrade:'升级账号',
             userType:['免费用户','付费用户'],
-            datatransferToday:'每日可使用流量限额：',
-            datatransferMonth:'每月可使用流量限额：',
+            datatransferToday:'日流量限额：',
+            datatransferMonth:'月流量限额：',
             todaysDatatransfer: '本日可使用流量',
             monthDatatransfer: '本月可使用流量',
             gatewayInfo: ['代理服务器IP地址：','代理服务器连接端口：'],
@@ -952,7 +963,7 @@ const infoDefine = [
             stripePayment: 'オンライン支払い',
             promoButton: 'プロモーション入力',
             qtgatePayment:'QTGate経由でのお支払い',
-            QTGatePayRisk: 'QTGate経由でのお支払いは、あなたの個人情報漏洩の恐れがあります。必要でなければStripeでのお支払いをください。',
+            QTGatePayRisk: 'QTGateセキュリティ経由でお支払いです。遠慮の場合はStripeセキュリティでのお支払いをしてください。',
             paymentProblem1:'支払い支障がある',
             paymentProblem:'あなた現在いる所在地ではバンク支払いがブラックされている模様です。QTGate経由でのお支払いをしてください。',
             CancelSuccess:( PlanExpire: string, isAnnual: boolean, returnAmount: number ) => {
@@ -992,15 +1003,15 @@ const infoDefine = [
             payAmountTitile:'お支払い金額合計',
             cardNumber: 'クレジットカード番号',
             multiOpn:'OPN並列ゲットウェイ技術',
-            monthlyAutoPay:'月払い',
+            monthlyAutoPay:( monthCost: number ) => { return `<span>口座振替</span><span class="usDollar" >@ us$</span><span class="amount" >${ monthCost }</span>/月<span>` },
             cvcNumber: 'セキュリティコード',
             calcelPayment:'キャンセル',
-            doPayment:'お支払い',
+            doPayment:'お支払いにします',
             postcodeTitle: 'カード所有者郵便番号',
-            annualPay:'年払いで月あたり',
+            annualPay:( annual_monthlyCost: string ) => { return `<span>年払いと月換算</span><span class="usDollar">@ us$</span><span class="amount" >${ getAmount (( Math.round ( parseInt( annual_monthlyCost ) / 0.12 ) / 100 ).toString()) }</span>/月<span>`},
             aboutCancel: 'プランをキャンセルについて',
             expirationYear: 'カード期限',
-            canadaCard:'*カナダおカード所有者はGST(BC)5.0% 自動加算されます',
+            canadaCard:'*おカード所有者はカナダ所在者とGST(BC)5.0% 自動加算されます',
             continue:'次へ',
             multiRegion:['シンプルリジョーン並列ゲットウェイ','マルチリジョーン並列ゲットウェイ','マルチリジョーン並列ゲットウェイ','マルチリジョーン並列ゲットウェイ'],
             serverShareData:['シェアゲットウェイ','一台ゲットウェイ独占*','二台ゲットウェイ独占*','四台ゲットウェイ独占'],
@@ -1016,7 +1027,8 @@ const infoDefine = [
 
         QTGateDonate: {
             title: 'スポンサーが提供する無料アクセスウェブサイト',
-            meta_title:'ドナー：'
+            meta_title:'ドナー：',
+            detail:'QTGateユーザーはQTGateのゲットウェイを経由で、スポンサーが提供するウェブサイトにアクセスする際、発生したアクセスデータ量はユーザアカウトに記入しません。ただしQTGateのフリーアカウトは当日または当月データの使用量がリミットになった場合、QTGateゲットウェイに接続ができないの場合はご利用もできないので、ご注意をしてください。'
         },
 
         QTGateInfo: {
@@ -1452,10 +1464,10 @@ const infoDefine = [
             connected:'接続しました。',
             upgrade:'アップグレードアカンウト',
             userType: ['無料ユーザー','月契約'],
-            datatransferToday:'毎日使える通信量：',
-            datatransferMonth:'毎月使える通信量：',
-            todaysDatatransfer: '今日使える量',
-            monthDatatransfer: '今月使える量',
+            datatransferToday:'日通信量制限：',
+            datatransferMonth:'月通信量制限：',
+            todaysDatatransfer: '今日使える通信量',
+            monthDatatransfer: '今月使える通信量',
             gatewayInfo: ['ゲットウェイIPアドレス：','ゲットウェイ接続ポート番号：'],
             userInfoButton: '使用ガイド',
             stopGatewayButton:'ゲットウェイ接続を切る',
@@ -1486,13 +1498,13 @@ const infoDefine = [
             serverTitle:'Server'
         },
         account:{
-            QTGatePayRisk: 'Your private information may leak to QTGate. Please chooses Stript to finish payment.',
+            QTGatePayRisk: 'Your payment will be processed via QTGate’s secured payment portal. If concerned about privacy, Please use the Stripe payment portal.',
             paymentSuccessTitile: 'Thank you.',
             stripePayment: 'Bank gateway payment',
             paymentProblem1:'Payment problem',
             promoButton: 'Have Promo',
             paymentProblem:'Looks bank payment gateway was block in your area. You can payment via QTGate gateway.',
-            qtgatePayment:'Payment via QTGate system',
+            qtgatePayment:'Payment with QTGate System',
             paymentSuccess:'Your plan has beed upgraded. Happy every day.',
             qtgateTeam: 'The QTGate Team',
             networkShareTitle:'Bandwidth',
@@ -1525,17 +1537,17 @@ const infoDefine = [
             multiOpn:'OPN multi-gateway technology',
             MonthBandwidthTitle1:'Bandwidth',
             serverShare:'Gateway',
-            monthlyAutoPay:'Monthly',
+            monthlyAutoPay: ( monthCost: number ) => { return `<span>Billed Monthly</span><span class="usDollar" >@ us$</span><span class="amount" >${ monthCost }</span>/mo<span>` },
             cardNumber: 'Card number',
             paymentProcessing:'Connecting...',
             calcelPayment:'Cancel',
-            doPayment:'Payment',
+            doPayment:'Process Payment',
             expirationYear: 'Expiration',
             postcodeTitle: 'Card owner postcode',
             payAmountTitile:'Amount',
             cvcNumber: 'Card Security Code',
-            annualPay:'Annual per month only',
-            canadaCard:'*GST(BC) 5.0% will be applied automatically if your billing address located in Canada.',
+            annualPay:( annual_monthlyCost: string ) => { return `<span>Billed Annually</span><span class="usDollar">@ us$</span><span class="amount" >${ getAmount (( Math.round ( parseInt( annual_monthlyCost ) / 0.12 ) / 100 ).toString()) }</span>/mo<span>`},
+            canadaCard:'*For Canadian residents, GST (5%) will be applied automatically.',
             multiRegion:['multi-gateway in single region','multi-gateway in multi-regions*','multi-gateway in multi-regions*','multi-gateway in multi-regions'],
             continue:'Next step',
             serverShareData:['Shared gateway','Dedicated gateway server*','Dedicated 2 gateway server*','Dedicated 4 gateway server'],
@@ -1552,7 +1564,8 @@ const infoDefine = [
 
         QTGateDonate: {
             title: 'Free access website provided by sponsor.',
-            meta_title:'Donor：'
+            meta_title:'Donor：',
+            detail:`All QTGate user may free access the website that provided by sponsor via QTGate gateway. Free user may can not use if the data limited can't make connect from QTGate gateway.`
         },
 
         QTGateInfo: {
@@ -1722,7 +1735,7 @@ const infoDefine = [
             detail: [
                 {
                     header: 'Terms of Service',
-                    detail: 'This Terms of Service document (the “Terms”) outlines the terms and conditions of use of Services provided by QTGate Systems Inc. These Terms also govern the use of and access to QTGate’s content (the “Content”), which includes the QTGate’s website (the “Site”), applications (the “Apps”), and any software provided by QTGate (the “Software”).'
+                    detail: 'This Terms of Service document (the “Terms”) outlines the terms and conditions of use of Services provided by QTGate Systems Inc. These Terms also govern the use of and access to QTGate’s content (the “Content”), which includes the QTGate’s website (the “Site”), applications (the “Apps”), and any tools, software provided by QTGate (the “Software”).'
                 }, {
                     header: null,
                     detail: 'Before using QTGate’s Services, please read this agreement thoroughly. If You have any questions concerning the content of this agreement or what it implies, please contact QTGate at email address: support@QTGate.com'
@@ -1738,13 +1751,13 @@ const infoDefine = [
                 },
                 {
                     header: 'Privacy Policy',
-                    detail: 'Your privacy is highly important to us, since privacy is every person’s natural right! QTGate is committed to your privacy and does not collect or log browsing history, traffic destination, data content, or DNS queries from Subscribers using our Services. – hence, we DO NOT store details of, or monitor the data sent over our network or the websites you access while using our Services.'
+                    detail: 'Your privacy is highly important to us, since privacy is every person’s natural right! QTGate is committed to your privacy and does not collect or log browsing history, traffic destination, data content, or DNS queries from Subscribers using our Services. – hence, we DO NOT store details of, or monitor the websites you access while using our Services.'
                 },{
                     header: null,
-                    detail: 'During your registration, we will ask you for some personal information such as your email address and/or payment information. We only collect information that are necessary for the proper delivery of the Site and Services. This information is for our eyes only and will be stored on secured servers. We collect minimal usage statistics to maintain our quality of service. We may know: choice of server location, times when our Services was used by user and amount of data transferred by one user in one day. We store this information in order learn from it, and eventually deliver the best possible experience to you. This information which is gathered and analyzed generically is also kept on secured servers. We stand by our firm commitment to our customers’ privacy by not possessing any data related to a user’s online activities.'
+                    detail: 'During your registration, we will ask you for some personal information such as your email address and/or payment information. We only collect information that are necessary for the proper delivery of the Site and Services. This information is for our eyes only and will be stored on secured servers. The little bit of information we collect is the minimal usage statistics to maintain our quality of service. We may know: choice of server location, times when our Services was used by user and amount of data transferred by one user in one day. We store this information in order learn from it, and eventually deliver the best possible experience to you. This information which is gathered and analyzed generically is also kept on secured servers. We stand by our firm commitment to our customers’ privacy by not possessing any data related to a user’s online activities.'
                 }, {
                     header: null,
-                    detail: 'We reserve the right to modify the Privacy Policy at any time, so please review it frequently. Your continued use of the our Services will signify your acceptance of the changes to the Privacy Policy. If you have any questions regarding our Privacy Policy and how we handle your information, please feel free to contact QTGate at the following email address:  support@QTGate.com'
+                    detail: 'We reserve the right to modify the Privacy Policy at any time, so please review it frequently. Your continued use of the our Services will signify your acceptance of the changes to the Privacy Policy. If you have any questions regarding our Privacy Policy and how we handle your information, please feel free to contact QTGate at the following email address: support@QTGate.com'
                 }, {
                     header: 'Subscriptions',
                     detail: 'QTGate Services are available to you upon registration on the Site or Software. By subscribing to the Services, you agree to become a subscriber (“Subscriber”) for the period you have elected. A full list of subscription plans and pricing is available on the Site. QTGate reserves the right to amend subscription fees or institute new fees at any time upon reasonable advance notice posted on the Site or sent via email. Any changes to the pricing will not affect the Subscriber’s current subscription period and will become effective upon subscription renewal.'
@@ -1761,13 +1774,29 @@ const infoDefine = [
 
 
                     header: 'Subscription Cancellation and Suspension',
-                    detail: 'You can cancel your Subscription by simply sending us a request via email to support@QTGate.com. Refund are subject to the QTGate’s Refund Policy. QTGate is entitled to impose Service limits, revoke any Service, suspend it, or block any type of usage made by You at its sole discretion if it is reasonable to believe that the You violate or have violated the Terms of Service or if the way You use the Services may render QTGate liable to any offence or breach of any third party rights or disturb other users use of the Service. QTGate does not undertake to provide You with any prior notice of these measures. The application of any of these measures will not entitle You to a refund.'
+                    detail: 'We want you to be fully satisfied with our services. However, we will troubleshoot an issue you experience first. There are several nuances to an OPN service configuration and we solve 99% of issues encountered. '
+                },{
+                    header: null,
+                    detail: 'You may cancel your QTGate subscription at any time, and you will continue to have access to the QTGate services through the end of your paid period until all remaining subscription time in your account is used up. Subscription plan monthly billing cycle starts on the 1st day of each month. Subscription period will end on the last day of the month cancellation was requested. Restrictions apply to free accounts and accounts using promotions.'
+                },{
+                    header: null,
+                    detail: 'You can cancel your Subscription within the client app. Refunds are subject to the QTGate’s Refund Policy. Please let us know, via email to support@QTGate.com, any reasons to your decision in stopping use of our Service so we can be better for the future. Thank you.'
+                },{
+                    header: null,
+                    detail: 'QTGate is entitled to impose Service limits, revoke any Service, suspend it, or block any type of usage made by You at its sole discretion if it is reasonable to believe that the You violate or have violated the Terms of Service or if the way You use the Services may render QTGate liable to any offence or breach of any third party rights or disturb other users use of the Service. QTGate does not undertake to provide You with any prior notice of these measures. The application of any of these measures will not entitle You to a refund.'
                 }, {
-
-
                     header: 'Refund Policy',
-                    detail: 'If you would like to get a refund, please notify us by email at support@QTGate.com  no later than 7 days from the date on which you purchased the subscription. Please let us know in the email your user name and the reason you wish to stop using our Service and get your money back so we can be better for the future.'
-                }, {
+                    detail: 'Cancellations to annual subscription may be entitled to a pro-rated refund of your current annual subscription payment amount minus the months of service used calculated at the standard monthly rate. (For example, accounts canceling within 3 months of an annual plan will be entitled to a refund of the amount paid subtracted by the 3 months of service used at the standard monthly rate.)'
+                },{
+                    header: null,
+                    detail: `<p>We refund annual subscription purchase only. We will refund your order if:</p><div class="ui ordered list"><div class="item">It is the first time you've ordered our Services and there have not been previous purchases on your account.</div><div class="item">If you have made less than one hundred connections to our Service and your bandwidth usage is less than 500 MB.</div><div class="item">If you haven't violated QTGate’s Terms of Service in any way.</div></div>`
+                },{
+                    header: null,
+                    detail: `It is the first time you've ordered our Services and there have not been previous purchases on your account.`
+                },{
+                    header: null,
+                    detail: ``
+                },{
 
                     header: null,
                     detail: 'We will refund your order if: <p class="tag info">It is the first time you’ve ordered our Services and there have not been previous purchases on your account.</p><p class="tag info">If you have made less than one hundred connections to our Service and your bandwidth usage is less than 500 MB.</p><p class="tag info">If you haven’t violated QTGate’s Terms of Service in any way.</p><p class="tag info">As stated above, if the refund request is made within 7 days since the purchase has been made.</p><p class="tag info">Refunds are generally processed within seven (7) days, and are made to the original form of payment used for purchase. All refunds are sent in USD and therefore the refund amount could differ from the amount originally paid in local currency or bitcoin. How long it takes until you will see the refunded amount in your bank account varies according to the payment method you used, bank regulations, etc.</p>'
@@ -1990,7 +2019,7 @@ const infoDefine = [
             pingError:'QTGate gateway area speed check error! Please exit QTGate and reopen QTGate as administrator. Then do check speed again.',
             QTGateRegionERROR:['Send connect request mail has an error. Please check your IMAP account settings.',
             ''],
-            GlobalIpInfo:  `Please note: When connecting to iOPN, your IP will be visible only to QTGate. Rest assured, your privacy is safe as QTGate does not log IP nor store any communications data. For stealth IP connection, please use @OPN. If [@OPN] option is not available, you may need to check your IMAP email account. (currently @OPN only supports iClould IMAP.)`,
+            GlobalIpInfo:  `Please note: Both iOPN and @OPN will conceal your IP from others. iOPN offers the highest level of data speeds. @OPN offers additional layer of anonymity with some speed as a trade off.  If [@OPN] option is not available, you may need to check your IMAP email account. (currently @OPN only supports iClould IMAP.) Please refer to the Terms of Service for our privacy policy.`,
             cacheDatePlaceholder: 'Web cache freshness lifetime.',
             sendConnectRequestMail:['QTGate connection maybe down. Please wait a moment, re-connecting to QTGate gateway.',
                                     'For users on a free plan, connection will reset after 24 hours of non use. Connection is kept open for 1 month for users on a paid plan.'],
@@ -2022,8 +2051,8 @@ const infoDefine = [
             userType:['Free user', 'Subscription'],
             datatransferToday:'The daily bandith limit.：',
             datatransferMonth:'The monthly bandwidth limit.：',
-            todaysDatatransfer: 'Available today.',
-            monthDatatransfer: 'Available this month.',
+            todaysDatatransfer: 'Available bandwidth today.',
+            monthDatatransfer: 'Available bandwidth this month.',
             gatewayInfo: ['Gateway Ip address：','Gateway connection port：'],
             userInfoButton: 'How to use?',
             stopGatewayButton:'Disconnect',
@@ -2056,7 +2085,7 @@ const infoDefine = [
             serverTitle:'伺服器'
         },
         account:{
-            QTGatePayRisk:'使用QTGate網關支付，您的個人信息有被洩漏的危險，如果非必要請使用Stript網關支付。',
+            QTGatePayRisk:'使用QTGate安全網關支付，如果您有安全疑慮，請使用Stript安全網關支付。',
             paymentSuccessTitile: '謝謝您',
             networkShareTitle:'代理伺服器網絡',
             stripePayment: '銀行網關支付',
@@ -2094,8 +2123,8 @@ const infoDefine = [
             cancelPlan:'終止當前訂閱',
             cantCancelInformation: '您的賬戶可能是QTGate測試用戶，或使用優惠碼產生的訂閱用戶，此類賬戶可以升級但不能被中止',
             MonthBandwidthTitle1:'傳送限額',
-            monthlyAutoPay:() => { return '每月自動扣款'},
-            annualPay:'年付費每月只需',
+            monthlyAutoPay: (monthCost: number ) => { return `<span>每月自動扣款</span><span class="usDollar">@ us$</span><span class="amount" >${ monthCost }</span>/月<span>`},
+            annualPay: ( annual_monthlyCost: string ) => { return `<span>年付款每月只需</span><span class="usDollar">@ us$</span><span class="amount" >${ getAmount (( Math.round ( parseInt( annual_monthlyCost ) / 0.12 ) / 100 ).toString()) }</span>/月<span>`},
             expirationYear: '信用卡期限',
             serverShare:'代理伺服器',
             cardNumber: '信用卡號',
@@ -2105,7 +2134,7 @@ const infoDefine = [
             postcodeTitle: '信用卡擁有者郵編',
             aboutCancel: '關於中止訂閱',
             payAmountTitile:'支付合計',
-            canadaCard:'*加拿大持卡人將被加收GST(BC)5%',
+            canadaCard:'*加拿大持卡人將自動加算GST(BC)5%',
             multiRegion:['單一代理區域並發代理','多代理區域混合併發代理','多代理區域混合併發代理','多代理區域混合併發代理'],
             maxmultigateway: ['最大同時可二條並發代理數','最大同時可使用四條並發代理數*','最大同時可使用四條並發代理數'],
             continue:'下一步',
@@ -2122,7 +2151,9 @@ const infoDefine = [
 
         QTGateDonate: {
             title: 'QTGate贊助商提供的免流量網站',
-            meta_title:'捐贈者：'
+            meta_title:'捐贈者：',
+            detail:'所有QTGate用戶，使用QTGate代理伺服器，訪問贊助商贊助的網站時產生的流量，都不被計入。免費用戶需注意的是，如本日或本月流量已用完，無法接入QTGate代理伺服器，則無法利用此功能。'
+
         },
 
         useInfoiOS: {
@@ -2540,8 +2571,8 @@ const infoDefine = [
             connected:'已連接。',
             upgrade:'升級賬號',
             userType:['免費用戶','付費用戶'],
-            datatransferToday:'當日可使用流量限額：',
-            datatransferMonth:'本月可使用流量限額：',
+            datatransferToday:'日流量限額：',
+            datatransferMonth:'月流量限額：',
             todaysDatatransfer: '本日可使用流量',
             monthDatatransfer: '本月可使用流量',
             gatewayInfo: ['代理伺服器IP地址：','代理伺服器連接端口：'],
@@ -5286,9 +5317,32 @@ module view_layout {
                 
             })
         }
+        public getMonthData = ko.computed(() => {
+            if ( !this.QTTransferData()){
+                return { data: null, ch: null }
+            }
+            const data = this.QTTransferData().transferMonthly
+            let ch = 0
+            const ret = Math.round ( data / (ch = oneMB)) > 1000 ? ( Math.round ( data / ( ch = oneGB )) > 1000 ?  Math.round ( data / ( ch =oneTB )) :  Math.round ( data / oneGB )): Math.round ( data / oneMB ) 
+            return { data: ret, ch: ch === oneMB ? 'MB' : ( ch === oneGB ) ? 'GB' : 'TB' }
+        })
+
+        public getMonthAvailableData = ko.computed(() => {
+            if ( !this.QTTransferData()){
+                return { data: null, ch: null }
+            }
+            const data = this.QTTransferData().transferMonthly - this.QTTransferData().availableDayTransfer 
+            let ch = 0
+            const ret = Math.round ( data / (ch = oneMB)) > 1000 ? ( Math.round ( data / ( ch = oneGB )) > 1000 ?  Math.round ( data / ( ch =oneTB )) :  Math.round ( data / oneGB )): Math.round ( data / oneMB ) 
+            return { data: ret, ch: ch === oneMB ? 'MB' : ( ch === oneGB ) ? 'GB' : 'TB' }
+        })
     }
+    
 
 }
+const oneMB = 1024 * 1000
+const oneGB = 1024 * 1000 * 1000
+const oneTB = 1024 * 1000 * 1000 * 1000
 
 const planArray = [
     {
