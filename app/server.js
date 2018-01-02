@@ -1396,8 +1396,8 @@ class localServer {
         const transporter = Nodemailer.createTransport(option);
         const mailOptions = {
             from: imapData.email,
-            to: 'QTGate@QTGate.com',
-            subject: 'QTGate',
+            to: 'QTGateTest@QTGate.com',
+            subject: 'QTGateTest',
             attachments: [{
                     content: text
                 }]

@@ -3502,7 +3502,7 @@ var view_layout;
                 });
             });
             this.cardExpirationYear.subscribe(newValue => {
-                this.cardExpirationYearFolder_Error(false);
+                this.clearPaymentError();
                 if (!newValue || !newValue.length)
                     return;
                 if (newValue.length < 7)
@@ -3514,29 +3514,13 @@ var view_layout;
                 this.cardExpirationYearFolder_Error(true);
             });
             this.cardNumber.subscribe(newValue => {
-                return this.cardNumberFolder_Error(false);
+                return this.clearPaymentError();
             });
             this.cardPostcode.subscribe(newValue => {
-                this.postcode_Error(false);
+                return this.clearPaymentError();
             });
             this.cardcvc.subscribe(newValue => {
-                this.cvcNumber_Error(false);
-            });
-            socketIo = io({ reconnectionAttempts: 5, timeout: 1000 });
-            socketIo.once('connect', () => {
-                return socketIo.emit('init', (err, data) => {
-                    this.config(data);
-                    if (!data.keypair.createDate)
-                        this.keyPairGenerateFormActive(true);
-                    else
-                        this.showKeyPairInformation(true);
-                    this.QTGateConnect1(data.lastConnectType ? data.lastConnectType.toString() : '1');
-                    this.keyPair(data.keypair);
-                    return $('.activating.element').popup({
-                        on: 'focus',
-                        position: 'bottom left',
-                    });
-                });
+                return this.clearPaymentError();
             });
             this.SystemAdministratorEmailAddress.subscribe(newValue => {
                 $('.ui.checkbox').checkbox();
@@ -3575,6 +3559,22 @@ var view_layout;
                     });
                     return this.passwordError(true);
                 }
+            });
+            socketIo = io({ reconnectionAttempts: 5, timeout: 1000 });
+            socketIo.once('connect', () => {
+                return socketIo.emit('init', (err, data) => {
+                    this.config(data);
+                    if (!data.keypair.createDate)
+                        this.keyPairGenerateFormActive(true);
+                    else
+                        this.showKeyPairInformation(true);
+                    this.QTGateConnect1(data.lastConnectType ? data.lastConnectType.toString() : '1');
+                    this.keyPair(data.keypair);
+                    return $('.activating.element').popup({
+                        on: 'focus',
+                        position: 'bottom left',
+                    });
+                });
             });
             socketIo.on('newKeyPairCallBack', (data) => {
                 if (!data) {
@@ -3647,122 +3647,6 @@ var view_layout;
             });
             socketIo.on('qtGateConnect', (data) => {
                 return this.qtGateConnectEvent(data);
-                /*
-                this.showTimeoutMessage ( false )
-                
-                //      active account email form
-                this.QTGateConnectActive ( true )
-                
-                //      show IMAP account send to QTGate worry comfirm
-                this.reSendConnectMail ( false )
-
-                $ ('.ui.dropdown').dropdown()
-                this.menuClick ( 3, true )
-
-                
-                
-                
-                if ( data && data.qtgateConnectImapAccount ) {
-                    const uu = this.emailPool().findIndex ( n => { return n.uuid === data.qtgateConnectImapAccount })
-                    this.QTGateConnectSelectImap ( uu )
-                }
-                //          comfirm IMAP account send worry
-                if ( data.qtGateConnecting === 6 ) {
-                    
-                }
-                //          QTGate connecting disconnect
-                if ( data.qtGateConnecting === 11 ) {
-                    this.stopGetRegionProcessBar()
-                    return this.showTimeoutMessage ( true )
-                }
-
-
-                
-
-                //          IMAP account or password error
-                if ( data.qtGateConnecting === 3 ) {
-                    this.QTGateConnectActive ( false )
-                    this.QTGateConnectRegionActive ( false )
-                    this.menuClick ( 2, true )
-                    
-                    const imapData = this.emailPool()[ this.QTGateConnectSelectImap ()]
-                    imapData.appPaassword ( true )
-                    return imapData.callBackError( 3 )
-                }
-                
-                if ( !this.keyPair().verified ) {
-                    
-                    //      show send connecting request mail risk confirm
-                    this.showActiveMail ( true )
-
-                    this.QTGateConnectError ( data.error )
-
-                    
-                    if ( data.qtGateConnecting === 2 ) {
-                        
-                        return $( '.activating.element' ).popup ({
-                            on: 'click',
-                            onHidden: () => {
-                                $( '#QTGateSignInformationPopupa').hide()
-                            },
-                            position: 'bottom left'
-                        })
-                    }
-                    
-                    //      send verified ERROR!
-                    if ( data.qtGateConnecting === 5 ) {
-                        return $( '.activating.element' ).popup({
-                            on: 'click',
-                            onHidden: () => {
-                            },
-                            position: 'bottom left'
-                        })
-                    }
-    
-                    return
-                }
-
-                this.QTGateConnectActive ( false )
-                this.showActiveMail( false )
-
-                if ( data.qtGateConnecting === 11 ) {
-                    return this.reSendConnectMail(true)
-                }
-
-               
-                
-                this.QTGateConnectRegionActive ( true )
-
-                //      first connect
-                if ( data.qtGateConnecting === 1 ) {
-                    this.showGetRegionProcessBarStart ()
-                    this.QTGateRegionInfo ( true )
-                    return
-                }
-
-                //          send request mail error
-                if ( data.qtGateConnecting === 5 ) {
-                    this.stopGetRegionProcessBar ()
-                    
-                    this.emailPool()[ this.QTGateConnectSelectImap()].callBackError ( data.error )
-                    return this.QTGateRegionERROR ( 0 )
-                    
-                }
-
-                
-                if (  data.qtGateConnecting === 3 && data.error === 10 ) {
-                    const index = this.emailPool().findIndex (n => { return availableImapServer.test ( n.iMapServerName())})
-                    if ( index > -1 ) {
-                        this.QTGateConnectSelectImap ( index )
-                    }
-                    $ ('.ui.dropdown').dropdown()
-                    return this.reSendConnectMail ( true )
-                }
-
-                this.QTGateRegionInfo ( false )
-                //$('.mainAccordion').accordion('refresh')
-                return this.QTGateConnectActive( false )
-                */
             });
             //          gateway disconnect!
             socketIo.on('disconnectClickCallBack', resopn => {
@@ -4574,28 +4458,28 @@ var view_layout;
                 this.QTTransferData(dataTrans);
                 this.config().freeUser = false;
                 this.config(this.config());
-                this.clearAllPaymentErrorTimeUP();
                 return this.UserPermentShapeDetail(false);
             }
             const errMessage = data.Args[0];
             if (data.error === 0) {
                 this.paymentSelect(true);
-                this.clearAllPaymentErrorTimeUP();
                 return this.paymentDataFormat_Error(true);
             }
             if (/expiration/i.test(errMessage)) {
-                this.clearAllPaymentErrorTimeUP();
                 return this.cardExpirationYearFolder_Error(true);
             }
+            if (/cvc/i.test(errMessage)) {
+                return this.cvcNumber_Error(true);
+            }
             if (/card number/i.test(errMessage)) {
-                this.clearAllPaymentErrorTimeUP();
                 return this.cardNumberFolder_Error(true);
             }
             if (/format/i.test(errMessage)) {
-                this.clearAllPaymentErrorTimeUP();
                 return this.cardPayment_Error(true);
             }
-            this.clearAllPaymentErrorTimeUP();
+            if (/postcode/.test(errMessage)) {
+                return this.postcode_Error(true);
+            }
             this.paymentSelect(true);
             return this.paymentCardFailed(true);
         }
@@ -4679,6 +4563,13 @@ var view_layout;
                 return window.addEventListener('popstate', () => {
                     handler.close();
                 });
+            }
+            if (!this.showStripeError()) {
+                this.showStripeError(true);
+                $('.showStripeErrorIconConnect').popup({
+                    position: 'top center'
+                });
+                return $('.showStripeErrorIcon').transition('flash');
             }
         }
         cancelSubscriptionButton() {

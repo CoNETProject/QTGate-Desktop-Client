@@ -1,12 +1,12 @@
 {
   "name": "qtgate",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "license": "MIT",
   "description": "QTGate desktop client",
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "win": "electron-builder --x64",
+    "win": "electron-builder --x64 --ia32",
     "win32": "electron-builder --ia32",
     "linux": "electron-builder --linux",
     "mac": "electron-builder",
@@ -18,7 +18,7 @@
   },
   "build": {
     "squirrelWindows": {
-      "remoteReleases": "https://github.com/QTGate/atOPN/releases/download/0.1.0/"
+      "remoteReleases": "https://github.com/QTGate/atOPN/releases/download/0.2.0/"
     },
     "appId": "com.qtgate.client",
     "win": {

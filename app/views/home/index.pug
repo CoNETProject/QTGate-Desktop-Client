@@ -435,16 +435,16 @@ block jumbotron1
 									span.amount( data-bind = "text: getAmount ( selectPlanPrice() - showCurrentPlanBalance())" style="color:grey")
 								.row( style = "padding: 0px;padding-top: 1em;")
 
-									.ui.animated.fade.basic.violet.button( data-bind = " click: openStripeCard, css: { disabled: showStripeError() }")
+									.ui.animated.fade.basic.violet.button.showStripeErrorIconConnect( data-bind = " click: openStripeCard, css: { violet: !showStripeError(), negative: showStripeError()}, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.paymentProblem }")
 										.visible.content
 											span
 												i.icon.credit.card.alternative
 											span( style = "font-weight: lighter;font-style: italic;padding-left: 0.5em;font-size: smaller;") us$
 											span( data-bind = "text: cardPayAmount()")
-											span( data-bind = "visible: showStripeError()")
+											span.showStripeErrorIcon( data-bind = "visible: showStripeError()")
 												i.icon.warning.sign.red
 										.hidden.content
-											img( src="/images/Stripe.svg" style="margin-top: -0.8em;width: 60%;")
+											img.showStripeErrorIcon( src="/images/Stripe.svg" style="margin-top: -0.8em;width: 60%;")
 									//-.ui.animated.fade.basic.button( data-bind = " click: openStripeAlipay, css: { disabled: showStripeError() }")
 										.visible.content
 											img( src="/images/alipay.svg" style="height: 14px;")
@@ -462,7 +462,7 @@ block jumbotron1
 											span( data-bind = "text: cardPayAmount()")
 										.hidden.content
 											img( src="/images/Google_Wallet_logo.svg" style="margin-top: -0.58em;width: 35%;")
-									.ui.animated.fade.basic.grey.button.showStripeError( data-bind = "attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.paymentProblem }, click: ()=>{cardpay(true);paymentSelect(false)}")
+									.ui.animated.fade.basic.grey.button( data-bind = "attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.paymentProblem }, click: ()=>{cardpay(true);paymentSelect(false)}")
 										.visible.content
 											span( data-bind = "text: infoDefine[ $root.languageIndex() ].account.paymentProblem1 ")
 										.hidden.content( style = "margin-top: -1.2em;color: cadetblue;font-size: smaller;")
@@ -520,12 +520,12 @@ block jumbotron1
 									label( data-bind = " text: infoDefine[ $root.languageIndex() ].account.postcodeTitle")
 									input.paymaneCVC( data-bind = "value: cardPostcode" )
 							.fields( data-bind = "visible: !doingPayment()")
-								.five.wide.field
+								.field
 									.ui.buttons
 										button.ui.button( data-bind="text: infoDefine[ $root.languageIndex() ].account.calcelPayment, click: () => { cardpay ( false ); paymentSelect(true)}" )
 										.or
 										button.ui.button.positive( data-bind="text: infoDefine[ $root.languageIndex() ].account.doPayment, click: doPayment ")
-								.eleven.wide.field
+								.field
 									span( data-bind="text: infoDefine[ $root.languageIndex() ].account.canadaCard" style="font-size: small;color:gray;")
 						.ui.red.segment( data-bind = " visible: cardErrorMessage()")
 							.ui.negative.message
