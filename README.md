@@ -17,7 +17,7 @@ QTGate keeps no logs of your online traffic and all data is encrypted using indu
 
 這是**赳梯**客戶端安裝程序.
 **赳梯**是匿名網絡環境。它集成三個匿名工具號稱**網絡匿名三劍客**。
-- **赳梯代理服務**(QTGate)
+- **赳梯代理服務**(QTGate)本功能有限流量的免費用戶和各類收費用戶
     * 讓您能夠悄無聲息的穿梭在互聯網中
         1. [@OPN](https://github.com/QTGate/atOPN)是IMAP協議下的網絡通訊混淆技術，讓您無IP地址訪問互聯網
         2. [iOPN](https://github.com/QTGate/iOPN)是HTTP協議下的網絡通訊混淆技術，讓您高速無障礙訪問互聯網
