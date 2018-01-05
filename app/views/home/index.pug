@@ -408,7 +408,7 @@ block jumbotron1
 										.extra
 											.meta( data-bind = "visible: getPaymentPlan() && getPaymentPlan().showNote, text: '*'+infoDefine[ $root.languageIndex() ].account.serverShareData1" style="font-style: italic;font-size: smaller;")
 											.meta
-												a.CancelMessage( href="#" data-bind="text: infoDefine[ $root.languageIndex() ].account.aboutCancel, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.cancelPlanMessage }" style="font-size: smaller;color: firebrick;" )
+												a.CancelMessage( href="#" data-bind="text: infoDefine[ $root.languageIndex() ].account.aboutCancel, attr: { 'data-html': infoDefine[ $root.languageIndex() ].account.cancelPlanMessage }" style="font-size: smaller;color: firebrick;" )
 											.ui.positive.basic.button.MonthlyPlanButton( data-bind = "click: () => { cardpay(false); if (QTTransferData() && !QTTransferData().isAnnual ) return showPayment ( getPaymentPlan().monthlyPay, false )}, css: { hideCardImage: QTTransferData() && QTTransferData().isAnnual }, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.cantUpgradeMonthly }" )
 												
 												span( data-bind = "html: infoDefine[ languageIndex() ].account.monthlyAutoPay( getPaymentPlan() ? getPaymentPlan().monthlyPay: 0 )")
@@ -824,7 +824,7 @@ block jumbotron1
 						span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.connectQTGate ")
 						
 						.ui.raised.segment( data-bind = " visible: sendConnectRequestMail()")
-							span( data-bind = " text: config().freeUser ? infoDefine [ languageIndex() ].QTGateRegion.sendConnectRequestMail[0] +  infoDefine [ languageIndex() ].QTGateRegion.sendConnectRequestMail[1]: infoDefine [ languageIndex() ].QTGateRegion.sendConnectRequestMail[0]")
+							span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.sendConnectRequestMail[0]")
 						.ui.raised.segment( data-bind = "visible: QTGateRegionERROR()> -1")
 							span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.QTGateRegionERROR[QTGateRegionERROR()]" style = "color: red;")
 						#connectImformationProcess.olive.ui.tiny.progress(style = " margin-top: 10px; ")

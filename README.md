@@ -1,16 +1,21 @@
-# QTGATE client - Open Source
+# QTGate client, QTGate端末, 赳梯客戶端
 [![Build Status](https://travis-ci.org/QTGate/QTGate-Desktop-Client.svg?branch=master)](https://travis-ci.org/QTGate/QTGate-Desktop-Client)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/QTGate/Lobby)
 [![Known Vulnerabilities](https://snyk.io/test/github/qtgate/qtgate-desktop-client/badge.svg)](https://snyk.io/test/github/qtgate/qtgate-desktop-client)
-## Description 概要
+## Description 項目概要
 
-This is QTGATE client software install build  
-QTGATE is a service that use email IMAP protocol to make a virtual tunnel that exchanges packets between clients and servers. [QTGATE](https://www.qtgate.com).
-The excellent point is QTGATE exchanges data by email account, client and server do not need IP address. Nobody know where you from even QTGATE system.
-QTGate have a local proxy server support HTTP HTTPS SOCKS 4,4a,5. All other devices can use QTGate via this local proxy server.
+**QTGate** client software install build.
+QTGate’s OPN services allow users to stay private and secure while accessing the open internet. [QTGATE](https://www.qtgate.com).
+**QTGate** has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to ensure data is secure and your identity stays protected. Designed to bypass deep packet inspection (DPI) firewalls while providing secure and private access to the open internet, anywhere in the world.
+QTGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use QTGate’s OPN services to access the open internet with total protection and security.
 
-這是 QTGATE 客戶端 install.  
-QTGATE是一种安全通讯手段，通过eMail的IMAP协议建立一个虚拟的专用通道，连接客户端和代理服务器，它的奇妙之处在于客户端和服务器彼此不用知道相互的IP地址，而是通过共用一个eMail账号进行数据交换，QTGATE系统把VPN包加密后，利用IMAP进行通讯，能最大限度的保护您的网络通讯不被检测和干扰，建立一个私密的网络安全环境。
+[@OPN](https://github.com/QTGate/atOPN) is our patent pending technology that creates a “Quiet” private network by obfuscating encrypted data packets over IMAP email servers, refracting the data thru our QTGate servers, to achieve an obfuscated private network. @OPN provides true anonymous internet communications, where your IP address is fully hidden to our servers and target servers.
+
+[iOPN](https://github.com/QTGate/iOPN) uses our technology to create a “Quiet” private network by obfuscating encrypted data traffic over HTTP, refracting the data thru our QTGate servers, to achieve an obfuscated private network. iOPN offer faster connections than the standard privacy enhancing tools with the add benefits of QTGate’s OPN.
+
+
+這是**赳梯**客戶端安裝程序.
+赳梯是一种安全通讯手段，通过eMail的IMAP协议建立一个虚拟的专用通道，连接客户端和代理服务器，它的奇妙之处在于客户端和服务器彼此不用知道相互的IP地址，而是通过共用一个eMail账号进行数据交换，QTGATE系统把VPN包加密后，利用IMAP进行通讯，能最大限度的保护您的网络通讯不被检测和干扰，建立一个私密的网络安全环境。
 QTGATE提供本地Proxy服務器對應HTTP, HTTPS, SOCKS 4,4a,5。其他設備可以通過設置proxy來使用QTGate.
 
 このプロジェクトはQTGATE端末用ソフトです.

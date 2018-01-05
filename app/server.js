@@ -830,7 +830,6 @@ class localServer {
                     error: null,
                     requestSerial: Crypto1.randomBytes(8).toString('hex')
                 };
-                console.log(`QTClass.request!`);
                 this.QTClass.request(com, (err, res) => {
                     saveLog(`QTClass.request return res[${JSON.stringify(res)}]`);
                     if (err) {
@@ -844,6 +843,7 @@ class localServer {
                         const key = buffer_1.Buffer.from(res.Args[0], 'base64').toString();
                         this.config.keypair.publicKey = key;
                         this.config.keypair.verified = getQTGateSign(key);
+                        console.log(key);
                         this.saveConfig();
                         socket.emit('KeyPairActiveCallBack', this.config.keypair);
                         this.qtGateConnectEmitData.qtGateConnecting = 2;

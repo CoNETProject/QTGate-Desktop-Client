@@ -897,22 +897,23 @@ export class localServer {
 					error: null,
 					requestSerial: Crypto1.randomBytes(8).toString('hex')
 				}
-				console.log (`QTClass.request!`)
+
 				this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
-					saveLog (`QTClass.request return res[${ JSON.stringify ( res )}]`)
+					saveLog ( `QTClass.request return res[${ JSON.stringify ( res )}]`)
 					if ( err ) {
 						return saveLog (`checkActiveEmailSubmit got QTClass.request error!`)
 					}
 					if ( res.error > -1 ) {
-						saveLog (`socket.emit ( 'checkActiveEmailError', res.error )`)
+						saveLog ( `socket.emit ( 'checkActiveEmailError', res.error )`)
 						return socket.emit ( 'checkActiveEmailError', res.error )
 					}
 					
 					if ( res.Args && res.Args.length ) {
 						
-						const key = Buffer.from ( res.Args[0],'base64').toString()
+						const key = Buffer.from ( res.Args[0],'base64' ).toString()
 						this.config.keypair.publicKey = key
 						this.config.keypair.verified = getQTGateSign ( key )
+						console.log ( key )
 						this.saveConfig ()
 						
 						socket.emit ( 'KeyPairActiveCallBack', this.config.keypair )

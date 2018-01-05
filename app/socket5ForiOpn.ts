@@ -184,7 +184,7 @@ export class socks5 {
 	}
 
 	constructor ( private socket: Net.Socket,private agent: string, private proxyServer: proxyServer.proxyServer ) {
-
+		console.log (`new socks 5`)
 		this.socket.once ( 'data', ( chunk: Buffer ) => {
 			return this.connectStat2 ( chunk )
 		})
@@ -203,6 +203,7 @@ export class sockt4 {
 	private clientIP = this.socket
 	private keep = false
 	constructor ( private socket: Net.Socket, private buffer: Buffer, private agent: string, private proxyServer: proxyServer.proxyServer ) {
+		console.log (`new socks 4`)
 		switch ( this.cmd ) {
 			case Rfc1928.CMD.CONNECT: {
 				this.keep = true

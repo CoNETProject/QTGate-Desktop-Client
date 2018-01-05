@@ -283,7 +283,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 		}
 		return
 	}
-
+	console.log (`new http`)
 	return checkDomainInBlackList ( blackDomainList, hostName, ( err, result: boolean ) => {
 		
 		if ( result ) {
@@ -408,17 +408,19 @@ export class proxyServer {
 			const ip = socket.remoteAddress
 			const isWhiteIp = this.whiteIpList.find ( n => { return n === ip }) ? true : false
 			let agent = 'Mozilla/5.0'
-			console.log (`new socket!`)
+				//	windows 7 GET PAC User-Agent: Mozilla/5.0 (compatible; IE 11.0; Win32; Trident/7.0)
+
+
 			socket.once ( 'data', ( data: Buffer ) => {
 				const dataStr = data.toString()
 				if ( /^GET \/pac/.test ( dataStr )) {
 					const httpHead = new HttpProxyHeader ( data )
 					agent = httpHead.headers['user-agent']
-					const sock5 = /Firefox/i.test (agent) || /Windows NT|Darwin|Firefox/i.test ( agent ) && ! /CFNetwork|WOW64/i.test ( agent )
+					const sock5 = /5/.test ( dataStr ) || /Firefox/i.test (agent) || /Windows NT|WinHttp-Autoproxy-Service|Darwin|Firefox/i.test ( agent ) && ! /CFNetwork|WOW64/i.test ( agent )
 					
 					
 					const ret = getPac ( httpHead.host, this.port, /pacHttp/.test( dataStr ), sock5 )
-					console.log ( `/GET \/pac from :[${ socket.remoteAddress }] sock5 [${ sock5 }] agent [${ agent }] httpHead.headers [${ Object.keys(httpHead.headers)}]`)
+					console.log ( `/GET \/pac from :[${ socket.remoteAddress }] sock5 [${ sock5 }] agent [${ agent }] httpHead.headers [${ Object.keys( httpHead.headers )}]`)
 					console.log ( dataStr )
 					console.log ( ret )
 					return socket.end ( ret )
