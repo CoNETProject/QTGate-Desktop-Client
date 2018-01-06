@@ -8,7 +8,7 @@
 
 **QTGate**’s OPN services allow users to stay private and secure while accessing the open internet. [QTGATE](https://www.qtgate.com).
 
-- **QTGate** has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to ensure data is secure and your identity stays protected. Designed to bypass deep packet inspection (DPI) firewalls while providing secure and private access to the open internet, anywhere in the world.QTGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use QTGate’s OPN services to access the open internet with total protection and security.
+- **QTGate** has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to ensure data is secure and your identity stays protected. Designed to bypass deep packet inspection (DPI) firewalls while providing secure and private access to the open internet, anywhere in the world.QTGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use QTGate’s OPN services to access the open internet with total protection and security. **Multi-Gateway On One Client** **Fresh IPs Every 2 Hours** 
 
     1. [@OPN](https://github.com/QTGate/atOPN) is our patent pending technology that creates a “Quiet” private network by obfuscating encrypted data packets over IMAP email servers, refracting the data thru our QTGate servers, to achieve an obfuscated private network. @OPN provides true anonymous internet communications, where your IP address is fully hidden to our servers and target servers.
 
