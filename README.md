@@ -19,8 +19,8 @@ QTGate keeps no logs of your online traffic and all data is encrypted using indu
 **Q梯**是匿名網絡環境。它集成三個匿名工具號稱**網絡匿名三劍客**。在安裝和使用的過程中不需翻牆，系統也無需越獄。
 - **Q梯**(QTGate)提供永久的限流量免費用戶，各類收費用戶，還提供贊助商免流量無限制訪問的網站
     讓您能夠悄無聲息的穿梭在互聯網中，是因為集成了**Q梯**二大網絡通訊混淆技術
-        1. [@OPN](https://github.com/QTGate/atOPN)是IMAP協議下的網絡通訊混淆技術，讓您無IP地址訪問互聯網
-        2. [iOPN](https://github.com/QTGate/iOPN)是HTTP協議下的網絡通訊混淆技術，讓您高速無障礙訪問互聯網
+        - 1. [@OPN](https://github.com/QTGate/atOPN)是IMAP協議下的網絡通訊混淆技術，讓您無IP地址訪問互聯網
+        - 2. [iOPN](https://github.com/QTGate/iOPN)是HTTP協議下的網絡通訊混淆技術，讓您高速無障礙訪問互聯網
     
     **Q梯**匿名網絡採用最尖端的雲服務集成系統，它的核心服務器集群隱藏在雲之中，不接受任何直接的訪問。
     顯露在外的全球16個代理服務雲集群，有大量的按需分配的代理服務器，每台代理服務器均設置個位數的客戶上限，讓每個客戶端保持同等的通訊質量。代理服務器每二小時變換IP地址，並同時更新和客戶端的加密密碼。
