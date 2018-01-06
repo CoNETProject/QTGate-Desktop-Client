@@ -14,16 +14,15 @@ QTGate keeps no logs of your online traffic and all data is encrypted using indu
 [iOPN](https://github.com/QTGate/iOPN) uses our technology to create a “Quiet” private network by obfuscating encrypted data traffic over HTTP, refracting the data thru our QTGate servers, to achieve an obfuscated private network. iOPN offer faster connections than the standard privacy enhancing tools with the add benefits of QTGate’s OPN.
 
 ***
-
 這是**Q梯**客戶端安裝程序.
 **Q梯**是匿名網絡環境。它集成三個匿名工具號稱**網絡匿名三劍客**。在安裝和使用的過程中不需翻牆，系統也無需越獄。
 - **Q梯**(QTGate)提供永久的限流量免費用戶，各類收費用戶，還提供贊助商免流量無限制訪問的網站
-    讓您能夠悄無聲息的穿梭在互聯網中，是因為集成了**Q梯**二大網絡通訊混淆技術
-1. [@OPN](https://github.com/QTGate/atOPN)是IMAP協議下的網絡通訊混淆技術，讓您無IP地址訪問互聯網
-2. [iOPN](https://github.com/QTGate/iOPN)是HTTP協議下的網絡通訊混淆技術，讓您高速無障礙訪問互聯網
+    讓您能夠悄無聲息的穿梭在互聯網中，是因為集成了**Q梯**二大網絡通訊流量混淆技術
+1. [@OPN](https://github.com/QTGate/atOPN)是IMAP協議下的網絡通訊流量混淆技術，讓您無IP地址訪問互聯網
+2. [iOPN](https://github.com/QTGate/iOPN)是HTTP協議下的網絡通流量訊混淆技術，讓您高速無障礙訪問互聯網
     
     **Q梯**匿名網絡採用最尖端的雲服務集成系統，它的核心服務器集群隱藏在雲之中，不接受任何直接的訪問。
-    顯露在外的全球16個代理服務雲集群，有大量的按需分配的代理服務器，每台代理服務器均設置個位數的客戶上限，讓每個客戶端保持同等的通訊質量。代理服務器每二小時變換IP地址，並同時更新和客戶端的加密密碼。
+    顯露在外的分佈全球各地的16個代理服務雲集群，有大量的按需分配的代理服務器，每台代理服務器均設置個位數的客戶上限，讓每個客戶端保持同等的通訊質量。代理服務器每二小時變換IP地址，並同時更新和客戶端的加密密碼。
     **Q梯**讓使用者可以同時並聯多條代理線路，有效的避免了傳統代理的大流量集中在同一IP下，容易觸發監控者注意的弊端。
 
 - **Q信**(QTChat)本功能免費
@@ -32,12 +31,33 @@ QTGate keeps no logs of your online traffic and all data is encrypted using indu
 - **Q梯石洞**(QTStorage)本功能免費
     * 無限量私密文件雲存儲和分享功能。
 
+***
+QTGate端末インストールです
+QTGateとは匿名ネットワークです。QTGateは三つのツールを構成しております。それらを匿名ネットワークの三銃士と言います。
+- 銃士の一 QTGateゲットウェイサービス。
+    QTGateゲットウェイは通信データ量をリミットするフリーユーザーをはじめ、ご利用による五つのプランはご提供しております。またスポンサーによるフリーアクセスサードもございます。
+    QTGateゲットウェイを使って、静かに自由なネットワークへアクセスができるのは、二つ独自のネットワーク匿名アクセス技術を含みます。
+    1. [@OPN](https://github.com/QTGate/atOPN)はIMAPプロトコルにオブファスケイション通信技術です。
+    2. [iOPN](https://github.com/QTGate/iOPN)はHTTPプロトコルにオブファスケイション通信技術です。
+    QTGateゲットウェイサービスは最先端のクラウドを使って、コアサーバのクラスタを隠して、直接アクセスできないようになって、グロバール地域に分布された十六のゲットウェイアリアをサービスしております。
+    QTGateのゲットウェイサーバーはオンデマンドです、一つサーバーを定額少量のクライアントしかサービスしておりません。クライアント通信の質を確保しています。
+    ゲットウェイサーバーはIPアドレスを二時間ごとに変換します。クライアントは同時に複数のゲットウェイサーバーを束ねて安定した高速インターネットへする技術によって、大流量のVPN通信データーを分散し、
+    姿を隠してネットワーク監視者から逃れます。
+
+- 銃士の二 QTChat
+    QTChatはQTGateクライアントの間、OPN技術を使ってツイッターに似たような、匿名なポイントツーポイントメッセージング コミニュケーションプラットフォームです。テキストをはじめ、写真とビデオも転送することができます。
+    その特徴は強いネットワーク制限を無視する能力です。メーセージを発送したら修正と削除することができません。将来はLIVE動画配信を対応つもりです。メーセージはクライアントから暗号化され、QTGateシステムはメーセージを
+    開くすることができないです。メーセージその内容はQTGateシステムに残らないです。QTGateはメーセージに責任を負えないです。
+
+- 銃士の三 QTStorage
+    安全なプライベットファイルクラウドストレージ及びシェアプラットフォームです。
+***
 ![http protocol](/resources/canada150.png?raw=true)
-
+***
 ![http protocol](/resources/vpn.email11.jpg?raw=true)
-
+***
 ![http protocol](/resources/QTChat.png?raw=true)
-
+***
 ![http protocol](/resources/QTStorage.png?raw=true)
 
 
