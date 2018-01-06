@@ -5,13 +5,18 @@
 ## Description 項目概要
 
 **QTGate** client software install build.
-QTGate’s OPN services allow users to stay private and secure while accessing the open internet. [QTGATE](https://www.qtgate.com).
-**QTGate** has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to ensure data is secure and your identity stays protected. Designed to bypass deep packet inspection (DPI) firewalls while providing secure and private access to the open internet, anywhere in the world.
-QTGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use QTGate’s OPN services to access the open internet with total protection and security.
+QTGate is Privacy Enhancing Tools (PET).
+- QTGate’s OPN services allow users to stay private and secure while accessing the open internet. [QTGATE](https://www.qtgate.com).
+    **QTGate** has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to ensure data is secure and your identity stays protected. Designed to bypass deep packet inspection (DPI) firewalls while providing secure and private access to the open internet, anywhere in the world.
+    QTGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use QTGate’s OPN services to access the open internet with total protection and security.
 
-[@OPN](https://github.com/QTGate/atOPN) is our patent pending technology that creates a “Quiet” private network by obfuscating encrypted data packets over IMAP email servers, refracting the data thru our QTGate servers, to achieve an obfuscated private network. @OPN provides true anonymous internet communications, where your IP address is fully hidden to our servers and target servers.
+    1. [@OPN](https://github.com/QTGate/atOPN) is our patent pending technology that creates a “Quiet” private network by obfuscating encrypted data packets over IMAP email servers, refracting the data thru our QTGate servers, to achieve an obfuscated private network. @OPN provides true anonymous internet communications, where your IP address is fully hidden to our servers and target servers.
 
-[iOPN](https://github.com/QTGate/iOPN) uses our technology to create a “Quiet” private network by obfuscating encrypted data traffic over HTTP, refracting the data thru our QTGate servers, to achieve an obfuscated private network. iOPN offer faster connections than the standard privacy enhancing tools with the add benefits of QTGate’s OPN.
+    2. [iOPN](https://github.com/QTGate/iOPN) uses our technology to create a “Quiet” private network by obfuscating encrypted data traffic over HTTP, refracting the data thru our QTGate servers, to achieve an obfuscated private network. iOPN offer faster connections than the standard privacy enhancing tools with the add benefits of QTGate’s OPN.
+
+- QTChat – Encrypted, peer to peer instant messaging. Privacy enhanced with no IP footprint.
+
+- QTDrive – Encrypted, private data storage and secret sharing services.
 
 ***
 QTGate端末インストールです.
@@ -53,7 +58,7 @@ QTGateとは匿名ネットワークです。QTGateは三つのツールを構�
     **Q梯**讓使用者可以同時並聯多條代理線路，有效的避免了傳統代理的大流量集中在同一IP下，容易觸發監控者注意的弊端。
 
 - **Q信**(QTChat)本功能免費
-    * 類似推特的信息交流平台，Q梯用戶之間使用RSA秘鑰加密的信息推送系統，可以一對多的推送信息，其信息傳遞特徵是不可回收不可刪除。Q信支持文字圖片和視頻，最終將支持視頻直播功能。信息保存於客戶端，Qs信匿名網絡不保存也不擁有信息，Q信對信息本身不承擔法律責任。
+    * 類似推特的信息交流平台，Q梯用戶之間使用RSA秘鑰加密的信息推送系統，可以一對多的推送信息，其信息傳遞特徵是不可回收不可刪除。Q信支持文字圖片和視頻，最終將支持視頻直播功能。信息保存於客戶端，Q信匿名網絡不保存也不擁有信息，Q信對信息本身不承擔法律責任。
 
 - **Q梯石洞**(QTStorage)本功能免費
     * 無限量私密文件雲存儲和分享功能。
