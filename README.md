@@ -14,7 +14,7 @@ QTGate is Privacy Enhancing Tools (PET).
 
     2. [iOPN](https://github.com/QTGate/iOPN) uses our technology to create a “Quiet” private network by obfuscating encrypted data traffic over HTTP, refracting the data thru our QTGate servers, to achieve an obfuscated private network. iOPN offer faster connections than the standard privacy enhancing tools with the add benefits of QTGate’s OPN.
 
-- QTChat – Encrypted, peer to peer instant messaging. Privacy enhanced with no IP footprint.
+- QTChat – Encrypted, peer to peer instant messaging. Privacy enhanced with no IP footprint. Privacy enhanced, encrypted video streaming and casting in secrecy.
 
 - QTDrive – Encrypted, private data storage and secret sharing services.
 
