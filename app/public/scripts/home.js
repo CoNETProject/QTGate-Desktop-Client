@@ -35,7 +35,7 @@ const uuID = () => {
 };
 const isElectronRender = typeof process === 'object';
 let socketIo = null;
-const Stripe_publicKey = 'pk_live_VwEPmqkSAjDyjdia7xn4rAK9';
+const Stripe_publicKey1 = 'pk_live_VwEPmqkSAjDyjdia7xn4rAK9';
 /**
  * 			getImapSmtpHost
  * 		@param email <string>
@@ -360,7 +360,7 @@ const nextExpirDate = (expire) => {
 const getRemainingMonth = (expire) => {
     const _expire = new Date(expire);
     const _nextExpirDate = nextExpirDate(expire);
-    return _expire.getFullYear() === _nextExpirDate.getFullYear() ? _expire.getMonth() - _nextExpirDate.getMonth() : (11 - _nextExpirDate.getMonth() + _expire.getMonth());
+    return _expire.getFullYear() === _nextExpirDate.getFullYear() ? _expire.getMonth() - _nextExpirDate.getMonth() : (12 - _nextExpirDate.getMonth() + _expire.getMonth());
 };
 const getAmount = (amount) => {
     if (!amount)
