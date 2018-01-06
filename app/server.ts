@@ -979,7 +979,6 @@ export class localServer {
 			if ( this.proxyServer ) {
 				return
 			}
-
 			cmd.imapData.randomPassword = Crypto1.randomBytes (15).toString('hex')
 			cmd.account = this.config.keypair.email.toLocaleLowerCase()
 			this.localProxyPort = cmd.localServerPort
