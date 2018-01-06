@@ -1,4 +1,4 @@
-# QTGate client, QTGate端末, 赳梯客戶端
+# QTGate client, QTGate端末, Q梯客戶端
 [![Build Status](https://travis-ci.org/QTGate/QTGate-Desktop-Client.svg?branch=master)](https://travis-ci.org/QTGate/QTGate-Desktop-Client)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/QTGate/Lobby)
 [![Known Vulnerabilities](https://snyk.io/test/github/qtgate/qtgate-desktop-client/badge.svg)](https://snyk.io/test/github/qtgate/qtgate-desktop-client)
@@ -15,22 +15,21 @@ QTGate keeps no logs of your online traffic and all data is encrypted using indu
 
 ***
 
-這是**赳梯**客戶端安裝程序.
-**赳梯**是匿名網絡環境。它集成三個匿名工具號稱**網絡匿名三劍客**。在安裝和使用的過程中不需翻牆，系統也無需越獄。
-- **赳梯**(QTGate)提供永久的限流量免費用戶，各類收費用戶，還提供贊助商免流量無限制訪問的網站
-    * 讓您能夠悄無聲息的穿梭在互聯網中，是因為集成了**赳梯**二大網絡通訊混淆技術
+這是**Q梯**客戶端安裝程序.
+**Q梯**是匿名網絡環境。它集成三個匿名工具號稱**網絡匿名三劍客**。在安裝和使用的過程中不需翻牆，系統也無需越獄。
+- **Q梯**(QTGate)提供永久的限流量免費用戶，各類收費用戶，還提供贊助商免流量無限制訪問的網站
+    * 讓您能夠悄無聲息的穿梭在互聯網中，是因為集成了**Q梯**二大網絡通訊混淆技術
         1. [@OPN](https://github.com/QTGate/atOPN)是IMAP協議下的網絡通訊混淆技術，讓您無IP地址訪問互聯網
         2. [iOPN](https://github.com/QTGate/iOPN)是HTTP協議下的網絡通訊混淆技術，讓您高速無障礙訪問互聯網
     
-    赳梯匿名網絡採用最尖端的雲服務集成系統，它的核心服務器群隱藏在雲之中，不接受任何直接的訪問。
+    Q梯匿名網絡採用最尖端的雲服務集成系統，它的核心服務器集群隱藏在雲之中，不接受任何直接的訪問。
     顯露在外的全球16個代理服務雲集群，有大量的按需分配的代理服務器，每台代理服務器均設置個位數的客戶上限，讓每個客戶端保持同等的通訊質量。代理服務器每二小時變換IP地址，並同時更新和客戶端的加密密碼。
-    **赳梯**讓使用者可以同時並聯多條代理線路，有效的避免了傳統代理的大流量集中在同一IP下，容易觸發監控者注意的弊端。
+    **Q梯**讓使用者可以同時並聯多條代理線路，有效的避免了傳統代理的大流量集中在同一IP下，容易觸發監控者注意的弊端。
 
-- **赳信**(QTChat)本功能免費
-    * 類似推特的信息交流平台，赳梯用戶之間使用RSA秘鑰加密的信息推送系統，可以一對多的推送信息，其信息傳遞特徵是不可回收不可刪除。赳信支持文字圖片和視頻，最終將支持視頻直播功能。信息保存於客戶端，赳信匿名網絡不保存也不擁有信息，
-    所以赳信對信息本身不承擔法律責任。
+- **Q信**(QTChat)本功能免費
+    * 類似推特的信息交流平台，Q梯用戶之間使用RSA秘鑰加密的信息推送系統，可以一對多的推送信息，其信息傳遞特徵是不可回收不可刪除。Q信支持文字圖片和視頻，最終將支持視頻直播功能。信息保存於客戶端，Qs信匿名網絡不保存也不擁有信息，Q信對信息本身不承擔法律責任。
 
-- **赳梯石洞**(QTStorage)本功能免費
+- **Q梯石洞**(QTStorage)本功能免費
     * 無限量私密文件雲存儲和分享功能。
 
 ![http protocol](/resources/canada150.png?raw=true)
