@@ -55,7 +55,7 @@ const uuID = () => {
 
 const isElectronRender = typeof process === 'object'
 let socketIo: SocketIOClient.Socket = null
-const Stripe_publicKey1 = 'pk_live_VwEPmqkSAjDyjdia7xn4rAK9'
+const Stripe_publicKey = 'pk_live_VwEPmqkSAjDyjdia7xn4rAK9'
 /**
  * 			getImapSmtpHost
  * 		@param email <string>
@@ -916,7 +916,9 @@ const infoDefine = [
             processing: '正在尝试连接QTGate代理服务器...',
             error: [ '错误：您的账号下已经有一个正在使用QTGate代理服务器的连接，请先把它断开后再尝试连接。',
                     '错误：您的账号已经无可使用流量，如果您需要继续使用QTGate代理服务器，请升级您的账户类型。如果是免费用户已经使用当天100M流量，请等待到明天继续使用，如您是免费用户已经用完当月1G流量，请等待到下月继续使用。',
-                    '错误：数据错误，请退出并重新启动QTGate！','非常抱歉，您请求的代理区域无资源，请选择其他区域或稍后再试','对不起，您所请求连接的区域不支持这样的连接技术，请换其他连接方法或选择其他区域连接'],
+                    '错误：数据错误，请退出并重新启动QTGate！',
+                    '非常抱歉，您请求的代理区域无资源，请选择其他区域或稍后再试',
+                    '对不起，您所请求连接的区域不支持这样的连接技术，请换其他连接方法或选择其他区域连接'],
             connected:'已连接。',
             upgrade:'升级账号',
             userType:['免费用户','付费用户'],
@@ -4383,15 +4385,15 @@ module view_layout {
                 //root.QTGateGatewayActiveProcess ( true )
     
                 const process = $('.regionConnectProcessBar').progress('reset')
-                let doingProcessBarTime = null
-                let percent = 0
+                clearTimeout ( this.doingProcessBarTime )
+                this.percent = 0
                 const doingProcessBar = () => {
-                    clearTimeout ( doingProcessBarTime )
-                    doingProcessBarTime = setTimeout(() => {
+                    clearTimeout ( this.doingProcessBarTime )
+                    this.doingProcessBarTime = setTimeout(() => {
                         process.progress ({
-                            percent: ++ percent
+                            percent: ++ this.percent
                         })
-                        if ( percent < 100 )
+                        if ( this.percent < 100 )
                             return doingProcessBar()
                     }, 1000 )
                 }
@@ -4401,37 +4403,36 @@ module view_layout {
                 data.showRegionConnectProcessBar ( true )
                 
                 socketIo.emit( 'QTGateGatewayConnectRequest', connect, ( _data: QTGateAPIRequestCommand ) => {
-                    clearTimeout ( doingProcessBarTime )
-                    data.showRegionConnectProcessBar ( false )
-                    if ( _data.error > -1 ) {
-                        data.showExtraContent ( true )
-                        //this.QTGateConnectRegionActive ( true )
-                        //this.QTGateGatewayActiveProcess ( false )
-                        data.error ( _data.error )
-                        return this.menuClick ( 3, true )
-                    }
-                    const data1 = _data.Args[0]
-                    return this.QTGateGatewayConnectRequestCallBack ( this, data1  )
-                    
+                    return this.QTGateGatewayConnectRequestCallBack ( this, _data  )
                 })
-                
                 return false
             })
             
 
         }
 
-        private QTGateGatewayConnectRequestCallBack ( _self: view, _data: IConnectCommand ) {
-            const self = _self || this
-            self.QTTransferData ( _data.transferData )
-            self.QTConnectData ( _data )
+        private QTGateGatewayConnectRequestCallBack ( _self: view, _returnData: QTGateAPIRequestCommand ) {
+            clearTimeout ( this.doingProcessBarTime )
+            const selectedQTGateRegion = this.selectedQTGateRegion ()
+            selectedQTGateRegion.showRegionConnectProcessBar ( false )
+            if ( _returnData.error > -1 ) {
+                selectedQTGateRegion.showExtraContent ( true )
+                //this.QTGateConnectRegionActive ( true )
+                //this.QTGateGatewayActiveProcess ( false )
+                selectedQTGateRegion.error ( _returnData.error )
+                return this.menuClick ( 3, true )
+            }
+            const data1:IConnectCommand = _returnData.Args[0]
+
+            this.QTTransferData ( data1.transferData )
+            this.QTConnectData ( data1 )
             $( '.userDetail' ).progress()
-            const index = self.QTGateRegions().findIndex (( n: QTGateRegions ) => { return n.qtRegion === _data.region })
+            const index = this.QTGateRegions().findIndex (( n: QTGateRegions ) => { return n.qtRegion === data1.region })
             if ( index < 0 ) {
                 return
             }
 
-            const data = self.QTGateRegions()[ index ]
+            const data = this.QTGateRegions()[ index ]
             this.QTGateConnectRegionActive ( true )
             this.menuClick ( 3, false )
             this.selectedQTGateRegion ( data )
@@ -4439,7 +4440,7 @@ module view_layout {
             data.showExtraContent ( false )
             data.available ( true )
             this.ConnectGatewayShow ( true )
-            this.config().freeUser = /free/.test(_data.transferData.productionPackage) ? true : false
+            this.config().freeUser = /free/.test( data1.transferData.productionPackage ) ? true : false
             this.config(this.config())
             return data.showConnectedArea ( true )
 
