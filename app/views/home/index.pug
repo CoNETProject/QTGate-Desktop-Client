@@ -857,8 +857,8 @@ block jumbotron1
 										.column
 											span( style = " color: mediumseagreen!important;" data-bind = "visible: available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.available")
 											span( style = " color: palevioletred!important;" data-bind = "visible: !available(), text:  infoDefine [ $root.languageIndex() ].QTGateRegion.unavailable" )
-											span( data-bind = "visible: canVoe() && ! selected() " style = " color: purple!important; font-size: small!important; margin-left: 10px!important;" ) @OPN
-											span( data-bind = "visible: canVoH() && ! selected() " style = " color:rebeccapurple!important; font-size: small!important; margin-left: 10px!important;" ) iOPN
+											span( data-bind = "visible: canVoe() && ! selected() " style = " color: brown!important; font-size: small!important; margin-left: 10px!important;" ) @OPN
+											span( data-bind = "visible: canVoH() && ! selected() " style = " color: brown!important; font-size: small!important; margin-left: 10px!important;" ) iOPN
 											i.blue.notched.circle.loading.icon( data-bind = " visible: ping() === -1 " style="margin-left: 15px!important;" )
 									.row( style="padding: 0px;padding-bottom: 0.8em;")
 										.column
@@ -887,18 +887,20 @@ block jumbotron1
 			//-				ConnectGatewayShow() && MenuItems()[3] && selectedQTGateRegion() && !reSendConnectMail ()
 			ConnectGateway.content( data-bind="visible: ConnectGatewayShow() && MenuItems()[3] && selectedQTGateRegion() && !reSendConnectMail ()")
 				.ui.card( style = "width:100%;")
-					.content
+					.content( style="padding-bottom: 0.1em;")
 						i( data-bind = " attr: { class: 'right floated flag ' + selectedQTGateRegion().icon }")
-						.header.active.QTGateGatewayCardHeader( data-bind = " text: selectedQTGateRegion().content[ languageIndex() ]" )
-						.meta( data-bind = " text: selectedQTGateRegion().meta [ languageIndex() ] ")
-						.description
-							span( style = " color: mediumseagreen!important;" data-bind = "visible: selectedQTGateRegion().available(), text:  infoDefine [ languageIndex() ].QTGateRegion.available ")
+						.header.active.QTGateGatewayCardHeader
+							span( data-bind = " text: selectedQTGateRegion().content[ languageIndex() ]" )
+							span( data-bind = " text: selectedQTGateRegion().meta [ languageIndex() ] " style="color: grey;font-size: small;padding-left: 1em;")
+							//-span( style = " color: mediumseagreen!important;" data-bind = "visible: selectedQTGateRegion().available(), text:  infoDefine [ languageIndex() ].QTGateRegion.available ")
 							
 							span( style = " color: palevioletred!important;" data-bind = "visible: !selectedQTGateRegion().available(), text:  infoDefine [ languageIndex() ].QTGateRegion.unavailable" )
-							span( data-bind = "visible: selectedQTGateRegion().canVoe() " style = " color: purple!important; font-size: small!important; margin-left: 10px!important;" ) @OPN
-							span( data-bind = "visible: selectedQTGateRegion(),canVoH() " style = " color:rebeccapurple!important; font-size: small!important; margin-left: 10px!important;" ) iOPN
+							span( data-bind = "visible: selectedQTGateRegion().canVoe() " style = " color: blue!important; font-size: small!important; margin-left: 10px!important;" ) @OPN
+							span( data-bind = "visible: selectedQTGateRegion(),canVoH() " style = " color: blue!important; font-size: small!important; margin-left: 10px!important;" ) iOPN
 							
 							span( data-bind = "visible: selectedQTGateRegion().ping() > -1, text: `[${ selectedQTGateRegion().ping() === 0 ? 'err' : '<' + selectedQTGateRegion().ping() + 'ms'}]`" style = " color: cornflowerblue!important; font-size: small!important; margin-left: 30px!important;")
+
+						.description
 							.ui.negative.message( data-bind=" visible: selectedQTGateRegion().error() > -1 && selectedQTGateRegion().error() !== 1, text: selectedQTGateRegion().error() > -1 ?  infoDefine [ languageIndex() ].QTGateGateway.error[ selectedQTGateRegion().error() ]: ''")
 							.ui.negative.message( data-bind=" visible: selectedQTGateRegion().error() === 1")
 								p( data-bind = "text: infoDefine [ languageIndex() ].QTGateGateway.error[1] ")
@@ -982,6 +984,20 @@ block jumbotron1
 										label( data-bind = " text: QTGateRegionsSetup()[1].title" style="color:rgba(0,0,0,.7);")
 									a( href="#" )
 										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[1]}" style="margin-left: -10px;color:yellowgreen;")
+								.field
+									.ui.radio.checkbox( data-bind=" click: () => { QTGateConnect1('2')} ")
+										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.8);" value="2" data-bind="checked: QTGateConnect1, attr: {'dataCheck': QTGateConnect1()}")
+										label( data-bind = " text: QTGateRegionsSetup()[0].title" style="color:rgba(0,0,0,.7);")
+								
+							.inline.fields( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '2'")
+								.field( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '2'")
+									.ui.selection.dropdown
+										input( type="hidden" name="gender" data-bind="value: QTGateConnectSelectImap ")
+										i.dropdown.icon
+										.default.text( data-bind="text: emailPool().length > 0 && QTGateConnectSelectImap() > -1 ? emailPool()[QTGateConnectSelectImap()].iMapServerLoginName () : null" style="color: blue;")
+										.menu( data-bind="foreach: emailPool")
+											.item( data-bind=" text: iMapServerLoginName(),visible: /imap\.mail\.me\.com/i.test (iMapServerName()), attr: { 'data-text': iMapServerLoginName (), 'data-value': $index() }")
+							.inline.fields( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '1'")
 								.field( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '1'")
 									label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.MultipleGateway " style="color:rgba(0,0,0,.8);")
 									.ui.compact.selection.dropdown
@@ -990,20 +1006,9 @@ block jumbotron1
 										.text( data-bind="text: QTGateMultipleGateway()")
 										.menu( data-bind="foreach: QTGateMultipleGatewayPool ")
 											.item( data-bind=" text: $index()+1, attr: { 'data-text': $index()+1, 'data-value': $index()+1 }")
-								.field( data-position="bottom left" data-bind=" visible: canDoAtEmail()")
-									.ui.radio.checkbox( data-bind=" click: () => { QTGateConnect1('2')} ")
-										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.8);" value="2" data-bind="checked: QTGateConnect1, attr: {'dataCheck': QTGateConnect1()}")
-										label( data-bind = " text: QTGateRegionsSetup()[0].title" style="color:rgba(0,0,0,.7);")
-									a( href="#" )
-										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[0]}" style="margin-left: -10px;color:yellowgreen;")
-								.field( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '2'")
-									.ui.selection.dropdown
-										input( type="hidden" name="gender" data-bind="value: QTGateConnectSelectImap ")
-										i.dropdown.icon
-										.default.text( data-bind="text: emailPool().length > 0 && QTGateConnectSelectImap() > -1 ? emailPool()[QTGateConnectSelectImap()].iMapServerLoginName () : null")
-										.menu( data-bind="foreach: emailPool")
-											.item( data-bind=" text: iMapServerLoginName(),visible: /imap\.mail\.me\.com/i.test (iMapServerName()), attr: { 'data-text': iMapServerLoginName (), 'data-value': $index() }")
-
+								.field( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '1'" )
+									label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.requestPortNumber " style="color:rgba(0,0,0,.8);")
+									input( type="hidden" name="MultipleGateway" data-bind="value: requestPortNumber")
 							.field
 								.ui.checkbox
 									input( type="checkbox" tabindex="0" class="hidden" checked readonly style="color:rgba(0,0,0,.7);" )

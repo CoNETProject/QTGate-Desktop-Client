@@ -35,7 +35,7 @@ const uuID = () => {
 };
 const isElectronRender = typeof process === 'object';
 let socketIo = null;
-const Stripe_publicKey1 = 'pk_live_VwEPmqkSAjDyjdia7xn4rAK9';
+const Stripe_publicKey = 'pk_live_VwEPmqkSAjDyjdia7xn4rAK9';
 /**
  * 			getImapSmtpHost
  * 		@param email <string>
@@ -695,6 +695,7 @@ const infoDefine = [
             connectQTGate: '正在获得代理服务器区域信息...',
             available: '服务中',
             unavailable: '准备中',
+            requestPortNumber: '服务器通讯端口号: ',
             proxyDomain: '域名解释全程使用QTGate代理服务器端',
             setupCardTitle: '使用连接技术:',
             MultipleGateway: '同时并发使用代理数：',
@@ -710,7 +711,7 @@ const infoDefine = [
             GlobalIp: '本机互联网IP地址:',
             QTGateRegionERROR: ['发送连接请求Email到QTGate系统发生送信错误， 请检查您的IMAP账号的设定。',
                 ''],
-            GlobalIpInfo: '注意：当您按下【QTGate连结】时您会把您的本机互联网IP提供给QTGate系统，如果您不愿意，请选择【@OPN】技术来使用QTGate服务！没有【@OPN】选项是因为@QTGate技术只能对应iCloud邮箱。',
+            GlobalIpInfo: '注意：当您按下【QTGate连结】时您会把您的本机互联网IP提供给QTGate系统，如果您不愿意，请选择【@OPN】技术来使用QTGate服务！没有显示【@OPN】选项是因为@OPN技术目前只支持iCloud邮箱。',
             sendConnectRequestMail: ['您的QTGate客户端没有和QTgate系统联机，客户端已向QTgate系统重新发出联机请求Email。和QTgate系统联机需要额外的时间，请耐心等待。',
                 '当免费用户连续24小时内没有使用客户端，您的连接会被中断。付费用户情况下QTgate系统可保持持续联机一个月。'],
             cacheDatePlaceDate: [{ name: '1小时', id: 1 }, { name: '12小时', id: 12 }, { name: '1日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永远', id: -1 }],
@@ -841,7 +842,9 @@ const infoDefine = [
             processing: '正在尝试连接QTGate代理服务器...',
             error: ['错误：您的账号下已经有一个正在使用QTGate代理服务器的连接，请先把它断开后再尝试连接。',
                 '错误：您的账号已经无可使用流量，如果您需要继续使用QTGate代理服务器，请升级您的账户类型。如果是免费用户已经使用当天100M流量，请等待到明天继续使用，如您是免费用户已经用完当月1G流量，请等待到下月继续使用。',
-                '错误：数据错误，请退出并重新启动QTGate！', '非常抱歉，您请求的代理区域无资源，请选择其他区域或稍后再试', '对不起，您所请求连接的区域不支持这样的连接技术，请换其他连接方法或选择其他区域连接'],
+                '错误：数据错误，请退出并重新启动QTGate！',
+                '非常抱歉，您请求的代理区域无资源，请选择其他区域或稍后再试',
+                '对不起，您所请求连接的区域不支持这样的连接技术，请换其他连接方法或选择其他区域连接'],
             connected: '已连接。',
             upgrade: '升级账号',
             userType: ['免费用户', '付费用户'],
@@ -1328,6 +1331,7 @@ const infoDefine = [
             speedTest: 'スピードテスト：',
             available: 'サービス中',
             unavailable: '準備しています',
+            requestPortNumber: 'サーバーとの通信ポート:',
             proxyDomain: 'ドメイン検索はQTGateゲットウェイ側に依頼します。',
             setupCardTitle: '接続技術:',
             MultipleGateway: '並列使うゲットウェイ数：',
@@ -1346,7 +1350,7 @@ const infoDefine = [
             sendConnectRequestMail: ['QTGateクライアントはQTGateシステムとの接続が切れた。再接続要請メールをQTGateシステムへ送信しました、接続を完了するまで時間がかかるのためしばらくお待ちおください。',
                 'フリーユーザアカンウトには24時間以内、QTGateをご利用していなっかたの場合、QTGateシステムは接続を切る事にします。QTGateシステムは有料ユーザーにはが一ヶ月長時間接続できます。'],
             GlobalIp: 'グロバールIP:',
-            GlobalIpInfo: '要注意：【QTGate接続】をおすとあなたのグロバールIPアドレスをQTGateシステムに送信しますので、それを遠慮すれば【@OPN】接続を選んでください。【@OPN】が見つからない場合は@OPN技術がiCloudしか対応しておりません。',
+            GlobalIpInfo: '要注意：【QTGate接続】をおすとあなたのグロバールIPアドレスをQTGateシステムに送信しますので、それを遠慮すれば【@OPN】接続を選んでください。【@OPN】が見つからない場合は、@OPN技術がiCloudしか対応しておりません。',
             cacheDatePlaceDate: [{ name: '1時間', id: 1 }, { name: '12時間', id: 12 }, { name: '一日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永遠', id: -1 }],
             connectQTGate: 'QTGateゲットウェーエリアインフォメーションを取得しています...',
             atQTGateDetail: ['QTGateの世界初のIP不要な通信技術です。暗号化したEmailメッセージを通じたゲットウェイに接続することで、身を隠して誰も知らないうちにインターネットへ、プライバシーと強くファイヤウォールをうまくすり抜けることができます。但しお使いメールサーバの性能に次第スピードが遅くなり、長い遅延など短所があります、ゲームやビデオチャットなどに通信障害出る可能性があります。この技術はiCloudアカンウトのみ対応です',
@@ -1884,6 +1888,7 @@ const infoDefine = [
             clearCache: 'Delete all cache now',
             localPort: 'Local proxy port number:',
             localPath: 'HTTP/HTTPS conect path name:',
+            requestPortNumber: 'Request Port number for server: ',
             GlobalIp: 'Global IP:',
             pingError: 'QTGate gateway area speed check error! Please exit QTGate and reopen QTGate as administrator. Then do check speed again.',
             QTGateRegionERROR: ['Send connect request mail has an error. Please check your IMAP account settings.',
@@ -2386,6 +2391,7 @@ const infoDefine = [
             proxyDataCache_detail: ['本地緩存', '不緩存'],
             dataViaGateway: '全部互聯網數據通過QTGate代理伺服器',
             cacheDatePlaceholder: '緩存失效時間',
+            requestPortNumber: '通訊端口號',
             clearCache: '立即清除所有緩存',
             GlobalIp: '本機互聯網IP地址:',
             pingError: '代理服務區域速度檢測錯誤發生，請退出QTGate，以管理員身份再次打開QTGate後，再執行速度檢測！',
@@ -2393,7 +2399,7 @@ const infoDefine = [
                 ''],
             sendConnectRequestMail: ['您的QTGate客戶端沒有和QTgate系統聯機，客戶端已向QTgate系統重新發出聯機請求Email。和QTgate系統聯機需要額外的時間，請耐心等待。 ',
                 '當免費用戶連續24小時內沒有使用客戶端，您的連接會被中斷。付費用戶情況下QTgate系統可保持持續聯機一個月。 '],
-            GlobalIpInfo: '注意：當您按下【QTGate連結】時您會把您的本機互聯網IP提供給QTGate系統，如果您不願意，請選擇【@OPN】技術來使用QTGate服務！沒有【@OPN】選項是因為@QOPN只能對應iCloud郵箱。',
+            GlobalIpInfo: '注意：當您按下【QTGate連結】時您會把您的本機互聯網IP提供給QTGate系統，如果您不願意，請選擇【@OPN】技術來使用QTGate服務！沒有顯示【@OPN】選項是目前@OPN只支持iCloud郵箱。',
             localPort: '本地代理伺服器連接埠:',
             cacheDatePlaceDate: [{ name: '1小时', id: 1 }, { name: '12小时', id: 12 }, { name: '1日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永遠', id: -1 }],
             atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用強加密Email通訊，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私，超強防火牆穿透能力。缺点是有延遲，网络通讯响应受您所使用的email服务供应商的伺服器影响，不適合遊戲視頻會話等通訊。目前該技術只支持iCloud郵箱。',
@@ -2730,6 +2736,7 @@ const dummyIConnectCommand = {
     error: null,
     fingerprint: null,
     multipleGateway: null,
+    requestPortNumber: null,
     requestMultipleGateway: null
 };
 const donateArray = [{
@@ -3344,6 +3351,7 @@ var view_layout;
                 return true;
             });
             this.connectQTGateShow = ko.observable(false);
+            this.requestPortNumber = ko.observable(80);
             this.disconnecting = ko.observable(false);
             this.getCurrentPlan = ko.computed(() => {
                 if (!this.QTTransferData())
@@ -4144,21 +4152,22 @@ var view_layout;
                     fingerprint: null,
                     localServerIp: null,
                     multipleGateway: [],
+                    requestPortNumber: this.requestPortNumber(),
                     requestMultipleGateway: this.QTGateMultipleGateway()
                 };
                 data.error(-1);
                 //root.QTGateConnectRegionActive ( false )
                 //root.QTGateGatewayActiveProcess ( true )
                 const process = $('.regionConnectProcessBar').progress('reset');
-                let doingProcessBarTime = null;
-                let percent = 0;
+                clearTimeout(this.doingProcessBarTime);
+                this.percent = 0;
                 const doingProcessBar = () => {
-                    clearTimeout(doingProcessBarTime);
-                    doingProcessBarTime = setTimeout(() => {
+                    clearTimeout(this.doingProcessBarTime);
+                    this.doingProcessBarTime = setTimeout(() => {
                         process.progress({
-                            percent: ++percent
+                            percent: ++this.percent
                         });
-                        if (percent < 100)
+                        if (this.percent < 100)
                             return doingProcessBar();
                     }, 1000);
                 };
@@ -4166,31 +4175,31 @@ var view_layout;
                 data.showExtraContent(false);
                 data.showRegionConnectProcessBar(true);
                 socketIo.emit('QTGateGatewayConnectRequest', connect, (_data) => {
-                    clearTimeout(doingProcessBarTime);
-                    data.showRegionConnectProcessBar(false);
-                    if (_data.error > -1) {
-                        data.showExtraContent(true);
-                        //this.QTGateConnectRegionActive ( true )
-                        //this.QTGateGatewayActiveProcess ( false )
-                        data.error(_data.error);
-                        return this.menuClick(3, true);
-                    }
-                    const data1 = _data.Args[0];
-                    return this.QTGateGatewayConnectRequestCallBack(this, data1);
+                    return this.QTGateGatewayConnectRequestCallBack(this, _data);
                 });
                 return false;
             });
         }
-        QTGateGatewayConnectRequestCallBack(_self, _data) {
-            const self = _self || this;
-            self.QTTransferData(_data.transferData);
-            self.QTConnectData(_data);
+        QTGateGatewayConnectRequestCallBack(_self, _returnData) {
+            clearTimeout(this.doingProcessBarTime);
+            const selectedQTGateRegion = this.selectedQTGateRegion();
+            selectedQTGateRegion.showRegionConnectProcessBar(false);
+            if (_returnData.error > -1) {
+                selectedQTGateRegion.showExtraContent(true);
+                //this.QTGateConnectRegionActive ( true )
+                //this.QTGateGatewayActiveProcess ( false )
+                selectedQTGateRegion.error(_returnData.error);
+                return this.menuClick(3, true);
+            }
+            const data1 = _returnData.Args[0];
+            this.QTTransferData(data1.transferData);
+            this.QTConnectData(data1);
             $('.userDetail').progress();
-            const index = self.QTGateRegions().findIndex((n) => { return n.qtRegion === _data.region; });
+            const index = this.QTGateRegions().findIndex((n) => { return n.qtRegion === data1.region; });
             if (index < 0) {
                 return;
             }
-            const data = self.QTGateRegions()[index];
+            const data = this.QTGateRegions()[index];
             this.QTGateConnectRegionActive(true);
             this.menuClick(3, false);
             this.selectedQTGateRegion(data);
@@ -4198,7 +4207,7 @@ var view_layout;
             data.showExtraContent(false);
             data.available(true);
             this.ConnectGatewayShow(true);
-            this.config().freeUser = /free/.test(_data.transferData.productionPackage) ? true : false;
+            this.config().freeUser = /free/.test(data1.transferData.productionPackage) ? true : false;
             this.config(this.config());
             return data.showConnectedArea(true);
         }

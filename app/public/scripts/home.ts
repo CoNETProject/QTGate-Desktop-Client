@@ -763,6 +763,7 @@ const infoDefine = [
             connectQTGate:'正在获得代理服务器区域信息...',
             available: '服务中',
             unavailable: '准备中',
+            requestPortNumber: '服务器通讯端口号: ',
             proxyDomain: '域名解释全程使用QTGate代理服务器端',
             setupCardTitle: '使用连接技术:',
             MultipleGateway: '同时并发使用代理数：',
@@ -778,7 +779,7 @@ const infoDefine = [
             GlobalIp: '本机互联网IP地址:',
             QTGateRegionERROR:['发送连接请求Email到QTGate系统发生送信错误， 请检查您的IMAP账号的设定。',
                                 ''],
-            GlobalIpInfo: '注意：当您按下【QTGate连结】时您会把您的本机互联网IP提供给QTGate系统，如果您不愿意，请选择【@OPN】技术来使用QTGate服务！没有【@OPN】选项是因为@QTGate技术只能对应iCloud邮箱。',
+            GlobalIpInfo: '注意：当您按下【QTGate连结】时您会把您的本机互联网IP提供给QTGate系统，如果您不愿意，请选择【@OPN】技术来使用QTGate服务！没有显示【@OPN】选项是因为@OPN技术目前只支持iCloud邮箱。',
             sendConnectRequestMail: ['您的QTGate客户端没有和QTgate系统联机，客户端已向QTgate系统重新发出联机请求Email。和QTgate系统联机需要额外的时间，请耐心等待。',
                                      '当免费用户连续24小时内没有使用客户端，您的连接会被中断。付费用户情况下QTgate系统可保持持续联机一个月。'],
             cacheDatePlaceDate: [{ name:'1小时', id: 1 }, { name:'12小时', id: 12 },{ name:'1日', id: 24 }, { name:'15日', id: 360 }, { name:'1月', id: 720 }, { name:'6月', id: 4320 }, { name:'永远', id: -1 }],
@@ -1427,6 +1428,7 @@ const infoDefine = [
             speedTest: 'スピードテスト：',
             available: 'サービス中',
             unavailable: '準備しています',
+            requestPortNumber: 'サーバーとの通信ポート:',
             proxyDomain:'ドメイン検索はQTGateゲットウェイ側に依頼します。',
             setupCardTitle: '接続技術:',
             MultipleGateway: '並列使うゲットウェイ数：',
@@ -1445,7 +1447,7 @@ const infoDefine = [
             sendConnectRequestMail: ['QTGateクライアントはQTGateシステムとの接続が切れた。再接続要請メールをQTGateシステムへ送信しました、接続を完了するまで時間がかかるのためしばらくお待ちおください。',
                                     'フリーユーザアカンウトには24時間以内、QTGateをご利用していなっかたの場合、QTGateシステムは接続を切る事にします。QTGateシステムは有料ユーザーにはが一ヶ月長時間接続できます。'],
             GlobalIp: 'グロバールIP:',
-            GlobalIpInfo:'要注意：【QTGate接続】をおすとあなたのグロバールIPアドレスをQTGateシステムに送信しますので、それを遠慮すれば【@OPN】接続を選んでください。【@OPN】が見つからない場合は@OPN技術がiCloudしか対応しておりません。',
+            GlobalIpInfo:'要注意：【QTGate接続】をおすとあなたのグロバールIPアドレスをQTGateシステムに送信しますので、それを遠慮すれば【@OPN】接続を選んでください。【@OPN】が見つからない場合は、@OPN技術がiCloudしか対応しておりません。',
             cacheDatePlaceDate: [{ name:'1時間', id: 1 }, { name:'12時間', id: 12 },{ name:'一日', id: 24 }, { name:'15日', id: 360 }, { name:'1月', id: 720 }, { name:'6月', id: 4320 }, { name:'永遠', id: -1 }],
             connectQTGate:'QTGateゲットウェーエリアインフォメーションを取得しています...',
             atQTGateDetail: ['QTGateの世界初のIP不要な通信技術です。暗号化したEmailメッセージを通じたゲットウェイに接続することで、身を隠して誰も知らないうちにインターネットへ、プライバシーと強くファイヤウォールをうまくすり抜けることができます。但しお使いメールサーバの性能に次第スピードが遅くなり、長い遅延など短所があります、ゲームやビデオチャットなどに通信障害出る可能性があります。この技術はiCloudアカンウトのみ対応です',
@@ -2017,6 +2019,7 @@ const infoDefine = [
             clearCache: 'Delete all cache now',
             localPort:'Local proxy port number:',
             localPath:'HTTP/HTTPS conect path name:',
+            requestPortNumber: 'Request Port number for server: ',
             GlobalIp: 'Global IP:',
             pingError:'QTGate gateway area speed check error! Please exit QTGate and reopen QTGate as administrator. Then do check speed again.',
             QTGateRegionERROR:['Send connect request mail has an error. Please check your IMAP account settings.',
@@ -2546,6 +2549,7 @@ const infoDefine = [
             proxyDataCache_detail: ['本地緩存','不緩存'],
             dataViaGateway: '全部互聯網數據通過QTGate代理伺服器',
             cacheDatePlaceholder: '緩存失效時間',
+            requestPortNumber: '通訊端口號',
             clearCache: '立即清除所有緩存',
             GlobalIp: '本機互聯網IP地址:',
             pingError:'代理服務區域速度檢測錯誤發生，請退出QTGate，以管理員身份再次打開QTGate後，再執行速度檢測！',
@@ -2554,7 +2558,7 @@ const infoDefine = [
             sendConnectRequestMail: ['您的QTGate客戶端沒有和QTgate系統聯機，客戶端已向QTgate系統重新發出聯機請求Email。和QTgate系統聯機需要額外的時間，請耐心等待。 ',
                                      '當免費用戶連續24小時內沒有使用客戶端，您的連接會被中斷。付費用戶情況下QTgate系統可保持持續聯機一個月。 '],
             
-            GlobalIpInfo:'注意：當您按下【QTGate連結】時您會把您的本機互聯網IP提供給QTGate系統，如果您不願意，請選擇【@OPN】技術來使用QTGate服務！沒有【@OPN】選項是因為@QOPN只能對應iCloud郵箱。',
+            GlobalIpInfo:'注意：當您按下【QTGate連結】時您會把您的本機互聯網IP提供給QTGate系統，如果您不願意，請選擇【@OPN】技術來使用QTGate服務！沒有顯示【@OPN】選項是目前@OPN只支持iCloud郵箱。',
             localPort: '本地代理伺服器連接埠:',
             cacheDatePlaceDate: [{ name:'1小时', id: 1 }, { name:'12小时', id: 12 },{ name:'1日', id: 24 }, { name:'15日', id: 360 }, { name:'1月', id: 720 }, { name:'6月', id: 4320 }, { name:'永遠', id: -1 }],
             atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用強加密Email通訊，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私，超強防火牆穿透能力。缺点是有延遲，网络通讯响应受您所使用的email服务供应商的伺服器影响，不適合遊戲視頻會話等通訊。目前該技術只支持iCloud郵箱。',
@@ -2901,6 +2905,7 @@ const dummyIConnectCommand: IConnectCommand = {
     error: null,
     fingerprint: null,
     multipleGateway: null,
+    requestPortNumber: null,
     requestMultipleGateway: null
 }
 
@@ -4358,6 +4363,8 @@ module view_layout {
             this.QTGateConnect1 ( uu.toString ())
         }
 
+        public requestPortNumber= ko.observable (80)
+
         public QTGateGatewayConnectRequest () {
             const data = this.selectedQTGateRegion ()
             return socketIo.emit ( 'checkPort', this.QTGateLocalProxyPort(), err => {
@@ -4376,6 +4383,7 @@ module view_layout {
                     fingerprint: null,
                     localServerIp: null,
                     multipleGateway: [],
+                    requestPortNumber: this.requestPortNumber (),
                     requestMultipleGateway: this.QTGateMultipleGateway()
                     
                 }

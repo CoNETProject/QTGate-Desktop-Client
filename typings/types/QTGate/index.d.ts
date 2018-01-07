@@ -148,6 +148,7 @@ interface IConnectCommand {
     gateWayPort?: number
     connectPeer?: string
     AllDataToGateway: boolean
+    requestPortNumber: number
     localServerPort: number
     localServerIp: string
     multipleGateway: multipleGateway []
