@@ -68,6 +68,10 @@ QTGateとは匿名ネットワークです。QTGateは三つのツールを構�
 ***
 ![http protocol](/resources/canada150.png?raw=true)
 ***
+![http protocol](/resources/gateway_area.png?raw=true)
+***
+![http protocol](/resources/iOPN.png?raw=true)
+***
 ![http protocol](/resources/vpn.email11.jpg?raw=true)
 ***
 ![http protocol](/resources/QTChat.png?raw=true)

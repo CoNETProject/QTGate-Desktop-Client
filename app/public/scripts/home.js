@@ -698,7 +698,7 @@ const infoDefine = [
             requestPortNumber: '服务器通讯端口号: ',
             proxyDomain: '域名解释全程使用QTGate代理服务器端',
             setupCardTitle: '使用连接技术:',
-            MultipleGateway: '同时并发使用代理数：',
+            MultipleGateway: '同时并发使用代理数',
             dataTransfer: '数据通讯：',
             dataTransfer_datail: ['全程使用代理服务器', '当本地不能够到达目标主机时使用'],
             proxyDataCache: '浏览数据本地缓存:',
@@ -715,12 +715,20 @@ const infoDefine = [
             sendConnectRequestMail: ['您的QTGate客户端没有和QTgate系统联机，客户端已向QTgate系统重新发出联机请求Email。和QTgate系统联机需要额外的时间，请耐心等待。',
                 '当免费用户连续24小时内没有使用客户端，您的连接会被中断。付费用户情况下QTgate系统可保持持续联机一个月。'],
             cacheDatePlaceDate: [{ name: '1小时', id: 1 }, { name: '12小时', id: 12 }, { name: '1日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永远', id: -1 }],
-            atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用强加密Email通讯，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私功能，强抗干扰和超強防火墙穿透能力。缺点是有延迟，网络通讯响应受您所使用的email服务供应商的服务器影响，不适合游戏视频会话等通讯。目前该技术只支持iCloud邮箱。',
+            atQTGateDetail: [
+                '世界首创的QTGate无IP互联网通讯技术，全程使用强加密Email通讯，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私功能，强抗干扰和超強防火墙穿透能力。缺点是有延迟，网络通讯响应受您所使用的email服务供应商的服务器影响，不适合游戏视频会话等通讯。目前该技术只支持iCloud邮箱。',
                 'QTGate独创普通HTTP混淆流量加密通讯技术，能够隐藏变换您的IP地址高速通讯，隐身和保护隐私，抗干扰和超強防火墙穿透能力。缺点是需要使用您的IP来直接连结代理服务器。如果您只是需要自由访问互联网，则推荐使用本技术。',
-                '域名解释使用QTGate代理服务器端，可以防止域名服务器缓存污染，本选项不可修改。', '互联网数据全程使用QTGate代理，可以匿名上网隐藏您的互联网形踪。', '只有当您的本地网络不能够到达您希望访问的目标时，才使用QTGate代理服务器代为连结目标主机，本选项可以节省您的QTGate流量。',
-                '通过本地缓存浏览纪录，当您再次访问目标服务器时可以增加访问速度，减少网络流量，缓存浏览纪录只针对非加密技术的HTTP浏览有效。QTGate使用强加密技术缓存浏览纪录，确保您的隐私不被泄漏。', '不保存缓存信息。',
-                '设置缓存有效时间，您可以及时更新服务器数据,单位为小时。', '本地Proxy服务器，其他手机电脑和IPad等可通过连结此端口来使用QTGate服务。请设定为3001至65535之间的数字。',
-                '通过设置PATH链接路径可以简单给您的Proxy服务器增加安全性，拒绝没有提供PATH的访问者使用您的Proxy服务器。']
+                '域名解释使用QTGate代理服务器端，可以防止域名服务器缓存污染，本选项不可修改。',
+                '互联网数据全程使用QTGate代理，可以匿名上网隐藏您的互联网形踪。',
+                '只有当您的本地网络不能够到达您希望访问的目标时，才使用QTGate代理服务器代为连结目标主机，本选项可以节省您的QTGate流量。',
+                '通过本地缓存浏览纪录，当您再次访问目标服务器时可以增加访问速度，减少网络流量，缓存浏览纪录只针对非加密技术的HTTP浏览有效。QTGate使用强加密技术缓存浏览纪录，确保您的隐私不被泄漏。',
+                '不保存缓存信息。',
+                '设置缓存有效时间，您可以及时更新服务器数据,单位为小时。',
+                '本地Proxy服务器，其他手机电脑和IPad等可通过连结此端口来使用QTGate服务。请设定为3001至65535之间的数字。',
+                '通过设置PATH链接路径可以简单给您的Proxy服务器增加安全性，拒绝没有提供PATH的访问者使用您的Proxy服务器。',
+                '同时捆绑使用代理线路数，可以有效降低大流量集中在一个代理服务线路上，容易造成网络监控者注意的风险。',
+                '指定同Q梯代理进行通讯使用的端口号，通过此设置可以规避您所在网段被通讯屏蔽的端口。'
+            ]
         },
         useInfoMacOS: {
             title: '<p>本地代理服务器已在后台运行，MacOS和Windows用户可以关闭本窗口。</p>您的其他电子设备，可通过设置本地Proxy伺服器，来使用QTGate连接到互联网',
@@ -1334,7 +1342,7 @@ const infoDefine = [
             requestPortNumber: 'サーバーとの通信ポート:',
             proxyDomain: 'ドメイン検索はQTGateゲットウェイ側に依頼します。',
             setupCardTitle: '接続技術:',
-            MultipleGateway: '並列使うゲットウェイ数：',
+            MultipleGateway: '並列使うゲットウェイ数',
             dataTransfer: '通信データは：',
             dataTransfer_datail: ['全てのデータをOPN経由', 'ターゲットサーバ到達不能時だけ'],
             proxyDataCache: 'Webキャッシュ:',
@@ -1353,12 +1361,20 @@ const infoDefine = [
             GlobalIpInfo: '要注意：【QTGate接続】をおすとあなたのグロバールIPアドレスをQTGateシステムに送信しますので、それを遠慮すれば【@OPN】接続を選んでください。【@OPN】が見つからない場合は、@OPN技術がiCloudしか対応しておりません。',
             cacheDatePlaceDate: [{ name: '1時間', id: 1 }, { name: '12時間', id: 12 }, { name: '一日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永遠', id: -1 }],
             connectQTGate: 'QTGateゲットウェーエリアインフォメーションを取得しています...',
-            atQTGateDetail: ['QTGateの世界初のIP不要な通信技術です。暗号化したEmailメッセージを通じたゲットウェイに接続することで、身を隠して誰も知らないうちにインターネットへ、プライバシーと強くファイヤウォールをうまくすり抜けることができます。但しお使いメールサーバの性能に次第スピードが遅くなり、長い遅延など短所があります、ゲームやビデオチャットなどに通信障害出る可能性があります。この技術はiCloudアカンウトのみ対応です',
+            atQTGateDetail: [
+                'QTGateの世界初のIP不要な通信技術です。暗号化したEmailメッセージを通じたゲットウェイに接続することで、身を隠して誰も知らないうちにインターネットへ、プライバシーと強くファイヤウォールをうまくすり抜けることができます。但しお使いメールサーバの性能に次第スピードが遅くなり、長い遅延など短所があります、ゲームやビデオチャットなどに通信障害出る可能性があります。この技術はiCloudアカンウトのみ対応です',
                 'QTGateオリジナル技術のトラフィックをHTTPに偽装した暗号化通信技術です。あなたのIPを使ってゲットウェイに直接接続することで、高速通信とプライバシー、強くファイヤウォールをうまくすり抜けることができます。インターネット自由アクセスのためにQTGateを使うことになら、これをおすすめです。',
-                'ドメイン検索をQTGateゲットウェイ側にすることで DNS cache pollution を防ぐことができます。この選択は必要です。', '全てインターネットデータをQTGateゲットウェイに通じてすることで、匿名でインターネットアクセスします。',
-                'ローカルネットワークが目標サーバに到達不能な際に、QTGateゲットウェイ通じてします。このことでQTGateデータ通信量節約することができます。', 'アクセスしたWebサイトを一時ファイルに保持することで、高速レスポンスが利用可能となります、QTGateはいつも暗号化したデータを本機に保存します。但し暗号化通信には不対応です。',
-                'キャッシュ有効期限の設定によって、いつもサーバ側の最新情報を入手することができます。単位は時間です。', 'ローカルプロキシサーバーが他のデバイスをこのポートに接続によってQTGateデータの通信を利用可能です。3001から65535の間の数字を入れてください。',
-                'ローカルポロックPATHを指定することで、あなたのローカルポロックサーバを簡単セキュリティを与えられます。無断使用を禁止することができます。']
+                'ドメイン検索をQTGateゲットウェイ側にすることで DNS cache pollution を防ぐことができます。この選択は必要です。',
+                '全てインターネットデータをQTGateゲットウェイに通じてすることで、匿名でインターネットアクセスします。',
+                'ローカルネットワークが目標サーバに到達不能な際に、QTGateゲットウェイ通じてします。このことでQTGateデータ通信量節約することができます。',
+                'アクセスしたWebサイトを一時ファイルに保持することで、高速レスポンスが利用可能となります、QTGateはいつも暗号化したデータを本機に保存します。但し暗号化通信には不対応です。',
+                'キャッシュを保存しません。',
+                'キャッシュ有効期限の設定によって、いつもサーバ側の最新情報を入手することができます。単位は時間です。',
+                'ローカルプロキシサーバーが他のデバイスをこのポートに接続によってQTGateデータの通信を利用可能です。3001から65535の間の数字を入れてください。',
+                'ローカルポロックPATHを指定することで、あなたのローカルポロックサーバを簡単セキュリティを与えられます。無断使用を禁止することができます。',
+                '同時に使うゲットウェイ数目を指定します。この技術はネットワークの大流量をいくつかのIPアドレスに分散して、監視者から逃げられます。',
+                'QTGateゲットウェーとの通信ポート番号を指定します。あなた所在するネットワークの制限された通信ポートから避けることができます。'
+            ]
         },
         QTGateGateway: {
             title: 'QTGateサービス使用詳細',
@@ -1879,7 +1895,7 @@ const infoDefine = [
             unavailable: 'Unavailable',
             proxyDomain: 'Domain lookup via QTGate gateway side.',
             setupCardTitle: 'connecting with:',
-            MultipleGateway: 'multi-gateway count:',
+            MultipleGateway: 'Multi-Gateway:',
             dataViaGateway: 'All internet data transfered via QTGate gateway.',
             dataTransfer: 'Data:',
             dataTransfer_datail: ['All data on QTGate gateway.', `Only when cannot connect to target server.`],
@@ -1908,7 +1924,9 @@ const infoDefine = [
                 'Do not use web cache.',
                 'By setting the cache expiration date, you can always obtain the latest information on the server side.',
                 'Local proxy server port number is provided for other devices to use QTGate’s OPN connection. Please set a number from 3001 to 65535.',
-                'Local proxy server http/https access can secure your server.'
+                'Local proxy server http/https access can secure your server.',
+                'How many gateway connections to use at once. This is ensure high traffic going to across multiple servers. This technology reduced risk be focus from network surveillance.',
+                'This is IP protocol numbers used for QTGate gateway connections. You may change the number if that number closed by your network firewall.'
             ],
             connectQTGate: 'Connecting, Retrieving QTGate gateway information...'
         },
@@ -2383,7 +2401,7 @@ const infoDefine = [
             unavailable: '準備中',
             proxyDomain: '域名解釋全程使用QTGate代理伺服器端',
             setupCardTitle: '使用連接技術:',
-            MultipleGateway: '同時併發使用代理數：',
+            MultipleGateway: '同時併發使用代理數:',
             connectQTGate: '正在獲得代理伺服器區域信息...',
             dataTransfer: '數據通訊:',
             dataTransfer_datail: ['全程使用QTGate代理伺服器', '當本地不能夠到達目標伺服器時使用'],
@@ -2402,11 +2420,20 @@ const infoDefine = [
             GlobalIpInfo: '注意：當您按下【QTGate連結】時您會把您的本機互聯網IP提供給QTGate系統，如果您不願意，請選擇【@OPN】技術來使用QTGate服務！沒有顯示【@OPN】選項是目前@OPN只支持iCloud郵箱。',
             localPort: '本地代理伺服器連接埠:',
             cacheDatePlaceDate: [{ name: '1小时', id: 1 }, { name: '12小时', id: 12 }, { name: '1日', id: 24 }, { name: '15日', id: 360 }, { name: '1月', id: 720 }, { name: '6月', id: 4320 }, { name: '永遠', id: -1 }],
-            atQTGateDetail: ['世界首创的QTGate无IP互联网通讯技术，全程使用強加密Email通訊，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私，超強防火牆穿透能力。缺点是有延遲，网络通讯响应受您所使用的email服务供应商的伺服器影响，不適合遊戲視頻會話等通訊。目前該技術只支持iCloud郵箱。',
+            atQTGateDetail: [
+                '世界首创的QTGate无IP互联网通讯技术，全程使用強加密Email通訊，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私，超強防火牆穿透能力。缺点是有延遲，网络通讯响应受您所使用的email服务供应商的伺服器影响，不適合遊戲視頻會話等通訊。目前該技術只支持iCloud郵箱。',
                 'QTGate獨創HTTP強加密混淆流量代理技術，能夠隱藏變換您的IP地址高速通訊，隐身和保护隐私，抗干擾超強防火牆穿透能力。缺點是需要使用您的IP來直接連結代理伺服器。如果您只是需要自由訪問互聯網，則推薦使用本技術。',
-                '域名解釋使用QTGate代理伺服器端，可以防止域名伺服器緩存污染，本選擇不可修改。', '互聯網數據全程使用QTGate代理，可以匿名上網隱藏您的互聯網形踪。', '只有當本地網絡不能夠到達您希望訪問的目標時，才使用QTGate代為您連結目標伺服器，本選項可以節省您的QTGate流量。',
-                '通過本地緩存瀏覽紀錄，當您再次訪問目標伺服器時可以增加訪問速度，減少網絡流量，緩存瀏覽記錄只針對非加密技術的HTTP瀏覽有效。QTGate使用強加密技術緩存瀏覽紀錄，確保您的隱私不被洩漏', '不保存緩存信息。',
-                '設置緩存有效時間，您可以及時更新伺服器數據，單位為小時。', '本地Proxy服务器，其他手机电脑和IPad等可通過连结此端口來使用QTGate服务。請設定為3001至65535之間的數字', '通過設置PATH鏈接路徑可以簡單給您的Proxy伺服器增加安全性，拒絕沒有提供PATH的訪問者使用您的Proxy伺服器。']
+                '域名解釋使用QTGate代理伺服器端，可以防止域名伺服器緩存污染，本選擇不可修改。',
+                '互聯網數據全程使用QTGate代理，可以匿名上網隱藏您的互聯網形踪。',
+                '只有當本地網絡不能夠到達您希望訪問的目標時，才使用QTGate代為您連結目標伺服器，本選項可以節省您的QTGate流量。',
+                '通過本地緩存瀏覽紀錄，當您再次訪問目標伺服器時可以增加訪問速度，減少網絡流量，緩存瀏覽記錄只針對非加密技術的HTTP瀏覽有效。QTGate使用強加密技術緩存瀏覽紀錄，確保您的隱私不被洩漏',
+                '不保存緩存信息。',
+                '設置緩存有效時間，您可以及時更新伺服器數據，單位為小時。',
+                '本地Proxy服务器，其他手机电脑和IPad等可通過连结此端口來使用QTGate服务。請設定為3001至65535之間的數字',
+                '通過設置PATH鏈接路徑可以簡單給您的Proxy伺服器增加安全性，拒絕沒有提供PATH的訪問者使用您的Proxy伺服器。',
+                '同時捆綁使用代理線路數，可以有效降低大流量集中在一個代理服務線路上，容易造成網絡監控者註意的風險。',
+                '指定同Q梯代理進行通訊使用的端口號，通過此設置可以規避您所在網段被通訊屏蔽的端口。'
+            ]
         },
         QTGateGateway: {
             title: 'QTGate服務使用詳細',
