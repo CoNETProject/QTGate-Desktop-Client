@@ -8,14 +8,14 @@
 
 **QTGate**’s OPN services allow users to stay private and secure while accessing the open internet. [QTGATE](https://www.qtgate.com).
 
-- **QTGate** has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to ensure data is secure and your identity stays protected. Designed to bypass deep packet inspection (DPI) firewalls while providing secure and private access to the open internet, anywhere in the world.QTGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use QTGate’s OPN services to access the open internet with total protection and security.
+- **QTGate** has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to ensure data is secure and your identity stays protected. Designed to bypass deep packet inspection (DPI) firewalls while providing secure and private access to the open internet, anywhere in the world.QTGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use QTGate’s OPN services to access the open internet with total protection and security. [**Multi-Gateway/Client**] [**Fresh IPs Every 2 Hours**]
 
-    1. [@OPN](https://github.com/QTGate/atOPN) is designed to bypass detection that can block other internet privacy tools, such as a VPN. With features such as:
+    1. [@OPN](https://github.com/QTGate/atOPN) is our patent pending technology that creates a “Quiet” private network by obfuscating encrypted data packets over IMAP email servers, refracting the data thru our QTGate servers, to achieve an obfuscated private network. @OPN provides true anonymous internet communications, where your IP address is fully hidden to our servers and target servers.
+
+    2. [iOPN](https://github.com/QTGate/iOPN) is designed to bypass detection that can block other internet privacy tools, such as a VPN. With features such as:
         1. **IP-Shifting** : IPs don’t stay the same, they automatically refresh every 2 hours. No one stays on a website all day, thus iOPN has a fresh IP every 2 hours to make it look like users are surfing and further help bypass detection.
         2. **Multi-gateway** : Using multiple gateways helps to further obfuscate traffic, by dispersing data over 2 or more IPs (up to 4). This helps evade detection by disguising user’s traffic to look like visiting multiple sites. A VPN transfers all the data over one IP.
         3. **Short connect** : Using iOPN looks like just normal web traffic, with short open/closed connections to target servers like regular web browsing. While a VPN tunnel looks like it’s always maintaining a connection, that makes it easy to detect.
-
-    2. [iOPN](https://github.com/QTGate/iOPN) uses our technology to create a “Quiet” private network by obfuscating encrypted data traffic over HTTP, refracting the data thru our QTGate servers, to achieve an obfuscated private network. iOPN offer faster connections than the standard privacy enhancing tools with the add benefits of QTGate’s OPN.
 
 - **QTChat** – Encrypted, peer to peer instant messaging. Privacy enhanced with no IP footprint. Privacy enhanced, encrypted video streaming and casting in secrecy.
 
