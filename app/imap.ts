@@ -914,7 +914,7 @@ export class qtGateImap extends Event.EventEmitter {
             //  
             const catchUncaughtException = err => {
                 saveLog (`qtGateImap got process uncaught Exception [${ err && err.message ? err.messgae : 'err message null '}]`)
-                this.destroyAll ( null )
+                this.destroyAll ( err )
             }
 
             process.once ( 'uncaughtException', catchUncaughtException )

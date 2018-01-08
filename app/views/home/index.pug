@@ -967,107 +967,112 @@ block jumbotron1
 											i.large.icon.firefox
 									.one.wide.column
 										a( href="#" data-bind = " click: () => { showUserInfoMacOS ( '#iOSUseInfo', $root )}")
-											i.large.icons( style="top: -2px;")
+											i.large.icons( style = "top: -2px;")
 												i.large.icon.mobile
-												i.tiny.icon.apple( style="left: 6px;" )
+												i.tiny.icon.apple( style = "left: 6px;" )
 									.eleven.wide.column
-										button.ui.red.basic.button( data-bind=" click: disconnectClick, " style="float: right;")
-											span( data-bind="text: disconnecting() ? infoDefine [ languageIndex() ].QTGateGateway.disconnecting: infoDefine [ languageIndex() ].QTGateGateway.stopGatewayButton")
-											.ui.centered.small.inline.loader( data-bind=" css: { active: disconnecting()}" style="top: -20px;height: 0px;")
+										button.ui.red.basic.button( data-bind = " click: disconnectClick, " style = "float: right;")
+											span( data-bind = "text: disconnecting() ? infoDefine [ languageIndex() ].QTGateGateway.disconnecting: infoDefine [ languageIndex() ].QTGateGateway.stopGatewayButton")
+											.ui.centered.small.inline.loader( data-bind = " css: { active: disconnecting()}" style = "top: -20px;height: 0px;")
 					.extra.content( data-bind = " visible: selectedQTGateRegion().showExtraContent ()")
 						.ui.form( style = "margin-top: 0px!important;" data-bind = " css:{ two: selectedQTGateRegion().canVoe() && selectedQTGateRegion().canVoH(), one: !selectedQTGateRegion().canVoe() || !selectedQTGateRegion().canVoH()} ")
 							.inline.fields
-								label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.setupCardTitle " style="color:rgba(0,0,0,.8);")
+								label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.setupCardTitle " style = "color:rgba(0,0,0,.8);")
 								.field( data-position = "bottom left" )
-									.ui.radio.checkbox( data-bind ="click: () => { QTGateConnect1('1')}")
-										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.7);" value="1" data-bind="checked: QTGateConnect1 ")
-										label( data-bind = " text: QTGateRegionsSetup()[1].title" style="color:rgba(0,0,0,.7);")
+									.ui.radio.checkbox( data-bind = "click: () => { QTGateConnect1('1')}")
+										input( type = "radio" name = "rrr" style="color:rgba(0,0,0,.7);" value = "1" data-bind = "checked: QTGateConnect1 ")
+										label( data-bind = " text: QTGateRegionsSetup()[1].title" style = "color:rgba(0,0,0,.7);")
 									a( href="#" )
-										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[1]}" style="margin-left: -10px;color:yellowgreen;")
+										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[1]}" style = "margin-left: -10px;color:yellowgreen;")
 								.field
-									.ui.radio.checkbox( data-bind=" click: () => { QTGateConnect1('2')} ")
-										input( type = "radio" name="rrr" style="color:rgba(0,0,0,.8);" value="2" data-bind="checked: QTGateConnect1, attr: {'dataCheck': QTGateConnect1()}")
-										label( data-bind = " text: QTGateRegionsSetup()[0].title" style="color:rgba(0,0,0,.7);")
+									.ui.radio.checkbox( data-bind = " click: () => { QTGateConnect1('2')} ")
+										input( type = "radio" name = "rrr" style="color:rgba(0,0,0,.8);" value = "2" data-bind="checked: QTGateConnect1, attr: {'dataCheck': QTGateConnect1()}")
+										label( data-bind = " text: QTGateRegionsSetup()[0].title" style = "color:rgba(0,0,0,.7);")
 									a( href="#" )
-										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[0]}" style="margin-left: -10px;color:yellowgreen;")
-							.inline.fields( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '2'")
-								.field( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '2'")
-									.ui.selection.dropdown
-										input( type="hidden" name="gender" data-bind="value: QTGateConnectSelectImap ")
-										i.dropdown.icon
-										.default.text( data-bind="text: emailPool().length > 0 && QTGateConnectSelectImap() > -1 ? emailPool()[QTGateConnectSelectImap()].iMapServerLoginName () : null" style="color: blue;")
-										.menu( data-bind="foreach: emailPool")
-											.item( data-bind=" text: iMapServerLoginName(),visible: /imap\.mail\.me\.com/i.test (iMapServerName()), attr: { 'data-text': iMapServerLoginName (), 'data-value': $index() }")
-							.inline.fields( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '1'")
-								.field( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '1'")
-									label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.MultipleGateway " style="color:rgba(0,0,0,.8);margin-right: 0px;")
+										i.help.circle.outline.icon.popupField( data-bind = "attr: { 'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[0]}" style = "margin-left: -10px;color:yellowgreen;")
+								.field
+									.ui.toggle.checkbox( data-bind="click: ()=>{ showQTGateConnectOption( !showQTGateConnectOption()); return true;}")
+										label( data-bind="text: infoDefine [ languageIndex() ].QTGateRegion.option")
+										input.hidden( type="checkbox" )
+							.optionArea( data-bind = "visible: showQTGateConnectOption()")
+								.inline.fields( data-position = "bottom left" data-bind = " visible: QTGateConnect1() === '2'")
+									.field( data-position = "bottom left" data-bind = " visible: QTGateConnect1() === '2'")
+										.ui.selection.dropdown
+											input( type = "hidden" name = "gender" data-bind = "value: QTGateConnectSelectImap ")
+											i.dropdown.icon
+											.default.text( data-bind = "text: emailPool().length > 0 && QTGateConnectSelectImap() > -1 ? emailPool()[QTGateConnectSelectImap()].iMapServerLoginName () : null" style="color: blue;")
+											.menu( data-bind = "foreach: emailPool")
+												.item( data-bind = " text: iMapServerLoginName(),visible: /imap\.mail\.me\.com/i.test (iMapServerName()), attr: { 'data-text': iMapServerLoginName (), 'data-value': $index() }")
+								.inline.fields( data-position = "bottom left" data-bind = " visible: QTGateConnect1() === '1'")
+									.field( data-position = "bottom left" data-bind = " visible: QTGateConnect1() === '1'")
+										label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.MultipleGateway " style = "color:rgba(0,0,0,.8);margin-right: 0px;")
+										a( href = "#" )
+											i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[10]}" style = "color:yellowgreen;")
+										.ui.compact.selection.dropdown
+											input( type = "hidden" name = "MultipleGateway" data-bind = "value: QTGateMultipleGateway")
+											i.dropdown.icon
+											.text( data-bind = "text: QTGateMultipleGateway()")
+											.menu( data-bind = " foreach: QTGateMultipleGatewayPool ")
+												.item( data-bind = " visible: $index() + 1 < 2 || $index() + 1 > 2 && $root.config().freeUser, text: $index()+1, attr: { 'data-text': $index()+1, 'data-value': $index()+1 }")
+									.field( data-position = "bottom left" data-bind = " css: { error: QTGateGatewayPortError () }, visible: QTGateConnect1() === '1'"  )
+										label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.requestPortNumber " style = "color:rgba(0,0,0,.8);margin-right: 0px;")
+										a( href = "#" )
+											i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[11]}" style = "color:yellowgreen;")
+										input( type = "number" name = "MultipleGateway" data-bind = "css: { 'activating element': QTGateGatewayPortError()}, attr : { 'data-content' : QTGateGatewayPortError() ? infoDefine[ languageIndex() ].imapInformation.Error_portNumber: null }, value: requestPortNumber")
+								.field
+									.ui.checkbox
+										input( type = "checkbox" tabindex = "0" class = "hidden" checked readonly style = "color:rgba(0,0,0,.7);" )
+										label.popupField( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.proxyDomain " data-position = "top left" style = "color: rgba(100,0,0,.4)!important;")
 									a( href="#" )
-										i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[10]}" style="color:yellowgreen;")
-									.ui.compact.selection.dropdown
-										input( type="hidden" name="MultipleGateway" data-bind="value: QTGateMultipleGateway")
-										i.dropdown.icon
-										.text( data-bind="text: QTGateMultipleGateway()")
-										.menu( data-bind="foreach: QTGateMultipleGatewayPool ")
-											.item( data-bind=" text: $index()+1, attr: { 'data-text': $index()+1, 'data-value': $index()+1 }")
-								.field( data-position="bottom left" data-bind=" visible: QTGateConnect1() === '1'" )
-									label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.requestPortNumber " style="color:rgba(0,0,0,.8);margin-right: 0px;")
-									a( href="#" )
-										i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[11]}" style="color:yellowgreen;")
-									input( type="number" name="MultipleGateway" data-bind="value: requestPortNumber")
-							.field
-								.ui.checkbox
-									input( type="checkbox" tabindex="0" class="hidden" checked readonly style="color:rgba(0,0,0,.7);" )
-									label.popupField( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.proxyDomain " data-position="top left" style="color: rgba(100,0,0,.4)!important;")
-								a( href="#" )
-									i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[2]}" style="color:yellowgreen;")
-							.inline.fields
-								label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.dataTransfer " style="color:rgba(0,0,0,.8);" )
-								.field( data-position="bottom left" data-bind ="click: () => { QTGateConnect2(false); selectedQTGateRegion().error ( -1 ) }")
-									.ui.radio.checkbox
-										input( type = "radio" name="dataTransfer" checked class="hidden" style="color:rgba(0,0,0,.7);" )
-										label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.dataTransfer_datail[0]" style="color:rgba(0,0,0,.7);" )
-									a( href="#" )
-										i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[3]}" style="margin-left: -10px;color:yellowgreen;")
-								.field.popupField( data-position="bottom left" data-bind =" click: () => { QTGateConnect2(true); selectedQTGateRegion().error ( -1 ) }")
-									.ui.radio.checkbox
-										input( type = "radio" name="dataTransfer" class="hidden" style="color:rgba(0,0,0,.7);" )
-										label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.dataTransfer_datail[1]" style="color:rgba(0,0,0,.7);" )
-									a( href="#" )
-										i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[4]}" style="margin-left: -10px;color:yellowgreen;")
-							//-.inline.fields
-								label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache " )
-								.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (6); $root.QTGateCacheUse ( false) }")
-									.ui.radio.checkbox
-										input( type = "radio" name="dataCache" checked="checked" class="hidden" )
-										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[1]" )
-								.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (5);$root.QTGateCacheUse ( true) }")
-									.ui.radio.checkbox
-										input( type = "radio" name="dataCache" class="hidden" )
-										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[0]" )
-								.field( data-bind =" visible: $root.QTGateCacheUse(), click: function(){ $root.QTGateConnect_SelectTech (7) } ")
-									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceholder " )
-									select.ui.compact.selection.dropdown( data-bind = "options: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceDate, optionsText: 'name', optionsValue: 'id' " )
-								.field( data-bind =" visible: $root.QTGateCacheUse()" )
-									.ui.primary.basic.button( data-bind = "visible: !$root.QTGate_showDeleteCacheButton(), click: function() { $root.QTGate_showDeleteCacheButton(true)},text: infoDefine [ $root.languageIndex() ].QTGateRegion.clearCache ")
-									.ui.buttons( data-bind = "visible: $root.QTGate_showDeleteCacheButton()")
-										button.ui.button( data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.cancel, click: function() { $root.QTGate_showDeleteCacheButton(false) } ")
-										.or
-										button.ui.positive.button( data-bind = " text: infoDefine [ $root.languageIndex() ].Home_keyPairInfo_view.delete")
-							
-							.inline.fields
-								//-.field
-									p( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.GlobalIp " )
-									p( data-bind = " text: $root.config().serverGlobalIpAddress")
-								.field( data-bind=" css: { error: localProxyPortError () }")
-									label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.localPort " )
-									.ui.input()
-										input.popupField( data-bind = "value : $root.QTGateLocalProxyPort, css: { 'activating element': localProxyPortError()}, attr : { 'data-content' : localProxyPortError() ? infoDefine[ languageIndex() ].imapInformation.proxyPortError: null }" style="color:rgba(0,0,0,.7);" )
-									a(href="#")
-										i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[8]}" style="color:yellowgreen;")
-								//-.field
-									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.localPath " )
-									i.input
-										input( data-bind = "value : $root.QTGateLocalProxyPort, attr : { 'data-content' : $root.localProxyPortError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': $root.localProxyPortError()} ")
+										i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[2]}" style = "color:yellowgreen;")
+								.inline.fields
+									label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.dataTransfer " style = "color:rgba(0,0,0,.8);" )
+									.field( data-position = "bottom left" data-bind = "click: () => { QTGateConnect2 ( false ); selectedQTGateRegion().error ( -1 ) }")
+										.ui.radio.checkbox
+											input( type = "radio" name = "dataTransfer" checked class = "hidden" style = "color:rgba(0,0,0,.7);" )
+											label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.dataTransfer_datail[0]" style = "color:rgba(0,0,0,.7);" )
+										a( href="#" )
+											i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[3]}" style = "margin-left: -10px;color:yellowgreen;")
+									.field.popupField( data-position = "bottom left" data-bind =" click: () => { QTGateConnect2(true); selectedQTGateRegion().error ( -1 ) }")
+										.ui.radio.checkbox
+											input( type = "radio" name = "dataTransfer" class = "hidden" style = "color:rgba(0,0,0,.7);" )
+											label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.dataTransfer_datail[1]" style = "color:rgba(0,0,0,.7);" )
+										a( href="#" )
+											i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': infoDefine [ languageIndex() ].QTGateRegion.atQTGateDetail[4]}" style = "margin-left: -10px;color:yellowgreen;")
+								//-.inline.fields
+									label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache " )
+									.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (6); $root.QTGateCacheUse ( false) }")
+										.ui.radio.checkbox
+											input( type = "radio" name="dataCache" checked="checked" class="hidden" )
+											label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[1]" )
+									.field( data-bind =" click: function(){ $root.QTGateConnect_SelectTech (5);$root.QTGateCacheUse ( true) }")
+										.ui.radio.checkbox
+											input( type = "radio" name="dataCache" class="hidden" )
+											label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.proxyDataCache_detail[0]" )
+									.field( data-bind =" visible: $root.QTGateCacheUse(), click: function(){ $root.QTGateConnect_SelectTech (7) } ")
+										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceholder " )
+										select.ui.compact.selection.dropdown( data-bind = "options: infoDefine [ $root.languageIndex() ].QTGateRegion.cacheDatePlaceDate, optionsText: 'name', optionsValue: 'id' " )
+									.field( data-bind =" visible: $root.QTGateCacheUse()" )
+										.ui.primary.basic.button( data-bind = "visible: !$root.QTGate_showDeleteCacheButton(), click: function() { $root.QTGate_showDeleteCacheButton(true)},text: infoDefine [ $root.languageIndex() ].QTGateRegion.clearCache ")
+										.ui.buttons( data-bind = "visible: $root.QTGate_showDeleteCacheButton()")
+											button.ui.button( data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.cancel, click: function() { $root.QTGate_showDeleteCacheButton(false) } ")
+											.or
+											button.ui.positive.button( data-bind = " text: infoDefine [ $root.languageIndex() ].Home_keyPairInfo_view.delete")
+								
+								.inline.fields
+									//-.field
+										p( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.GlobalIp " )
+										p( data-bind = " text: $root.config().serverGlobalIpAddress")
+									.field( data-bind=" css: { error: localProxyPortError () }")
+										label( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.localPort " )
+										.ui.input()
+											input.popupField( data-bind = "value : $root.QTGateLocalProxyPort, css: { 'activating element': localProxyPortError()}, attr : { 'data-content' : localProxyPortError() ? infoDefine[ languageIndex() ].imapInformation.proxyPortError: null }" style="color:rgba(0,0,0,.7);" )
+										a(href="#")
+											i.help.circle.outline.icon.popupField( data-bind = "attr: {'data-content': $root.infoDefine [ $root.languageIndex() ].QTGateRegion.atQTGateDetail[8]}" style="color:yellowgreen;")
+									//-.field
+										label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.localPath " )
+										i.input
+											input( data-bind = "value : $root.QTGateLocalProxyPort, attr : { 'data-content' : $root.localProxyPortError() ? infoDefine[ $root.languageIndex() ].imapInformation.Error_portNumber: null }, css: { 'activating element': $root.localProxyPortError()} ")
 							//-.inline.fields( data-bind ="click: function(){ $root.QTGateConnect_SelectTech (9) } ")
 								label( data-bind = " text: infoDefine [ $root.languageIndex() ].QTGateRegion.outDoormode " )
 								.ui.input

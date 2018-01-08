@@ -716,7 +716,8 @@ const infoDefine = [
                 '您的电脑未连接到互联网，请检查网络后再次尝试！',
                 'Email伺服器提示IMAP用户名或密码错！这个错误通常是由于您使用的密码是普通密码，或者您的APP密码已失效，请到您的Email帐户检查您的APP密码，然后再试一次。',
                 'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！<a href="data-html"></a>',
-                '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在IMAP详细设定中选择忽略证书错误。','无法获得Email服务器域名信息，请检查您的Email服务器设定！',
+                '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在IMAP详细设定中选择忽略证书错误。',
+                '无法获得Email服务器域名信息，请检查您的Email服务器设定！或者您的电脑没有互联网，请检查您的互联网状态。',
                 '此Email服务器看来可能不能使用QTGate通讯技术，请再测试一次或选择其他email服务供应商！',
                 'Email服务器提示SMTP用户名或密码错！ ',
                 '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在SMTP详细设定中选择忽略证书错误。 ',
@@ -763,12 +764,12 @@ const infoDefine = [
             connectQTGate:'正在获得代理服务器区域信息...',
             available: '服务中',
             unavailable: '准备中',
-            requestPortNumber: '服务器通讯端口号: ',
+            requestPortNumber: 'Q梯代理通讯端口',
             proxyDomain: '域名解释全程使用QTGate代理服务器端',
             setupCardTitle: '使用连接技术:',
             MultipleGateway: '同时并发使用代理数',
             dataTransfer: '数据通讯：',
-            dataTransfer_datail: ['全程使用代理服务器','当本地不能够到达目标主机时使用'],
+            dataTransfer_datail: ['全程使用代理服务器','当不能到达目标时使用代理'],
             proxyDataCache: '浏览数据本地缓存:',
             proxyDataCache_detail: ['本地緩存','不緩存'],
             cacheDatePlaceholder: '缓存失效时间',
@@ -777,6 +778,7 @@ const infoDefine = [
             localPath: '本地代理服务器HTTP链接路径',
             outDoormode: '接受外網訪問',
             GlobalIp: '本机互联网IP地址:',
+            option: '高级设置',
             QTGateRegionERROR:['发送连接请求Email到QTGate系统发生送信错误， 请检查您的IMAP账号的设定。',
                                 ''],
             GlobalIpInfo: '注意：当您按下【QTGate连结】时您会把您的本机互联网IP提供给QTGate系统，如果您不愿意，请选择【@OPN】技术来使用QTGate服务！没有显示【@OPN】选项是因为@OPN技术目前只支持iCloud邮箱。',
@@ -1392,7 +1394,7 @@ const infoDefine = [
                 'mailサーバはIMAPユーザー名又はパスワードに間違いがあると提示しました！このエラーは普通パスワードを使っていましたか、またはAPPパスワードが失効と可能性もありますが、メールプロバイダのアカウトページへチェックをしてください。', 
                 '指定したPORTでemailサーバへIMAPの接続ができませんでした、PORT番号をチェックしてください、ファイヤウォールの中にいる場合、指定したPORTはファイアウォールにフィルタした可能性があ裏ます、IMAPサーバーのその他有効PORT番号にチェッジしてください。<a href="https://tw.help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick (`https://tw.help.yahoo.com/kb/SLN15241.html`)">应用密码</a>',
                 'IMAPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
-                'emailサーバドメインは有効ではありません、emailサーバの設定を修正してください。',
+                'Emailサーバドメインは有効ではありません、emailサーバの設定を修正してください。又このPCはインターネットに接続しておりません、ネットワークをチェックしてください。',
                 'このemailサーバはQTGate通信技術サポートしていません、もう一度テストをするか、他のemailプロバイダにチェンジをしてください。',
                 'emailサーバはSMTPユーザー名又はパスワードに間違いがあると提示しました！',
                 'SMTPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
@@ -1441,12 +1443,13 @@ const infoDefine = [
             setupCardTitle: '接続技術:',
             MultipleGateway: '並列使うゲットウェイ数',
             dataTransfer: '通信データは：',
-            dataTransfer_datail: ['全てのデータをOPN経由','ターゲットサーバ到達不能時だけ'],
+            dataTransfer_datail: ['全てのデータをOPN経由','ターゲットサーバへ到達不能時だけ'],
             proxyDataCache: 'Webキャッシュ:',
             proxyDataCache_detail: ['Yes','No'],
             clearCache: 'クリアオールキャッシュ',
             cacheDatePlaceholder: 'Webキャッシュ有効期限',
             localPort: 'ローカルプロキシポート番号:',
+            option: '詳細設定',
             localPath: 'ローカルプロキシポートPATHを指定します。',
             outDoormode: '接受外網訪問',
             pingError:'QTGateゲットウェイエリアスピードチェックエラーが発生しました。一回QTGateを終了して、管理者としてQTGateを再起動をして、スピードチェックをしてください。',
@@ -1982,7 +1985,7 @@ const infoDefine = [
                 `Email server did respond to username or an error in password. You may need use APP password to pass this test if you did normal password. Or your app passwords need to be updated.`, 
                 `Error in connecting to email server with the current IMAP port. Please check the email account to make sure IMAP is enabled and the IMAP port settings. The port may be filtered by a firewall on your network.`, 
                 `There is a problem with this IMAP email server's security certificate!`, 
-                `Error in email server’s address. Please check the email server’s domain.`, 
+                `Error in email server’s address. Please check the email server’s domain. Or have not internet, please check your network.`, 
                 'This email provider currently looks does not support QTGate’s @OPN technology, please try do test again, or change to another email provider.', 
                 `Email server did respond to SMTP's username or an error in password.`, 
                 `There is a problem with this SMTP email server’s security certificate!`, 
@@ -2037,12 +2040,13 @@ const infoDefine = [
             clearCache: 'Delete all cache now',
             localPort:'Local proxy port number:',
             localPath:'HTTP/HTTPS conect path name:',
-            requestPortNumber: 'Request Port number for server: ',
+            requestPortNumber: 'Gateway port number:',
             GlobalIp: 'Global IP:',
+            option: 'option',
             pingError:'QTGate gateway area speed check error! Please exit QTGate and reopen QTGate as administrator. Then do check speed again.',
             QTGateRegionERROR:['Send connect request mail has an error. Please check your IMAP account settings.',
             ''],
-            GlobalIpInfo:  `Please note: Both iOPN and @OPN will conceal your IP from others. iOPN offers the highest level of data speeds. @OPN offers additional layer of anonymity with some speed as a trade off.  If [@OPN] option is not available, you may need to check your IMAP email account. (currently @OPN only supports iClould IMAP.) Please refer to the Terms of Service for our privacy policy.`,
+            GlobalIpInfo:  `Please note: Both iOPN and @OPN will conceal your IP from others. iOPN offers the highest level of data speeds. @OPN offers additional layer of anonymity with some speed as a trade off.  If [@OPN] option is not available, you may need to check your IMAP email account. (currently @OPN only supports iClould Email.) Please refer to the Terms of Service for our privacy policy.`,
             cacheDatePlaceholder: 'Web cache freshness lifetime.',
             sendConnectRequestMail:['QTGate connection maybe down. Please wait a moment, re-connecting to QTGate gateway.',
                                     'For users on a free plan, connection will reset after 24 hours of non use. Connection is kept open for 1 month for users on a paid plan.'],
@@ -2515,7 +2519,7 @@ const infoDefine = [
                 'Email伺服器提示IMAP用戶名或密碼錯！這個錯誤通常是由於您使用的密碼是普通密碼，或者您的APP密碼已失效，請到您的Email帳戶檢查您的APP密碼，然後再試一次。',
                 'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！',
                 '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在IMAP詳細設定中選擇忽略證書錯誤。',
-                '無法獲得Email伺服器域名信息，請檢查您的Email伺服器設定！',
+                '無法獲得Email伺服器域名信息，請檢查您的Email伺服器設定！或您的電腦沒有連結互聯網，請檢查網絡狀態。',
                 '此Email伺服器看來不能使用QTGate通訊技术，請再測試一次或选择其他email服务供应商！',
                 'email伺服器提示SMTP用戶名或密碼錯！',
                 '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在SMTP詳細設定中選擇忽略證書錯誤。',
@@ -2564,14 +2568,15 @@ const infoDefine = [
             MultipleGateway: '同時併發使用代理數:',
             connectQTGate:'正在獲得代理伺服器區域信息...',
             dataTransfer: '數據通訊:',
-            dataTransfer_datail: ['全程使用QTGate代理伺服器','當本地不能夠到達目標伺服器時使用'],
+            dataTransfer_datail: ['全程使用QTGate代理伺服器','當不能夠到達目標時使用'],
             proxyDataCache: '瀏覽數據本地緩存:',
             proxyDataCache_detail: ['本地緩存','不緩存'],
             dataViaGateway: '全部互聯網數據通過QTGate代理伺服器',
             cacheDatePlaceholder: '緩存失效時間',
-            requestPortNumber: '通訊端口號',
+            requestPortNumber: 'Q梯代理通訊連接埠',
             clearCache: '立即清除所有緩存',
             GlobalIp: '本機互聯網IP地址:',
+            option: '高級設置',
             pingError:'代理服務區域速度檢測錯誤發生，請退出QTGate，以管理員身份再次打開QTGate後，再執行速度檢測！',
             QTGateRegionERROR:['發送連接請求Email到QTGate系統發生送信錯誤， 請檢查您的IMAP賬號的設定。 ',
                               ''],
@@ -2593,7 +2598,7 @@ const infoDefine = [
                 '本地Proxy服务器，其他手机电脑和IPad等可通過连结此端口來使用QTGate服务。請設定為3001至65535之間的數字',
                 '通過設置PATH鏈接路徑可以簡單給您的Proxy伺服器增加安全性，拒絕沒有提供PATH的訪問者使用您的Proxy伺服器。',
                 '同時捆綁使用代理線路數，可以有效降低大流量集中在一個代理服務線路上，容易造成網絡監控者註意的風險。',
-                '指定同Q梯代理進行通訊使用的端口號，通過此設置可以規避您所在網段被通訊屏蔽的端口。'
+                '指定同Q梯代理進行通訊使用的連接埠，通過此設置可以規避您所在網段被通訊屏蔽的連接埠。'
             ]
         },
 
@@ -3534,7 +3539,7 @@ module view_layout {
             public QTGateConnect_SelectTech = ko.observable(-1)
             public QTGateConnect1 = ko.observable ('')
             public QTGateMultipleGateway = ko.observable (1)
-            public QTGateMultipleGatewayPool = ko.observableArray ([1,2])
+            public QTGateMultipleGatewayPool = ko.observableArray ([1,2,4])
             public QTGateConnect2 = ko.observable ( false )
             public QTGateConnectSelectImap = ko.observable (0)
             public QTGateAllData = ko.observable ( false )
@@ -3544,6 +3549,7 @@ module view_layout {
             public QTGateLocalProxyPort = ko.observable (3001)
             public QTGateLoacalProxyPath = ko.observable (( Math.random() * 100000 ).toString() )
             public localProxyPortError = ko.observable ( false )
+            public QTGateGatewayPortError = ko.observable ( false )
             public QTGateGatewayActive = ko.observable ( false )
             public QTGateGatewayActiveProcess = ko.observable ( false )
             public QTGateGatewayError = ko.observable ( -1 )
@@ -3625,6 +3631,17 @@ module view_layout {
 
             this.cardcvc.subscribe ( newValue => {
                 return this.clearPaymentError ()
+            })
+
+            this.requestPortNumber.subscribe ( newValue => {
+                this.QTGateGatewayPortError ( false )
+                if ( newValue < 1 || newValue > 65535 ) {
+                    this.QTGateGatewayPortError ( true )
+                    return $( '.activating.element').popup ({
+                        on: 'focus',
+                        movePopup: false
+                    })
+                }
             })
 
             this.SystemAdministratorEmailAddress.subscribe ( newValue => {
@@ -5189,6 +5206,7 @@ module view_layout {
         public paymentDataFormat_Error = ko.observable ( false )
         public paymentCardFailed = ko.observable ( false )
         public cardNotSupport = ko.observable ( false )
+        public showQTGateConnectOption = ko.observable ( false )
 
         public cardErrorMessage = ko.computed (() => {
             //輸入的信用卡號有誤！'，'輸入的信用卡期限有誤！'，'輸入的信用卡安全碼有誤！'，'輸入的信用卡持有人郵編有誤！

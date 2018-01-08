@@ -679,6 +679,7 @@ export class localServer {
 					return CallBack ( 10 )
 				}
 			}
+			
 			CallBack ( null )
 			return this.doingCheck ( id, imapData, socket )
 		})

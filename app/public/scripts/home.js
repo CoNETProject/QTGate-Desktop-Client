@@ -695,12 +695,12 @@ const infoDefine = [
             connectQTGate: '正在获得代理服务器区域信息...',
             available: '服务中',
             unavailable: '准备中',
-            requestPortNumber: '服务器通讯端口号: ',
+            requestPortNumber: 'Q梯代理通讯端口',
             proxyDomain: '域名解释全程使用QTGate代理服务器端',
             setupCardTitle: '使用连接技术:',
             MultipleGateway: '同时并发使用代理数',
             dataTransfer: '数据通讯：',
-            dataTransfer_datail: ['全程使用代理服务器', '当本地不能够到达目标主机时使用'],
+            dataTransfer_datail: ['全程使用代理服务器', '当不能到达目标时使用代理'],
             proxyDataCache: '浏览数据本地缓存:',
             proxyDataCache_detail: ['本地緩存', '不緩存'],
             cacheDatePlaceholder: '缓存失效时间',
@@ -709,6 +709,7 @@ const infoDefine = [
             localPath: '本地代理服务器HTTP链接路径',
             outDoormode: '接受外網訪問',
             GlobalIp: '本机互联网IP地址:',
+            option: '高级设置',
             QTGateRegionERROR: ['发送连接请求Email到QTGate系统发生送信错误， 请检查您的IMAP账号的设定。',
                 ''],
             GlobalIpInfo: '注意：当您按下【QTGate连结】时您会把您的本机互联网IP提供给QTGate系统，如果您不愿意，请选择【@OPN】技术来使用QTGate服务！没有显示【@OPN】选项是因为@OPN技术目前只支持iCloud邮箱。',
@@ -1344,12 +1345,13 @@ const infoDefine = [
             setupCardTitle: '接続技術:',
             MultipleGateway: '並列使うゲットウェイ数',
             dataTransfer: '通信データは：',
-            dataTransfer_datail: ['全てのデータをOPN経由', 'ターゲットサーバ到達不能時だけ'],
+            dataTransfer_datail: ['全てのデータをOPN経由', 'ターゲットサーバへ到達不能時だけ'],
             proxyDataCache: 'Webキャッシュ:',
             proxyDataCache_detail: ['Yes', 'No'],
             clearCache: 'クリアオールキャッシュ',
             cacheDatePlaceholder: 'Webキャッシュ有効期限',
             localPort: 'ローカルプロキシポート番号:',
+            option: '詳細設定',
             localPath: 'ローカルプロキシポートPATHを指定します。',
             outDoormode: '接受外網訪問',
             pingError: 'QTGateゲットウェイエリアスピードチェックエラーが発生しました。一回QTGateを終了して、管理者としてQTGateを再起動をして、スピードチェックをしてください。',
@@ -1904,12 +1906,13 @@ const infoDefine = [
             clearCache: 'Delete all cache now',
             localPort: 'Local proxy port number:',
             localPath: 'HTTP/HTTPS conect path name:',
-            requestPortNumber: 'Request Port number for server: ',
+            requestPortNumber: 'Gateway port number:',
             GlobalIp: 'Global IP:',
+            option: 'option',
             pingError: 'QTGate gateway area speed check error! Please exit QTGate and reopen QTGate as administrator. Then do check speed again.',
             QTGateRegionERROR: ['Send connect request mail has an error. Please check your IMAP account settings.',
                 ''],
-            GlobalIpInfo: `Please note: Both iOPN and @OPN will conceal your IP from others. iOPN offers the highest level of data speeds. @OPN offers additional layer of anonymity with some speed as a trade off.  If [@OPN] option is not available, you may need to check your IMAP email account. (currently @OPN only supports iClould IMAP.) Please refer to the Terms of Service for our privacy policy.`,
+            GlobalIpInfo: `Please note: Both iOPN and @OPN will conceal your IP from others. iOPN offers the highest level of data speeds. @OPN offers additional layer of anonymity with some speed as a trade off.  If [@OPN] option is not available, you may need to check your IMAP email account. (currently @OPN only supports iClould Email.) Please refer to the Terms of Service for our privacy policy.`,
             cacheDatePlaceholder: 'Web cache freshness lifetime.',
             sendConnectRequestMail: ['QTGate connection maybe down. Please wait a moment, re-connecting to QTGate gateway.',
                 'For users on a free plan, connection will reset after 24 hours of non use. Connection is kept open for 1 month for users on a paid plan.'],
@@ -2404,14 +2407,15 @@ const infoDefine = [
             MultipleGateway: '同時併發使用代理數:',
             connectQTGate: '正在獲得代理伺服器區域信息...',
             dataTransfer: '數據通訊:',
-            dataTransfer_datail: ['全程使用QTGate代理伺服器', '當本地不能夠到達目標伺服器時使用'],
+            dataTransfer_datail: ['全程使用QTGate代理伺服器', '當不能夠到達目標時使用'],
             proxyDataCache: '瀏覽數據本地緩存:',
             proxyDataCache_detail: ['本地緩存', '不緩存'],
             dataViaGateway: '全部互聯網數據通過QTGate代理伺服器',
             cacheDatePlaceholder: '緩存失效時間',
-            requestPortNumber: '通訊端口號',
+            requestPortNumber: 'Q梯代理通訊連接埠',
             clearCache: '立即清除所有緩存',
             GlobalIp: '本機互聯網IP地址:',
+            option: '高級設置',
             pingError: '代理服務區域速度檢測錯誤發生，請退出QTGate，以管理員身份再次打開QTGate後，再執行速度檢測！',
             QTGateRegionERROR: ['發送連接請求Email到QTGate系統發生送信錯誤， 請檢查您的IMAP賬號的設定。 ',
                 ''],
@@ -2432,7 +2436,7 @@ const infoDefine = [
                 '本地Proxy服务器，其他手机电脑和IPad等可通過连结此端口來使用QTGate服务。請設定為3001至65535之間的數字',
                 '通過設置PATH鏈接路徑可以簡單給您的Proxy伺服器增加安全性，拒絕沒有提供PATH的訪問者使用您的Proxy伺服器。',
                 '同時捆綁使用代理線路數，可以有效降低大流量集中在一個代理服務線路上，容易造成網絡監控者註意的風險。',
-                '指定同Q梯代理進行通訊使用的端口號，通過此設置可以規避您所在網段被通訊屏蔽的端口。'
+                '指定同Q梯代理進行通訊使用的連接埠，通過此設置可以規避您所在網段被通訊屏蔽的連接埠。'
             ]
         },
         QTGateGateway: {
@@ -3285,7 +3289,7 @@ var view_layout;
             this.QTGateConnect_SelectTech = ko.observable(-1);
             this.QTGateConnect1 = ko.observable('');
             this.QTGateMultipleGateway = ko.observable(1);
-            this.QTGateMultipleGatewayPool = ko.observableArray([1, 2]);
+            this.QTGateMultipleGatewayPool = ko.observableArray([1, 2, 4]);
             this.QTGateConnect2 = ko.observable(false);
             this.QTGateConnectSelectImap = ko.observable(0);
             this.QTGateAllData = ko.observable(false);
@@ -3295,6 +3299,7 @@ var view_layout;
             this.QTGateLocalProxyPort = ko.observable(3001);
             this.QTGateLoacalProxyPath = ko.observable((Math.random() * 100000).toString());
             this.localProxyPortError = ko.observable(false);
+            this.QTGateGatewayPortError = ko.observable(false);
             this.QTGateGatewayActive = ko.observable(false);
             this.QTGateGatewayActiveProcess = ko.observable(false);
             this.QTGateGatewayError = ko.observable(-1);
@@ -3482,6 +3487,7 @@ var view_layout;
             this.paymentDataFormat_Error = ko.observable(false);
             this.paymentCardFailed = ko.observable(false);
             this.cardNotSupport = ko.observable(false);
+            this.showQTGateConnectOption = ko.observable(false);
             this.cardErrorMessage = ko.computed(() => {
                 //輸入的信用卡號有誤！'，'輸入的信用卡期限有誤！'，'輸入的信用卡安全碼有誤！'，'輸入的信用卡持有人郵編有誤！
                 if (this.cardNumberFolder_Error())
@@ -3556,6 +3562,16 @@ var view_layout;
             });
             this.cardcvc.subscribe(newValue => {
                 return this.clearPaymentError();
+            });
+            this.requestPortNumber.subscribe(newValue => {
+                this.QTGateGatewayPortError(false);
+                if (newValue < 1 || newValue > 65535) {
+                    this.QTGateGatewayPortError(true);
+                    return $('.activating.element').popup({
+                        on: 'focus',
+                        movePopup: false
+                    });
+                }
             });
             this.SystemAdministratorEmailAddress.subscribe(newValue => {
                 $('.ui.checkbox').checkbox();
