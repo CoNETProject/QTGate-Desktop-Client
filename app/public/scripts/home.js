@@ -598,11 +598,12 @@ const infoDefine = [
             localIpAddress: '本机',
             nextPage: '下一页',
             agree: '同意协议并继续',
-            emailAddress: 'Email地址(必填)',
+            emailAddress: '作为Q梯账号的Email地址',
             systemAdministratorEmail: 'RSA密钥生成',
-            SystemAdministratorNickName: '昵称或组织名(必填)',
-            systemPassword: '密码',
+            SystemAdministratorNickName: '昵称或组织名',
+            systemPassword: 'Q梯客户端密码设定',
             creatKeyPair: '创建密钥对...',
+            imapEmailAddress: '邮箱账户名',
             cancel: '放弃操作',
             stopCreateKeyPair: '停止生成密钥对',
             continueCreateKeyPair: '继续生成',
@@ -617,11 +618,11 @@ const infoDefine = [
             title: '密钥信息',
             emailNotVerifi: '您的密钥未获QTGate签署认证。',
             emailVerified: '您的密钥已获QTGate签署认证。',
-            NickName: '创建人称谓：',
+            NickName: '昵称：',
             creatDate: '密钥创建日期：',
             keyLength: '密钥位强度：',
             password: '请输入长度大于五位的密码',
-            password1: '请输入密钥对密码',
+            password1: '请输入Q梯客户端密码',
             keyID: '密钥对ID：',
             logout: '退出登录',
             deleteKeyPairInfo: '请注意：如果您没有备份您的QTGate系统的话，删除现有的密钥将使您的QTGate设定全部丢失，您有可能需要重新设置您的QTGate系统。如果您的注册Email没有变化，您的QTGate账户支付信息不会丢失！',
@@ -649,7 +650,8 @@ const infoDefine = [
                 '您的电脑未连接到互联网，请检查网络后再次尝试！',
                 'Email伺服器提示IMAP用户名或密码错！这个错误通常是由于您使用的密码是普通密码，或者您的APP密码已失效，请到您的Email帐户检查您的APP密码，然后再试一次。',
                 'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！<a href="data-html"></a>',
-                '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在IMAP详细设定中选择忽略证书错误。', '无法获得Email服务器域名信息，请检查您的Email服务器设定！',
+                '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在IMAP详细设定中选择忽略证书错误。',
+                '无法获得Email服务器域名信息，请检查您的Email服务器设定！或者您的电脑没有互联网，请检查您的互联网状态。',
                 '此Email服务器看来可能不能使用QTGate通讯技术，请再测试一次或选择其他email服务供应商！',
                 'Email服务器提示SMTP用户名或密码错！ ',
                 '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在SMTP详细设定中选择忽略证书错误。 ',
@@ -1244,7 +1246,7 @@ const infoDefine = [
             creatDate: '暗号鍵ペア作成日：',
             keyLength: '暗号鍵ペアビット長さ：',
             password: '長さ5位以上のパスワードを入力してください',
-            password1: '鍵ペアパスワード',
+            password1: 'QTGate端末パスワード',
             logout: 'ログアウト',
             keyID: '暗号鍵ID：',
             deleteKeyPairInfo: '鍵ペアを削除することで、現在のQTGate設定は全部なくなって、一からQTGateの設定をやり直しが必要です。但しあなたのQTGateアカウトEmailアドレスは前回と同じであれば、QTGateアカウトを戻れます。',
@@ -1262,10 +1264,11 @@ const infoDefine = [
             showing: 'システム状態',
             nextPage: '次へ',
             agree: '協議を合意し、次へ',
-            emailAddress: 'Emailアドレス(必須)',
+            imapEmailAddress: 'Emailアカウト名',
+            emailAddress: 'QTGateアカウトのEmailアドレス(必須), ',
             SystemAdministratorNickName: 'ニックネーム(必須)',
             creatKeyPair: '暗号鍵ペアを生成...',
-            systemPassword: 'パスワード',
+            systemPassword: 'QTGate端末パスワードの設定',
             stopCreateKeyPair: '暗号鍵ペア生成をキャンセル',
             cancel: '操作停止',
             continueCreateKeyPair: '生成を続きします',
@@ -1297,7 +1300,7 @@ const infoDefine = [
                 'mailサーバはIMAPユーザー名又はパスワードに間違いがあると提示しました！このエラーは普通パスワードを使っていましたか、またはAPPパスワードが失効と可能性もありますが、メールプロバイダのアカウトページへチェックをしてください。',
                 '指定したPORTでemailサーバへIMAPの接続ができませんでした、PORT番号をチェックしてください、ファイヤウォールの中にいる場合、指定したPORTはファイアウォールにフィルタした可能性があ裏ます、IMAPサーバーのその他有効PORT番号にチェッジしてください。<a href="https://tw.help.yahoo.com/kb/SLN15241.html" target="_blank" onclick="return linkClick (`https://tw.help.yahoo.com/kb/SLN15241.html`)">应用密码</a>',
                 'IMAPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
-                'emailサーバドメインは有効ではありません、emailサーバの設定を修正してください。',
+                'Emailサーバドメインは有効ではありません、emailサーバの設定を修正してください。又このPCはインターネットに接続しておりません、ネットワークをチェックしてください。',
                 'このemailサーバはQTGate通信技術サポートしていません、もう一度テストをするか、他のemailプロバイダにチェンジをしてください。',
                 'emailサーバはSMTPユーザー名又はパスワードに間違いがあると提示しました！',
                 'SMTPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
@@ -1422,11 +1425,11 @@ const infoDefine = [
             QTGatePayRisk: 'Your payment will be processed via QTGate’s secured payment portal. If concerned about privacy, Please use the Stripe payment portal.',
             paymentSuccessTitile: 'Thank you.',
             stripePayment: 'Bank gateway payment',
-            paymentProblem1: 'Payment problem',
+            paymentProblem1: 'Payment via QTGate',
             promoButton: 'Have Promo',
             paymentProblem: 'Looks bank payment gateway was block in your area. You can payment via QTGate gateway.',
             qtgatePayment: 'Payment with QTGate System',
-            paymentSuccess: 'Your plan has beed upgraded. Happy every day.',
+            paymentSuccess: 'Your plan has beed upgraded.',
             qtgateTeam: 'The QTGate Team',
             networkShareTitle: 'Bandwidth',
             CancelSuccess: (PlanExpire, isAnnual, returnAmount) => {
@@ -1479,13 +1482,13 @@ const infoDefine = [
             cancelPlanMessage: '<span>You may cancel your QTGate subscription at any time from within the this app. You will continue to have access to the QTGate services through the end of your paid period until all remaining subscription time in your account is used up. Please refer to the </span><a class="ui olive tiny label">Terms of Service</a> for cancellation and refund policy. Restrictions may apply to free plans and promotional accounts.',
             serverShareData1: 'Your dedicated server will be share ratio when you connected over your dedicated count via use Multi-gateway technology.',
             cancelPlanMessage1: (planName, isAnnual, expire) => {
-                return `<span>Your plan is ${isAnnual ? `annual paid </span><span class="usDollar">us$</span><span class="amount">${getPlanPrice(planName, true)}</span><span>. The passed </span><span class="amount">${12 - getRemainingMonth(expire)}</span><span> month ( included this month ) will being normal price about this plan as </span><span class="usDollar">us$</span><span class="amount">${getPlanPrice(planName, false)}</span><span>, QTGate will refunds </span><span class="usDollar">us$</span><span class="amount">${getCurrentPlanCancelBalance(expire, planName)}</span><span> to your paid card account in 7 working days.</span>` : `monthly, it will not be renew at </span><span class="amount">${nextExpirDate(expire).toLocaleDateString()}</span><span> if you cancel this plan.</span>`}`;
+                return `<span>Your are on ${isAnnual ? `annual payment plan</span><span class="usDollar">us$</span><span class="amount">${getPlanPrice(planName, true)}</span><span>. ${getRemainingMonth(expire)} month${getRemainingMonth(expire) > 1 ? 's' : ''} are available on your account. Your refund amount will be </span><span class="usDollar">us$</span><span class="amount">${getCurrentPlanCancelBalance(expire, planName)}</span>.` : `monthly, it will not be renew at </span><span class="amount">${nextExpirDate(expire).toLocaleDateString()}</span><span> if you cancel this plan.</span>`}`;
             }
         },
         QTGateDonate: {
             title: 'Free access website provided by sponsor.',
             meta_title: 'Donor：',
-            detail: `All QTGate user may free access the website that provided by sponsor via QTGate gateway. Free user may can not use if the data limited can't make connect from QTGate gateway.`
+            detail: `QTGate users may access these sponsored websites via QTGate OPN. Free users may not be able to access if your daily limit has been reached.`
         },
         QTGateInfo: {
             title: 'QTGate Features',
@@ -1800,7 +1803,7 @@ const infoDefine = [
             creatDate: 'Creation date：',
             keyLength: 'Bit Length：',
             password: '5-character minimum password.',
-            password1: 'Key pair password.',
+            password1: 'QTGate client Password',
             logout: 'Logout',
             keyID: 'ID：',
             deleteKeyPairInfo: 'Note: By deleting your key pair, you will lose your current account settings. You will need to set up QTGate account settings again. If your email address is the same as the one used previously, you may restore your QTGate account balance.',
@@ -1817,7 +1820,8 @@ const infoDefine = [
             showing: 'Status',
             nextPage: 'next',
             agree: 'I AGREE & CONTINUE',
-            emailAddress: 'Email Address ( Required )',
+            emailAddress: 'QTGate Account Name ( Email Address Required )',
+            imapEmailAddress: 'Email Account Name',
             creatKeyPair: 'Generate key pair...',
             cancel: 'Cancel',
             clickInstall: 'Install',
@@ -1828,7 +1832,7 @@ const infoDefine = [
             systemAdministratorEmail: 'Generate RSA Key pair',
             GenerateKeypair: '<em>Generating RSA Key pair. Please wait, as it may take a few minutes. More time will be needed if you selected 4096 bit key length. Information about RSA keypair system can be found here:' +
                 `<a href='hhttp://en.wikipedia.org/wiki/RSA_(cryptosystem)' target="_blank" onclick="return linkClick ('https://en.wikipedia.org/wiki/RSA_(cryptosystem)')">https://en.wikipedia.org/wiki/RSA_(cryptosystem)</a></em>`,
-            systemPassword: 'Password',
+            systemPassword: 'QTGate Client System Password',
             inputEmail: `This RSA key is a private key used for authentication, identification and secure encryption/decryption of data transmission within QTGate’s system. The password and key are not stored by QTGate. You cannot reset your password if lost and you cannot access QTGate services without your password. Please store your password in a safe place. <em style="color: red;">QTGate’s domain may be blocked in some regions. Please use an email account with servers outside these regions,</em>`,
             accountEmailInfo: `Because QTGate may be on a firewall's black list in some regions. It is best to choose an email account with servers outside your region’s firewall.`
         },
@@ -1853,7 +1857,7 @@ const infoDefine = [
                 `Email server did respond to username or an error in password. You may need use APP password to pass this test if you did normal password. Or your app passwords need to be updated.`,
                 `Error in connecting to email server with the current IMAP port. Please check the email account to make sure IMAP is enabled and the IMAP port settings. The port may be filtered by a firewall on your network.`,
                 `There is a problem with this IMAP email server's security certificate!`,
-                `Error in email server’s address. Please check the email server’s domain.`,
+                `Error in email server’s address. Please check the email server’s domain. Or have not internet, please check your network.`,
                 'This email provider currently looks does not support QTGate’s @OPN technology, please try do test again, or change to another email provider.',
                 `Email server did respond to SMTP's username or an error in password.`,
                 `There is a problem with this SMTP email server’s security certificate!`,
@@ -1864,7 +1868,7 @@ const infoDefine = [
             activeViewTitle: 'Active your keypair.',
             emailTitle: 'Welcome to QTGate.',
             info1_1: 'Please complete key pair verification. A verification email from QTGate has been sent. Please check your [',
-            info1_2: '] mailbox. If you received more then one email from QTGate, please choose the newest email. If you not find the email, please double check your key pair email address! If you have an error, you may delete your key pair and generate a new key pair.',
+            info1_2: '] mailbox. If you received more then one email from QTGate, please choose the newest email. If you not find the email, please double check your key pair email address. If you have an error, you may delete your key pair and generate a new key pair.',
             info2: 'Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
             emailDetail1: 'Dear ',
             emailDetail1_1: ' ,',
@@ -1928,8 +1932,8 @@ const infoDefine = [
                 'By setting the cache expiration date, you can always obtain the latest information on the server side.',
                 'Local proxy server port number is provided for other devices to use QTGate’s OPN connection. Please set a number from 3001 to 65535.',
                 'Local proxy server http/https access can secure your server.',
-                'How many gateway connections to use at once. This is ensure high traffic going to across multiple servers. This technology reduced risk be focus from network surveillance.',
-                'This is IP protocol numbers used for QTGate gateway connections. You may change the number if that number closed by your network firewall.'
+                'The number of gateways to use. This will further help to obfuscate traffic by using multiple servers.',
+                'This is your current QTGate gateway port number, You may change the port number if current one is blocked on your network.'
             ],
             connectQTGate: 'Connecting, Retrieving QTGate gateway information...'
         },
@@ -2303,11 +2307,11 @@ const infoDefine = [
             title: '密鑰信息',
             emailNotVerifi: '您的密鑰未獲QTGate簽署認證。 ',
             emailVerified: '您的密鑰已獲QTGate簽署認證。 ',
-            NickName: '創建人稱謂：',
+            NickName: '暱稱：',
             creatDate: '密鑰創建日期：',
             keyLength: '密鑰位強度：',
             password: '請輸入長度大於五位的密碼',
-            password1: '請輸入密鑰密碼',
+            password1: '請輸入Q梯客戶端密碼',
             logout: '退出登錄',
             deleteKeyPairInfo: '請注意：如果您沒有備份您的QTGate系統的話，刪除現有的密鑰將使您的QTGate設定全部丟失，您有可能需要重新設置您的QTGate系統。如果您的註冊Email沒有變化，您的QTGate賬戶支付信息不會丟失！',
             delete: '刪除',
@@ -2325,13 +2329,14 @@ const infoDefine = [
             showing: '系統狀態',
             nextPage: '下一頁',
             agree: '同意協議並繼續',
-            emailAddress: 'Email地址(必填)',
+            imapEmailAddress: '郵箱帳戶名',
+            emailAddress: 'Q梯帳戶名稱(Email地址,必填)',
             stopCreateKeyPair: '停止生成密鑰對',
             creatKeyPair: '創建密鑰對..',
             cancel: '放棄操作',
-            systemPassword: '密碼',
+            systemPassword: 'Q梯客戶端密碼設置',
             continueCreateKeyPair: '繼續生成',
-            SystemAdministratorNickName: '暱稱或組織名(必填)',
+            SystemAdministratorNickName: '帳戶暱稱(必填)',
             KeypairLength: '請選擇加密通訊用密鑰對長度：這個數字越大，通訊越難被破解，但會增加通訊量和運算時間。',
             systemAdministratorEmail: 'RSA密鑰生成',
             GenerateKeypair: '<em>系統正在生成用於通訊和簽名的RSA加密密鑰對，計算機需要運行產生大量的隨機數字，可能需要幾分鐘時間，尤其是長度為4096的密鑰對，需要特別長的時間，請耐心等待。關於RSA加密算法的機制和原理，您可以訪問維基百科：' +
@@ -2360,7 +2365,7 @@ const infoDefine = [
                 'Email伺服器提示IMAP用戶名或密碼錯！這個錯誤通常是由於您使用的密碼是普通密碼，或者您的APP密碼已失效，請到您的Email帳戶檢查您的APP密碼，然後再試一次。',
                 'Email伺服器的指定連接埠連結失敗，請檢查您的IMAP連接埠設定，如果您在一個防火牆內部，則有可能該端口被防火牆所屏蔽，您可以嘗試使用該IMAP伺服器的其他連接埠！',
                 '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在IMAP詳細設定中選擇忽略證書錯誤。',
-                '無法獲得Email伺服器域名信息，請檢查您的Email伺服器設定！',
+                '無法獲得Email伺服器域名信息，請檢查您的Email伺服器設定！或您的電腦沒有連結互聯網，請檢查網絡狀態。',
                 '此Email伺服器看來不能使用QTGate通訊技术，請再測試一次或选择其他email服务供应商！',
                 'email伺服器提示SMTP用戶名或密碼錯！',
                 '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在SMTP詳細設定中選擇忽略證書錯誤。',
@@ -2768,7 +2773,15 @@ const dummyIConnectCommand = {
     fingerprint: null,
     multipleGateway: null,
     requestPortNumber: null,
-    requestMultipleGateway: null
+    requestMultipleGateway: null,
+    transferData: null,
+    runningDocker: null,
+    gateWayIpAddress: null,
+    gateWayPort: 0,
+    totalUserPower: 0,
+    requestContainerEachPower: 0,
+    containerUUID: null,
+    peerUuid: null,
 };
 const donateArray = [{
         image: [
@@ -3431,7 +3444,6 @@ var view_layout;
                 return this.QTTransferData() && this.QTTransferData().paidID && (this.QTTransferData().isAnnual || this.QTTransferData().automatically);
             });
             this.paymentSelect = ko.observable(false);
-            this.cardPayAmount = ko.observable(0);
             this.paymentPlan = ko.observable();
             this.isAnnual = ko.observable(false);
             this.cardpay = ko.observable(false);
@@ -4535,57 +4547,10 @@ var view_layout;
             this.paymentSelect(true);
             return this.paymentCardFailed(true);
         }
-        getGoogleCountry() {
-            switch (this.tLang()) {
-                case 'ja': {
-                    return 'JP';
-                }
-                case 'zh': {
-                    return 'GB';
-                }
-                case 'tw': {
-                    return 'HK';
-                }
-                case 'en': {
-                    return 'US';
-                }
-                default: {
-                    return 'US';
-                }
-            }
-        }
-        openGooglePay() {
-            this.clearPaymentError();
-            if (Stripe && typeof Stripe === 'function') {
-                const stripe = Stripe(Stripe_publicKey);
-                const paymentRequest = stripe.paymentRequest({
-                    country: this.getGoogleCountry(),
-                    currency: 'usd',
-                    total: {
-                        label: 'QTGate Systems Inc',
-                        amount: (this.selectPlanPrice() - this.showCurrentPlanBalance()) * 100
-                    }
-                });
-                const elements = stripe.elements();
-                const prButton = elements.create('paymentRequestButton', {
-                    paymentRequest,
-                });
-                paymentRequest.canMakePayment().then(result => {
-                    if (result) {
-                        prButton.mount('#payment-request-button');
-                    }
-                    else {
-                        document.getElementById('payment-request-button').style.display = 'none';
-                    }
-                });
-                paymentRequest.once('token', ev => {
-                    const token = ev.token.id;
-                });
-            }
-        }
         openStripeCard() {
             this.clearPaymentError();
             let handler = null;
+            const amount = Math.round((this.selectPlanPrice() - this.showCurrentPlanBalance()) * 100);
             if (StripeCheckout && typeof StripeCheckout.configure === 'function') {
                 handler = StripeCheckout.configure({
                     key: Stripe_publicKey,
@@ -4596,7 +4561,7 @@ var view_layout;
                     token: token => {
                         const payment = {
                             tokenID: token.id,
-                            Amount: this.selectPlanPrice() - this.showCurrentPlanBalance(),
+                            Amount: amount,
                             plan: this.getPaymentPlan().name,
                             isAnnual: this.isAnnual(),
                             autoRenew: this.autoRenew()
@@ -4610,7 +4575,7 @@ var view_layout;
                 handler.open({
                     name: 'QTGate Systems Inc',
                     description: `${this.getPaymentPlan().name}:${this.getPaymentPlan().monthly}GB`,
-                    amount: (this.selectPlanPrice() - this.showCurrentPlanBalance()) * 100
+                    amount: amount
                 });
                 return window.addEventListener('popstate', () => {
                     handler.close();
@@ -4643,7 +4608,6 @@ var view_layout;
                 });
             }
             this.cardpaStripe(true);
-            this.cardPayAmount(paice);
             this.autoRenew(!isAnnual);
             this.isAnnual(isAnnual);
             this.paymentSelect(true);
@@ -4701,8 +4665,9 @@ var view_layout;
                 this.cardNumberFolder_Error(true);
                 return this.cardNotSupport(true);
             }
+            const amount = Math.round((this.selectPlanPrice() - this.showCurrentPlanBalance()) * 100);
             const payment = {
-                Amount: this.selectPlanPrice() - this.showCurrentPlanBalance(),
+                Amount: amount,
                 cardNumber: this.cardNumber(),
                 cardExpirationYear: this.cardExpirationYear(),
                 cardPostcode: this.cardPostcode(),
@@ -4715,26 +4680,6 @@ var view_layout;
             return socketIo.emit('payment', payment, (err, data) => {
                 return this.paymentCallBackFromQTGate(err, data);
             });
-        }
-        openStripeAlipay() {
-            this.clearPaymentError();
-            if (Stripe && typeof Stripe === 'function') {
-                const stripe = Stripe(Stripe_publicKey);
-                stripe.createSource({
-                    type: 'alipay',
-                    amount: (this.selectPlanPrice() - this.showCurrentPlanBalance()) * 100,
-                    currency: 'usd',
-                    redirect: {
-                        return_url: 'https://www.amazon.ca/error-image/kailey-kitty._V402336460_.gif',
-                    },
-                }).then(result => {
-                    // handle result.error or result.source
-                    if (result.error) {
-                        return this.Alipay_error(true);
-                    }
-                    const source = result.source;
-                });
-            }
         }
         showUserDetail() {
             if (!this.keyPair().passwordOK || !this.getCurrentPlan()) {
@@ -4934,8 +4879,8 @@ const getCurrentPlanUpgradelBalance = (expiration, planName, isAnnual) => {
     const price = getPlanPrice(planName, true);
     if (!price)
         return null;
-    const usedMonth = 12 - getRemainingMonth(expiration);
-    const passedCost = Math.round((price - price * usedMonth) * 100 / 12) / 100;
+    const usedMonth = 12 - getRemainingMonth(expiration) + 1;
+    const passedCost = Math.round((price - price * usedMonth / 12) * 100) / 100;
     return passedCost;
 };
 const linkClick = (url) => {

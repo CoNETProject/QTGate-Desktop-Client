@@ -406,7 +406,7 @@ class localServer {
         this.bufferPassword = null;
         this.clientIpAddress = null;
         this.proxyServerWindow = null;
-        this.connectCommand = null;
+        this.connectCommand = [];
         this.proxyServer = null;
         this.doingStopContainer = false;
         this.regionV1 = null;
@@ -685,10 +685,10 @@ class localServer {
                 if (res.Args[1]) {
                     const uu = res.Args[1];
                     if (!this.proxyServer || !this.connectCommand) {
-                        uu.localServerIp = exports.getLocalInterface()[0];
+                        uu[0].localServerIp = exports.getLocalInterface()[0];
                         return this.findPort(3000, (err, _port) => {
-                            uu.localServerIp = exports.getLocalInterface()[0];
-                            this.localProxyPort = uu.localServerPort = _port;
+                            uu[0].localServerIp = exports.getLocalInterface()[0];
+                            this.localProxyPort = uu[0].localServerPort = _port;
                             return this.makeOpnConnect(uu);
                         });
                     }
@@ -915,10 +915,11 @@ class localServer {
                         return saveLog(`request error`);
                     }
                     if (res.error < 0) {
-                        const arg = res.Args[0];
-                        arg.localServerIp = exports.getLocalInterface()[0];
-                        arg.localServerPort = this.localProxyPort;
-                        saveLog(`this.proxyServer = new RendererProcess type = [${arg.connectType}] data = [${JSON.stringify(arg)}]`);
+                        const arg = res.Args;
+                        arg.forEach(n => {
+                            n.localServerIp = exports.getLocalInterface()[0];
+                            n.localServerPort = this.localProxyPort;
+                        });
                         this.makeOpnConnect(arg);
                     }
                     CallBack(res);
@@ -945,9 +946,7 @@ class localServer {
     }
     makeOpnConnect(arg) {
         this.connectCommand = arg;
-        const runCom = arg.connectType === 1 ? '@Opn' : 'iOpn';
-        saveLog(`makeOpnConnect arg [${JSON.stringify(arg)}]`);
-        console.trace(arg);
+        const runCom = arg[0].connectType === 1 ? '@Opn' : 'iOpn';
         return this.proxyServer = new RendererProcess(runCom, arg, DEBUG, () => {
             saveLog(`proxyServerWindow on exit!`);
             this.proxyServer = null;
@@ -1592,7 +1591,7 @@ class localServer {
                             }
                             return saveLog(`ImapConnect exit with waiting send mail`);
                         }
-                        saveLog(`ImapConnect exit err > 0 `);
+                        saveLog(`ImapConnect exit err > 0 【${err}】`);
                         this.qtGateConnectEmitData.qtGateConnecting = 3;
                         this.qtGateConnectEmitData.error = err;
                         if (this.QTClass) {
@@ -1755,16 +1754,16 @@ class ImapConnect extends Imap.imapPeer {
                         return localServer.disConnectGateway();
                     }
                     case 'changeDocker': {
-                        const container = ret.Args[0];
+                        const container = ret.Args;
                         saveLog(`QTGateAPIRequestCommand changeDocker container = [${JSON.stringify(container)}]`);
                         if (!container) {
                             return saveLog(`got Command from server "changeDocker" but have no data ret = [${JSON.stringify(ret)}]`);
                         }
                         if (!this.localServer.proxyServer || !this.localServer.connectCommand) {
                             saveLog(`got Command from server "changeDocker" localServer.proxyServer or localServer.connectCommand is null!!`);
-                            container.localServerIp = exports.getLocalInterface()[0];
+                            container[0].localServerIp = exports.getLocalInterface()[0];
                             return this.localServer.findPort(this.localServer.localProxyPort, (err, port) => {
-                                container.localServerPort = this.localServer.localProxyPort = port;
+                                container[0].localServerPort = this.localServer.localProxyPort = port;
                                 return this.localServer.makeOpnConnect(container);
                             });
                         }

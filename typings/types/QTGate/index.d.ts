@@ -141,18 +141,26 @@ interface IConnectCommand {
     imapData: IinputData
     connectType: number
     transferData?: iTransferData
-    error: number
+    error?: number
+    dockerName?: string
+    randomPassword?: string
     runningDocker?: string
+    AllDataToGateway?: boolean
     fingerprint: string
-    gateWayIpAddress?: string
+    gateWayIpAddress: string
     gateWayPort?: number
+    totalUserPower?: number
+    requestContainerEachPower?: number
     connectPeer?: string
-    AllDataToGateway: boolean
-    requestPortNumber: number
-    localServerPort: number
+    requestRegions?: string[]
+    multipleGateway?: multipleGateway[]
+    requestMultipleGateway?: number
+    containerUUID?: string
+    peerUuid?: string
     localServerIp: string
-    multipleGateway: multipleGateway []
-    requestMultipleGateway: number
+    localServerPort: number
+
+    requestPortNumber: number
 }
 
 interface QTGateCommand {

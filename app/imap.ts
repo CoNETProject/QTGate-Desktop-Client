@@ -1251,6 +1251,7 @@ export class imapPeer extends Event.EventEmitter {
     private peerReady = false
     private sendFirstPing = false
     public newMail: ( data: any ) => void
+    private makeWImap = false
 
 
     private mail ( email: Buffer ) {
@@ -1287,9 +1288,10 @@ export class imapPeer extends Event.EventEmitter {
                 }
                 
                 if ( uu.pong && uu.pong.length ) {
-                    if ( !this.pingUuid && this.pingUuid !== uu.ping )
-                        return saveLog (`Invalid ping uuid`)
-                    saveLog ( `imapPeer connected`)
+                    if ( !this.pingUuid || this.pingUuid !== uu.pong ) {
+                        return saveLog (`Invalid ping uuid [${ JSON.stringify ( uu )}]`)
+                    }
+                    saveLog ( `imapPeer connected Clear waitingReplyTimeOut!`)
                     this.pingUuid = null
                     clearTimeout ( this.waitingReplyTimeOut )
                     return this.emit ('ready')
@@ -1325,8 +1327,8 @@ export class imapPeer extends Event.EventEmitter {
     private replyPing ( uu ) {
         
         return this.enCrypto ( JSON.stringify ({ pong: uu.ping }), ( err, data ) => {
-            this.trySendToRemote ( Buffer.from ( data ), () => {
-
+            return this.trySendToRemote ( Buffer.from ( data ), () => {
+                saveLog ( `replyPing ${ JSON.stringify ( uu )}` )
             })
         })
     }
@@ -1344,7 +1346,7 @@ export class imapPeer extends Event.EventEmitter {
     public Ping () {
 
         this.pingUuid = Uuid.v4 ()
-        saveLog (`Ping!`)
+        saveLog ( `Ping! ${ this.pingUuid }` )
         return this.enCrypto ( JSON.stringify ({ ping: this.pingUuid }), ( err, data ) => {
             if ( err ) {
                 return saveLog ( `Ping enCrypto error: [${ err.message }]`)
@@ -1371,6 +1373,10 @@ export class imapPeer extends Event.EventEmitter {
     }
 
     private newWriteImap() {
+        if ( this.makeWImap || this.wImap ) {
+            return
+        }
+        this.makeWImap = true
         saveLog (`newWriteImap`)
         this.wImap = new qtGateImapwrite ( this.imapData, this.writeBox )
 
@@ -1378,8 +1384,10 @@ export class imapPeer extends Event.EventEmitter {
             saveLog ( `this.wImap.once end ! [${ err && err.message ? err.message : null }]!` )
             this.wImap = null
             this.wImapReady = false
+            this.makeWImap = false
             if ( this.sendMailPool.length > 0 ) {
                 saveLog ( `this.wImap.once end ! sendMailPool.length > 0 [${ this.sendMailPool.length }] newWriteImap () ` )
+                
                 return this.newWriteImap ()
             }
         })

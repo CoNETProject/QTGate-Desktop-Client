@@ -65,7 +65,7 @@ export default class gateWay {
 	private currentGatewayPoint = 0
 	private currentgateway: multipleGateway
 	
-	private request ( str: string, gateway: multipleGateway ) {
+	private request ( str: string, gateway: IConnectCommand ) {
 		return Buffer.from ( otherRequestForNet ( str, gateway.gateWayIpAddress, gateway.gateWayPort, this.userAgent ), 'utf8' )
 	}
 
@@ -76,7 +76,7 @@ export default class gateWay {
 		return this.multipleGateway [ this.currentGatewayPoint ]
 	}
 
-	constructor ( private multipleGateway: multipleGateway[]) {
+	constructor ( private multipleGateway: IConnectCommand[]) {
 	}
 
 	public hostLookup ( hostName: string, userAgent: string, CallBack: ( err?: Error, hostIp?: domainData ) => void ) {
@@ -84,13 +84,13 @@ export default class gateWay {
 
 		const _data = new Buffer ( JSON.stringify ({ hostName: hostName }), 'utf8' )
 		const gateway = this.getCurrentGateway ()
-		const encrypt = new Compress.encryptStream ( gateway.password, 3000, ( str: string ) => {
+		const encrypt = new Compress.encryptStream ( gateway.randomPassword, 3000, ( str: string ) => {
 			return this.request ( str, gateway )
 		})
 		
 		const finish = new hostLookupResponse ( CallBack )
 		const httpBlock = new Compress.getDecryptClientStreamFromHttp ()
-		const decrypt = new Compress.decryptStream ( gateway.password )
+		const decrypt = new Compress.decryptStream ( gateway.randomPassword )
 		
 
 		const _socket = Net.createConnection ( gateway.gateWayPort,gateway.gateWayIpAddress, () => {
@@ -117,8 +117,8 @@ export default class gateWay {
 	public requestGetWay ( id: string, uuuu: VE_IPptpStream, userAgent: string, socket: Net.Socket ) {
 		this.userAgent = userAgent
 		const gateway = this.getCurrentGateway ()
-		const decrypt = new Compress.decryptStream ( gateway.password )
-		const encrypt = new Compress.encryptStream ( gateway.password, 3000, ( str: string ) => {
+		const decrypt = new Compress.decryptStream ( gateway.randomPassword )
+		const encrypt = new Compress.encryptStream ( gateway.randomPassword, 3000, ( str: string ) => {
 			return this.request ( str, gateway )
 		})
 		const httpBlock = new Compress.getDecryptClientStreamFromHttp ()

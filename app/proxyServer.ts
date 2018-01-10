@@ -400,7 +400,7 @@ export class proxyServer {
 	}
     
 	constructor ( public whiteIpList: string[], public domainListPool: Map < string, domainData >, private localProxyServerIP: string, 
-		private port: number, private securityPath: string,  public checkAgainTimeOut: number, private multipleGateway: multipleGateway[],
+		private port: number, private securityPath: string,  public checkAgainTimeOut: number, private multipleGateway: IConnectCommand[],
 		public connectHostTimeOut: number, public useGatWay: boolean, public domainBlackList: string[] ) {
 		this.getGlobalIp ( this.gateway )
 		let socks = null
@@ -458,11 +458,9 @@ export class proxyServer {
 
 	}
 
-	public changeDocker ( data: IConnectCommand ) {
-		if ( !data.requestMultipleGateway && (!data.gateWayIpAddress || !data.gateWayPort || !data.imapData.randomPassword ) || data.requestMultipleGateway > 1 && ( !data.multipleGateway || data.multipleGateway.length !== data.requestMultipleGateway )) {
-			return saveLog ( `ERROR: changeDocker data ERROR: gateWayIpAddress [${ data.gateWayIpAddress }] gateWayPort [${ data.gateWayPort }] data.imapData.randomPassword [${ data.imapData.randomPassword }]`)
-		}
-		this.multipleGateway = data.multipleGateway
+	public changeDocker ( data: IConnectCommand[] ) {
+
+		this.multipleGateway = data
 		this.gateway = new gateWay ( this.multipleGateway )
 		saveLog (`changeDocker [${ JSON.stringify ( this.multipleGateway )}]`)
 	}
@@ -488,13 +486,13 @@ const saveLog = ( log: string ) => {
 }
 
 let server: proxyServer = null
-remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
+remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand[] ) => {
 	saveLog ( `************************** start proxyServer *****************************\r\n ${ JSON.stringify( data )}\r\n` )
-	console.log (`with gateway = [${ data.multipleGateway }]`)
-	server = new proxyServer ( [], new Map(), data.localServerIp, data.localServerPort, 'pac', 5000, data.multipleGateway, 50000, data.AllDataToGateway, [] )
+
+	server = new proxyServer ( [], new Map(), data[0].localServerIp, data[0].localServerPort, 'pac', 5000, data, 50000, data[0].AllDataToGateway, [] )
 })
 
-remote.getCurrentWindow().on( 'changeDocker', ( data: IConnectCommand ) => {
+remote.getCurrentWindow().on( 'changeDocker', ( data: IConnectCommand[] ) => {
 	saveLog ( `got changeDocker event! data [${ JSON.stringify ( data )}]`)
 	server.changeDocker ( data )
 })

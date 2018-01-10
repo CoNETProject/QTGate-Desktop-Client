@@ -463,7 +463,7 @@ export class localServer {
 	private bufferPassword = null
 	private clientIpAddress = null
 	private proxyServerWindow = null
-	public connectCommand: IConnectCommand = null
+	public connectCommand: IConnectCommand[] = []
 	public proxyServer: RendererProcess = null
 	public doingStopContainer = false
 	public regionV1: regionV1[] = null
@@ -727,12 +727,12 @@ export class localServer {
 				this.saveConfig ()
 				
 				if ( res.Args[ 1 ]) {
-					const uu: IConnectCommand = res.Args[1]
+					const uu: IConnectCommand []= res.Args[1]
 					if ( ! this.proxyServer || ! this.connectCommand ) {
-						uu.localServerIp = getLocalInterface ()[0]
+						uu[0].localServerIp = getLocalInterface ()[0]
 						return this.findPort ( 3000, ( err, _port ) => {
-							uu.localServerIp = getLocalInterface ()[0]
-							this.localProxyPort = uu.localServerPort = _port
+							uu[0].localServerIp = getLocalInterface ()[0]
+							this.localProxyPort = uu[0].localServerPort = _port
 							return this.makeOpnConnect ( uu )
 						})
 						
@@ -996,10 +996,12 @@ export class localServer {
 						return saveLog ( `request error`)
 					}
 					if ( res.error < 0 ) {
-						const arg: IConnectCommand = res.Args[0]
-						arg.localServerIp = getLocalInterface ()[0]
-						arg.localServerPort = this.localProxyPort
-						saveLog ( `this.proxyServer = new RendererProcess type = [${ arg.connectType }] data = [${ JSON.stringify( arg )}]` )
+						const arg: IConnectCommand[] = res.Args
+						arg.forEach ( n => {
+							n.localServerIp = getLocalInterface ()[0]
+							n.localServerPort = this.localProxyPort
+						})
+						
 						this.makeOpnConnect ( arg )
 					}
 
@@ -1034,12 +1036,10 @@ export class localServer {
 		this.socketServer.emit ( 'qtGateConnect', this.qtGateConnectEmitData )
 	}
 
-	public makeOpnConnect ( arg: IConnectCommand ) {
+	public makeOpnConnect ( arg: IConnectCommand[] ) {
 		
 		this.connectCommand = arg
-		const runCom = arg.connectType === 1 ? '@Opn' : 'iOpn'
-		saveLog ( `makeOpnConnect arg [${ JSON.stringify ( arg )}]`)
-		console.trace ( arg )
+		const runCom = arg[0].connectType === 1 ? '@Opn' : 'iOpn'
 		return this.proxyServer = new RendererProcess ( runCom, arg, DEBUG, () => {
 			saveLog ( `proxyServerWindow on exit!`)
 			this.proxyServer = null
@@ -1850,7 +1850,7 @@ export class localServer {
 							}
 							return saveLog (`ImapConnect exit with waiting send mail`)
 						}
-						saveLog ( `ImapConnect exit err > 0 `)
+						saveLog ( `ImapConnect exit err > 0 【${ err }】`)
 						this.qtGateConnectEmitData.qtGateConnecting = 3
 						this.qtGateConnectEmitData.error = err
 						if ( this.QTClass ) {
@@ -2143,7 +2143,7 @@ class ImapConnect extends Imap.imapPeer {
 
 					case 'changeDocker' : {
 						
-						const container: IConnectCommand = ret.Args[0]
+						const container: IConnectCommand[] = ret.Args
 						saveLog ( `QTGateAPIRequestCommand changeDocker container = [${ JSON.stringify ( container )}]`)
 						if ( ! container ) {
 							return saveLog ( `got Command from server "changeDocker" but have no data ret = [${ JSON.stringify ( ret )}]`)
@@ -2151,9 +2151,9 @@ class ImapConnect extends Imap.imapPeer {
 
 						if ( ! this.localServer.proxyServer || ! this.localServer.connectCommand ) {
 							saveLog ( `got Command from server "changeDocker" localServer.proxyServer or localServer.connectCommand is null!!`)
-							container.localServerIp = getLocalInterface ()[0]
+							container[0].localServerIp = getLocalInterface ()[0]
 							return this.localServer.findPort ( this.localServer.localProxyPort, ( err, port ) => {
-								container.localServerPort = this.localServer.localProxyPort = port
+								container[0].localServerPort = this.localServer.localProxyPort = port
 								return this.localServer.makeOpnConnect ( container )
 								
 							})

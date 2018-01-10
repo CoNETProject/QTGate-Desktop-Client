@@ -1089,6 +1089,7 @@ class imapPeer extends Event.EventEmitter {
         this.wImapReady = false;
         this.peerReady = false;
         this.sendFirstPing = false;
+        this.makeWImap = false;
         this.rImap = null;
         this.sendMailPool = [];
         this.wImap = null;
@@ -1122,9 +1123,10 @@ class imapPeer extends Event.EventEmitter {
                     return this.replyPing(uu);
                 }
                 if (uu.pong && uu.pong.length) {
-                    if (!this.pingUuid && this.pingUuid !== uu.ping)
-                        return saveLog(`Invalid ping uuid`);
-                    saveLog(`imapPeer connected`);
+                    if (!this.pingUuid || this.pingUuid !== uu.pong) {
+                        return saveLog(`Invalid ping uuid [${JSON.stringify(uu)}]`);
+                    }
+                    saveLog(`imapPeer connected Clear waitingReplyTimeOut!`);
                     this.pingUuid = null;
                     timers_1.clearTimeout(this.waitingReplyTimeOut);
                     return this.emit('ready');
@@ -1155,7 +1157,8 @@ class imapPeer extends Event.EventEmitter {
     }
     replyPing(uu) {
         return this.enCrypto(JSON.stringify({ pong: uu.ping }), (err, data) => {
-            this.trySendToRemote(buffer_1.Buffer.from(data), () => {
+            return this.trySendToRemote(buffer_1.Buffer.from(data), () => {
+                saveLog(`replyPing ${JSON.stringify(uu)}`);
             });
         });
     }
@@ -1169,7 +1172,7 @@ class imapPeer extends Event.EventEmitter {
     }
     Ping() {
         this.pingUuid = Uuid.v4();
-        saveLog(`Ping!`);
+        saveLog(`Ping! ${this.pingUuid}`);
         return this.enCrypto(JSON.stringify({ ping: this.pingUuid }), (err, data) => {
             if (err) {
                 return saveLog(`Ping enCrypto error: [${err.message}]`);
@@ -1188,12 +1191,17 @@ class imapPeer extends Event.EventEmitter {
         this.trySendToRemote(uu, () => { });
     }
     newWriteImap() {
+        if (this.makeWImap || this.wImap) {
+            return;
+        }
+        this.makeWImap = true;
         saveLog(`newWriteImap`);
         this.wImap = new qtGateImapwrite(this.imapData, this.writeBox);
         this.wImap.once('end', err => {
             saveLog(`this.wImap.once end ! [${err && err.message ? err.message : null}]!`);
             this.wImap = null;
             this.wImapReady = false;
+            this.makeWImap = false;
             if (this.sendMailPool.length > 0) {
                 saveLog(`this.wImap.once end ! sendMailPool.length > 0 [${this.sendMailPool.length}] newWriteImap () `);
                 return this.newWriteImap();
