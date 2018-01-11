@@ -2,6 +2,21 @@
 [![Build Status](https://travis-ci.org/QTGate/QTGate-Desktop-Client.svg?branch=master)](https://travis-ci.org/QTGate/QTGate-Desktop-Client)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/QTGate/Lobby)
 [![Known Vulnerabilities](https://snyk.io/test/github/qtgate/qtgate-desktop-client/badge.svg)](https://snyk.io/test/github/qtgate/qtgate-desktop-client)
+
+
+## Download 下載 ダウンロード
+
+### [The latest 最新版 v1.2.5](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
+
+[v 1.2.5 for windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate.Setup.1.2.5.ia32.exe)
+
+[v 1.2.5 for windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate.Setup.1.2.5.exe)
+
+[v 1.2.5 for MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate-1.2.5.dmg)
+
+[v 1.2.5 for Linux](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate_1.2.5_amd64.deb)
+
+
 ## Description 項目概要
 
 **QTGate** is Privacy Enhancing Tools (PET).
@@ -87,19 +102,6 @@ QTGateとは匿名ネットワークです。QTGateは三つのツールを構�
 ![http protocol](/resources/QTChat.png?raw=true)
 ***
 ![http protocol](/resources/QTStorage.png?raw=true)
-
-
-## Download 下載 ダウンロード
-
-### [The latest 最新版 v1.2.5](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
-
-[v 1.2.5 for windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate.Setup.1.2.5.ia32.exe)
-
-[v 1.2.5 for windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate.Setup.1.2.5.exe)
-
-[v 1.2.5 for MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate-1.2.5.dmg)
-
-[v 1.2.5 for Linux](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate_1.2.5_amd64.deb)
 
 
 
