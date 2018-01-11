@@ -21,7 +21,7 @@
   },
   "build": {
     "squirrelWindows": {
-      "remoteReleases": "https://github.com/QTGate/atOPN/releases/download/0.2.0/"
+      "remoteReleases": "https://github.com/QTGate/atOPN/releases/download/0.1.0/"
     },
     "appId": "com.qtgate.client",
     "win": {

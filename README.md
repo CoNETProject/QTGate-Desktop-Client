@@ -91,15 +91,15 @@ QTGateとは匿名ネットワークです。QTGateは三つのツールを構�
 
 ## Download 下載 ダウンロード
 
-### [The latest 最新版 v1.2.1](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
+### [The latest 最新版 v1.2.5](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
 
-[v 1.2.1 for windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.1/qtgate.Setup.1.2.1.ia32.exe)
+[v 1.2.5 for windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate.Setup.1.2.5.ia32.exe)
 
-[v 1.2.1 for windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.1/qtgate.Setup.1.2.1.exe)
+[v 1.2.5 for windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate.Setup.1.2.5.exe)
 
-[v 1.2.1 for MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.1/qtgate-1.2.1.dmg)
+[v 1.2.5 for MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate-1.2.5.dmg)
 
-[v 1.2.1 for Linux](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.1/qtgate_1.2.1_amd64.deb)
+[v 1.2.5 for Linux](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.5/qtgate_1.2.5_amd64.deb)
 
 
 
