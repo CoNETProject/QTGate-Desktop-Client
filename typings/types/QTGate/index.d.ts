@@ -157,7 +157,7 @@ interface IConnectCommand {
     requestMultipleGateway?: number
     containerUUID?: string
     peerUuid?: string
-    localServerIp: string
+    localServerIp?: string
     localServerPort: number
 
     requestPortNumber: number

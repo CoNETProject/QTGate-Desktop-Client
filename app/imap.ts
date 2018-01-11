@@ -1259,49 +1259,50 @@ export class imapPeer extends Event.EventEmitter {
         const attr = getMailAttached (  email ).toString ()
 
         this.deCrypto ( attr, ( err, data ) => {
-            if ( err )
+            if ( err ) {
                 return saveLog ( `deCrypto GOT ERROR! [${ err.message }]` )
-            try {
-                const uu = JSON.parse ( data )
-
-                if ( uu.ping && uu.ping.length ) {
-                    saveLog ( 'GOT PING REPLY PONG!' )
-                    
-                    if ( ! this.peerReady ) {
-                        
-                        if ( /outlook\.com/i.test ( this.imapData.imapServer)) {
-                            saveLog ( `doing outlook server support!`)
-                            return setTimeout (() => {
-                                saveLog (`outlook replyPing ()`)
-                                this.pingUuid = null
-                                this.replyPing ( uu )
-                                return this.Ping ( )
-                            }, 5000 )
-                        }
-                        this.replyPing ( uu )
-                        saveLog ( `THIS peerConnect have not ready send ping!`)
-
-                        this.pingUuid = null
-                        return this.Ping ( )
-                    }
-                    return this.replyPing ( uu )
-                }
-                
-                if ( uu.pong && uu.pong.length ) {
-                    if ( !this.pingUuid || this.pingUuid !== uu.pong ) {
-                        return saveLog (`Invalid ping uuid [${ JSON.stringify ( uu )}]`)
-                    }
-                    saveLog ( `imapPeer connected Clear waitingReplyTimeOut!`)
-                    this.pingUuid = null
-                    clearTimeout ( this.waitingReplyTimeOut )
-                    return this.emit ('ready')
-                }
-                return this.newMail (uu )
-                
-            } catch ( ex ) {
-                saveLog ( `imapPeer mail deCrypto JSON.parse got ERROR [${ ex.message }]`)
-                return 
             }
+            let uu = null
+            try {
+                uu = JSON.parse ( data )
+            } catch ( ex ) {
+                return saveLog ( `imapPeer mail deCrypto JSON.parse got ERROR [${ ex.message }]`)
+            }
+            if ( uu.ping && uu.ping.length ) {
+                saveLog ( 'GOT PING REPLY PONG!' )
+                
+                if ( ! this.peerReady ) {
+                    
+                    if ( /outlook\.com/i.test ( this.imapData.imapServer)) {
+                        saveLog ( `doing outlook server support!`)
+                        return setTimeout (() => {
+                            saveLog (`outlook replyPing ()`)
+                            this.pingUuid = null
+                            this.replyPing ( uu )
+                            return this.Ping ( )
+                        }, 5000 )
+                    }
+                    this.replyPing ( uu )
+                    saveLog ( `THIS peerConnect have not ready send ping!`)
+
+                    this.pingUuid = null
+                    return this.Ping ( )
+                }
+                return this.replyPing ( uu )
+            }
+            
+            if ( uu.pong && uu.pong.length ) {
+                if ( !this.pingUuid || this.pingUuid !== uu.pong ) {
+                    return saveLog (`Invalid ping uuid [${ JSON.stringify ( uu )}]`)
+                }
+                saveLog ( `imapPeer connected Clear waitingReplyTimeOut!`)
+                this.pingUuid = null
+                clearTimeout ( this.waitingReplyTimeOut )
+                return this.emit ('ready')
+            }
+            return this.newMail (uu )
+                
+            
         })
 
     }

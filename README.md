@@ -21,6 +21,7 @@
 
 - **QTStorage** – Encrypted, private data storage and secret sharing services.
 
+Need help [Gitter online chat](https://gitter.im/QTGate/Lobby)
 ***
 QTGate端末インストールです.
 
@@ -48,6 +49,7 @@ QTGateとは匿名ネットワークです。QTGateは三つのツールを構�
 
     安全なプライベットファイルクラウドストレージ及びシェアプラットフォームです。
 
+ヘルプ[Gitterチャットへようこそ](https://gitter.im/QTGate/%E6%97%A5%E6%9C%AC%E8%AA%9E)
 ***
 **Q梯**匿名網絡環境客戶端安裝程序。
 
@@ -70,6 +72,8 @@ QTGateとは匿名ネットワークです。QTGateは三つのツールを構�
 
 - 劍客三 **Q梯石洞**(QTStorage)本功能免費
     * 使用Email帳戶內剩餘的容量，無限量(可申請多個email帳戶)私密文件雲存儲和分享功能。**Q梯石洞**通過此客戶端提供本地網站服務器，讓手機和其他設備不用安裝專用軟件，對文件進行操作。
+
+需要幫助，請聯繫我們在[Gitter會議室](https://gitter.im/QTGate/%E4%B8%AD%E6%96%87)
 
 ***
 ![http protocol](/resources/canada150.png?raw=true)

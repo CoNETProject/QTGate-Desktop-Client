@@ -3833,8 +3833,8 @@ module view_layout {
                 return this.desconnectCallBack ()
             })
 
-            socketIo.on ( 'QTGateGatewayConnectRequest', data => {
-                return this.QTGateGatewayConnectRequestCallBack ( this, data )
+            socketIo.on ( 'QTGateGatewayConnectRequest', ( err, data ) => {
+                return this.QTGateGatewayConnectRequestCallBack ( this, err, data )
             })
 
             socketIo.on ( 'pingCheck', ( region: string, ping: number ) => {
@@ -4469,8 +4469,8 @@ module view_layout {
                 data.showExtraContent ( false )
                 data.showRegionConnectProcessBar ( true )
                 
-                socketIo.emit( 'QTGateGatewayConnectRequest', connect, ( _data: QTGateAPIRequestCommand ) => {
-                    return this.QTGateGatewayConnectRequestCallBack ( this, _data  )
+                socketIo.emit( 'QTGateGatewayConnectRequest', connect, ( err, _data: IConnectCommand[] ) => {
+                    return this.QTGateGatewayConnectRequestCallBack ( this, err, _data  )
                 })
                 return false
             })
@@ -4478,18 +4478,18 @@ module view_layout {
 
         }
 
-        private QTGateGatewayConnectRequestCallBack ( _self: view, _returnData: QTGateAPIRequestCommand ) {
+        private QTGateGatewayConnectRequestCallBack ( _self: view, error, connectCommand: IConnectCommand[] ) {
             clearTimeout ( this.doingProcessBarTime )
             const selectedQTGateRegion = this.selectedQTGateRegion ()
             selectedQTGateRegion.showRegionConnectProcessBar ( false )
-            if ( _returnData.error > -1 ) {
+            if ( error > -1 ) {
                 selectedQTGateRegion.showExtraContent ( true )
                 //this.QTGateConnectRegionActive ( true )
                 //this.QTGateGatewayActiveProcess ( false )
-                selectedQTGateRegion.error ( _returnData.error )
+                selectedQTGateRegion.error ( error )
                 return this.menuClick ( 3, true )
             }
-            const data1:IConnectCommand = _returnData.Args[0]
+            const data1 = connectCommand[0]
 
             this.QTTransferData ( data1.transferData )
             this.QTConnectData ( data1 )

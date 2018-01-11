@@ -487,9 +487,9 @@ const saveLog = ( log: string ) => {
 
 let server: proxyServer = null
 remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand[] ) => {
-	saveLog ( `************************** start proxyServer *****************************\r\n ${ JSON.stringify( data )}\r\n` )
+	console.log ( `************************** start proxyServer *****************************\r\n ${ data }\r\n` )
 
-	server = new proxyServer ( [], new Map(), data[0].localServerIp, data[0].localServerPort, 'pac', 5000, data, 50000, data[0].AllDataToGateway, [] )
+	server = new proxyServer ( [], new Map(), data[0].localServerIp, data[0].localServerPort, 'pac', 5000, data, 50000, data[0].AllDataToGateway|| true, [] )
 })
 
 remote.getCurrentWindow().on( 'changeDocker', ( data: IConnectCommand[] ) => {
