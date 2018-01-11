@@ -458,11 +458,13 @@ export class proxyServer {
 
 	}
 
-	public changeDocker ( data: IConnectCommand[] ) {
+	public changeDocker ( data: IConnectCommand ) {
 
-		this.multipleGateway = data
-		this.gateway = new gateWay ( this.multipleGateway )
-		saveLog (`changeDocker [${ JSON.stringify ( this.multipleGateway )}]`)
+		const index = this.multipleGateway.findIndex ( n => { return n.containerUUID === data.containerUUID })
+		if ( index < 0 ) {
+			return saveLog (`on changeDocker [${ data.containerUUID }] but can't find this uuid`)
+		}
+		this.multipleGateway [ index ]= data
 	}
 
 }
@@ -492,7 +494,7 @@ remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand[] ) =>
 	server = new proxyServer ( [], new Map(), data[0].localServerIp, data[0].localServerPort, 'pac', 5000, data, 50000, data[0].AllDataToGateway|| true, [] )
 })
 
-remote.getCurrentWindow().on( 'changeDocker', ( data: IConnectCommand[] ) => {
+remote.getCurrentWindow().on( 'changeDocker', ( data: IConnectCommand ) => {
 	saveLog ( `got changeDocker event! data [${ JSON.stringify ( data )}]`)
 	server.changeDocker ( data )
 })

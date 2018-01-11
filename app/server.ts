@@ -722,7 +722,6 @@ export class localServer {
 						const arg: IConnectCommand[] = this.connectCommand = res.Args[1]
 						arg.forEach ( n => {
 							n.localServerIp = getLocalInterface ()[0]
-							n.localServerPort = this.localProxyPort || 3000
 						})
 						this.makeOpnConnect ( arg )
 					}
@@ -988,7 +987,6 @@ export class localServer {
 						const arg: IConnectCommand[] = this.connectCommand = res.Args
 						arg.forEach ( n => {
 							n.localServerIp = getLocalInterface ()[0]
-							n.localServerPort = n.localServerPort || this.localProxyPort || 3001
 						})
 						
 						this.makeOpnConnect ( arg )
@@ -2132,21 +2130,13 @@ class ImapConnect extends Imap.imapPeer {
 
 					case 'changeDocker' : {
 						
-						const container: IConnectCommand[] = ret.Args
-						saveLog ( `QTGateAPIRequestCommand changeDocker container = [${ JSON.stringify ( container )}]`)
+						const container: IConnectCommand = ret.Args[0]
 						if ( ! container ) {
 							return saveLog ( `got Command from server "changeDocker" but have no data ret = [${ JSON.stringify ( ret )}]`)
 						}
 
 						if ( ! this.localServer.proxyServer || ! this.localServer.connectCommand ) {
-							saveLog ( `got Command from server "changeDocker" localServer.proxyServer or localServer.connectCommand is null!!`)
-
-							return findPort ( this.localServer.localProxyPort, ( err, port ) => {
-								container[0].localServerPort = this.localServer.localProxyPort = port
-								container[0].localServerIp = getLocalInterface ()[0]
-								return this.localServer.makeOpnConnect ( container )
-								
-							})
+							return saveLog ( `got Command from server "changeDocker" localServer.proxyServer or localServer.connectCommand is null!!`)
 							
 						}
 						return this.localServer.proxyServer.sendCommand ( 'changeDocker', container )
