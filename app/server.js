@@ -662,6 +662,7 @@ class localServer {
                 error: null,
                 requestSerial: Crypto1.randomBytes(8).toString('hex')
             };
+            console.log(`socket.on ( 'getAvaliableRegion')`);
             return this.QTClass.request(com, (err, res) => {
                 if (err) {
                     console.log(err);
@@ -671,7 +672,6 @@ class localServer {
                     this.config.freeUser = /free/i.test(res.dataTransfer.productionPackage);
                 }
                 CallBack(res.Args[0], res.dataTransfer, this.config);
-                saveLog(`getAvaliableRegion ${JSON.stringify(res)} `);
                 //		Have gateway connect!
                 this.saveConfig();
                 if (res.Args[1]) {

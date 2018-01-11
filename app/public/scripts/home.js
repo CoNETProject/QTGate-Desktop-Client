@@ -3711,24 +3711,11 @@ var view_layout;
             socketIo.on('qtGateConnect', (data) => {
                 return this.qtGateConnectEvent(data);
             });
-            //          gateway disconnect!
-            socketIo.on('disconnectClickCallBack', resopn => {
-                this.disconnecting(true);
-                if (this.selectedQTGateRegion()) {
-                    this.selectedQTGateRegion().showConnectedArea(false);
-                    this.ConnectGatewayShow(false);
-                    this.disconnecting(false);
-                    return this.selectedQTGateRegionCancel();
-                }
-            });
             socketIo.once('reconnect_error', err => {
                 if (this.modalContent().length)
                     return;
                 this.modalContent(infoDefine[this.languageIndex()].emailConform.formatError[10]);
                 return $('.ui.basic.modal').modal('setting', 'closable', false).modal('show');
-            });
-            socketIo.on('disconnectClickCallBack', () => {
-                return this.desconnectCallBack();
             });
             socketIo.on('QTGateGatewayConnectRequest', (err, data) => {
                 return this.QTGateGatewayConnectRequestCallBack(this, err, data);
@@ -4299,7 +4286,11 @@ var view_layout;
             return clearTimeout(this.doingProcessBarTime);
         }
         getAvaliableRegion() {
+            if (this.pingCheckLoading()) {
+                return;
+            }
             this.pingCheckLoading(true);
+            this.showRegionData(false);
             socketIo.emit('getAvaliableRegion', (region, dataTransfer, config) => {
                 if (region && region.length)
                     return this.getAvaliableRegionCallBack(region, dataTransfer, config);
@@ -4310,12 +4301,13 @@ var view_layout;
             this.ConnectGatewayShow(false);
             this.selectedQTGateRegionCancel();
             this.disconnecting(false);
-            socketIo.emit('getAvaliableRegion', (region, dataTransfer, config) => {
-                return this.getAvaliableRegionCallBack(region, dataTransfer, config);
-            });
+            return this.getAvaliableRegion();
         }
         disconnectClick() {
             this.disconnecting(true);
+            socketIo.once('disconnectClickCallBack', () => {
+                return this.desconnectCallBack();
+            });
             return socketIo.emit('disconnectClick');
         }
         exit() {

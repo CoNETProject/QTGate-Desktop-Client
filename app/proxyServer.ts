@@ -462,9 +462,10 @@ export class proxyServer {
 
 		const index = this.multipleGateway.findIndex ( n => { return n.containerUUID === data.containerUUID })
 		if ( index < 0 ) {
-			return saveLog (`on changeDocker [${ data.containerUUID }] but can't find this uuid`)
+			this.multipleGateway.push ( data )
+			return saveLog (`on changeDocker [${ data.containerUUID }] Add it`)
 		}
-		this.multipleGateway [ index ]= data
+		this.multipleGateway [ index ] = data
 	}
 
 }

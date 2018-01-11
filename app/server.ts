@@ -701,6 +701,9 @@ export class localServer {
 				error: null,
 				requestSerial: Crypto1.randomBytes(8).toString('hex')
 			}
+
+			console.log (`socket.on ( 'getAvaliableRegion')`)
+
 			return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
 				if ( err ) {
 					console.log ( err )
@@ -711,7 +714,6 @@ export class localServer {
 				}
 					
 				CallBack ( res.Args[0], res.dataTransfer, this.config )
-				saveLog ( `getAvaliableRegion ${ JSON.stringify ( res )} `)
 				
 				//		Have gateway connect!
 				this.saveConfig ()

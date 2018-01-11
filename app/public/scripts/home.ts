@@ -3809,18 +3809,6 @@ module view_layout {
                 
             })
 
-            //          gateway disconnect!
-            socketIo.on ( 'disconnectClickCallBack', resopn => {
-                this.disconnecting ( true )
-                if ( this.selectedQTGateRegion()) {
-                    this.selectedQTGateRegion().showConnectedArea( false )
-                    this.ConnectGatewayShow ( false )
-                    this.disconnecting ( false )
-                    return this.selectedQTGateRegionCancel () 
-                }
-
-            })
-
 
             socketIo.once ( 'reconnect_error', err => {
                 if ( this.modalContent().length )
@@ -3829,9 +3817,6 @@ module view_layout {
                 return $( '.ui.basic.modal').modal ('setting', 'closable', false).modal ( 'show' )
             })
 
-            socketIo.on ( 'disconnectClickCallBack', () => {
-                return this.desconnectCallBack ()
-            })
 
             socketIo.on ( 'QTGateGatewayConnectRequest', ( err, data ) => {
                 return this.QTGateGatewayConnectRequestCallBack ( this, err, data )
@@ -4549,7 +4534,11 @@ module view_layout {
         }
 
         public getAvaliableRegion () {
-            this.pingCheckLoading( true )
+            if ( this.pingCheckLoading ( )) {
+                return
+            }
+            this.pingCheckLoading ( true )
+            this.showRegionData ( false )
             socketIo.emit ( 'getAvaliableRegion', ( region: string [], dataTransfer: iTransferData, config: install_config ) => {
                 if ( region && region.length )
                     return this.getAvaliableRegionCallBack ( region, dataTransfer, config )
@@ -4561,10 +4550,7 @@ module view_layout {
             this.ConnectGatewayShow ( false )
             this.selectedQTGateRegionCancel () 
             this.disconnecting ( false )
-            socketIo.emit ( 'getAvaliableRegion', ( region: string [], dataTransfer: iTransferData, config: install_config ) => {
-            
-                return this.getAvaliableRegionCallBack ( region, dataTransfer, config )
-            })
+            return this.getAvaliableRegion ()
         }
 
         public getCurrentPlan = ko.computed (() => {
@@ -4604,6 +4590,10 @@ module view_layout {
   
         public disconnectClick () {
             this.disconnecting ( true )
+
+            socketIo.once ( 'disconnectClickCallBack', () => {
+                return this.desconnectCallBack ()
+            })
             return socketIo.emit ( 'disconnectClick')
         }
 
