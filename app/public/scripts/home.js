@@ -3522,6 +3522,7 @@ var view_layout;
             this.cancel_Amount = ko.observable(0);
             this.promoButton = ko.observable(false);
             this.promoInput = ko.observable('');
+            this.promoInputError = ko.observable(false);
             this.getMonthData = ko.computed(() => {
                 if (!this.QTTransferData()) {
                     return { data: null, ch: null };
@@ -4489,6 +4490,7 @@ var view_layout;
             this.postcode_Error(false);
             this.cardPayment_Error(false);
             this.paymentDataFormat_Error(false);
+            this.promoInputError(false);
             return this.paymentCardFailed(false);
         }
         clearAllPaymentErrorTimeUP() {
@@ -4739,6 +4741,9 @@ var view_layout;
             });
         }
         promoApplication() {
+            if (this.promoInput().length < 19) {
+                return this.promoInputError(true);
+            }
             this.clearPaymentError();
             this.promoButton(false);
             this.showWaitPaymentFinished();

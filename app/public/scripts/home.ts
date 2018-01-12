@@ -4803,7 +4803,7 @@ module view_layout {
             this.postcode_Error ( false )
             this.cardPayment_Error ( false )
             this.paymentDataFormat_Error ( false )
-            
+            this.promoInputError ( false )
             return this.paymentCardFailed ( false )
         }
 
@@ -5195,7 +5195,11 @@ module view_layout {
 
         }
 
+        public promoInputError = ko.observable ( false )
         public promoApplication () {
+            if ( this.promoInput().length < 19 ) {
+                return this.promoInputError ( true )
+            }
             this.clearPaymentError ()
             this.promoButton ( false )
             this.showWaitPaymentFinished ()

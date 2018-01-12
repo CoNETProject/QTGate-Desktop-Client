@@ -2141,6 +2141,7 @@ class ImapConnect extends Imap.imapPeer {
 							return saveLog ( `got Command from server "changeDocker" localServer.proxyServer or localServer.connectCommand is null!!`)
 							
 						}
+						saveLog (`on changeDocker container = [${ container }]`)
 						return this.localServer.proxyServer.sendCommand ( 'changeDocker', container )
 
 					}

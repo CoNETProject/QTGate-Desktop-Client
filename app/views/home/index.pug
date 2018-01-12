@@ -322,7 +322,7 @@ block jumbotron1
 			//-				UserPerment
 			#UserPerment.content( data-bind = "visible: UserPerment()" style = "margin-top: -3em;")
 				#UserPermentShape
-					.rePosition( data-bind = "visible: !UserPermentShapeDetail(), click: () => { UserPerment( false ); showCancelSuccess ( false ); return showSuccessPayment( false ); }" style="position: relative;z-index: 1000;")
+					.rePosition( data-bind = "visible: !UserPermentShapeDetail(), click: () => { UserPerment( false ); clearPaymentError (); showCancelSuccess ( false ); return showSuccessPayment( false ); }" style="position: relative;z-index: 1000;")
 						i.icon.link.remove.circle.big.grey( style="position: absolute;margin-left: -0.5em;margin-top: -0.5em;")
 					.ui.segments
 						.ui.raised.segment( data-bind = "visible: !UserPermentShapeDetail()")
@@ -362,7 +362,7 @@ block jumbotron1
 								.row.ui.divider( data-bind = " visible: promoButton()" style="padding-bottom: 2em;")
 									form.ui.form
 										.fields
-											.field( style = "width: 17em;")
+											.field( data-bind="css:{ error: promoInputError() }" style = "width: 17em;")
 												input.promoCodeInput( data-bind="value: promoInput" placeholder ="XXXX-XXXX-XXXX-XXXX" type="text")
 											.field
 												.ui.buttons

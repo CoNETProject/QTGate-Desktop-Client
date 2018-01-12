@@ -466,6 +466,7 @@ export class proxyServer {
 			return saveLog (`on changeDocker [${ data.containerUUID }] Add it`)
 		}
 		this.multipleGateway [ index ] = data
+		return this.gateway = new gateWay ( this.multipleGateway )
 	}
 
 }
