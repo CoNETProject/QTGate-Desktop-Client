@@ -6,15 +6,15 @@
 
 ## Download 下載 ダウンロード
 
-### [The latest 最新版 v1.2.6](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
+### [The latest 最新版 v1.2.7](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
 
-[windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.6/qtgate.Setup.1.2.6.ia32.exe)
+[windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.7/qtgate.Setup.1.2.7.ia32.exe)
 
-[windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.6/qtgate.Setup.1.2.6.exe)
+[windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.7/qtgate.Setup.1.2.7.exe)
 
-[MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.6/qtgate-1.2.6.dmg)
+[MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.7/qtgate-1.2.7.dmg)
 
-[Linux](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.6/qtgate_1.2.6_amd64.deb)
+[Linux](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.2.7/qtgate_1.2.7_amd64.deb)
 
 
 ## Description 項目概要
