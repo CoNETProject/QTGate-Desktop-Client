@@ -88,9 +88,12 @@ QTGateとは匿名ネットワークです。QTGateは三つのツールを構�
 - 劍客三 **Q梯石洞**(QTStorage)本功能免費
     * 使用Email帳戶內剩餘的容量，無限量(可申請多個email帳戶)私密文件雲存儲和分享功能。**Q梯石洞**通過此客戶端提供本地網站服務器，讓手機和其他設備不用安裝專用軟件，對文件進行操作。
 
+[Q梯和SS，SSR的區別](https://github.com/QTGate/QTGate-Desktop-Client/wiki/QTGate%E5%92%8CSS%E5%92%8CSSR%E7%9A%84%E5%8D%80%E5%88%A5)
+
 [Q梯教程](https://github.com/QTGate/QTGate-Desktop-Client/wiki/Q%E6%A2%AF%E7%B0%A1%E6%98%93%E6%95%99%E7%A8%8B)
 
 [Windows操作系統IE瀏覽器不支持SOCKS5代理](https://github.com/QTGate/QTGate-Desktop-Client/wiki/WIndows%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%B5%B1%E7%94%A8%E6%88%B6%EF%BC%8C%E5%BB%BA%E8%AD%B0%E4%BD%BF%E7%94%A8Chrome%E7%80%8F%E8%A6%BD%E5%99%A8%E6%88%96%E7%81%AB%E7%8B%90%E7%80%8F%E8%A6%BD%E5%99%A8)
+
 
 
 需要幫助，請聯繫我們在[Gitter會議室](https://gitter.im/QTGate/%E4%B8%AD%E6%96%87)
