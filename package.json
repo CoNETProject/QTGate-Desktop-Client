@@ -9,6 +9,7 @@
     "win": "electron-builder --x64",
     "win32": "electron-builder --ia32",
     "linux": "electron-builder --linux",
+    "unix": "",
     "mac": "electron-builder",
     "pre": "electron-builder install-app-deps",
     "release": "electron-builder --win && electron-builder --mac && electron-builder --linux"
@@ -40,7 +41,7 @@
       "icon": "resources/qtgate"
     },
     "linux": {
-      "target": "deb"
+      "target": ["deb","pacman"]
     }
   },
   "repository": {

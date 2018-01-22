@@ -2551,6 +2551,23 @@ const _QTGateRegions = [
         downloadSpeed: ko.observable(-2)
     }, {
         icon: 'netherlands',
+        content: ['阿姆斯特丹1', 'アムステルダム1', 'Amsterdam1', '阿姆斯特丹1'],
+        meta: ['欧洲・荷兰', 'ヨーロッパ・オランダ', 'Netherlands. Europe.', '歐洲・荷蘭'],
+        description: ['', '', '', ''],
+        canVoe: ko.observable(true),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable(false),
+        showExtraContent: ko.observable(false),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'amsterdam1',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable(false),
+        showConnectedArea: ko.observable(false),
+        ping: ko.observable(-2),
+        downloadSpeed: ko.observable(-2)
+    }, {
+        icon: 'netherlands',
         content: ['阿姆斯特丹', 'アムステルダム', 'Amsterdam', '阿姆斯特丹'],
         meta: ['欧洲・荷兰', 'ヨーロッパ・オランダ', 'Netherlands. Europe.', '歐洲・荷蘭'],
         description: ['', '', '', ''],
@@ -3719,7 +3736,7 @@ var view_layout;
                 return $('.ui.basic.modal').modal('setting', 'closable', false).modal('show');
             });
             socketIo.on('QTGateGatewayConnectRequest', (err, data) => {
-                return this.QTGateGatewayConnectRequestCallBack(this, err, data);
+                return this.QTGateGatewayConnectRequestCallBack(err, data);
             });
             socketIo.on('pingCheck', (region, ping) => {
                 return this.pingCheckReturn(region, ping);
@@ -4218,12 +4235,12 @@ var view_layout;
                 data.showExtraContent(false);
                 data.showRegionConnectProcessBar(true);
                 socketIo.emit('QTGateGatewayConnectRequest', connect, (err, _data) => {
-                    return this.QTGateGatewayConnectRequestCallBack(this, err, _data);
+                    return this.QTGateGatewayConnectRequestCallBack(err, _data);
                 });
                 return false;
             });
         }
-        QTGateGatewayConnectRequestCallBack(_self, error, connectCommand) {
+        QTGateGatewayConnectRequestCallBack(error, connectCommand) {
             clearTimeout(this.doingProcessBarTime);
             const selectedQTGateRegion = this.selectedQTGateRegion();
             selectedQTGateRegion.showRegionConnectProcessBar(false);
