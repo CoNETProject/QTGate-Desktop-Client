@@ -918,7 +918,7 @@ export class qtGateImap extends Event.EventEmitter {
             }
 
             process.once ( 'uncaughtException', catchUncaughtException )
-               
+            
             const jj = Tls.connect ({ rejectUnauthorized: ! this.IMapConnect.imapIgnoreCertificate, host: this.IMapConnect.imapServer, port: this.port }, () => {
                 
                 //      remove Listener when Transport Layer Security connected success!
@@ -1148,7 +1148,7 @@ export const imapBasicTest = ( IMapConnect: imapConnect, CallBack ) => {
 }
 
 export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
-    saveLog ( `start test imap [${ JSON.stringify (IMapConnect) }]`)
+    saveLog ( `start test imap [${ JSON.stringify ( IMapConnect ) }]`)
     let callbackCall = false
     let startTime = null
     let wImap: qtGateImapwrite = null
