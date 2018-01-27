@@ -544,6 +544,7 @@ block jumbotron1
 						a.ui.top.right.attached.label.background-clolr-white
 							i.icon.close
 						p.fg-grayLight( style="margin-top: 0!important;cursor: auto;" data-bind = " html: infoDefine[ languageIndex() ].imapInformation.infomation, animate:{ animation: 'pulse', state: languageIndex() + 1 }" )
+						p.templateImapAccount( data-bind = " html: infoDefine[ languageIndex() ].imapInformation.tempImapAccount" )
 				.ui.cards.ImapItemAccordionCards
 					<!-- ko foreach : { data: emailPool, afterAdd: showPlanetElement } -->
 						.ui.card.imapItemCard( data-bind = " css: { imapItemEdit: imapDataEditShow (), imapItemUncheckShow: ! imapDataEditShow () && ! smtpCheckOk () && ! imapCheckOk(), imapItemCheckOKShow: ! imapDataEditShow () && smtpCheckOk () && imapCheckOk() }, attr: { id: uuid }")
