@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/QTGate/QTGate-Desktop-Client.svg?branch=master)](https://travis-ci.org/QTGate/QTGate-Desktop-Client)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/QTGate/Lobby)
 [![Known Vulnerabilities](https://snyk.io/test/github/qtgate/qtgate-desktop-client/badge.svg)](https://snyk.io/test/github/qtgate/qtgate-desktop-client)
-
+[![Maintainability](https://api.codeclimate.com/v1/badges/2286dbed060f92ac9a86/maintainability)](https://codeclimate.com/github/QTGate/QTGate-Desktop-Client/maintainability)
 
 ## Download 下載 ダウンロード
 
