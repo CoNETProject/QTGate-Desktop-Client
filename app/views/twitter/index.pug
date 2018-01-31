@@ -1,0 +1,51 @@
+extends ../Shared/twitterLayout.pug
+    
+block jumbotron1
+    #sidebarMenu.ui.sidebar.vertical.menu
+        a.item( data-bind = " text: infoDefine [ languageIndex()].twitter.addAccount ")
+    .pusher
+        .language( style="z-index: 999;top: 0.6em;right: 1em;position: fixed;width: 8em;")
+            .ui.text.shape.languageText( data-bind = " click: selectItem " )
+                .sides
+                    span.ui.header.side.en.languageItem.languageTextCoverColor
+                        i.flag.united.kingdom.
+                        span.languageItemSpan( data-bind = " text: menu[ 'en' ][0].showName " )
+                    span.ui.header.side.tw.languageItem.languageTextCoverColor
+                        i.flag.taiwan
+                        span.languageItemSpan( data-bind = " text: menu[ 'tw' ][0].showName " )
+                    span.ui.header.side.zh.languageItem.languageTextCoverColor
+                        i.flag.china
+                        span.languageItemSpan( data-bind = " text: menu[ 'zh' ][0].showName " )
+                    span.ui.header.side.ja.languageItem.languageTextCoverColor
+                        i.flag.japan
+                        span.languageItemSpan( data-bind = " text: menu[ 'ja' ][0].showName " )
+        .content( data-bind = "visible: showAddTwitterAccount() " )
+            p( data-bind=" html: infoDefine [ languageIndex()].twitter.newTwitterAccount ")
+            form.ui.form( data-bind = " submit: addTwitter ")
+                .field( data-bind="css: { error: apiKeyError }")
+                    input( data-bind = " value: apiKey " type="text" placeholder = "API key")
+                .field( data-bind="css: { error: apiSecretError }")
+                    input( data-bind = " value: apiSecret " type="text" placeholder = "API Secret")
+                .field( data-bind="css: { error: accessTokenError }")
+                    input( data-bind = " value: accessToken " type="text" placeholder = "Access Token")
+                .field( data-bind="css: { error: accessTokenSecretError }")
+                    input( data-bind = " value: accessTokenSecret " type="text" placeholder = "Access Token Secret")
+                .field
+                    .ui.positive.basic.button( data-bind="text: infoDefine [ languageIndex()].twitter.addAccount, click: addTwitter")
+        .content( data-bind = "visible: showServerError()" style="margin-top: 4em;" )
+            p( data-bind = "text: infoDefine [ languageIndex()].error_message.imapErrorMessage[12] ")
+        .context
+            img#currentTwitterAccountImg
+        .content( data-bind = " visible: showLoader() ")
+            .ui.active.centered.inline.loader
+        .ui.top.fixed.secondary.menu( style = "background-color: #0084b4" )
+        .item( data-bind = "visible: !showLogin()" style = "margin:0 auto;" )
+            i.icon.large.twitter.inverted( style = "margin:0px;" )
+        .currentAccount( style = "position: absolute; cursor: pointer;top: 0.5em;left: 1em;" data-bind = " click: () => { $('#sidebarMenu').sidebar('toggle')}, visible: showAccountMenu()" )
+            img.ui.avatar.image( data-bind = " attr: { src: currentTwitterAccount() && currentTwitterAccount().profile_image_url_https ? currentTwitterAccount().profile_image_url_https : ''}") 
+        .left.menu( data-bind = " visible: showLogin() " )
+            form.item.form( data-bind = "visible: showLogin() && !showServerError(), submit: login ")
+                .ui.icon.input.field( data-bind = "css: { error: passwordError() }")
+                    input( type="password" data-bind = "value: password, attr : { placeholder: infoDefine [ languageIndex()].Home_keyPairInfo_view.password1 }")
+                    i.icon.checkmark.link( data-bind = "click: login " )  
+        

@@ -85,7 +85,7 @@ block jumbotron1
 					textarea( data-bind = "value: feedBackTextArea ")
 				.field
 					.ui.buttons
-						button.ui.button( data-bind=" click: () => {returnMainWin ('#feedBackView')}, text: infoDefine[ languageIndex() ].home_index_view.cancel")
+						button.ui.button( data-bind=" click: () => { returnMainWin ('#feedBackView')}, text: infoDefine[ languageIndex() ].home_index_view.cancel")
 						.or
 						button.ui.positive.button( data-bind=" click: feedBackSuccess, text: infoDefine[ languageIndex() ].feedBack.okTitle")
 				.field
@@ -180,6 +180,9 @@ block jumbotron1
 						.menuItem
 							i.cloud.upload.icon.large.violet
 					//-		QTGate message
+					a.item( data-bind = "css:{ active: MenuItems() [9]}, click: () => { return menuClick ( 9, false )}, visible: keyPair().verified && ! QTGateRegionInfo() && ( QTGateConnectActive() || QTGateConnectRegionActive())")
+						.menuItem
+							i.share.alternate.icon.large.olive
 					a.item( data-bind = "css:{ active: MenuItems() [5]}, click: () => { return menuClick ( 5, false )}, visible: false")
 						.menuItem
 							i.talk.outline.icon.large.pink
@@ -1080,18 +1083,23 @@ block jumbotron1
 								
 							.field
 								.ui.segment( data-bind = "visible: QTGateConnect1()==='1'" )
-									p( style="color: red;" data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.GlobalIpInfo " )
+									p( style="color: cadetblue;" data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.GlobalIpInfo " )
 								.ui.two.buttons
 									.ui.basic.red.button( data-bind = " text: infoDefine [ languageIndex() ].home_index_view.cancel, click: () => { selectedQTGateRegionCancel (); selectedQTGateRegion().error(-1)}, clickBubble: false" )
 									.ui.basic.green.button( data-bind = "text: infoDefine [ languageIndex() ].qtGateView.title, click: QTGateGatewayConnectRequest " )
 			.content( data-bind="visible: MenuItems()[4]")
 			.content( data-bind="visible: MenuItems()[5]")
 			.content( data-bind="visible: MenuItems()[7]")
-			
 				.ui.red.segment( style=" margin: 5em;")
 					p( data-bind="text:  newVersionInstallLoading() ? infoDefine[languageIndex()].home_index_view.newVersionInstallLoading : infoDefine[languageIndex()].home_index_view.newVersion " )
 					button.positive.ui.button( data-bind="visible: !newVersionInstallLoading(), text: infoDefine[languageIndex()].home_index_view.clickInstall, click: newVersionInstall ")
-		
+			.content( data-bind="visible: MenuItems()[9]")
+				span( data-bind = " text: infoDefine [languageIndex()].thirdParty.information" style="color: cornflowerblue")
+				.ui.cards( style="margin-top: 0.5em;")
+					.card( style="max-width: 7em;")
+						a.content( data-bind = "click: twitterClick ")
+							i.icon.huge.twitter.blue
+
 	.ui.basic.modal
 		.ui.icon.header
 			i.heartbeat.icon( data-bind="text: infoDefine [ languageIndex() ].error_message.title, visible: !hacked () ")
