@@ -101,6 +101,10 @@ Q梯開發團隊將提供以下三個原生應用，號稱網絡**匿名三劍�
 
 需要幫助，請聯繫我們在[Gitter會議室](https://gitter.im/QTGate/%E4%B8%AD%E6%96%87)
 
+## QTGate platform Twitter APP Q梯平台應用程序-推特 
+
+![http protocol](/resources/twitter.png?raw=true)
+
 ***
 ![http protocol](/resources/canada150.png?raw=true)
 ***
@@ -113,11 +117,6 @@ Q梯開發團隊將提供以下三個原生應用，號稱網絡**匿名三劍�
 ![http protocol](/resources/qtgate_network.png?raw=true)
 ***
 ![http protocol](/resources/QTStorage.png?raw=true)
-
-## QTGate platform Twitter APP Q梯平台應用程序-推特 
-
-![http protocol](/resources/twitter.png?raw=true)
-
 ## Build 編譯 ビルド
 
 npm run [mac|win32|win|linux]
