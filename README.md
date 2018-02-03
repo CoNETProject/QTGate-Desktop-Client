@@ -101,8 +101,11 @@ Q梯開發團隊將提供以下三個原生應用，號稱網絡**匿名三劍�
 
 需要幫助，請聯繫我們在[Gitter會議室](https://gitter.im/QTGate/%E4%B8%AD%E6%96%87)
 
-## QTGate platform Twitter APP, QTGate プラットフォーム Twitter APP , Q梯平台應用程序-推特 
+## QTGate platform APP Twitter client
+## QTGate プラットフォーム APP Twitter端末
+## Q梯平台應用程序-推特本地客戶端
 
+Q梯提供免費的免翻牆，匿名訪問推特帳戶的本地推特客戶端，它利用Q梯的強大防火牆穿透力，在不需使用VPN，代理服務器等翻牆手段的前提下，能夠完成對推特帳戶的基本操作。目前不對應推特流媒體。
 ![http protocol](/resources/twitter.png?raw=true)
 
 ***
