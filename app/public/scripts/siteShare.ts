@@ -140,7 +140,12 @@ const infoDefine = [
 
         twitter: {
             newTwitterAccount: `请输入您的推特APP信息，如何获得和设置推特账号APP信息，请点击<a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/%E5%89%B5%E5%BB%BA%E6%82%A8%E7%9A%84QTGate%E6%8E%A8%E7%89%B9%E6%87%89%E7%94%A8')">这里</a>`,
-            addAccount:'添加推特账户'
+            addAccount:'添加推特账户',
+            following: '正在关注',
+            followers:'关注者',
+            second: '秒',
+            min: '分',
+            retweeted: '已转推'
         
         },
         account:{
@@ -692,7 +697,13 @@ const infoDefine = [
         },
         twitter: {
             newTwitterAccount: `TwitterのAPPインフォーメーションを入力してください。APPインフォーメーション作成する事がわからない場合は<a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/%E5%89%B5%E5%BB%BA%E6%82%A8%E7%9A%84QTGate%E6%8E%A8%E7%89%B9%E6%87%89%E7%94%A8'">ここ</a>をクリックしてください。`,
-            addAccount:'Twitterアカウントを追加'
+            addAccount:'Twitterアカウントを追加',
+            following: 'フォロー',
+            followers:'フォロワー',
+            second: '秒',
+            min: '分',
+            hour: '時間',
+            retweeted: 'さんがリツイート'
         },
         thirdParty: {
             information: 'QTGateプラットフォームのサードパーティ開発アプリケーション'
@@ -1254,7 +1265,15 @@ const infoDefine = [
         },
         twitter: {
             newTwitterAccount: `Please input Twitter APP information. How to create Twitter APP please click <a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/%E5%89%B5%E5%BB%BA%E6%82%A8%E7%9A%84QTGate%E6%8E%A8%E7%89%B9%E6%87%89%E7%94%A8'">hear</a> to got more information.`,
-            addAccount:'Add an Twitter account'
+            addAccount:'Add an Twitter account',
+            following: 'Following',
+            followers:'Followers',
+            second: 's',
+            min: 'm',
+            hour: 'h',
+            retweeted: 'Retweeted',
+            month:'',
+            day: '日'
         },
         thirdParty: {
             information: 'The third party application in QTGate platform.'
@@ -1857,6 +1876,14 @@ const infoDefine = [
         twitter: {
             newTwitterAccount: `請輸入您的推特APP信息，如何獲得和設置推特賬號APP信息，請點擊<a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/%E5%89%B5%E5%BB%BA%E6%82%A8%E7%9A%84QTGate%E6%8E%A8%E7%89%B9%E6%87%89%E7%94%A8'">這裡</a>獲得更多信息`,
             addAccount:'添加推特賬戶',
+            following: '正在關注',
+            followers:'關注者',
+            second: '秒',
+            min: '分',
+            hour: '小時',
+            retweeted: '已轉推',
+            month:'月',
+            day: '日'
             
         },
         thirdParty: {

@@ -366,3 +366,61 @@ interface Twitter_verify_credentials {
     translator_type: string
 
 }
+interface twitter_size {
+    h: number
+    resize: string
+    w: number
+}
+interface twitter_media {
+    display_url: string
+    expanded_url: string
+    id: number
+    id_str: string
+    indices: number []
+    media_url: string
+    media_url_https: string
+    sizes: {
+        large: twitter_size
+        medium: twitter_size
+        small: twitter_size
+        thumb: twitter_size
+    }
+    type: string        //  photo
+    url: string
+}
+interface twitter_extended_entities extends twitter_post {
+    media: twitter_media[]
+}
+interface twitter_post {
+    contributors: any
+    coordinates: any
+    created_at: string
+    QTGate_created_at: () => string
+    entities: any
+    favorite_count: number
+    favorited: boolean
+    geo: any
+    id: number
+    id_str: string
+    in_reply_to_screen_name: any
+    in_reply_to_status_id: any
+    in_reply_to_status_id_str: any
+    in_reply_to_user_id: any
+    in_reply_to_user_id_str: any
+    is_quote_status: boolean
+    quoted_status: twitter_post
+    lang: string
+    full_text: string
+    full_text_split_line: string
+    retweeted_status: twitter_post
+    place: any
+    possibly_sensitive: boolean
+    possibly_sensitive_appealable: boolean
+    retweet_count: number
+    retweeted: twitter_post
+    extended_entities: twitter_extended_entities
+    source: string
+    text: string
+    truncated: boolean
+    user: Twitter_verify_credentials
+}

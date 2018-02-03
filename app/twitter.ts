@@ -47,7 +47,7 @@ export default class twitter {
 		const index = this.twitterData.findIndex ( n => {
 			return ( n.accessToken.split('-')[0] === account.accessToken.split('-')[0] )
 		})
-		if ( index < -1 ) {
+		if ( index < 0 ) {
 			return this.twitterData.push ( account )
 		}
 		this.twitterData.splice ( index, 1 )
@@ -99,11 +99,7 @@ export default class twitter {
 		
 	}
 
-	private saveTwitterData ( account: TwitterAccount, CallBack ) {
-		this.addTwitterAccount ( account )
-		if ( ! this.twitterData || !this.twitterData.length ) {
-			return Fs.unlink ( twitterDataFileName, CallBack )
-		}
+	private saveTwitterData ( CallBack ) {
 		const _data = JSON.stringify ( this.twitterData )
 		const options = {
 			data: _data,
@@ -125,6 +121,14 @@ export default class twitter {
 		], CallBack )
 	}
 
+	private saveANEWTwitterData ( account: TwitterAccount, CallBack ) {
+		this.addTwitterAccount ( account )
+		if ( ! this.twitterData || !this.twitterData.length ) {
+			return Fs.unlink ( twitterDataFileName, CallBack )
+		}
+		return this.saveTwitterData ( CallBack )
+	}
+
 	private addTwitterAccountAsync ( account: TwitterAccount, CallBack ) {
 		if ( ! this.localServer.QTClass || typeof this.localServer.QTClass.request !== 'function' ) {
 			return CallBack ()
@@ -136,7 +140,7 @@ export default class twitter {
 			requestSerial: Crypto.randomBytes(8).toString( 'hex' )
 		}
 
-		this.getTwitterAccountInfo ( account, ( err, data ) => {
+		return this.getTwitterAccountInfo ( account, ( err, data ) => {
 			if ( err ) {
 				return CallBack ( err )
 			}
@@ -161,11 +165,29 @@ export default class twitter {
 				}
 				if ( data && data.twitter_verify_credentials ) {
 					CallBack ( data )
-					return this.saveTwitterData ( data, err => {
+					return this.saveANEWTwitterData ( data, err => {
 						
 					})
 				}
 				return CallBack ()
+			})
+		})
+
+		socket.on ( 'getTimelines', ( item: TwitterAccount, CallBack ) => {
+			return this.getTimelines ( item, ( err, tweets: twitter_post ) => {
+				if ( err ) {
+					return CallBack ( err )
+				}
+				return socket.emit ( 'getTimelines', tweets )
+			})
+		})
+
+		return socket.on ( 'saveAccounts', ( twitterAccounts: TwitterAccount[] ) => {
+			this.twitterData = twitterAccounts
+			return this.saveTwitterData ( err => {
+				if ( err ) {
+					return saveLog (`saveTwitterData error [${ err.message ? err.message : ''}]`)
+				}
 			})
 		})
 		
@@ -262,7 +284,7 @@ export default class twitter {
 			access_token_key: account.accessToken,
 			access_token_secret: account.accessTokenSecret
 		})
-		client.get ( 'account/verify_credentials', ( err, tweets: Twitter_verify_credentials, response ) => {
+		return client.get ( 'account/verify_credentials', ( err, tweets: Twitter_verify_credentials, response ) => {
 			if ( err ) {
 				return CallBack ( err )
 			}
@@ -278,6 +300,77 @@ export default class twitter {
 			}
 
 			return CallBack ( null, account )
+		})
+	}
+	private getQuote_status ( n: twitter_post, CallBack ) {
+		if ( n.quoted_status ) {
+			n.quoted_status.extended_entities = n.quoted_status.extended_entities || null
+			if ( n.quoted_status.extended_entities && n.quoted_status.extended_entities.media && n.quoted_status.extended_entities.media.length ) {
+				return this.getUrlBuffer ( n.quoted_status.extended_entities.media[0].media_url_https, ( err, data ) => {
+					if ( err ) {
+						return CallBack ( null, n )
+					}
+					n.quoted_status.extended_entities.media[0].media_url_https = `data:image/jpg;base64,${ data.toString ( 'base64' ) }`
+					return CallBack ( null, n )
+				})
+			}
+		}
+		return CallBack ( null, n )
+	}
+
+	private getTimelines ( account: TwitterAccount, CallBack ) {
+		const client = new Twitter ({
+			consumer_key: account.apiKey,
+			consumer_secret: account.apiSecret,
+			access_token_key: account.accessToken,
+			access_token_secret: account.accessTokenSecret
+		})
+		return client.get ( 'statuses/home_timeline',{ tweet_mode: 'extended' }, ( err, tweets: twitter_post[], response ) => {
+			if ( err ) {
+				return CallBack ( err )
+			}
+			if ( !tweets || !tweets.length ) {
+				return CallBack ( 'no data')
+			}
+			return Async.eachSeries ( tweets, ( n: twitter_post, next ) => {
+				const action = [
+					next => this.getUrlBuffer ( n.user.profile_image_url_https, next )
+				]
+				if ( n.retweeted && n.retweeted.user ) {
+					action.push (
+						next => this.getUrlBuffer ( n.retweeted.user.profile_image_url_https, next )
+					)
+				}
+
+				return Async.eachSeries ( action, ( err, data: any[] ) => {
+					if ( err ) {
+						this.getQuote_status ( n , CallBack )
+						return next ()
+					}
+					n.user.profile_image_url_https = `data:image/jpg;base64,${ data[0].toString ( 'base64' ) }`
+					if ( data[1]) {
+						n.retweeted.user.profile_image_url_https = `data:image/jpg;base64,${ data[1].toString ( 'base64' ) }`
+					}
+					
+					if ( n.extended_entities && n.extended_entities.media && n.extended_entities.media.length ) {
+						return Async.eachSeries ( n.extended_entities.media, ( m: twitter_media, _next ) => {
+							return this.getUrlBuffer ( m.media_url_https, ( err, data1 ) => {
+								if ( err ) {
+									return _next ()
+								}
+								m.media_url_https = `data:image/jpg;base64,${ data1.toString ( 'base64' ) }`
+								return _next ()
+							})
+						}, err => {
+							this.getQuote_status ( n , CallBack )
+							return next ()
+						})
+					}
+					this.getQuote_status ( n , CallBack )
+					return next ()
+				})
+
+			})
 		})
 	}
 

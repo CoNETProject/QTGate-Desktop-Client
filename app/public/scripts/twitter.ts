@@ -1,4 +1,17 @@
+const aMin_Time = 1000 * 60
+const aHour_Time = 60 * aMin_Time
+const aDay = aHour_Time * 24
 
+const splitLine = ( fullText: string ) => {
+    if ( typeof fullText !== 'string' || !fullText.length ) {
+        return fullText;
+    }
+    const uu = fullText.split (/\n/)
+    if ( uu.length === 1 ) {
+        return fullText
+    }
+    return '<p>' + uu.join ('</p><p>') + '</p>'
+}
 module twitter_layout {
     export class twitter {
         //- for add new Twitter account
@@ -26,6 +39,8 @@ module twitter_layout {
         public showAccountMenu = ko.observable ( false )
         public twitterData: KnockoutObservableArray < TwitterAccount > = ko.observableArray ([])
         public currentTwitterAccount: KnockoutObservable < Twitter_verify_credentials > = ko.observable ()
+        public currentTimelines: KnockoutObservableArray< twitter_post > = ko.observableArray ([])
+        public showCurrentTimelines = ko.observable ( false )
 
         public config: KnockoutObservable < install_config> = ko.observable ({
             firstRun: true,
@@ -62,6 +77,79 @@ module twitter_layout {
                     
                 })
             })
+            socketIo.on ( 'getTimelines', ( data: twitter_post ) => {
+                data.QTGate_created_at = ko.computed (() => {
+                    const now = new Date ()
+                    const create = new Date ( data.created_at )
+                    const offset = now.getTime () - create.getTime ()
+                    if ( offset < aMin_Time ) {
+                        setTimeout(() => {
+                            return data.QTGate_created_at ()
+                        }, 1000 )
+                        return `${ Math.round ( offset / 1000 )} ${ infoDefine[ this.languageIndex()].twitter.second }`
+                    }
+                    if ( offset < aHour_Time ) {
+                        setTimeout(() => {
+                            return data.QTGate_created_at ()
+                        }, aMin_Time )
+                        return `${ Math.round ( offset / aMin_Time )} ${ infoDefine[ this.languageIndex()].twitter.min }`
+                    }
+
+                    if ( offset < aDay ) {
+                        setTimeout(() => {
+                            return data.QTGate_created_at ()
+                        }, aHour_Time )
+                        return `${ Math.round ( offset / aHour_Time )} ${ infoDefine[ this.languageIndex()].twitter.hour }`
+                    }
+                    
+                    return `${ create.getMonth() } ${ create.getDay() }`
+                })
+                
+                data.quoted_status = data.quoted_status || null
+                if ( data.quoted_status ) {
+                    data.quoted_status.extended_entities = data.quoted_status.extended_entities || null
+                    data.quoted_status.full_text_split_line = splitLine ( data.quoted_status.full_text ) 
+                }
+                data.retweeted_status = data.retweeted_status || null
+
+                if ( data.retweeted_status ) {
+                    data.retweeted_status.QTGate_created_at = ko.computed (() => {
+                        const now = new Date ()
+                        const create = new Date ( data.retweeted_status.created_at )
+                        const offset = now.getTime () - create.getTime ()
+                        if ( offset < aMin_Time ) {
+                            setTimeout(() => {
+                                return data.QTGate_created_at ()
+                            }, 1000 )
+                            return `${ Math.round ( offset / 1000 )} ${ infoDefine[ this.languageIndex()].twitter.second }`
+                        }
+                        if ( offset < aHour_Time ) {
+                            setTimeout(() => {
+                                return data.QTGate_created_at ()
+                            }, aMin_Time )
+                            return `${ Math.round ( offset / aMin_Time )} ${ infoDefine[ this.languageIndex()].twitter.min }`
+                        }
+    
+                        if ( offset < aDay ) {
+                            setTimeout(() => {
+                                return data.QTGate_created_at ()
+                            }, aHour_Time )
+                            return `${ Math.round ( offset / aHour_Time )} ${ infoDefine[ this.languageIndex()].twitter.hour }`
+                        }
+                        
+                        return `${ create.getMonth() } ${ create.getDay() }`
+                    })
+                    data.retweeted_status.full_text_split_line = splitLine ( data.retweeted_status.full_text )
+                }
+                
+                data.full_text_split_line = splitLine ( data.full_text )
+                data.extended_entities = data.extended_entities || null
+                this.currentTimelines.push ( data )
+                this.currentTimelines.sort (( a, b ) => {
+                    return b.id - a.id
+                })
+            })
+
 
         }
 
@@ -117,8 +205,16 @@ module twitter_layout {
                     return this.showAddTwitterAccount ( true )
                 }
                 this.currentTwitterAccount ( data[0].twitter_verify_credentials )
-                return this.makeAccountMenu ()
                 
+                this.makeAccountMenu ()
+                this.showCurrentTimelines ( true )
+                $( '#sidebarMenu' ).sidebar( 'hide' )
+                return socketIo.emit ( 'getTimelines', data[0], err => {
+                    if ( err ) {
+                        return 
+                    }
+                })
+
             })
         }
 
@@ -128,6 +224,11 @@ module twitter_layout {
             this.apiKeyError ( false )
             this.showLoader ( false )
             return this.apiSecretError ( false )
+        }
+
+        private addNewAccount () {
+            $('#sidebarMenu').sidebar('hide')
+            return this.showAddTwitterAccount ( true )
         }
 
         private makeAccountMenu () {
@@ -180,6 +281,28 @@ module twitter_layout {
             
             return this.requestTwitterUser ( addTwitterAccount )
         }
+
+        public selectAccount ( item: TwitterAccount, index ) {
+            $( '#sidebarMenu' ).sidebar( 'hide' )
+            if ( this.currentTwitterAccount().id === item.twitter_verify_credentials.id ) {
+                return false
+            }
+            this.currentTwitterAccount ( item.twitter_verify_credentials )
+            this.twitterData.unshift ( item ) 
+            this.twitterData.splice ( index(), 1 )
+            this.currentTimelines([])
+            socketIo.emit ( 'saveAccounts', this.twitterData())
+            
+            return socketIo.emit ( 'getTimelines', item, err => {
+                if ( err ) {
+                    return 
+                }
+            })
+            
+                 
+        }
+
+        
 
     }
 }

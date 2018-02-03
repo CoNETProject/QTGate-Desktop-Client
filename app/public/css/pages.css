@@ -785,3 +785,39 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   font-weight: bold;
   color: darkslategray;
 }
+.tweetTime:before {
+  content: "\00b7";
+}
+.reTwitter{
+  color:#17bf63
+}
+.comment, .retweeted, .favorite {
+   cursor: pointer;
+}
+@media only screen and ( max-width: 1144px ) {
+   .TimelinesView {
+    background-color: white;
+    padding: 0em;
+    padding-top: 4em;
+   }
+   #TimelinesView {
+    max-width:100%;
+    margin: 0px auto;
+   }
+   .itemContent {
+    max-width: 90%;
+   }
+}
+@media only screen and ( min-width: 1145px ) {
+  .TimelinesView {
+    background-color: #e6ecf0;
+    padding: 4em;
+  }
+  #TimelinesView {
+    max-width:590px;
+    margin: 0px auto;
+  }
+  .itemContent {
+    max-width:520px;
+  }
+}

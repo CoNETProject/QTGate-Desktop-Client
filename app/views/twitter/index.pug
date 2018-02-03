@@ -1,8 +1,28 @@
 extends ../Shared/twitterLayout.pug
     
 block jumbotron1
-    #sidebarMenu.ui.sidebar.vertical.menu
-        a.item( data-bind = " text: infoDefine [ languageIndex()].twitter.addAccount ")
+    #sidebarMenu.ui.sidebar.vertical.menu.accountInfo
+        a.item( data-bind = " click: addNewAccount, text: '+ ' + infoDefine [ languageIndex()].twitter.addAccount ")
+        .ui.middle.aligned.selection.list(style="margin: 0.5em;")
+            //-.item( data-bind = " with: currentTwitterAccount() ")
+                img.ui.avatar.image( data-bind = " attr: { src: profile_image_url_https }" )
+                .content
+                    .header( data-bind = " text: name " style="margin: 0px;")
+                    .description
+                        .data( data-bind = " text: '@' +screen_name " style="color:grey;")
+                        .data( data-bind = " text: friends_count + ' ' + infoDefine [ $root.languageIndex()].twitter.following " )
+                        .data( data-bind = " text: followers_count + ' '+ infoDefine [ $root.languageIndex()].twitter.followers ")
+            <!-- ko foreach: twitterData -->
+                .item( data-bind = "click: () => { $root.selectAccount( $data, $index ) }, with: twitter_verify_credentials ")
+                    img.ui.avatar.image( data-bind = " attr: { src: profile_image_url_https }")
+                    .content
+                        .header( data-bind = " text: name " style="margin: 0px;")
+                        .description
+                            .data( data-bind = " text: '@' +screen_name " style="color:grey;margin-top: 0.2em;")
+                            .data( data-bind = " text: friends_count + ' ' + infoDefine [ $root.languageIndex()].twitter.following " )
+                            .data( data-bind = " text: followers_count + ' ' + infoDefine [ $root.languageIndex()].twitter.followers ")
+            <!-- /ko -->
+
     .pusher
         .language( style="z-index: 999;top: 0.6em;right: 1em;position: fixed;width: 8em;")
             .ui.text.shape.languageText( data-bind = " click: selectItem " )
@@ -19,7 +39,7 @@ block jumbotron1
                     span.ui.header.side.ja.languageItem.languageTextCoverColor
                         i.flag.japan
                         span.languageItemSpan( data-bind = " text: menu[ 'ja' ][0].showName " )
-        .content( data-bind = "visible: showAddTwitterAccount() " )
+        .content( data-bind = "visible: showAddTwitterAccount() " style = "padding: 4em;")
             p( data-bind=" html: infoDefine [ languageIndex()].twitter.newTwitterAccount ")
             form.ui.form( data-bind = " submit: addTwitter ")
                 .field( data-bind="css: { error: apiKeyError }")
@@ -32,20 +52,63 @@ block jumbotron1
                     input( data-bind = " value: accessTokenSecret " type="text" placeholder = "Access Token Secret")
                 .field
                     .ui.positive.basic.button( data-bind="text: infoDefine [ languageIndex()].twitter.addAccount, click: addTwitter")
-        .content( data-bind = "visible: showServerError()" style="margin-top: 4em;" )
+        .content( data-bind = "visible: showServerError()" style = "padding: 4em;" )
             p( data-bind = "text: infoDefine [ languageIndex()].error_message.imapErrorMessage[12] ")
-        .context
-            img#currentTwitterAccountImg
-        .content( data-bind = " visible: showLoader() ")
-            .ui.active.centered.inline.loader
         .ui.top.fixed.secondary.menu( style = "background-color: #0084b4" )
-        .item( data-bind = "visible: !showLogin()" style = "margin:0 auto;" )
-            i.icon.large.twitter.inverted( style = "margin:0px;" )
-        .currentAccount( style = "position: absolute; cursor: pointer;top: 0.5em;left: 1em;" data-bind = " click: () => { $('#sidebarMenu').sidebar('toggle')}, visible: showAccountMenu()" )
-            img.ui.avatar.image( data-bind = " attr: { src: currentTwitterAccount() && currentTwitterAccount().profile_image_url_https ? currentTwitterAccount().profile_image_url_https : ''}") 
-        .left.menu( data-bind = " visible: showLogin() " )
-            form.item.form( data-bind = "visible: showLogin() && !showServerError(), submit: login ")
-                .ui.icon.input.field( data-bind = "css: { error: passwordError() }")
-                    input( type="password" data-bind = "value: password, attr : { placeholder: infoDefine [ languageIndex()].Home_keyPairInfo_view.password1 }")
-                    i.icon.checkmark.link( data-bind = "click: login " )  
+            .item( data-bind = "visible: !showLogin()" style = "margin:0 auto;" )
+                i.icon.large.twitter.inverted( style = "margin:0px;" )
+            .currentAccount( style = "position: absolute; cursor: pointer;top: 0.5em;left: 1em;" data-bind = " click: () => { $('#sidebarMenu').sidebar('toggle')}, visible: showAccountMenu()" )
+                img.ui.avatar.image( data-bind = " attr: { src: currentTwitterAccount() && currentTwitterAccount().profile_image_url_https ? currentTwitterAccount().profile_image_url_https : ''}") 
+            .left.menu( data-bind = " visible: showLogin() " )
+                form.item.form( data-bind = "visible: showLogin() && !showServerError(), submit: login ")
+                    .ui.icon.input.field( data-bind = "css: { error: passwordError() }")
+                        input( type="password" data-bind = "value: password, attr : { placeholder: infoDefine [ languageIndex()].Home_keyPairInfo_view.password1 }")
+                        i.icon.checkmark.link( data-bind = "click: login " )
+        .content.TimelinesView( data-bind = "visible: showCurrentTimelines() " )
+            #TimelinesView.ui.list( data-bind = "foreach: currentTimelines " style="background-color:white;")
+                .item( data-bind = "visible: user" style = "padding: 1em;")
+                    .reTwitterArea( data-bind = "visible: retweeted_status " style=" color: grey;padding-left: 1.4em;padding-bottom: 0.5em;")
+                        i.icon.retweet
+                        span( data-bind = "text: user.name + ' ' + infoDefine [ $root.languageIndex()].twitter.retweeted")
+                    
+                    img.ui.avatar.image( data-bind=" attr: { src: retweeted_status && retweeted_status.user ? retweeted_status.user.profile_image_url_https : ( user && user.profile_image_url_https ? user.profile_image_url_https : '')}")
+                    .content.itemContent
+                        .header(style="padding-bottom: 0.3em;")
+                            span( data-bind = "text: retweeted_status ? retweeted_status.user.name : user.name ")
+                            i.large.icons( data-bind = "visible: retweeted_status ? retweeted_status.user.verified : user.verified " style = "color: #1da1f2;margin-left: 0.1em;padding-top: 0.2em;")
+                                i.icon.small.certificate
+                                i.icon.tiny.checkmark( style = "color:white;margin-left: -2px;margin-top: -2px;")
+                            span( data-bind = "text: '@' + ( retweeted_status ? retweeted_status.user.screen_name : user.screen_name) " style="color:grey; margin-left: 0.2em;font-weight: lighter;")
+                            span.tweetTime( data-bind = "text: ' ' + ( retweeted_status ? retweeted_status.QTGate_created_at() : QTGate_created_at())" style="font-weight: lighter;color:grey;margin-left: 0.4em;")
+                        .description
+                            span( data-bind = " html: retweeted_status? retweeted_status.full_text_split_line : full_text_split_line " )
+                            .quoted_statusItem.ui.segment( data-bind = "visible: quoted_status, with: quoted_status" )
+                                img.ui.image( data-bind = "visible: extended_entities && extended_entities.media && extended_entities.media.length, attr: { src: extended_entities && extended_entities.media && extended_entities.media.length ? extended_entities.media[0].media_url_https : '' }")
+                                .header
+                                    span( data-bind = "text: user ? user.name : ''")
+                                    i.large.icons( data-bind = "visible: user && user.verified " style = "color: #1da1f2;margin-left: 0.1em;padding-top: 0.2em;")
+                                        i.icon.small.certificate
+                                        i.icon.tiny.checkmark( style = "color:white;margin-left: -2px;margin-top: -2px;")
+                                    span( data-bind = "text: user ? ('@'+ user.screen_name) : ''" style="color:grey; margin-left: 0.2em;font-weight: lighter;")
+                                .description
+                                    span( data-bind = " html: full_text_split_line")
+                            .mediaArea( data-bind="visible: extended_entities " style = "margin-top: 1em;overflow: hidden;max-height: 50em;")
+                                img( data-bind=" attr: { src: extended_entities ? extended_entities.media[0].media_url_https : null }" style="max-width: 530px;")
+                        .ProfileTweet-actionList( style = "color:grey;margin-top: 0.9em;")
+                            span.comment()
+                                span
+                                    i.icon.large.comment.outline
+                                span
+                            span.retweeted
+                                span( data-bind = "css: { reTwitter: retweeted }" style = "margin-left: 3em;")
+                                    i.icon.large.retweet
+                                span( data-bind = "visible: retweet_count > 0, text: retweet_count")
+                            span.favorite
+                                span(style = "margin-left: 3em;")
+                                    i.icon.large.empty.heart(style="margin-top: 0.1em;")
+                                span( data-bind = "visible: favorite_count > 0, text: favorite_count")
+                .ui.divider( style="margin: 0px;")
+            .ui.active.centered.inline.loader(style="margin-top: 2em;")
+        .content( data-bind = " visible: showLoader() " style = "padding: 4em;")
+            .ui.active.centered.inline.loader
         
