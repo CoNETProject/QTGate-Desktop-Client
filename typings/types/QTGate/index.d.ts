@@ -397,8 +397,10 @@ interface twitter_post {
     created_at: string
     QTGate_created_at: () => string
     entities: any
-    favorite_count: number
-    favorited: boolean
+    favorite_count:  number
+    favorite_count_ko : KnockoutObservable < number >
+    favorited_ko: KnockoutObservable < boolean >
+    favorited:  boolean
     geo: any
     id: number
     id_str: string

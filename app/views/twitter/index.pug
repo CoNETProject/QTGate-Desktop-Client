@@ -99,14 +99,14 @@ block jumbotron1
                                 span
                                     i.icon.large.comment.outline
                                 span
-                            span.retweeted
-                                span( data-bind = "css: { reTwitter: retweeted }" style = "margin-left: 3em;")
+                            span.retweeted( data-bind = "css: { reTwitter: retweeted }"  )
+                                span( style = "margin-left: 3em;")
                                     i.icon.large.retweet
-                                span( data-bind = "visible: retweet_count > 0, text: retweet_count")
-                            span.favorite
-                                span(style = "margin-left: 3em;")
-                                    i.icon.large.empty.heart(style="margin-top: 0.1em;")
-                                span( data-bind = "visible: favorite_count > 0, text: favorite_count")
+                                span( data-bind = "visible: retweet_count > 0, text: retweet_count" )
+                            span.favorite( data-bind = "css: { favorited: favorited_ko() }, click: $root.favoriteClick " )
+                                span( style = "margin-left: 3em;")
+                                    i.icon.large.heart( data-bind=" css: { 'empty': !favorite_count_ko()}" style="margin-top: 0.1em;" )
+                                span( data-bind = "visible: favorite_count_ko() > 0, text: favorite_count_ko()" )
                 .ui.divider( style="margin: 0px;")
             .ui.active.centered.inline.loader(style="margin-top: 2em;")
         .content( data-bind = " visible: showLoader() " style = "padding: 4em;")

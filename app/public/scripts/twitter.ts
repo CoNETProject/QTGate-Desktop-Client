@@ -144,6 +144,8 @@ module twitter_layout {
                 
                 data.full_text_split_line = splitLine ( data.full_text )
                 data.extended_entities = data.extended_entities || null
+                data.favorite_count_ko = ko.observable ( data.favorite_count )
+                data.favorited_ko = ko.observable ( data.favorited )
                 this.currentTimelines.push ( data )
                 this.currentTimelines.sort (( a, b ) => {
                     return b.id - a.id
@@ -302,7 +304,16 @@ module twitter_layout {
                  
         }
 
-        
+        public favoriteClick ( item: twitter_post, index ) {
+            const id = item.id
+            item.favorited_ko ( item.favorited = ! item.favorited )
+            item.favorite_count_ko ( item.favorite_count += item.favorited ? 1 : -1 )
+            return socketIo.emit ( 'twitter_favorited' , this.currentTwitterAccount (), id, item.favorited, err => {
+                if ( err ) {
+                    return
+                }
+            })
+        }
 
     }
 }

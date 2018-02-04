@@ -791,6 +791,9 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
 .reTwitter{
   color:#17bf63
 }
+.favorited {
+  color: red;
+}
 .comment, .retweeted, .favorite {
    cursor: pointer;
 }

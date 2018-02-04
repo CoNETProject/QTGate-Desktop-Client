@@ -182,6 +182,10 @@ export default class twitter {
 			})
 		})
 
+		socket.on ( 'twitter_favorited', ( account: TwitterAccount, id: string, favorited: boolean, CallBack ) => {
+			return this.setFavorited ( account, id, favorited, CallBack )
+		})
+
 		return socket.on ( 'saveAccounts', ( twitterAccounts: TwitterAccount[] ) => {
 			this.twitterData = twitterAccounts
 			return this.saveTwitterData ( err => {
@@ -190,6 +194,8 @@ export default class twitter {
 				}
 			})
 		})
+
+
 		
 	}
 
@@ -302,6 +308,7 @@ export default class twitter {
 			return CallBack ( null, account )
 		})
 	}
+
 	private getQuote_status ( n: twitter_post, CallBack ) {
 		if ( n.quoted_status ) {
 			n.quoted_status.extended_entities = n.quoted_status.extended_entities || null
@@ -372,6 +379,10 @@ export default class twitter {
 
 			})
 		})
+	}
+
+	private setFavorited ( account: TwitterAccount, id: string, favorited: boolean, CallBack ) {
+		
 	}
 
 }

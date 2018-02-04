@@ -145,7 +145,8 @@ const infoDefine = [
             followers:'关注者',
             second: '秒',
             min: '分',
-            retweeted: '已转推'
+            retweeted: '已转推',
+            hour: '小时',
         
         },
         account:{
@@ -701,6 +702,7 @@ const infoDefine = [
             following: 'フォロー',
             followers:'フォロワー',
             second: '秒',
+            
             min: '分',
             hour: '時間',
             retweeted: 'さんがリツイート'
