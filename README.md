@@ -90,6 +90,8 @@ Q梯開發團隊將提供以下三個原生應用，號稱網絡**匿名三劍�
 - 劍客三 **Q梯石洞**(QTStorage)本功能免費
     * 使用Email帳戶內剩餘的容量，無限量(可申請多個email帳戶)私密文件雲存儲和分享功能。**Q梯石洞**通過此客戶端提供本地網站服務器，讓手機和其他設備不用安裝專用軟件，對文件進行操作。
 
+[QTGate項目白皮書](https://l.facebook.com/l.php?u=https%3A%2F%2Fdocs.google.com%2Fpresentation%2Fd%2Fe%2F2PACX-1vSlfdufvQbyzM7XhW2HlvyEjfrrnhaGVFHWtY2Gd1R_EgRd-_PX_NRiK8Ue_zUAWtRJ_NVLyCAKdEy0%2Fpub%3Fstart%3Dtrue%26loop%3Dfalse%26delayms%3D5000&h=ATPfv3Jgen9JvPstLGJicyhF_56gilGYhm93Kqys5pyQ-C8aRIZ56YNs09KinMTOCv2jGwNvN_qNZ6m88zUP2LUBCT5bM4rkGl297G6UV0OVdzukBt_jwNvyLTzX69JLajczV2Gqfou28qCH12Mu-N6I_ov2B0-KD6gHM2FOKKEFPqOemVRjxZ4VM4fZEQw7apQJD9Tzpnmr3lG87ZH5GYMru6PIeD4ddQZSMpghmeA5VB1LMy9a1K8tp3Wk894bmW_RAKhsTjQ5h4qpJDcg)
+
 [Q梯和SS，SSR的區別](https://github.com/QTGate/QTGate-Desktop-Client/wiki/QTGate%E5%92%8CSS%E5%92%8CSSR%E7%9A%84%E5%8D%80%E5%88%A5)
 
 [Q梯教程](https://github.com/QTGate/QTGate-Desktop-Client/wiki/Q%E6%A2%AF%E7%B0%A1%E6%98%93%E6%95%99%E7%A8%8B)
