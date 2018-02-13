@@ -286,10 +286,10 @@ interface IQTGateRegionsSetup {
 }
 
 interface TwitterAccount {
-    apiKey: string
-    apiSecret: string
-    accessToken: string
-    accessTokenSecret: string
+    consumer_key: string
+    consumer_secret: string
+    access_token_key: string
+    access_token_secret: string
     twitter_verify_credentials?: Twitter_verify_credentials
 }
 
@@ -392,14 +392,16 @@ interface twitter_extended_entities extends twitter_post {
     media: twitter_media[]
 }
 interface twitter_post {
+    order: number
     contributors: any
     coordinates: any
     created_at: string
-    QTGate_created_at: () => string
+    QTGate_created_at: KnockoutComputed< string >
     entities: any
     favorite_count:  number
     favorite_count_ko : KnockoutObservable < number >
     favorited_ko: KnockoutObservable < boolean >
+    favoritedLoader_ko: KnockoutObservable < boolean >
     favorited:  boolean
     geo: any
     id: number

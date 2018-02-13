@@ -11,8 +11,8 @@ import * as Fs from 'fs'
 import * as Async from 'async'
 import LocalServer from './localServer'
 import * as openpgp from 'openpgp'
-import * as Twitter from 'twitter'
 import * as Https from 'https'
+import * as Util from 'util'
 
 const QTGateFolder = Path.join ( Os.homedir(), '.QTGate' )
 const Twitter_root = Path.join ( QTGateFolder, 'twitter' )
@@ -20,7 +20,7 @@ const view_root = Path.join ( __dirname, 'views' )
 const ErrorLogFile = Path.join ( QTGateFolder, 'twitter.log')
 let flag = 'w'
 const configPath = Path.join ( QTGateFolder, 'config.json' )
-const twitterListenPort = 2000
+const twitterListenPort = 2001
 const twitterDataFileName = Path.join ( QTGateFolder, 'twitterData.pem' )
 
 const saveLog = ( log: string ) => {
@@ -32,7 +32,7 @@ const saveLog = ( log: string ) => {
 	})
 }
 
-export default class twitter {
+export default class twitter1 {
     private ex_app
     private httpServer
     private socketServer
@@ -45,7 +45,7 @@ export default class twitter {
 			return this.twitterData.push ( account )
 		}
 		const index = this.twitterData.findIndex ( n => {
-			return ( n.accessToken.split('-')[0] === account.accessToken.split('-')[0] )
+			return ( n.access_token_key.split('-')[0] === account.access_token_key.split('-')[0] )
 		})
 		if ( index < 0 ) {
 			return this.twitterData.push ( account )
@@ -129,47 +129,34 @@ export default class twitter {
 		return this.saveTwitterData ( CallBack )
 	}
 
-	private addTwitterAccountAsync ( account: TwitterAccount, CallBack ) {
-		if ( ! this.localServer.QTClass || typeof this.localServer.QTClass.request !== 'function' ) {
-			return CallBack ()
-		}
-		const com: QTGateAPIRequestCommand = {
-			command: 'addTwitterAccount',
-			Args: [ account ],
-			error: null,
-			requestSerial: Crypto.randomBytes(8).toString( 'hex' )
-		}
-
-		return this.getTwitterAccountInfo ( account, ( err, data ) => {
-			if ( err ) {
-				return CallBack ( err )
-			}
-			return CallBack ( null, data )
-		})
-		/*
-			return this.localServer.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
-				if ( err ) {
-					return CallBack ( err )
-				}
-
-			})
-		*/
-	}
-
 	private listenAfterLogin ( socket: SocketIOClient.Socket ) {
 		socket.on ( 'addTwitterAccount', ( addTwitterAccount: TwitterAccount, CallBack ) => {
-			addTwitterAccount.twitter_verify_credentials = null
-			this.addTwitterAccountAsync ( addTwitterAccount, ( err, data: TwitterAccount ) => {
+			delete addTwitterAccount['twitter_verify_credentials']
+			return this.getTwitterAccountInfo ( addTwitterAccount, ( err, data: TwitterAccount ) => {
 				if ( err ) {
 					return CallBack ()
 				}
 				if ( data && data.twitter_verify_credentials ) {
 					CallBack ( data )
 					return this.saveANEWTwitterData ( data, err => {
-						
+						if ( err ) {
+							return saveLog (`saveANEWTwitterData got error: ${ err.messgae }`)
+						}
 					})
 				}
 				return CallBack ()
+			})
+		})
+
+		socket.on ( 'getTimelinesNext', ( item: TwitterAccount, maxID: number, CallBack ) => {
+			return this.getTimelinesNext ( item, maxID, ( err, tweets: twitter_post ) => {
+				if ( err ) {
+					return CallBack ( err )
+				}
+				if ( tweets ) {
+					return socket.emit ( 'getTimelines', tweets )
+				}
+				
 			})
 		})
 
@@ -178,6 +165,7 @@ export default class twitter {
 				if ( err ) {
 					return CallBack ( err )
 				}
+
 				return socket.emit ( 'getTimelines', tweets )
 			})
 		})
@@ -262,127 +250,166 @@ export default class twitter {
 
 	}
 
-	private getUrlBuffer ( url: string, CallBack ) {
-		return Https.get ( url, res => {
-			const { statusCode } = res
-			const contentType = res.headers['content-type']
-			let error
-			if ( statusCode !== 200 ) {
-				res.resume()
-				return CallBack ( new Error( 'Request Failed.\n' + `Status Code: ${statusCode}`))
-			}
-			let rawData = Buffer.allocUnsafe(0)
-			
-			res.on ( 'data', ( chunk: Buffer ) => { rawData = Buffer.concat ([ rawData, chunk ])})
-			res.once ( 'end', () => {
-				return CallBack ( null, rawData )
-			})
-
-		}).once ( 'error', e => {
-			return CallBack ( e )
-		})
-	}
-	
 	private getTwitterAccountInfo ( account: TwitterAccount, CallBack ) {
-		const client = new Twitter ({
-			consumer_key: account.apiKey,
-			consumer_secret: account.apiSecret,
-			access_token_key: account.accessToken,
-			access_token_secret: account.accessTokenSecret
-		})
-		return client.get ( 'account/verify_credentials', ( err, tweets: Twitter_verify_credentials, response ) => {
+		delete account['twitter_verify_credentials']
+		const com: QTGateAPIRequestCommand = {
+			command: 'twitter_account',
+			Args: [ account ],
+			error: null,
+			requestSerial: Crypto.randomBytes( 10 ).toString ( 'hex' )
+		}
+		return this.localServer.QTClass.request ( com, ( err, res: QTGateAPIRequestCommand ) => {
 			if ( err ) {
-				return CallBack ( err )
+				return CallBack ()
 			}
-			account.twitter_verify_credentials = tweets
-			if ( tweets.profile_image_url_https && tweets.profile_image_url_https.length ) {
-				return this.getUrlBuffer ( tweets.profile_image_url_https, ( err, data ) => {
-					if ( err ) {
-						return CallBack ( null, account )
-					}
-					tweets.profile_image_url_https = `data:image/jpg;base64,${ data.toString ('base64') }`
-					return CallBack ( null, account )
-				})
-			}
+			
+			if ( res.Args && res.Args.length > 0 ) {
+				let uu = null
+				try {
+					uu = JSON.parse ( Buffer.from ( res.Args [0], 'base64').toString ())
+				} catch ( ex ) {
+					return saveLog (`getTwitterAccountInfo QTClass.request return JSON.parse Error!`)
+				}
 
-			return CallBack ( null, account )
+				return CallBack (  null, uu )
+			}
+			
+			return CallBack ( res.error )
+			
+			
 		})
 	}
 
-	private getQuote_status ( n: twitter_post, CallBack ) {
-		if ( n.quoted_status ) {
-			n.quoted_status.extended_entities = n.quoted_status.extended_entities || null
-			if ( n.quoted_status.extended_entities && n.quoted_status.extended_entities.media && n.quoted_status.extended_entities.media.length ) {
-				return this.getUrlBuffer ( n.quoted_status.extended_entities.media[0].media_url_https, ( err, data ) => {
-					if ( err ) {
-						return CallBack ( null, n )
-					}
-					n.quoted_status.extended_entities.media[0].media_url_https = `data:image/jpg;base64,${ data.toString ( 'base64' ) }`
-					return CallBack ( null, n )
-				})
-			}
+	private getTimelinesNext ( account: TwitterAccount, max_id: number, CallBack ) {
+		delete account['twitter_verify_credentials']
+		const com: QTGateAPIRequestCommand = {
+			command: 'twitter_home_timelineNext',
+			Args: [ account, max_id ],
+			error: null,
+			requestSerial: Crypto.randomBytes(8).toString ('hex' )
 		}
-		return CallBack ( null, n )
+
+		return this.localServer.QTClass.request ( com, ( err, res: QTGateAPIRequestCommand ) => {
+
+			if ( err ) {
+				return CallBack ()
+			}
+			
+			if ( res.Args && res.Args.length > 0 ) {
+				let uu:twitter_post = null
+				try {
+					uu = JSON.parse ( Buffer.from ( res.Args [0], 'base64').toString ())
+				} catch ( ex ) {
+					return saveLog (`getTimelines QTClass.request return JSON.parse Error!`)
+				}
+				saveLog (`twitter_home_timeline order [${ uu.order }]`)
+				return CallBack (  null, uu )
+			}
+			if ( res.error ) {
+				console.log ( `this.localServer.QTClass.request ERROR typeof res.error = ${ typeof res.error  }`)
+				
+				return CallBack ( res.error )
+			}
+			
+		})
 	}
 
 	private getTimelines ( account: TwitterAccount, CallBack ) {
-		const client = new Twitter ({
-			consumer_key: account.apiKey,
-			consumer_secret: account.apiSecret,
-			access_token_key: account.accessToken,
-			access_token_secret: account.accessTokenSecret
-		})
-		return client.get ( 'statuses/home_timeline',{ tweet_mode: 'extended' }, ( err, tweets: twitter_post[], response ) => {
+		delete account['twitter_verify_credentials']
+		
+		const com: QTGateAPIRequestCommand = {
+			command: 'twitter_home_timeline',
+			Args: [ account ],
+			error: null,
+			requestSerial: Crypto.randomBytes(8).toString ('hex' )
+		}
+		console.log ( Util.inspect ( account ))
+		return this.localServer.QTClass.request ( com, ( err, res: QTGateAPIRequestCommand ) => {
+
 			if ( err ) {
-				return CallBack ( err )
+				return CallBack ()
 			}
-			if ( !tweets || !tweets.length ) {
-				return CallBack ( 'no data')
-			}
-			return Async.eachSeries ( tweets, ( n: twitter_post, next ) => {
-				const action = [
-					next => this.getUrlBuffer ( n.user.profile_image_url_https, next )
-				]
-				if ( n.retweeted && n.retweeted.user ) {
-					action.push (
-						next => this.getUrlBuffer ( n.retweeted.user.profile_image_url_https, next )
-					)
+			
+			if ( res.Args && res.Args.length > 0 ) {
+				let uu:twitter_post = null
+				try {
+					uu = JSON.parse ( Buffer.from ( res.Args [0], 'base64').toString ())
+				} catch ( ex ) {
+					return saveLog (`getTimelines QTClass.request return JSON.parse Error!`)
 				}
-
-				return Async.eachSeries ( action, ( err, data: any[] ) => {
-					if ( err ) {
-						this.getQuote_status ( n , CallBack )
-						return next ()
-					}
-					n.user.profile_image_url_https = `data:image/jpg;base64,${ data[0].toString ( 'base64' ) }`
-					if ( data[1]) {
-						n.retweeted.user.profile_image_url_https = `data:image/jpg;base64,${ data[1].toString ( 'base64' ) }`
-					}
-					
-					if ( n.extended_entities && n.extended_entities.media && n.extended_entities.media.length ) {
-						return Async.eachSeries ( n.extended_entities.media, ( m: twitter_media, _next ) => {
-							return this.getUrlBuffer ( m.media_url_https, ( err, data1 ) => {
-								if ( err ) {
-									return _next ()
-								}
-								m.media_url_https = `data:image/jpg;base64,${ data1.toString ( 'base64' ) }`
-								return _next ()
-							})
-						}, err => {
-							this.getQuote_status ( n , CallBack )
-							return next ()
-						})
-					}
-					this.getQuote_status ( n , CallBack )
-					return next ()
-				})
-
-			})
+				saveLog (`twitter_home_timeline order [${ uu.order }]`)
+				return CallBack (  null, uu )
+			}
+			if ( res.error ) {
+				console.log ( `this.localServer.QTClass.request ERROR typeof res.error = ${ typeof res.error  }`)
+				
+				return CallBack ( res.error )
+			}
+			
 		})
 	}
 
 	private setFavorited ( account: TwitterAccount, id: string, favorited: boolean, CallBack ) {
+		delete account['twitter_verify_credentials']
+		const com: QTGateAPIRequestCommand = {
+			command: 'twitter_set_favorited',
+			Args: [ account, id, favorited ],
+			error: null,
+			requestSerial: Crypto.randomBytes( 10 ).toString ( 'hex' )
+		}
+		
+		
+		return this.localServer.QTClass.request ( com, ( err, res: QTGateAPIRequestCommand ) => {
+
+			if ( err ) {
+				return CallBack ('err')
+			}
+			
+			if ( res.error > -1 ) {
+				console.log ( `this.localServer.QTClass.request ERROR typeof res.error = ${ typeof res.error  }`)
+				return CallBack ( res.error )
+			}
+			return CallBack ()
+
+		})
 		
 	}
 
+}
+
+const getUrlBuffer = ( url: string, CallBack ) => {
+    return Https.get ( url, res => {
+        const { statusCode } = res
+        const contentType = res.headers['content-type']
+        let error
+        if ( statusCode !== 200 ) {
+            res.resume()
+            return CallBack ( new Error ( 'Request Failed.\n' + `Status Code: ${ statusCode }`))
+        }
+        let rawData = Buffer.allocUnsafe(0)
+        
+        res.on ( 'data', ( chunk: Buffer ) => { rawData = Buffer.concat ([ rawData, chunk ])})
+        res.once ( 'end', () => {
+            return CallBack ( null, rawData )
+        })
+
+    }).once ( 'error', e => {
+        return CallBack ( e )
+    })
+}
+
+const getQuote_status = ( n: twitter_post, CallBack ) => {
+    if ( n.quoted_status ) {
+        n.quoted_status.extended_entities = n.quoted_status.extended_entities || null
+        if ( n.quoted_status.extended_entities && n.quoted_status.extended_entities.media && n.quoted_status.extended_entities.media.length ) {
+            return getUrlBuffer ( n.quoted_status.extended_entities.media[0].media_url_https, ( err, data ) => {
+                if ( err ) {
+                    return CallBack ( null, n )
+                }
+                n.quoted_status.extended_entities.media[0].media_url_https = `data:image/jpg;base64,${ data.toString ( 'base64' ) }`
+                return CallBack ( null, n )
+            })
+        }
+    }
+    return CallBack ( null, n )
 }

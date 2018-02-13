@@ -16,7 +16,10 @@
  */
 import * as Path from 'path'
 import * as Os from 'os'
-
+import Twitter from './twitter'
+import * as SaveLog from './saveLog'
+import localServer from './localServer'
+import serviceServer from './serviceServer'
 const { remote } = require ( 'electron' )
 
 const QTGatePongReplyTime = 1000 * 30
@@ -28,12 +31,14 @@ const reqtestTimeOut = 1000 * 30
 const port = remote.getCurrentWindow().rendererSidePort
 const version = remote.app.getVersion ()
 const DEBUG = remote.getCurrentWindow().debug
-import * as SaveLog from './saveLog'
+
 const saveLog = SaveLog.saveLog
-import localServer from './localServer'
+
 const server = new localServer ( version, port )
-import Twitter from './twitter'
+
 const twitter = new Twitter ( server )
+
+//const serviceServver = new serviceServer ( server )
 
 saveLog ( `
 *************************** QTGate [ ${ version } ] server start up on [ ${ port } ] *****************************

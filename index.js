@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const DEBUG = true;
+const DEBUG = false;
 const Fs = require("fs");
 const Os = require("os");
 const path_1 = require("path");
@@ -386,9 +386,9 @@ const template = [{
     }];
 const appReady = () => {
     async_1.series([
-            next => checkFolder(QTGateFolder, next),
-            next => checkFolder(QTGateLatest, next),
-            next => checkFolder(QTGateTemp, next)
+        next => checkFolder(QTGateFolder, next),
+        next => checkFolder(QTGateLatest, next),
+        next => checkFolder(QTGateTemp, next)
     ], err => {
         const menu = Menu.buildFromTemplate(template);
         Menu.setApplicationMenu(menu);

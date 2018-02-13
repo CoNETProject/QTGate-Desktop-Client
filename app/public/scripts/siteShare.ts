@@ -147,8 +147,17 @@ const infoDefine = [
             min: '分',
             retweeted: '已转推',
             hour: '小时',
-        
+            month:'月',
+            day:'日',
+            replying: '回复: ',
+            newTwitterDistroyButtonTitle: ['放弃这条推文','舍弃此对话串'],
+            returnEdit: '回编辑',
+            close:'关闭',
+            newTwitterTitle: ['撰写新推文','撰写新对话串'],
+            twitterBottonTitle:['发推','全部发推'],
+            accountError:'推特回送错误信息提示：您输入的APP应用设定信息有误。请检查您的推特APP信息后再试。'
         },
+
         account:{
             title: '账户管理',
             segmentTitle:'账户: ',
@@ -338,7 +347,7 @@ const infoDefine = [
 
         imapInformation: {
             title: '通讯专用Email邮箱设置',
-            tempImapAccount: `<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud%E8%87%A8%E6%99%82%E5%B8%B3%E6%88%B6')">QTGate提供的临时IMAP帐号供各位测试</a>`,
+            tempImapAccount: `自己开设邮箱有困难？请使用<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud%E8%87%A8%E6%99%82%E5%B8%B3%E6%88%B6')">QTGate提供的临时IMAP帐号供各位测试使用</a>`,
             infomation: `请设置QTGate通讯专用Email邮箱信息。由于此账户的用户名和密码信息会提交给QTGate系统，为了防止您的个人信息被泄漏，请新申请一个临时Email账户。目前QTGate技术对应<a href="#" onclick="return linkClick ('https://www.icloud.com/')">苹果iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/')">微软OUTLOOK</a>，<a href="#" onclick="return linkClick ('https://tw.mail.yahoo.com/')">雅虎邮箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄罗斯ZOHO邮箱</a>，<a href="#" onclick=" return linkClick ('https://gmail.com')">Google邮箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美国在线GMX邮箱</a>，QTGate强力推荐使用苹果公司的Email可以达到最佳速度(@OPN无IP连结技术只对应苹果公司iCloud邮箱)。密码请使用Email服务商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">应用密码</a>。对于Email供应商在应用密码申请时，须<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/%E9%96%8B%E5%95%9F%E5%85%A9%E6%AD%A5%E9%A9%9F%E9%A9%97%E8%AD%89-sln5013.html')" >二步认证</a>并提供手机号码接受验证码，为保护您的隐私，建议使用免费在线代理接收验证码服务。( 如<a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a> ) 更多请 <a href="#" onclick="return linkClick ('http://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E5%85%8D%E8%B4%20%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%20%E7%A0%81&rsv_pq=e94f47a50001f66f&rsv_t=b03ePiy3rHH0T4FVoWB8Hx9vrVdZLzVhhErWOo4xdBpjDw%2BtGri%2BViTaVAw&rqlang=cn&rsv_enter=1&rsv_sug3=42&rsv_sug1=5&rsv_sug7=100')">百度查找</a>，<a href="#" onclick="return linkClick ('https://www.google.com/search?q=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&oq=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&aqs=chrome..69i57j69i60.254j0j4&sourceid=chrome&ie=UTF-8')">Google查找</a>。`,
             serverDetail: '详细设定：',
             imapServer: 'IMAP服务器设定',
@@ -548,7 +557,9 @@ const infoDefine = [
         },
 
         thirdParty: {
-            information: '进驻QTGate平台的第三方开发应用程序'
+            information: 'QTG平台的应用程序',
+            qtgateGateway: 'QTGate提供的高质量上网技术iOPN和@OPN，在QTGate全球16个区域，当场定制您专属的代理服务器，变换您的IP地址隐身无障碍的访问互联网',
+            app:['Q梯', 'Q信', 'QT石洞','QT谷歌客户端','QT推特客户端','QTInstagram客户端','QT纽时客户端','QT微信客户端'],
         }, 
 
         useInfoAndroid: {
@@ -702,13 +713,24 @@ const infoDefine = [
             following: 'フォロー',
             followers:'フォロワー',
             second: '秒',
-            
+            month: '月',
+            day:'日',
             min: '分',
             hour: '時間',
-            retweeted: 'さんがリツイート'
+            replying: '返信先: ',
+            retweeted: 'さんがリツイート',
+            close:'閉じる',
+            newTwitterTitle: ['ツイートする','新しいスレッドを作成'],
+            returnEdit: '中止破棄',
+            newTwitterDistroyButtonTitle: ['ツイートを破棄','スレッドを破棄'],
+            twitterBottonTitle:['ツイート','すべてツイート'],
+            accountError:'ツイートがアカンウトAPPインフォーメーションにエラーがありまして、通信を拒否されました、APPインフォーメーションをチェックしてください。'
         },
+        
         thirdParty: {
-            information: 'QTGateプラットフォームのサードパーティ開発アプリケーション'
+            information: 'QTGateプラットフォームアプリケーション',
+            qtgateGateway:'QTGateご提供する高品質ゲットウェイサービス、グローバルに１６区域とQTGate独自のiOPNと@OPN技術により、貴方のIPアドレスをカバーして、静かに無障害にインターネットの世界へ可能です。',
+            app:['QTGate', 'QTChat', 'QTStorage','QT for Tweet','QT for Google','QT for Instagram','QT for NY Time','QT for WeChat'],
         }, 
         account:{
             paymentSuccessTitile: '有難うございました。',
@@ -1036,7 +1058,7 @@ const infoDefine = [
         
         imapInformation: {
             title: '通信専用Emailアカウントを登録',
-            tempImapAccount: `IMAPの設定に困るなら、<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/IMAP%E9%80%9A%E4%BF%A1%E5%B0%82%E7%94%A8%E4%B8%80%E6%99%82%E7%9A%84%E3%81%AAiCloud%E3%82%A2%E3%82%AB%E3%83%B3%E3%82%A6%E3%83%88')">QTGateご提供している一時iCloudアカンウト</a>`,
+            tempImapAccount: `IMAPのアカウント設定に困るなら、<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/IMAP%E9%80%9A%E4%BF%A1%E5%B0%82%E7%94%A8%E4%B8%80%E6%99%82%E7%9A%84%E3%81%AAiCloud%E3%82%A2%E3%82%AB%E3%83%B3%E3%82%A6%E3%83%88')">QTGateご提供している一時iCloudアカンウトをテストのご利用いただけます。</a>`,
             infomation:`QTGate通信専用emailアカンウトを設定します。このemailアカウントはあなたとQTGateお互い情報交換するのために、ユーザ名とパスワードをQTGateシステムへ提供します。個人情報漏洩の恐れ、一時的なemailアカウントを新たにつくてください。QTGate技術は只今<a href="#" onclick="return linkClick ('https://icloud.com')">Apple iCloud</a>, <a href="#" onclick="return linkClick ('https://www.microsoft.com/ja-jp/outlook-com/')">Outlook</a>, <a href="#" onclick="return linkClick ('https://login.yahoo.co.jp/config/login?.src=ym&.done=https%3A%2F%2Fmail.yahoo.co.jp%2F')">Yahoo Mail</a>, <a href="#" onclick="return linkClick ('https://gmail.com')">GMAIL</a>, <a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">GMX</a>, <a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">HOZO</a>対応しております、APPLEのiCloudを使うお勧めです。( @OPN IPなし通信技術はiCloudのみ対応しております）</span>メールアカウントのパスワードについて、<a href="#" onclick="return linkClick ('https://support.microsoft.com/ja-jp/help/12409/microsoft-account-app-passwords-two-step-verification')">アプリパスワード</a>をご利用のをお勧めです。アプリパスワードを申請する際に、<a href="#" onclick="return linkClick ('https://support.microsoft.com/ja-jp/help/12408')">2段階認証プロセス</a>に必要なスマートフォン番号を提示が必要な場合、個人プライバシーを守るのため、( <a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a> ) など<a href="#" onclick="return linkClick ('http://jpnpay.com/archives/561')">オンライン無料SMS受信サービス</a>をお勧めします。`,
             serverDetail: '詳細設定：',
             imapServer: 'IMAP設定',
@@ -1274,11 +1296,21 @@ const infoDefine = [
             min: 'm',
             hour: 'h',
             retweeted: 'Retweeted',
-            month:'',
-            day: '日'
+            month:'m',
+            day: 'd',
+            close:'Close',
+            newTwitterTitle: ['Compose new Tweet', 'Compose new thread'],
+            returnEdit: 'Cancel',
+            replying: 'Replying to ',
+            twitterBottonTitle: ['Tweet', 'Tweet all'],
+            newTwitterDistroyButtonTitle: ['Discard this Tweet','Discard this thread'],
+            
+            accountError:'Twitter return error: Invalid or expired token. error. Please check your account APP information and try again.'
         },
         thirdParty: {
-            information: 'The third party application in QTGate platform.'
+            information: 'QTG platform APP list.',
+            qtgateGateway: 'QTGate gateway service. High speed, total privacy, ultra secure and easy to use. Your gateway to a secure and open internet.',
+            app:['QTGate', 'QTChat', 'QTStorage','QT for Tweet','QT for Google','QT for Instagram','QT for NY Time','QT for WeChat'],
         }, 
         account:{
             QTGatePayRisk: 'Your payment will be processed via QTGate’s secured payment portal. If concerned about privacy, Please use the Stripe payment portal.',
@@ -1645,7 +1677,7 @@ const infoDefine = [
 
         imapInformation: {
             title: 'Email account to use by OPN.',
-            tempImapAccount: `Have problem when setup IMAP enabled email account? <a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud-temporary-account')">get temporary account.</a>`,
+            tempImapAccount: `Have problem with your IMAP enabled email account? <a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud-temporary-account')">get temporary account.</a>`,
             infomation: `Please provide an IMAP enabled email account to be used with QTGate’s OPN services. The account name and password will be required. For your personal privacy, please consider registering a new email account to use. QTGate currently supports <a href="#" onclick="return linkClick('https://www.icloud.com/')">Apple iCloud</a>, <a href="#" onclick="return linkClick('https://outlook.live.com/owa/')">Outlook Mail</a>, <a href="#" onclick="return linkClick('https://login.yahoo.com/')">Yahoo Mail</a>, <a href="#" onclick="return linkClick('https://mail.google.com')">GMAIL</a>, <a href="#" onclick="return linkClick('https://www.gmx.com/')">GMX</a>, <a href="#" onclick="return linkClick('https://www.zoho.com/mail/')">ZOHO</a>. (@OPN currently supports iCloud mail only.) For passwords, it is recommended use a <a href="#" onclick="return linkClick('https://help.yahoo.com/kb/SLN15241.html')">generated app-specific password.</a> If using <a href="#" onclick="return linkClick('https://help.yahoo.com/kb/two-step-verification-sln5013.html')">2-step verification</a>, we recommend using a free anonymous SMS receiving site to receive SMS codes, ( such as <a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a>, or <a href="#" onclick="return linkClick('https://www.google.com/search?q=free+anonymous+SMS+receiving+site&oq=free+anonymous+SMS+receiving+site&aqs=chrome..69i57.268j0j4&sourceid=chrome&ie=UTF-8')" >others</a> ).`,
             serverDetail: 'settings:',
             imapServer: 'IMAP server setup',
@@ -1885,11 +1917,20 @@ const infoDefine = [
             hour: '小時',
             retweeted: '已轉推',
             month:'月',
-            day: '日'
+            day: '日',
+            close:'關閉',
+            replying: '回覆: ',
+            twitterBottonTitle:['發推','全部發推'],
+            newTwitterTitle: ['撰写新推文','撰写新对话串'],
+            returnEdit: '回編輯',
+            newTwitterDistroyButtonTitle: ['放棄這條推文','捨棄此對話串'],
+            accountError:'推特回送錯誤信息提示：您輸入的APP應用設定信息有誤。請檢查您的推特APP信息後再試。'
             
         },
         thirdParty: {
-            information: '進駐QTGate平台的第三方開發應用程序'
+            information: 'QTG匿名平台應用程序',
+            app:['Q梯','Q信','QT石洞','QT谷歌客戶端','QT推特客戶端','QTnstagram客戶端','QT紐時客戶端','QT微信客戶端'],
+            qtgateGateway: 'QTGate提供的高質量上網技術iOPN和@OPN，在QTGate全球16個區域，當場定制您專屬的代理服務器，變換您的IP地址隱身無障礙的訪問互聯網'
         }, 
         account:{
             QTGatePayRisk:'使用QTGate安全網關支付，如果您有安全疑慮，請使用Stript安全網關支付。',
@@ -2200,7 +2241,7 @@ const infoDefine = [
 
         imapInformation: {
             title: '通訊專用Email郵箱設置',
-            tempImapAccount: `<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud%E8%87%A8%E6%99%82%E5%B8%B3%E6%88%B6')">QTGate提供的臨時IMAP帳號供各位測試</a>`,
+            tempImapAccount: `郵箱申請有困難？您可以暫時使用<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud%E8%87%A8%E6%99%82%E5%B8%B3%E6%88%B6')">QTGate提供的臨時IMAP帳號供各位測試</a>`,
             infomation: `請設置QTGate通訊專用Email郵箱信息。由於此賬戶的用戶名和密碼信息會提交給QTGate系統，為了防止您的個人信息被洩漏，請新申請一個臨時Email賬戶。目前QTGate技術對應<a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/mobile/?WT.mc_id=mscom')">微軟OUTLOOK</a>，<a href="#" onclick="return linkClick ('http://tw.mail.yahoo.com/')">雅虎郵箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄羅斯ZOHO郵箱</a>，<a href="#" onclick="return linkClick ('https://gmail.com')">Google郵箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美國在線GMX郵箱</a>，QTGate強力推薦使用蘋果公司的Email可以達到最佳速度(@OPN無IP連結技術只對應蘋果公司iCloud郵箱)。密碼請使用Email服務商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">應用密碼</a>。對於Email供應商在應用密碼申請時，須打開<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/%E9%96%8B%E5%95%9F%E5%85%A9%E6%AD%A5%E9%A9%9F%E9%A9%97%E8%AD%89-sln5013.html')">二步認證</a>並必須提供手機號碼接受驗證碼，為保護您的隱私，建議使用免費在線代理接收驗證碼服務。如 ( <a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a> ) 更多請 <a href="#" onclick="return linkClick ('http://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&rsv_pq=e94f47a50001f66f&rsv_t=b03ePiy3rHH0T4FVoWB8Hx9vrVdZLzVhhErWOo4xdBpjDw%2BtGri%2BViTaVAw&rqlang=cn&rsv_enter=1&rsv_sug3=42&rsv_sug1=5&rsv_sug7=100')">百度查找</a>，<a href="#" onclick="return linkClick ('https://www.google.com/search?q=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&oq=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&aqs=chrome..69i57j69i60.254j0j4&sourceid=chrome&ie=UTF-8')">Google查找</a>。`,
             serverDetail: '詳細設定：',
             imapServer: 'IMAP伺服器設定',

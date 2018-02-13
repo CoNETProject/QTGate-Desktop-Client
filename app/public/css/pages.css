@@ -792,7 +792,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   color:#17bf63
 }
 .favorited {
-  color: red;
+  color:#e0245e;
 }
 .comment, .retweeted, .favorite {
    cursor: pointer;
@@ -803,6 +803,12 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
     padding: 0em;
     padding-top: 4em;
    }
+   #QTGateStartScreen {
+    display: block;
+  }
+   #QTGateStartScreen-Device {
+     display: none;
+   }
    #TimelinesView {
     max-width:100%;
     margin: 0px auto;
@@ -811,7 +817,35 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
     max-width: 90%;
    }
 }
-@media only screen and ( min-width: 1145px ) {
+
+@media screen and ( max-width: 801px ) {
+  .TimelinesView {
+   background-color: white;
+   padding: 0em;
+   padding-top: 4em;
+  }
+  #QTGateStartScreen-Device {
+    display: block;
+  }
+  #QTGateStartScreen {
+    display: none;
+  }
+  #TimelinesView {
+   max-width:100%;
+   margin: 0px auto;
+  }
+  .itemContent {
+   max-width: 90%;
+  }
+}
+
+@media screen and ( min-width: 800px ) {
+  #QTGateStartScreen {
+    display: block;
+  }
+  #QTGateStartScreen-Device {
+    display: none;
+  }
   .TimelinesView {
     background-color: #e6ecf0;
     padding: 4em;
@@ -821,6 +855,84 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
     margin: 0px auto;
   }
   .itemContent {
-    max-width:520px;
+    max-width:550px;
   }
+}
+.flapLeft, .flapeRight {
+  position: relative;
+  cursor: pointer;
+}
+
+.flapLeft i:hover, .flapeRight i:hover {
+  background: rgba(255,255,255,0.4);
+}
+.flapLeft i, .flapeRight i {
+  color: white;
+  position: absolute;
+  margin-top: -1em;
+}
+.tweetTrashButton {
+   cursor: pointer;
+    color: grey;
+}
+.tweetTrashButton:hover {
+  color: red;
+}
+.tweetPhotoButton{
+    background: transparent!important;
+    color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    right: 0.5em;
+    margin-top: 2.5em;
+}
+.tweetPhotoButton:hover {
+  color: rgba(0, 0, 0, 0.6);
+
+}
+.newTweetCloseButton{
+  color: rgba(0, 0, 0, 0.2)!important;
+  cursor: pointer;
+  position: absolute;
+  top: 0.3em;
+  right: 0.3em;
+}
+.newTweetCloseButton:hover {
+color: rgba(0, 0, 0, 0.6)!important;
+
+}
+.approveButtons {
+  position: absolute;
+}
+.ui.modal {
+  top: 20%;
+  width: 600px;
+}
+#QTGateStartScreen{
+  height: 100%;
+}
+#QTGateStartScreen .VideoBox{
+  display: block;
+  width: 600px;
+}
+#QTGateStartScreen .VideoBox .iframe {
+  width: 550px;
+  height: 310px;
+  overflow: hidden;
+  border-radius: 25px;
+}
+#QTGateStartScreen-Drive{
+  height: 100%;
+}
+#QTGateStartScreen-Drive .VideoBox{
+  display: block;
+
+}
+#QTGateStartScreen-Drive .VideoBox .iframe {
+
+  overflow: hidden;
+  border-radius: 25px;
+}
+
+.appCardImage {
+  max-height: 6.5em;
 }

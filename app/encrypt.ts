@@ -39,8 +39,8 @@ export const encryptWithKey = ( data: string, targetKey: string, privateKey: str
 	})
 }
 
-export const deCryptoWithKey = ( data: string, publicKey: string, privateKey: string, password: string, CallBack ) => {
-
+export const deCryptoWithKey1 = ( data: string, publicKey: string, privateKey: string, password: string, CallBack ) => {
+	let _return = false
 	const options: any = {
 		message: openpgp.message.readArmored ( data ),
 		publicKeys: openpgp.key.readArmored ( publicKey ).keys,
@@ -50,10 +50,15 @@ export const deCryptoWithKey = ( data: string, publicKey: string, privateKey: st
 		return CallBack ( new Error ('saveImapData key password error!' ))
 	}
 	openpgp.decrypt ( options ).then ( plaintext => {
+		_return = true
 		return CallBack ( null, plaintext.data )
-
 	}).catch ( err => {
-		return CallBack ( err )
+		console.log ( data )
+		console.log ( err )
+		if ( !_return ) {
+			return CallBack ( err )
+		}
+		
 	})
 }
 

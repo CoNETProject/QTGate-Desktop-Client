@@ -1080,7 +1080,6 @@ export const imapBasicTest = ( IMapConnect: imapConnect, CallBack ) => {
             saveLog (`new mail`)
             const attach = getMailAttached ( mail )
             if ( ! attach ) {
-                
                 err = new Error ( `imapAccountTest ERROR: can't read attachment!`)
             } else 
             if ( ramdomText.compare ( attach ) !== 0 ) {
@@ -1257,15 +1256,20 @@ export class imapPeer extends Event.EventEmitter {
     private mail ( email: Buffer ) {
 
         const attr = getMailAttached (  email ).toString ()
-
+        
         this.deCrypto ( attr, ( err, data ) => {
             if ( err ) {
+                saveLog ( email.toString())
+                saveLog ('******************')
+                saveLog ( attr )
+                saveLog ('****************************************')
                 return saveLog ( `deCrypto GOT ERROR! [${ err.message }]` )
             }
             let uu = null
             try {
                 uu = JSON.parse ( data )
             } catch ( ex ) {
+                saveLog ( data )
                 return saveLog ( `imapPeer mail deCrypto JSON.parse got ERROR [${ ex.message }]`)
             }
             if ( uu.ping && uu.ping.length ) {

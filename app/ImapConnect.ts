@@ -61,7 +61,7 @@ export default class ImapConnect extends Imap.imapPeer {
 	}
 
 	private _deCrypto ( text, CallBack ) {
-		return Encrypt.deCryptoWithKey ( text, this.QTGatePublicKey, this.localServer.config.keypair.privateKey, this.password, CallBack )
+		return Encrypt.deCryptoWithKey1 ( text, this.QTGatePublicKey, this.localServer.config.keypair.privateKey, this.password, CallBack )
 	}
 
 	public sendMailBack () {
@@ -87,7 +87,7 @@ export default class ImapConnect extends Imap.imapPeer {
 		saveLog ( `doing makeTimeOutEvent` )
 		clearTimeout ( this.timeOutWhenSendConnectRequestMail )
 		return this.timeOutWhenSendConnectRequestMail = setTimeout (() => {
-
+			
 			if ( request ) {
 				const _callBack = this.commandCallBackPool.forEach(n => {
 					return n.CallBack ( new Error ('tiemout'))
@@ -189,7 +189,7 @@ export default class ImapConnect extends Imap.imapPeer {
 
 		this.newMail = ( ret: QTGateAPIRequestCommand ) => {
 			//		have not requestSerial that may from system infomation
-			saveLog ('clearTimeout timeOutWhenSendConnectRequestMail !')
+			saveLog ( 'clearTimeout timeOutWhenSendConnectRequestMail !' )
 			clearTimeout ( this.timeOutWhenSendConnectRequestMail )
 			if ( ! ret.requestSerial ) {
 				saveLog ( `newMail have not ret.requestSerial, doing switch ( ret.command ) `)
@@ -229,11 +229,10 @@ export default class ImapConnect extends Imap.imapPeer {
 			if ( ! poolData || typeof poolData.CallBack !== 'function' ) {
 				return saveLog ( `QTGateAPIRequestCommand got commandCallBackPool ret.requestSerial [${ ret.requestSerial }] have not callback `)
 			}
-			console.log ( Util.inspect ( ret ))
 			return poolData.CallBack ( null, ret )
 			
 		}
-		saveLog (`Class ImapConnect start up!`)
+		saveLog ( `Class ImapConnect start up!` )
 	}
 
 	public request ( command: QTGateAPIRequestCommand, CallBack ) {

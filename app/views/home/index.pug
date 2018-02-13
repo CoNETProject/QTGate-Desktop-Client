@@ -172,7 +172,7 @@ block jumbotron1
 						.menuItem
 							i.address.card.outline.icon.large.blue
 					//-		QTGate connect & region area
-					a.item( data-bind = "css:{ active: MenuItems() [3]}, click: () => { return menuClick ( 3, true )}, visible: QTGateConnectActive() || QTGateConnectRegionActive() ")
+					//-a.item( data-bind = "css:{ active: MenuItems() [3]}, click: () => { return menuClick ( 3, true )}, visible: QTGateConnectActive() || QTGateConnectRegionActive() ")
 						.menuItem
 							i.exchange.icon.large.purple
 					//-		QTGate file storage
@@ -180,7 +180,7 @@ block jumbotron1
 						.menuItem
 							i.cloud.upload.icon.large.violet
 					//-		QTGate message
-					a.item( data-bind = "css:{ active: MenuItems() [9]}, click: () => { return menuClick ( 9, false )}, visible: keyPair().verified && ! QTGateRegionInfo() && ( QTGateConnectActive() || QTGateConnectRegionActive())")
+					a.item( data-bind = "css:{ active: MenuItems() [9]}, click: () => { return menuClick ( 9, false )}, visible: keyPair().verified && QTGateConnectRegionActive() ")
 						.menuItem
 							i.share.alternate.icon.large.olive
 					a.item( data-bind = "css:{ active: MenuItems() [5]}, click: () => { return menuClick ( 5, false )}, visible: false")
@@ -539,7 +539,6 @@ block jumbotron1
 							.ui.orange.bottom.attached.progress.paymentProcess( data-bind="visible: doingPayment()")
 								.bar
 	
-
 			//-				MenuItems()[2]  && imapInputFormActive() 
 			.content( data-bind = "visible: MenuItems()[2] && imapInputFormActive()" style = "margin-top: 3em;")
 				.ui.warning.message.hideArea( data-bind = " visible: showQTGateImapAccount(), css: { 'accordion AccordionBox-shadow-delete': emailPool().length && emailPool()[emailPool().length - 1].emailAddress().length } ")
@@ -692,7 +691,7 @@ block jumbotron1
 										i.icon.add.user( style = " color: white!important;")
 
 			//-				QTGateConnectActive() && MenuItems()[3]
-			#QTGateConnectContent.content( data-bind = "  visible: QTGateConnectActive() && MenuItems()[3] " style = "margin-top: 3em;")
+			//-#QTGateConnectContent.content( data-bind = "visible: QTGateConnectActive() && MenuItems()[3] " style = "margin-top: 3em;")
 				#QTGateConnecting.ui.tiny.steps.top.attached.hideArea( data-bind = "css: { 'two': QTGateConnecting() < 2, 'three': QTGateConnecting () === 2 || QTGateConnecting () > 3 && QTGateConnecting() < 6 }")
 					.step.completed( style = "padding: 8px;")
 						a.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', visible: QTGateConnecting() === 3, attr: { 'data-html': infoDefine[ languageIndex() ].error_message.imapErrorMessage [ QTGateConnectError() ]}")
@@ -831,7 +830,7 @@ block jumbotron1
 							span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.sendConnectRequestMail[0]")
 						.ui.raised.segment( data-bind = "visible: QTGateRegionERROR()> -1")
 							span( data-bind = " text: infoDefine [ languageIndex() ].QTGateRegion.QTGateRegionERROR[QTGateRegionERROR()]" style = "color: red;")
-						#connectImformationProcess.olive.ui.tiny.progress(style = " margin-top: 10px; ")
+						#connectImformationProcess1.olive.ui.tiny.progress(style = " margin-top: 10px; ")
 							.bar
 				//-.testButton( data-bind = " visible: !QTGateRegionInfo()" style="margin-bottom:1em;")
 					a.ui.blue.basic.label( data-bind = "click: pingCheck " )
@@ -871,7 +870,7 @@ block jumbotron1
 												span( data-bind = "text: `[${ ping() === 0 ? 'err' : '<' + ping() + 'ms'}]`" style = " color: cornflowerblue!important; font-size: small!important; margin-left: 5px!important;")
 			
 			//-
-			.content( data-bind="visible: MenuItems()[8]" style = "margin-top: 3em;")
+			//-.content( data-bind="visible: MenuItems()[8]" style = "margin-top: 3em;")
 				
 				.ui.info.message
 					.header( data-bind = " text: infoDefine [ languageIndex() ].QTGateDonate.title " style="color: #a333c8;")
@@ -1094,11 +1093,46 @@ block jumbotron1
 					p( data-bind="text:  newVersionInstallLoading() ? infoDefine[languageIndex()].home_index_view.newVersionInstallLoading : infoDefine[languageIndex()].home_index_view.newVersion " )
 					button.positive.ui.button( data-bind="visible: !newVersionInstallLoading(), text: infoDefine[languageIndex()].home_index_view.clickInstall, click: newVersionInstall ")
 			.content( data-bind="visible: MenuItems()[9]")
-				span( data-bind = " text: infoDefine [languageIndex()].thirdParty.information" style="color: cornflowerblue")
-				.ui.cards( style="margin-top: 0.5em;")
-					.card( style="max-width: 7em;")
-						a.content( data-bind = "click: twitterClick ")
-							i.icon.huge.twitter.blue
+				.connectQTGateNetwork( data-bind = " visible: showConnectImformationProcess()")
+					h3( data-bind = " text: infoDefine [ languageIndex() ].QTGateGateway.processing " style="color: #B5CC18;")
+					#connectImformationProcess.olive.ui.tiny.progress( style = " margin-top: 10px; " )
+						.bar
+				.appList( data-bind = " visible: !showConnectImformationProcess()")
+					h4( data-bind = "text: infoDefine[ languageIndex() ].thirdParty.information" style="color: #B5CC18;")
+					.ui.link.cards( style = " margin-top: 0.5em; ")
+						.card( style = "max-width: 11em;")
+							.content( data-bind = "click: ()=> { menuClick ( 3, true )} ")
+								img.ui.centered.tiny.image.appCardImage( src="/images/qtgateGateway.png")
+								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[0]")
+						.card( style = "max-width: 11em;")
+							.content
+								img.ui.centered.tiny.image.appCardImage( src="/images/qtchat.png")
+								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[1]")
+						.card( style = "max-width: 11em;")
+							.content
+								img.ui.centered.tiny.image.appCardImage( src="/images/qtStorage.png")
+								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[2]")
+						.card( style = "max-width: 11em;")
+							.content( data-bind = "click: ()=> { menuClick ( 3, true )} ")
+								img.ui.centered.tiny.image.appCardImage( src="/images/Twitter_Logo_Blue.svg")
+								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[3]")
+						.card( style = "max-width: 11em;")
+							.content( data-bind = "click: ()=> { menuClick ( 3, true )} ")
+								img.ui.centered.tiny.image.appCardImage( src="/images/Google__G__Logo.svg")
+								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[4]")
+						.card( style = "max-width: 11em;")
+							.content
+								img.ui.centered.tiny.image.appCardImage( src="/images/Instagram_logo_2016.svg")
+								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[5]")
+						.card( style = "max-width: 11em;")
+							.content
+								img.ui.centered.tiny.image.appCardImage( src="/images/nyt.png")
+								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[6]")
+						.card( style = "max-width: 11em;")
+							.content( data-bind = "click: ()=> { menuClick ( 3, true )} ")
+								img.ui.centered.tiny.image.appCardImage( src="/images/wechat.svg")
+								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[7]")
+						
 
 	.ui.basic.modal
 		.ui.icon.header

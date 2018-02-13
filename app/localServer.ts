@@ -577,7 +577,7 @@ export default class localServer {
 			saveLog (`socket.on ( 'connectQTGate1')  uuid = [${ uuid }]`)
 			imap.confirmRisk = true
 			this.qtGateConnectEmitData ? this.qtGateConnectEmitData.needSentMail = true : this.qtGateConnectEmitData = { needSentMail: true }
-			return this.emitQTGateToClient ( socket, uuid )
+			return this.emitQTGateToClient1 ( socket, uuid )
 		})
 
 		socket.on ( 'checkPort', ( portNum, CallBack ) => {
@@ -748,6 +748,24 @@ export default class localServer {
 		}, CallBack )
 	}
 
+	public checkPassword ( password: string ) {
+		if ( ! password || password.length < 5 || !this.config.keypair || !this.config.keypair.createDate ) {
+			saveLog ( 'server.js socket on checkPemPassword passwrod or keypair error!' + 
+			`[${! password }][${ password.length < 5 }][${ ! this.config.keypair.publicKey }][${ !this.config.keypair.publicKey.length }][${ !this.config.keypair.privateKey }][${!this.config.keypair.privateKey.length}]` )
+			return false
+		}
+		if ( this.savedPasswrod && this.savedPasswrod.length ) {
+					
+			if ( this.savedPasswrod !== password ) {
+				return false
+			}
+				
+			return true
+		}
+		
+		return null
+	}
+
 	private takeScreen ( CallBack ) {
 		
 		desktopCapturer.getSources ({ types: [ 'window', 'screen' ], thumbnailSize: screen.getPrimaryDisplay().workAreaSize	}, ( error, sources ) => {
@@ -889,13 +907,15 @@ export default class localServer {
 						return callBack ( false )
 					callBack ( true, this.imapDataPool )
 					this.listenAfterPassword ( socket )
-					if ( this.connectCommand && this.httpServer ) {
+					if ( this.connectCommand && this.connectCommand.length ) {
 						return socket.emit ( 'QTGateGatewayConnectRequest', -1, this.connectCommand )
 					}
 					//		imapDataPool have QTGateImap doing emitQTGateToClient
+					
 					if ( this.imapDataPool.length > 0 && findQTGateImap ( this.imapDataPool ) > -1 )
-						return this.emitQTGateToClient ( socket, null )
+						return this.emitQTGateToClient1 ( socket, null )
 					return
+					
 				}
 
 				return Async.waterfall ([
@@ -923,12 +943,13 @@ export default class localServer {
 						}
 						this.imapDataPool = data
 						socket.emit ( 'ImapData', this.imapDataPool )
-
+						
 						//		imapDataPool have QTGateImap doing emitQTGateToClient
+						
 						if ( this.imapDataPool.length > 0 && findQTGateImap ( this.imapDataPool ) > -1 ) {
-                            return this.emitQTGateToClient ( socket, this.config.connectedImapDataUuid )
+                            return this.emitQTGateToClient1 ( socket, this.config.connectedImapDataUuid )
                         }
-							
+						
 						
 					})
 
@@ -969,10 +990,6 @@ export default class localServer {
 			
 		}
 	//--------------------------   check imap setup
-
-	private getLocalHostIpaddress () {
-
-	}
 
 	private checkConfig () {
 
@@ -1337,7 +1354,7 @@ export default class localServer {
 		})
 	}
 
-	private emitQTGateToClient ( socket: SocketIO.Socket, _imapUuid: string ) {
+	private emitQTGateToClient1 ( socket: SocketIO.Socket, _imapUuid: string ) {
 		saveLog ( `doing emitQTGateToClient! with _imapUuid [${ _imapUuid }]` )
 		this.qtGateConnectEmitData = this.qtGateConnectEmitData || {}
 		this.qtGateConnectEmitData.haveImapUuid = _imapUuid && _imapUuid.length ? true : false 
@@ -1488,9 +1505,9 @@ export default class localServer {
 					
 					if ( ! this.QTClass || this.imapDataPool.length < 2 ) {
 						this.qtGateConnectEmitData ? this.qtGateConnectEmitData.needSentMail = true : this.qtGateConnectEmitData = { needSentMail: true }
-						return this.emitQTGateToClient ( socket, _imapData.uuid )
+						return this.emitQTGateToClient1 ( socket, _imapData.uuid )
 					}
-						
+					
 					
 				})
 				

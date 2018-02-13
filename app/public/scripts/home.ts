@@ -1231,6 +1231,7 @@ module view_layout {
             public reSendConnectMail = ko.observable ( false )
             public showRegionData = ko.observable ( false )
             public QTGateAccountPlan = ko.observable ()
+            public QTGconnected = ko.observable ( false )
 
         //-
         //- Donate
@@ -1459,12 +1460,12 @@ module view_layout {
                 
             })
 
+            
             socketIo.on ( 'qtGateConnect', ( data: IQtgateConnect ) => {
-                return this.qtGateConnectEvent ( data )
+                return this.qtGateConnectEvent111 ( data )
                 
             })
-
-
+            
             socketIo.once ( 'reconnect_error', err => {
                 if ( this.modalContent().length )
                     return
@@ -1487,7 +1488,12 @@ module view_layout {
         }
         public showSendImapDataConfirm = ko.observable ( false )
 
-        private qtGateConnectEvent (  data: IQtgateConnect ) {
+        private showAppWindows () {
+
+            return this.menuClick ( 9, true )
+        }
+
+        private qtGateConnectEvent111 (  data: IQtgateConnect ) {
 
             //     reset show send request mail need more time
             this.connectQTGateShow ( false )
@@ -1499,9 +1505,7 @@ module view_layout {
             }
             this.sendConnectRequestMail ( false )
             this.reSendConnectMail ( false )
-            this.connectQTGateShow ( false )
-            this.reSendConnectMail( false )
-            this.menuClick ( 3, true )
+            //this.menuClick ( 3, true )
             this.QTGateConnectActive ( !this.keyPair().verified )
             this.QTGateConnectRegionActive ( this.keyPair().verified )
             //      progress bar area
@@ -1526,20 +1530,23 @@ module view_layout {
 
                 //          show send request mail need more time
                 case 6: {
-                    this.sendConnectRequestMail(true)
+                    this.sendConnectRequestMail( true )
                     return this.connectQTGateShow ( true )
                 }
 
                 //          connecting finished
                 case 2: {
                     this.QTGateRegionInfo ( true )
+                    this.QTGconnected ( true )
                     this.stopGetRegionProcessBar ()
                     if ( this.keyPair().verified ) {
-                        return setTimeout (() => {
-                            return this.getAvaliableRegion ()
-                        }, 1000 )
+                        return this.showAppWindows ()
                     }
                         
+                    return 
+                }
+
+                case 3: {
                     return 
                 }
 
@@ -1566,7 +1573,8 @@ module view_layout {
         private stopGetRegionProcessBar () {
             const process = $ ( '#connectImformationProcess' )
             clearTimeout ( this.doingProcessBarTime )
-            return process.progress ( 'reset' )
+            process.progress ( 'reset' )
+            this.showConnectImformationProcess ( false )
         }
 
         private showActiveAccountForm () {
@@ -1580,7 +1588,7 @@ module view_layout {
         }
 
         private percent = 0
-
+        public showConnectImformationProcess = ko.observable ( false )
         private showGetRegionProcessBarStart () {
 
             const process = $ ( '#connectImformationProcess' )
@@ -1594,6 +1602,8 @@ module view_layout {
                         return doingProcessBar ()
                 }, 1000 )
             }
+            this.menuClick ( 9, true )
+            this.showConnectImformationProcess ( true )
             return doingProcessBar()
         }
 

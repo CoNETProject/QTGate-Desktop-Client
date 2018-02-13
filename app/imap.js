@@ -287,7 +287,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                 }
                 let haveMoreNewMail = false;
                 return Async.waterfall([
-                        next => this.fetch(newMailIds, next),
+                    next => this.fetch(newMailIds, next),
                     (_moreNew, next) => {
                         haveMoreNewMail = _moreNew;
                         this.flagsDeleted(newMailIds, next);
@@ -690,8 +690,8 @@ class ImapServerSwitchStream extends Stream.Transform {
             console.log(`logout_process doLogout()`);
             if (this.imapServer.listenFolder && this.imapServer.deleteBoxWhenEnd) {
                 return Async.series([
-                        next => { /^INBOX$/i.test(this.imapServer.listenFolder) ? next() : this.deleteBox(next); },
-                        next => this._logout(next)
+                    next => { /^INBOX$/i.test(this.imapServer.listenFolder) ? next() : this.deleteBox(next); },
+                    next => this._logout(next)
                 ], callback);
             }
             return this._logout(callback);
@@ -894,9 +894,9 @@ class qtGateImapRead extends qtGateImap {
         if (!this.openBox)
             return CallBack(new Error('not ready!'));
         return Async.series([
-                next => this.imapStream.fetch(Uid, next),
-                next => this.imapStream.flagsDeleted(Uid, next),
-                next => this.imapStream.expunge(next)
+            next => this.imapStream.fetch(Uid, next),
+            next => this.imapStream.flagsDeleted(Uid, next),
+            next => this.imapStream.expunge(next)
         ], CallBack);
     }
 }
@@ -1100,6 +1100,10 @@ class imapPeer extends Event.EventEmitter {
         const attr = exports.getMailAttached(email).toString();
         this.deCrypto(attr, (err, data) => {
             if (err) {
+                saveLog(email.toString());
+                saveLog('******************');
+                saveLog(attr);
+                saveLog('****************************************');
                 return saveLog(`deCrypto GOT ERROR! [${err.message}]`);
             }
             let uu = null;
@@ -1107,6 +1111,7 @@ class imapPeer extends Event.EventEmitter {
                 uu = JSON.parse(data);
             }
             catch (ex) {
+                saveLog(data);
                 return saveLog(`imapPeer mail deCrypto JSON.parse got ERROR [${ex.message}]`);
             }
             if (uu.ping && uu.ping.length) {
@@ -1306,7 +1311,7 @@ class imapPeer extends Event.EventEmitter {
     }
     sendDone() {
         return Async.waterfall([
-                next => this.enCrypto(JSON.stringify({ done: new Date().toISOString() }), next),
+            next => this.enCrypto(JSON.stringify({ done: new Date().toISOString() }), next),
             (data, next) => this.trySendToRemote(buffer_1.Buffer.from(data), next)
         ], err => {
             if (err)

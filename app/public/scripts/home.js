@@ -1106,6 +1106,7 @@ var view_layout;
             this.reSendConnectMail = ko.observable(false);
             this.showRegionData = ko.observable(false);
             this.QTGateAccountPlan = ko.observable();
+            this.QTGconnected = ko.observable(false);
             //-
             //- Donate
             this.donateDataPool = ko.observableArray(donateArray);
@@ -1133,6 +1134,7 @@ var view_layout;
             });
             this.showSendImapDataConfirm = ko.observable(false);
             this.percent = 0;
+            this.showConnectImformationProcess = ko.observable(false);
             this.sendConnectRequestMail = ko.observable(false);
             this.QTGateRegionERROR = ko.observable(-1);
             this.LocalLanguage = 'up';
@@ -1490,7 +1492,7 @@ var view_layout;
                 return this.QTGateConnecting(4);
             });
             socketIo.on('qtGateConnect', (data) => {
-                return this.qtGateConnectEvent(data);
+                return this.qtGateConnectEvent111(data);
             });
             socketIo.once('reconnect_error', err => {
                 if (this.modalContent().length)
@@ -1527,7 +1529,10 @@ var view_layout;
         showBrokenHeart() {
             return $('.ui.basic.modal').modal('setting', 'closable', false).modal('show');
         }
-        qtGateConnectEvent(data) {
+        showAppWindows() {
+            return this.menuClick(9, true);
+        }
+        qtGateConnectEvent111(data) {
             //     reset show send request mail need more time
             this.connectQTGateShow(false);
             //      have no imap data
@@ -1538,9 +1543,7 @@ var view_layout;
             }
             this.sendConnectRequestMail(false);
             this.reSendConnectMail(false);
-            this.connectQTGateShow(false);
-            this.reSendConnectMail(false);
-            this.menuClick(3, true);
+            //this.menuClick ( 3, true )
             this.QTGateConnectActive(!this.keyPair().verified);
             this.QTGateConnectRegionActive(this.keyPair().verified);
             //      progress bar area
@@ -1566,12 +1569,14 @@ var view_layout;
                 //          connecting finished
                 case 2: {
                     this.QTGateRegionInfo(true);
+                    this.QTGconnected(true);
                     this.stopGetRegionProcessBar();
                     if (this.keyPair().verified) {
-                        return setTimeout(() => {
-                            return this.getAvaliableRegion();
-                        }, 1000);
+                        return this.showAppWindows();
                     }
+                    return;
+                }
+                case 3: {
                     return;
                 }
                 case 1: {
@@ -1594,7 +1599,8 @@ var view_layout;
         stopGetRegionProcessBar() {
             const process = $('#connectImformationProcess');
             clearTimeout(this.doingProcessBarTime);
-            return process.progress('reset');
+            process.progress('reset');
+            this.showConnectImformationProcess(false);
         }
         showActiveAccountForm() {
             this.menuClick(3, true);
@@ -1615,6 +1621,8 @@ var view_layout;
                         return doingProcessBar();
                 }, 1000);
             };
+            this.menuClick(9, true);
+            this.showConnectImformationProcess(true);
             return doingProcessBar();
         }
         showSentImapMail_waitingConnecting() {
