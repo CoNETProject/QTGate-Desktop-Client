@@ -1489,8 +1489,10 @@ module view_layout {
         public showSendImapDataConfirm = ko.observable ( false )
 
         private showAppWindows () {
-
-            return this.menuClick ( 9, true )
+            
+            this.menuClick ( 9, true )
+            $('.dimmable').dimmer ({ on: 'hover' })
+            return $('.comeSoon').popup ()
         }
 
         private qtGateConnectEvent111 (  data: IQtgateConnect ) {
@@ -2903,15 +2905,112 @@ module view_layout {
 
         public twitterClick () {
             if ( this.config() && this.config().localIpAddress && this.config().localIpAddress.length ) {
-                return linkClick ( `http://${ this.config().localIpAddress[0] }:2000/`)
+                const { shell } = require ( 'electron' )
+                event.preventDefault ()
+                return shell.openExternal ( `https://www.github.com` )
+                //return shell.openExternal ( `http://${ this.config().localIpAddress[0] }:2000/Twitter` )
             }
-            return 
+            return
         }
+
+        public QTGateAppClick () {
+            this.getAvaliableRegion ()
+            return this.menuClick ( 3, true )
+        }
+
+        public appList = ko.observableArray( appList )
     }
     
 
 }
-
+const appList = [
+    {
+        name: 'QTGate',
+        likeCount: ko.observable ( 0 ),
+        liked: ko.observable ( false ),
+        commentCount: ko.observable(),
+        titleColor: '#0066cc',
+        comeSoon: false,
+        click: ( view: view_layout.view ) => { return view.QTGateAppClick () },
+        image: '/images/qtgateGateway.png'
+    },{
+        name: 'QTChat',
+        likeCount: ko.observable (0),
+        liked: ko.observable (false),
+        commentCount: ko.observable(0),
+        titleColor: '#006600',
+        comeSoon: true,
+        image: '/images/qtchat.png',
+        click: ( view: view_layout.view ) => { return },
+    },{
+        name: 'QTStorage',
+        likeCount: ko.observable (0),
+        liked: ko.observable (false),
+        commentCount: ko.observable(0),
+        titleColor: '#990000',
+        comeSoon: true,
+        image: '/images/qtStorage.png',
+        click: ( view: view_layout.view ) => { return },
+    },{
+        name: 'QTCustom',
+        likeCount: ko.observable (0),
+        liked: ko.observable (false),
+        commentCount: ko.observable(0),
+        titleColor: '#09b83e',
+        comeSoon: false,
+        image: '/images/512x512.png',
+        click: ( view: view_layout.view ) => { return },
+    },{
+        name: 'QTGoogle',
+        likeCount: ko.observable (0),
+        liked: ko.observable (false),
+        commentCount: ko.observable(0),
+        titleColor: '#4885ed',
+        comeSoon: true,
+        image: '/images/Google__G__Logo.svg',
+        click: ( view: view_layout.view ) => { return },
+    },{
+        name: 'QTTweet',
+        likeCount: ko.observable (0),
+        liked: ko.observable (false),
+        commentCount: ko.observable(0),
+        titleColor: '#00aced',
+        comeSoon: false,
+        image: '/images/Twitter_Logo_Blue.svg',
+        click: ( view: view_layout.view ) => { 
+            const { shell } = require ( 'electron' )
+            event.preventDefault ()
+            return shell.openExternal ( `http://${ view.config().localIpAddress[0] }:2000/Twitter` )
+        },
+    },{
+        name: 'QTInstagram',
+        likeCount: ko.observable (0),
+        liked: ko.observable (false),
+        commentCount: ko.observable(0),
+        titleColor: '#cd486b',
+        image: '/images/Instagram_logo_2016.svg',
+        comeSoon: true,
+        click: ( view: view_layout.view ) => { return },
+    },{
+        name: 'QTNYTime',
+        likeCount: ko.observable (0),
+        liked: ko.observable (false),
+        commentCount: ko.observable(0),
+        titleColor: 'grey',
+        comeSoon: true,
+        image: '/images/nyt.png',
+        click: ( view: view_layout.view ) => { return },
+    },{
+        name: 'QTWeChat',
+        likeCount: ko.observable (0),
+        liked: ko.observable (false),
+        commentCount: ko.observable(0),
+        titleColor: '#09b83e',
+        comeSoon: true,
+        image: '/images/wechat.svg',
+        click: ( view: view_layout.view ) => { return },
+    }
+]
 const oneMB = 1024 * 1000
 const oneGB = 1024 * 1000 * 1000
 const oneTB = 1024 * 1000 * 1000 * 1000

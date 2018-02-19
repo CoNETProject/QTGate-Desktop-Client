@@ -1,6 +1,6 @@
 extends ../Shared/twitterLayout.pug
 block jumbotron
-    #newTwitterWindow.ui.tiny.modal( data-bind="with: twitterData().length ? twitterData()[0].twitter_verify_credentials : null" style="margin-top: -50%;!important")
+    #newTwitterWindow.ui.small.modal( data-bind="with: twitterData().length ? twitterData()[0].twitter_verify_credentials : null" style="margin-top: -50%;!important")
         .header
             .content
                 span( data-bind = " text: infoDefine [ $root.languageIndex() ].twitter.newTwitterTitle [ $root.newTwitterField().length === 1 ? 0 : 1 ]")
@@ -13,9 +13,9 @@ block jumbotron
         .image.content( style="background: rgba(171, 184, 194, 0.1);padding-bottom: 0px;")
             .ui.avatar.image
                 img( data-bind=" attr: { src: profile_image_url_https }")
-            .ui.form.description( data-bind="foreach: $root.newTwitterField " style="width: 33em;padding-left: 0.5em;")
+            .ui.form.description( data-bind="foreach: $root.newTwitterField " style="width: 100%;padding-left: 0.5em;")
                 .field
-                    .ui.icon.input
+                    .ui.icon.input( data-bind="css: { error: textAreaError ()}")
                         i.textShow.icon( style = "top: 100%; margin-top: -25px; width: 4em;")
                             span( data-bind = "visible: avaliableText() < 10, text: avaliableText(), css: { favorited: avaliableText() < 0 } " style="font-family: sans-serif;")
                             span.svgIcon( style="margin-left: 0.3em;")
@@ -25,20 +25,23 @@ block jumbotron
                     .field( data-bind="visible: images().length < 4" style = "cursor: pointer;width: 28em;")
                         .ui.left.icon.input
                             i.icon.large.photo.link( style = "margin: 0px;margin-left: -0.7em; margin-top: -0.3em;")
-                            input( type = "file" onchange="readFile ( this )" data-bind="attr: { itemIndex: $index()}" accept="image/gif,image/jpeg,image/jpg,image/png" style = "opacity: 0; margin-left: -3em;margin-top: -1em;")
+                            input( type = "file" onchange="readFile ( this )" data-bind="attr: { itemIndex: $index()}" accept="image/*" style = "opacity: 0; margin-left: -3em;margin-top: -1em;")
                     .field( data-bind="visible: $root.newTwitterField().length > 1, click: () => { $root.shownewTwitterApprove(false); return $root.deleteTweetItem ( $index()); }")
                         i.icon.trash.large.outline.tweetTrashButton( style="margin: 0px;" )
+                .field( data-bind=" visible: true")
+                    p( data-bind=" text: infoDefine [ $root.languageIndex()].twitter.imageSizeOver")
                 .fields( data-bind = "visible: images().length > 0, foreach: images ")
+                    
                     .field
                         img.ui.tiny.top.aligned.image( data-bind="attr: { src: $data }")
                         span( style = "margin-left: -1em;" data-bind = " click: () => { $parent.deleteImage( $index() ) }")
-                            i.icon.remove.circle.link
+                            i.icon.remove.big.circle.link
                         
                         
         .actions( style = "background: rgba(171, 184, 194, 0.1);")
-            .circular.ui.icon.button( data-bind = "css : { disabled: $root.addButtonDisabled ()}")
+            //-.circular.ui.icon.button( data-bind = "css : { disabled: $root.addButtonDisabled ()}")
                 i.icon.plus( data-bind = "click: () => { return $root.addNewTweet(); }" style = "color:white ")
-            .ui.twitter.button( data-bind = "text: infoDefine [ $root.languageIndex()].twitter.twitterBottonTitle [ $root.newTwitterField().length === 1 ? 0 : 1 ] ")
+            .ui.twitter.button( data-bind = "click: () => { $root.newTwitterClick() }, text: infoDefine [ $root.languageIndex()].twitter.twitterBottonTitle [ $root.newTwitterField().length === 1 ? 0 : 1 ] ")
                 i.twitter.icon
 
 block jumbotron1
@@ -135,7 +138,7 @@ block jumbotron1
                                             i.icon.big.angle.left
                                         .flapeRight
                                             i.icon.big.angle.right(style="right:-3px;")
-                                .row(data-bind="visible: retweeted_status, with: retweeted_status" style="padding: 0px;")
+                                .row( data-bind = "visible: retweeted_status, with: retweeted_status" style="padding: 0px;")
                                     .ui.grid.one.column(style="min-width: 350px;")
                                         .row( data-bind=" visible: entities && entities.user_mentions && entities.user_mentions.length")
                                             span( data-bind = " text: infoDefine [ $root.languageIndex()].twitter.replying")
@@ -216,8 +219,14 @@ block jumbotron1
                             span.favoritedLoader( data-bind = "visible: favoritedLoader_ko()" style="margin-left: 3em;")
                                 i.icon.notched.large.circle.loading( style = "color: rgba(0,0,0,0.1);")
                 .ui.divider( style="margin: 0px;")
-            
-        .content( data-bind = " visible: bottomEventLoader() " style = "padding: 4em;background-color: #0084b4" )
+            .ui.vertical.segment( data-bind="visible: !bottomEventLoader()")
+                i.ui.centered.small.image.icon.pointing.down.massive( data-bind = " click: getTimeLinesNext " style = "cursor: pointer;width: 100%;color:#00aced")
+                
+        .ui.info.message( data-bind = "visible: showLogin() && !showServerError() " style = "margin: 4em;")
+            i.close.icon
+            .header( data-bind=" html: infoDefine [ languageIndex()].twitter.urlInfo ")
+            p( data-bind = " text: `http://${ config() && config().localIpAddress && config().localIpAddress.length ? config().localIpAddress[0]: '127.0.0.1' }:2000/Twitter` ")
+        .content( data-bind = " visible: bottomEventLoader() " style = "padding: 4em;background-color: #0084b4;" )
             .ui.active.centered.inline.loader
     
 

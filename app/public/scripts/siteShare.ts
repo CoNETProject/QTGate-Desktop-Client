@@ -150,11 +150,12 @@ const infoDefine = [
             month:'月',
             day:'日',
             replying: '回复: ',
-            newTwitterDistroyButtonTitle: ['放弃这条推文','舍弃此对话串'],
+            newTwitterDistroyButtonTitle: ['放弃推文','舍弃对话串'],
             returnEdit: '回编辑',
             close:'关闭',
             newTwitterTitle: ['撰写新推文','撰写新对话串'],
             twitterBottonTitle:['发推','全部发推'],
+            urlInfo: '<h3>推特客户端预览版</h3><p>QTGate用户可以无限量免费使用此客户端，免翻墙(不使用VPN，不用连结QTGate代理服务器)匿名访问(您的真实IP地址不会泄露给推特)您的推特账户。</p><p>其他设备可以输入以下网址打开此APP应用</p>',
             accountError:'推特回送错误信息提示：您输入的APP应用设定信息有误。请检查您的推特APP信息后再试。'
         },
 
@@ -557,9 +558,23 @@ const infoDefine = [
         },
 
         thirdParty: {
+            comesoon:'即将推出',
             information: 'QTG平台的应用程序',
             qtgateGateway: 'QTGate提供的高质量上网技术iOPN和@OPN，在QTGate全球16个区域，当场定制您专属的代理服务器，变换您的IP地址隐身无障碍的访问互联网',
-            app:['Q梯', 'Q信', 'QT石洞','QT谷歌客户端','QT推特客户端','QTInstagram客户端','QT纽时客户端','QT微信客户端'],
+            app:['Q梯', 'Q信', 'QT石洞','QT平台业务定制','QT谷歌','QT推特','QT Instagram','QT纽时','QT微信'],
+            
+            dimmer: [
+                'QTGate提供的高质量定制代理服务器业务，能够让您隐身安全的不受别人注意的网上冲浪。',
+                'QTGate提供的推特风格隐身匿名不被封锁的社交媒体',
+                'QTGate提供的安全隐私文件存储系统',
+                'QTGate承接定制各类公众服务类及跨国企业私有APP业务',
+                'QTGate提供的免VPN免代理谷歌检索客户端',
+                'QTGate提供的免VPN免代理推特客户端',
+                'QTGate提供的免VPN免代理Instagram客户端',
+                'QTGate提供的免VPN免代理纽约时报客户端',
+                'QTGate提供的隐身微信客户端，可点对点加密通讯',
+                
+            ]
         }, 
 
         useInfoAndroid: {
@@ -660,13 +675,14 @@ const infoDefine = [
 
         QTGateGateway: {
             title: 'QTGate服务使用详细',
-            processing: '正在尝试连接QTGate代理服务器...',
+            processing: '正在尝试连接QTG网络...',
             error: [ '错误：您的账号下已经有一个正在使用QTGate代理服务器的连接，请先把它断开后再尝试连接。',
                     '错误：您的账号已经无可使用流量，如果您需要继续使用QTGate代理服务器，请升级您的账户类型。如果是免费用户已经使用当天100M流量，请等待到明天继续使用，如您是免费用户已经用完当月1G流量，请等待到下月继续使用。',
                     '错误：数据错误，请退出并重新启动QTGate！',
                     '非常抱歉，您请求的代理区域无资源，请选择其他区域或稍后再试',
                     '对不起，您所请求连接的区域不支持这样的连接技术，请换其他连接方法或选择其他区域连接'],
             connected:'已连接。',
+            
             upgrade:'升级账号',
             userType:['免费用户','付费用户'],
             datatransferToday:'日流量限额：',
@@ -724,13 +740,28 @@ const infoDefine = [
             returnEdit: '中止破棄',
             newTwitterDistroyButtonTitle: ['ツイートを破棄','スレッドを破棄'],
             twitterBottonTitle:['ツイート','すべてツイート'],
+            urlInfo: '<h3>QTGateからのツイートクライアントのプレビュー版</h3><p>VPNやQTGateのゲートウェイなど経由しなくて、QTGateユーザはご自分のツイートアカウトにファイヤウォールを回避し安全匿名に無料無制限アクセスができます。</p><p>以下のURLを入力するとセルフォンやその他のデバイスもこちらのアプリケーションで楽しめます。</p>',
             accountError:'ツイートがアカンウトAPPインフォーメーションにエラーがありまして、通信を拒否されました、APPインフォーメーションをチェックしてください。'
         },
         
         thirdParty: {
-            information: 'QTGateプラットフォームアプリケーション',
+            comesoon:'まもなく登場します。',
+            information: 'QTGプラットフォームアプリケーション',
             qtgateGateway:'QTGateご提供する高品質ゲットウェイサービス、グローバルに１６区域とQTGate独自のiOPNと@OPN技術により、貴方のIPアドレスをカバーして、静かに無障害にインターネットの世界へ可能です。',
-            app:['QTGate', 'QTChat', 'QTStorage','QT for Tweet','QT for Google','QT for Instagram','QT for NY Time','QT for WeChat'],
+            app:['QTGate', 'QTChat', 'QTStorage','QTカスタム業務','QT for Google','QT for Tweet','QT for Instagram','QT for NY Time','QT for WeChat'],
+            
+            dimmer: [
+                'QTGateご提供する高品質ゲットウェイサービス、静かに無障害にインターネットの世界へ可能です。',
+                'QTGateご提供するツイートスタイルの匿名ソーシャルメディア',
+                'QTGateご提供する匿名ファイルプライバシーストレージ',
+                'QTGateプラットフォームに公衆及び私有ビジネスAPPの作成業務',
+                'QTGateご提供するVPN不要あなたのIPアドレスをカバーして匿名Googleサーチ端末',
+                'QTGateご提供するVPN不要あなたのIPアドレスをカバーして匿名Tweet端末',
+                'QTGateご提供するVPN不要あなたのIPアドレスをカバーして匿名Instagram端末',
+                'QTGateご提供するVPN不要あなたのIPアドレスをカバーして匿名NY Time端末',
+                'QTGateご提供するVPN不要あなたのIPアドレスをカバーして匿名WeChat端末',
+                
+            ]
         }, 
         account:{
             paymentSuccessTitile: '有難うございました。',
@@ -1246,7 +1277,7 @@ const infoDefine = [
 
         QTGateGateway: {
             title: 'QTGateサービス使用詳細',
-            processing: 'QTGateゲットウェイへ接続中...',
+            processing: 'QTGネットワークへ接続中...',
             error: ['エラー：あなたのアカンウトに既にQTGateゲットウェイに接続しているクライアントがありますが、その接続を退出してからもう一度接続してください。',
                     'エラー：あなたのアカンウトにQTGateゲットウェイデータ通信制限になっております。もし引き続きご利用を頂きたいなら、アカンウトをアップグレードにしてください。フリーアカウントの場合は毎日100M、毎月1GBの通信制限があります。',
                     'エラー：データフォーマットエラー、QTGateをリスタートしてください。','ごめんなさい、ご請求したゲットウェイエリアは準備中です。そのたのエリアを選ぶか、後ほど接続をしてください。',
@@ -1303,14 +1334,29 @@ const infoDefine = [
             returnEdit: 'Cancel',
             replying: 'Replying to ',
             twitterBottonTitle: ['Tweet', 'Tweet all'],
-            newTwitterDistroyButtonTitle: ['Discard this Tweet','Discard this thread'],
+            urlInfo: '<h3>Twitter client previwe version from QTGate.</h3><p>A free and no need VPN or QTGate gateway, anonymous and securety via QTGate network access your Twitter account.</p><p>You also may open this App with URL from your cellphone and other device.</p>',
+            newTwitterDistroyButtonTitle: ['Discard','Discard'],
             
             accountError:'Twitter return error: Invalid or expired token. error. Please check your account APP information and try again.'
         },
         thirdParty: {
-            information: 'QTG platform APP list.',
+            information: 'QTG platform APPs.',
+            comesoon:'Come soon.',
             qtgateGateway: 'QTGate gateway service. High speed, total privacy, ultra secure and easy to use. Your gateway to a secure and open internet.',
-            app:['QTGate', 'QTChat', 'QTStorage','QT for Tweet','QT for Google','QT for Instagram','QT for NY Time','QT for WeChat'],
+            app:['QTGate', 'QTChat', 'QTStorage','QT Custom','QT for Google','QT for Tweet','QT for Instagram','QT for NY Time','QT for WeChat'],
+            
+            dimmer: [
+                'QTGate gateway service. High speed, to a secure and open internet.',
+                'Private and secure, Tweet style social media.',
+                'The secure and Private cloud storage and file sharing.',
+                'QTGate provate custom business for public and private APP.',
+                'Privacy Google search client without VPN.',
+                'Privacy Tweet client without VPN.',
+                'Privacy Instagram client without VPN.',
+                'Privacy NY Time client without VPN.',
+                'Privacy WeChat client without VPN.',
+                
+            ]
         }, 
         account:{
             QTGatePayRisk: 'Your payment will be processed via QTGate’s secured payment portal. If concerned about privacy, Please use the Stripe payment portal.',
@@ -1864,7 +1910,7 @@ const infoDefine = [
 
         QTGateGateway: {
             title: 'QTGate service user detail',
-            processing: 'Trying to connect to QTGate gateway...',
+            processing: 'Trying to connect to QTG network...',
             error: ['Error: Your account has a connection that is using the QTGate proxy server. Please disconnect it before attempting to connect again.',
                     'Error: Bandwidth maximum. If you would like to continue using OPN, please upgrade your account. Free accounts have a bandwidth maximum of 100MB per a day, 1 GB every month.',
                     'Error: Data format error. Please restart QTGate.','Error: This area does not have the resources. Please select another area or try connecting again later.',
@@ -1923,14 +1969,29 @@ const infoDefine = [
             twitterBottonTitle:['發推','全部發推'],
             newTwitterTitle: ['撰写新推文','撰写新对话串'],
             returnEdit: '回編輯',
-            newTwitterDistroyButtonTitle: ['放棄這條推文','捨棄此對話串'],
+            newTwitterDistroyButtonTitle: ['放棄推文','捨棄對話串'],
+            urlInfo: '<h3>推特客户端預覽版</h3><p>QTGate用戶可以无限量免费使用此客戶端，免翻牆(不使用VPN，不用連結QTGate代理服務器)匿名訪問(您的真實IP地址不會洩露給推特)您的推特帳戶。</p><p>其他设备可以输入以下网址打开此APP应用</p>',
             accountError:'推特回送錯誤信息提示：您輸入的APP應用設定信息有誤。請檢查您的推特APP信息後再試。'
             
         },
         thirdParty: {
             information: 'QTG匿名平台應用程序',
-            app:['Q梯','Q信','QT石洞','QT谷歌客戶端','QT推特客戶端','QTnstagram客戶端','QT紐時客戶端','QT微信客戶端'],
-            qtgateGateway: 'QTGate提供的高質量上網技術iOPN和@OPN，在QTGate全球16個區域，當場定制您專屬的代理服務器，變換您的IP地址隱身無障礙的訪問互聯網'
+            comesoon:'即將登場',
+            app:['Q梯','Q信','QT石洞','QT平台業務訂製','QT谷歌','QT推特','QT Instagram','QT紐時','QT微信'],
+            qtgateGateway: 'QTGate提供的高質量上網技術iOPN和@OPN，在QTGate全球16個區域，當場定制您專屬的代理服務器，變換您的IP地址隱身無障礙的訪問互聯網',
+            
+            dimmer: [
+                'QTGate提供的高質量定制代理服務器業務，能夠讓您隱身安全的不受別人注意的網上沖浪。 ',
+                'QTGate提供的推特風格隱身匿名不被封鎖的社交媒體',
+                'QTGate提供的安全隱私文件存儲系統',
+                'QTGate承接定制各類公眾服務類及跨國企業私有APP業務',
+                'QTGate提供的免VPN免代理谷歌檢索客戶端',
+                'QTGate提供的免VPN免代理推特客戶端',
+                'QTGate提供的免VPN免代理Instagram客戶端',
+                'QTGate提供的免VPN免代理紐約時報客戶端',
+                'QTGate提供的隱身微信客戶端，可點對點加密通訊',
+                
+            ]
         }, 
         account:{
             QTGatePayRisk:'使用QTGate安全網關支付，如果您有安全疑慮，請使用Stript安全網關支付。',
@@ -2428,7 +2489,7 @@ const infoDefine = [
         QTGateGateway: {
             title: 'QTGate服務使用詳細',
             
-            processing: '正在嘗試连接QTGate代理服务器...',
+            processing: '正在嘗試连接QTG網絡...',
             error: ['錯誤：您的賬號下已經有一個正在使用QTGate代理伺服器的連接，請先把它斷開後再嘗試連接。', '錯誤：您的賬號已經無可使用流量，如果您需要繼續使用QTGate代理伺服器，請升級您的賬戶類型。如果是免費用戶已經使用當天100M流量，請等待到明天繼續使用，如您是免費用戶已經用完當月1G流量，請等待到下月繼續使用。',
                     '錯誤：數據錯誤，請退出並重新啟動QTGate！','非常抱歉，您請求的代理區域無資源，請選擇其他區域或稍後再試','對不起，您所請求連接的區域不支持這樣的連接技術，請換其他連接方法或選擇其他區域連接'],
             connected:'已連接。',

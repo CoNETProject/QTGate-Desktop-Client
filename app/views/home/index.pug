@@ -180,13 +180,13 @@ block jumbotron1
 						.menuItem
 							i.cloud.upload.icon.large.violet
 					//-		QTGate message
-					a.item( data-bind = "css:{ active: MenuItems() [9]}, click: () => { return menuClick ( 9, false )}, visible: keyPair().verified && QTGateConnectRegionActive() ")
+					a.item( data-bind = "css:{ active: MenuItems() [9]}, click: () => { return menuClick ( 9, true )}, visible: keyPair().verified && QTGateConnectRegionActive() ")
 						.menuItem
 							i.share.alternate.icon.large.olive
 					a.item( data-bind = "css:{ active: MenuItems() [5]}, click: () => { return menuClick ( 5, false )}, visible: false")
 						.menuItem
 							i.talk.outline.icon.large.pink
-					a.item( data-bind = "css:{ active: MenuItems() [8]}, visible: keyPair().verified && ! QTGateRegionInfo() && ( QTGateConnectActive() || QTGateConnectRegionActive()), click: () => { return menuClick ( 8, true )}")
+					//-a.item( data-bind = "css:{ active: MenuItems() [8]}, visible: keyPair().verified && ! QTGateRegionInfo() && ( QTGateConnectActive() || QTGateConnectRegionActive()), click: () => { return menuClick ( 8, true )}")
 						.menuItem
 							i.icon.handshake.large.orange
 					a.item( data-bind = "css:{ active: MenuItems() [6]}, click: () => { return menuClick ( 6, true )}")
@@ -1087,6 +1087,8 @@ block jumbotron1
 									.ui.basic.red.button( data-bind = " text: infoDefine [ languageIndex() ].home_index_view.cancel, click: () => { selectedQTGateRegionCancel (); selectedQTGateRegion().error(-1)}, clickBubble: false" )
 									.ui.basic.green.button( data-bind = "text: infoDefine [ languageIndex() ].qtGateView.title, click: QTGateGatewayConnectRequest " )
 			.content( data-bind="visible: MenuItems()[4]")
+				.ui.vertical.segment
+					
 			.content( data-bind="visible: MenuItems()[5]")
 			.content( data-bind="visible: MenuItems()[7]")
 				.ui.red.segment( style=" margin: 5em;")
@@ -1099,39 +1101,27 @@ block jumbotron1
 						.bar
 				.appList( data-bind = " visible: !showConnectImformationProcess()")
 					h4( data-bind = "text: infoDefine[ languageIndex() ].thirdParty.information" style="color: #B5CC18;")
-					.ui.link.cards( style = " margin-top: 0.5em; ")
-						.card( style = "max-width: 11em;")
-							.content( data-bind = "click: ()=> { menuClick ( 3, true )} ")
-								img.ui.centered.tiny.image.appCardImage( src="/images/qtgateGateway.png")
-								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[0]")
-						.card( style = "max-width: 11em;")
+					.ui.link.cards( data-bind="foreach: appList " style = " margin-top: 0.5em; ")
+						
+						.card.AppCardTop( data-bind = "click: () => { click( $root )} ")
+							.content.cardContentHeader
+								a.ui.orange.right.corner.label.comeSoon( data-bind = "visible: comeSoon, attr: { 'data-content': infoDefine[ $root.languageIndex() ].thirdParty.comesoon }")
+									i.icon.warning.sign
+								.header( data-bind = " text: infoDefine[ $root.languageIndex() ].thirdParty.app[ $index()], style: { color: titleColor }" style="font-size: 1em;")
+							.blurring.dimmable.image
+								.ui.dimmer
+									.content
+										p(data-bind="text: infoDefine[ $root.languageIndex() ].thirdParty.dimmer[$index()]")
+								.image.AppCardImageArea
+									img.ui.centered.tiny.image.AppCardImage( data-bind = "attr:{ src: image }" style="width: 6em;height: 6em;")
 							.content
-								img.ui.centered.tiny.image.appCardImage( src="/images/qtchat.png")
-								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[1]")
-						.card( style = "max-width: 11em;")
-							.content
-								img.ui.centered.tiny.image.appCardImage( src="/images/qtStorage.png")
-								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[2]")
-						.card( style = "max-width: 11em;")
-							.content( data-bind = "click: ()=> { menuClick ( 3, true )} ")
-								img.ui.centered.tiny.image.appCardImage( src="/images/Twitter_Logo_Blue.svg")
-								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[3]")
-						.card( style = "max-width: 11em;")
-							.content( data-bind = "click: ()=> { menuClick ( 3, true )} ")
-								img.ui.centered.tiny.image.appCardImage( src="/images/Google__G__Logo.svg")
-								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[4]")
-						.card( style = "max-width: 11em;")
-							.content
-								img.ui.centered.tiny.image.appCardImage( src="/images/Instagram_logo_2016.svg")
-								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[5]")
-						.card( style = "max-width: 11em;")
-							.content
-								img.ui.centered.tiny.image.appCardImage( src="/images/nyt.png")
-								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[6]")
-						.card( style = "max-width: 11em;")
-							.content( data-bind = "click: ()=> { menuClick ( 3, true )} ")
-								img.ui.centered.tiny.image.appCardImage( src="/images/wechat.svg")
-								p.meta( data-bind="text: infoDefine[ languageIndex() ].thirdParty.app[7]")
+								//-span.right.floated
+									i.heart.red.like.icon( data-bind="css: { outline: !liked()}")
+									span( data-bind = "text: likeCount()" style="color: #DB2828")
+								//-span.floated
+									i.comment.grey.icon.outline
+									span( data-bind="text: commentCount")
+				
 						
 
 	.ui.basic.modal
@@ -1143,4 +1133,3 @@ block jumbotron1
 		.actions
 			.ui.red.inverted.button( data-bind=" text: infoDefine [ languageIndex() ].linuxUpdate.exit, click: exit, visible:!hacked() ")
 				
-

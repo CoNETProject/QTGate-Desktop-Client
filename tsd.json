@@ -52,6 +52,9 @@
     },
     "types/knockout/index.d.ts": {
       "commit": "d537c6b050f65866900b5b99f9f2bedb64125e45"
+    },
+    "types/twitter-text/index.d.ts": {
+      "commit": "628c63919ccf65554f6178755944d488c95369a1"
     }
   }
 }

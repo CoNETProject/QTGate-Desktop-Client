@@ -817,6 +817,9 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
     max-width: 90%;
    }
 }
+@media only screen and (min-width: 992px) {
+  
+}
 
 @media screen and ( max-width: 801px ) {
   .TimelinesView {
@@ -855,7 +858,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
     margin: 0px auto;
   }
   .itemContent {
-    max-width:550px;
+    max-width:530px;
   }
 }
 .flapLeft, .flapeRight {
@@ -904,7 +907,7 @@ color: rgba(0, 0, 0, 0.6)!important;
   position: absolute;
 }
 .ui.modal {
-  top: 20%;
+  top: 15em;
   width: 600px;
 }
 #QTGateStartScreen{
@@ -928,11 +931,18 @@ color: rgba(0, 0, 0, 0.6)!important;
 
 }
 #QTGateStartScreen-Drive .VideoBox .iframe {
-
   overflow: hidden;
   border-radius: 25px;
 }
-
-.appCardImage {
-  max-height: 6.5em;
+.AppCardTop {
+   max-width: 11em!important;
+}
+.AppCardImageArea {
+  background: white!important;
+}
+.AppCardImage {
+    max-width: 6em!important;
+}
+.cardContentHeader {
+    max-height: 3em;
 }

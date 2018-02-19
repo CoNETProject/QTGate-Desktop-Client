@@ -428,3 +428,15 @@ interface twitter_post {
     truncated: boolean
     user: Twitter_verify_credentials
 }
+interface twitter_mediaData {
+	total_bytes: number
+	media_type: string
+    rawData: string
+    media_id_string: string
+}
+
+interface twitter_postData {
+    text: string,
+    images: string[],
+    media_data: twitter_mediaData[]
+}

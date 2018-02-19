@@ -13,6 +13,11 @@ import LocalServer from './localServer'
 import * as openpgp from 'openpgp'
 import * as Https from 'https'
 import * as Util from 'util'
+import * as Jimp from 'jimp'
+
+import * as Twitter from 'twitter'
+import * as Twitter_text from 'twitter-text'
+
 
 const QTGateFolder = Path.join ( Os.homedir(), '.QTGate' )
 const Twitter_root = Path.join ( QTGateFolder, 'twitter' )
@@ -20,9 +25,11 @@ const view_root = Path.join ( __dirname, 'views' )
 const ErrorLogFile = Path.join ( QTGateFolder, 'twitter.log')
 let flag = 'w'
 const configPath = Path.join ( QTGateFolder, 'config.json' )
-const twitterListenPort = 2001
+const twitterListenPort = 2000
 const twitterDataFileName = Path.join ( QTGateFolder, 'twitterData.pem' )
-
+const maxImageLength = 1024 * 1000 * 5
+const tweetImageMaxWidth = 1024
+const tweetImageMaxHeight = 512
 const saveLog = ( log: string ) => {
 
     const Fs = require ('fs')
@@ -174,6 +181,18 @@ export default class twitter1 {
 			return this.setFavorited ( account, id, favorited, CallBack )
 		})
 
+		socket.on ( 'twitter_postNewTweet', ( account: TwitterAccount, postData: twitter_postData[], CallBack ) => {
+			if ( !account || !postData.length ) {
+				return CallBack ('format error!')
+			}
+			delete account[ 'twitter_verify_credentials']
+			return this.postTweet ( account, postData[0], CallBack )
+		})
+
+		socket.on ( 'getTwitterTextLength', ( twitterText: string, CallBack ) => {
+			return CallBack ( Twitter_text.parseTweet ( twitterText ))
+		})
+
 		return socket.on ( 'saveAccounts', ( twitterAccounts: TwitterAccount[] ) => {
 			this.twitterData = twitterAccounts
 			return this.saveTwitterData ( err => {
@@ -185,6 +204,168 @@ export default class twitter1 {
 
 
 		
+	}
+
+	private getMedia1 ( mediaData: string, CallBack ) {
+		
+		const media = mediaData.split(',')
+		const type = media[0].split(';')[0].split (':')[1]
+		const _media = Buffer.from ( media[1], 'base64')
+		const ret: twitter_mediaData = {
+			total_bytes: media[1].length,
+			media_type: type,
+			rawData: media[1],
+			media_id_string: null
+		}
+		
+		//if ( mediaData.length > maxImageLength) {
+			const exportImage = ( _type, img ) => {
+				return img.getBuffer ( _type, ( err, _buf: Buffer ) => {
+					if ( err ) {
+						return CallBack ( err )
+					}
+					ret.rawData = _buf.toString( 'base64' )
+					ret.total_bytes = _buf.length
+
+					return CallBack ( null, ret )
+				})
+			}
+			return Jimp.read ( _media, ( err, image ) => {
+				if ( err ) {
+					return CallBack ( err )
+				}
+				const uu = image.bitmap
+				if ( uu.height > uu.width ) {
+					image.resize ( Jimp.AUTO, tweetImageMaxHeight )
+				} else {
+					image.resize ( tweetImageMaxWidth, Jimp.AUTO )
+				}
+				if ( /\/PNG/i.test ( type )) {
+					return image.deflateStrategy ( 1, () => {
+						return exportImage ( type, image )
+					})
+				}
+				if ( /\/(JPEG|JPG)/i.test ( type )) {
+					return image.quality ( 100, () => {
+						return exportImage ( type, image )
+					})
+				}
+				//		BMP and all other to PNG
+				ret.media_type = 'image/png'
+				return image.deflateStrategy ( 4, () => {
+					return exportImage ( ret.media_type, image )
+				})
+			})
+		//}
+		
+		//return CallBack ( null, ret )
+		
+	}
+
+	private waitingMediaUpdataStatusSuccess ( client, media_id: string, CallBack ) {
+		
+		return client.post ( 'media/upload', { command: 'STATUS', media_id: media_id }, ( err, status: twitter_uploadImageInitData_status ) => {
+			if ( err ) {
+				return CallBack ( err )
+			}
+			const process = status.processing_info
+			if ( process.error ) {
+				return CallBack ( new Error ( status.processing_info.error.message ))
+			}
+			if ( process.state === 'succeeded') {
+				return CallBack ()
+			}
+			console.log ( `waitingMediaUpdataStatusSuccess status = [${ process.state }] doing check again! [${ process.check_after_secs }]`)
+			return setTimeout (() => {
+				return this.waitingMediaUpdataStatusSuccess ( client, media_id, CallBack )
+			}, process.check_after_secs )
+			
+		})
+	}
+	private _mediaUpdata ( client, mediaData: twitter_mediaData, CallBack ) {
+		
+		return Async.waterfall ([
+			next => {
+				client.post ('media/upload',{ command: 'INIT', total_bytes: mediaData.total_bytes, media_type: mediaData.media_type }, next )
+			},
+			( tweet: twitter_uploadImageInitData, response, next ) => {
+				mediaData.media_id_string = tweet.media_id_string
+				return client.post ( 'media/upload', { command: 'APPEND', media_id: mediaData.media_id_string, media_data: mediaData.rawData, segment_index: 0 }, next )
+			},
+			( a, b, next ) => {
+				return client.post ( 'media/upload', { command: 'FINALIZE', media_id: mediaData.media_id_string }, next )
+			},
+			( status: twitter_uploadImageInitData_status, b, next ) => {
+				if ( !status.processing_info ) {
+					return next ()
+				}
+				return this.waitingMediaUpdataStatusSuccess ( client, mediaData.media_id_string, next )
+			}
+		], CallBack )
+		
+	}
+
+	private _uploadMedia ( account: TwitterAccount, data: twitter_postData, CallBack ) {
+		const client = Twitter ( account )
+		
+			return Async.eachSeries ( data.media_data, ( nn, _next ) => {
+				return this._mediaUpdata ( client, nn, _next )
+			}, ( err, mediaData: twitter_uploadImageInitData[]) => {
+				if ( err ) {
+					return CallBack ( err )
+				}
+				const option = {
+					status: data.text,
+					media_ids: ''
+				}
+				let comm = 0
+				data.media_data.forEach ( n => {
+					if ( comm ++ > 0 ) {
+						option.media_ids += ','
+					}
+					return option.media_ids += `${ n.media_id_string }`
+				})
+				
+				client.post ( 'statuses/update', option, ( err1, twReturn, req ) => {
+					if ( err1 ) {
+						return CallBack ( err1 )
+					}
+					return CallBack ( null, twReturn )
+				})
+			})
+		
+		
+	}
+
+	private _uploadMedia1 ( data: twitter_postData, CallBack ) {
+		return Async.eachSeries ( data.media_data, ( nn, _next ) => {
+			
+		})
+	}
+
+	private postTweet ( account: TwitterAccount, postData: twitter_postData, Callback ) {
+		if ( postData.images && postData.images.length ) {
+			postData.media_data = []
+			
+			return Async.eachSeries ( postData.images, ( n, next ) => {
+				return this.getMedia1 ( n, ( err, data: twitter_mediaData ) => {
+					if ( err ) {
+						return next ( err )
+					}
+					postData.media_data.push ( data )
+					return next ()
+				})
+			}, err => {
+				if ( err ) {
+					return Callback ( err )
+				}
+				return this._uploadMedia ( account, postData, Callback )
+			})
+			
+
+		}
+		
+		return this._uploadMedia ( account, postData, Callback )
 	}
 
     private socketConnectListen ( socket: SocketIOClient.Socket ) {
@@ -229,7 +410,7 @@ export default class twitter1 {
 		this.ex_app.use ( Express.static ( Twitter_root ))
         this.ex_app.use ( Express.static ( Path.join ( __dirname, 'public' )))
 
-        this.ex_app.get ( '/', ( req, res ) => {
+        this.ex_app.get ( '/Twitter', ( req, res ) => {
             res.render( 'twitter', { title: 'twitter' })
 		})
 
@@ -376,7 +557,36 @@ export default class twitter1 {
 	}
 
 }
+interface twitter_uploadImageInitData_imageObj {
+	image_type: string
+	w: number
+	h: number
+}
+interface twitter_uploadImageInitData {
+	media_id: number
+	media_id_string: string
+	size: number
+	expires_after_secs: number
+	image: twitter_uploadImageInitData_imageObj
+}
 
+interface twitter_uploadImageInitData_status_processing_info {
+	state: string					//				in_progress, failed, succeeded
+	check_after_secs: number
+	progress_percent: number
+	error?: {
+		code: number
+		name: string
+		message: string
+	}
+}
+
+interface twitter_uploadImageInitData_status {
+	media_id: number
+	media_id_string: string
+	expires_after_secs: number
+	processing_info: twitter_uploadImageInitData_status_processing_info
+}
 const getUrlBuffer = ( url: string, CallBack ) => {
     return Https.get ( url, res => {
         const { statusCode } = res

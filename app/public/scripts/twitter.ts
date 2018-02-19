@@ -63,7 +63,7 @@ const getTimeFromCreate = ( created_at: string, twitter: twitter_layout.twitter 
     }
     return `${ create.getMonth() }${ infoDefine[ twitter.languageIndex()].twitter.month }${create.getDay()}${ infoDefine[ twitter.languageIndex()].twitter.day }`
 }
-
+/*
 const bottomEvent = ( CallBack ) => {
 	const win = $( window )
 	const _document = $( document )
@@ -79,9 +79,31 @@ const bottomEvent = ( CallBack ) => {
 		}
 	})
 }
-
+*/
 const initDashoffset = 50.2655
 const twitterMaxTextCount = 280
+const maxWidth = 2048
+const MaxHeight = 2048
+const convertSvgToPng = ( svgUrlData: string, CallBack ) => {
+    
+    let image = new Image()
+    image.onload = () => {
+        const canvas = document.createElement ( 'canvas' )
+        let height = MaxHeight
+        let width = maxWidth
+        if ( image.naturalHeight > image.naturalWidth ) {
+            width = Math.round (( image.naturalWidth / image.naturalHeight ) * MaxHeight )
+        } else {
+            height = Math.round (( image.naturalHeight / image.naturalWidth ) * maxWidth )
+        }
+        canvas.height = height
+        canvas.width = width
+        canvas.getContext ('2d').drawImage ( image, 0, 0, width, height )
+        CallBack ( canvas.toDataURL ( 'image/png' ))
+    }
+    return image.src = svgUrlData
+}
+
 const readFile = ( ee ) => {
     if ( !ee ) {
         return 
@@ -90,16 +112,34 @@ const readFile = ( ee ) => {
     if ( ! file.type.match( /image.*/ )) {
         return
     }
-    const uu = parseInt ($( ee ).attr( 'itemIndex' ))
+    const uu = parseInt ( $( ee ).attr( 'itemIndex' ))
     const item = twitter_view.newTwitterField()[ uu ]
     const reader = new FileReader()
     reader.onload = e => {
-        const rawData: Buffer = reader.result
+        const rawData: string = reader.result
+        const type = rawData.split(',')[0].split(':')[1]
+        if ( /\/svg/i.test( type )) {
+            return convertSvgToPng ( rawData, _data => {
+                item.images.push ( _data )
+                return twitter_view.checkNewTwrrtWindowClosable ()
+            })
+        }
         item.images.push ( rawData )
         return twitter_view.checkNewTwrrtWindowClosable ()
     }
     return reader.readAsDataURL( file )
 }
+
+interface twitter_text_parseTweet {
+    weightedLength: number
+    valid: boolean
+    permillage: number
+    validRangeStart: number
+    validRangeEnd: number
+    displayRangeStart: number
+    displayRangeEnd: number
+}
+
 module twitter_layout {
     export class twitterField {
         public inputText = ko.observable ('')
@@ -112,37 +152,70 @@ module twitter_layout {
         public files = ko.observable ('')
         public uuid = uuid_generate()
         public images = ko.observableArray ([])
+        private twitterLength = 0
+        private lastTextlength = 0
+        public textAreaError = ko.observable ( false )
         constructor ( private twitter: twitter ) {
-            this.inputText.subscribe ( n => {
-                
+            this.inputText.subscribe ( ns => {
+                this.textAreaError ( false )
                 const uu = twitter.newTwitterField()
-                if ( n.length === 0 && this.images().length === 0 && uu.length > 1 ) {
+                if ( ns.length === 0 && this.images().length === 0 && uu.length > 1 ) {
                     const index = this.twitter.newTwitterField().findIndex ( nn => { return nn.uuid === this.uuid })
                     if ( index > -1 ) {
                         return this.twitter.newTwitterField.splice ( index, 1 )
                     }
                     return
                 }
-                this.stroke_dashoffset ( initDashoffset * ( 1 - n.length / 280 ))
-                this.stroke_dashoffset_showDanger ( false )
-                this.stroke_dashoffset_showSafe ( true )
-                this.twitter.shownewTwitterApprove ( false )
-                this.avaliableText ( twitterMaxTextCount - n.length )
+                const CallBack = () => {
+                    this.stroke_dashoffset ( initDashoffset * ( 1 - this.twitterLength / 280 ))
+                    this.stroke_dashoffset_showDanger ( false )
+                    this.stroke_dashoffset_showSafe ( true )
+                    this.twitter.shownewTwitterApprove ( false )
+                    this.avaliableText ( twitterMaxTextCount - this.twitterLength )
+                    
+                    if ( this.twitterLength  > 270 ) {
+                        this.stroke_dashoffset_showSafe ( false )
+                    }
+                    if ( this.twitterLength > 280 ) {
+                        this.stroke_dashoffset_showDanger ( true )
+                    }
+                    const lastRecordTextLength = uu[ uu.length - 1 ].inputText()
+                    twitter.checkNewTwrrtWindowClosable ()
+                    if ( lastRecordTextLength ) {
+                        return twitter.addButtonDisabled ( false )
+                    }
+                    return twitter.addButtonDisabled ( true )
+                }
+                if ( this.lastTextlength < ns.length ) {
+                    if ( ns.length - this.lastTextlength > 1 || / $/.test ( ns )) {
+                        return socketIo.emit ( 'getTwitterTextLength', ns, ( twTextObj: twitter_text_parseTweet ) => {
+                            if ( !twTextObj.valid ) {
+                                this.textAreaError ( true )
+                            }
+                            this.twitterLength = twTextObj.weightedLength
+                            CallBack ()
+                        })
+                    }
+                    this.lastTextlength = ns.length
+                    this.twitterLength += 1
+                    return CallBack ()
+                }
+                if ( this.lastTextlength - ns.length > 1 || / $/.test ( ns )) {
+                    return socketIo.emit ( 'getTwitterTextLength', ns, ( twTextObj: twitter_text_parseTweet ) => {
+                        if ( !twTextObj.valid ) {
+                            this.textAreaError ( true )
+                        }
+                        this.twitterLength = twTextObj.weightedLength
+                        CallBack ()
+                    })
+                }
+                this.lastTextlength = ns.length
+                this.twitterLength -= 1
+                return CallBack ()
                 
-                if ( n.length > 270 ) {
-                    this.stroke_dashoffset_showSafe ( false )
-                }
-                if ( n.length > 280 ) {
-                    this.stroke_dashoffset_showDanger ( true )
-                }
-                const lastRecordTextLength = uu[ uu.length - 1 ].inputText()
-                twitter.checkNewTwrrtWindowClosable ()
-                if ( lastRecordTextLength ) {
-                    return twitter.addButtonDisabled ( false )
-                }
-                return twitter.addButtonDisabled ( true )
             })
         }
+
         public textAreaClick () {
             this.twitter.newTwitterField().forEach (n => {
                 n.showToolBar ( false )
@@ -189,6 +262,7 @@ module twitter_layout {
         public addButtonDisabled = ko.observable ( true )
         public showDistroynewTwitter = ko.observable ( true )
         public shownewTwitterApprove = ko.observable ( false )
+        
         public config: KnockoutObservable < install_config> = ko.observable ({
             firstRun: true,
             alreadyInit: false,
@@ -211,8 +285,60 @@ module twitter_layout {
             lastConnectType: 1
         })
 
+        private requestNewTimelinesCount = 0
         public QTGateConnect1 = ko.observable ('')
         private bottomEventLoader = ko.observable ( false )
+
+        private twitterPostReturn ( data: twitter_post ) {
+            if ( ++this.requestNewTimelinesCount === 20 ) {
+                this.bottomEventLoader( false )
+            }
+            const index = this.currentTimelines().findIndex( n => { return n.id_str === data.id_str })
+            if ( index > -1 ) {
+                this.currentTimelines.splice ( index, 1 )
+            }
+            data.QTGate_created_at = ko.computed(() => {
+                return getTimeFromCreate( data.created_at, this )
+            }) 
+            
+            data.quoted_status = data.quoted_status || null
+            if ( data.quoted_status ) {
+                data.quoted_status.extended_entities = data.quoted_status.extended_entities || null
+
+                const user = data.quoted_status.entities && data.quoted_status.entities.user_mentions && data.quoted_status.entities.user_mentions.length ? data.quoted_status.entities.user_mentions : null
+                data.quoted_status.full_text_split_line = splitLine ( user, data.quoted_status.full_text ) 
+            }
+            data.retweeted_status = data.retweeted_status || null
+
+            if ( data.retweeted_status ) {
+                data.retweeted_status.favorite_count_ko = ko.observable ( data.retweeted_status.favorite_count )
+                data.retweeted_status.favorited_ko = ko.observable ( data.retweeted_status.favorited )
+                data.retweeted_status.favoritedLoader_ko = ko.observable ( false )
+                data.retweeted_status.QTGate_created_at = ko.computed (() => {
+                    return getTimeFromCreate( data.retweeted_status.created_at, this )
+                })
+                data.retweeted_status.extended_entities = data.retweeted_status.extended_entities || null
+                const user = data.retweeted_status.entities && data.retweeted_status.entities.user_mentions && data.retweeted_status.entities.user_mentions.length ? data.retweeted_status.entities.user_mentions : null
+                data.retweeted_status.full_text_split_line = splitLine ( user, data.retweeted_status.full_text )
+                data.retweeted_status.quoted_status = data.retweeted_status.quoted_status || null
+                if ( data.retweeted_status.quoted_status ) {
+                    data.retweeted_status.quoted_status.extended_entities = data.retweeted_status.quoted_status.extended_entities || null
+                    const user = data.retweeted_status.quoted_status.entities && data.retweeted_status.quoted_status.entities.user_mentions && data.retweeted_status.quoted_status.entities.user_mentions.length 
+                        ? data.retweeted_status.quoted_status.entities.user_mentions : null
+                    data.retweeted_status.quoted_status.full_text_split_line = splitLine ( user, data.retweeted_status.quoted_status.full_text )
+                }
+            }
+            const user = data.entities && data.entities.user_mentions && data.entities.user_mentions.length ? data.entities.user_mentions : null
+            data.full_text_split_line = splitLine ( user, data.full_text )
+            data.extended_entities = data.extended_entities || null
+            data.favorite_count_ko = ko.observable ( data.favorite_count )
+            data.favorited_ko = ko.observable ( data.favorited )
+            data.favoritedLoader_ko = ko.observable ( false )
+            this.currentTimelines.push ( data )
+            return this.currentTimelines.sort (( a, b ) => {
+                return b.id - a.id
+            })
+        }
 
         constructor () {
             socketIo = io ({ reconnectionAttempts: 5, timeout: 1000 })
@@ -227,67 +353,22 @@ module twitter_layout {
             })
 
             socketIo.on ( 'getTimelines', ( data: twitter_post ) => {
-                if ( this.bottomEventLoader() ) {
-                    this.bottomEventLoader( false )
-                }
-                const index = this.currentTimelines().findIndex( n => { return n.id_str === data.id_str })
-                if ( index > -1 ) {
-                    this.currentTimelines.splice ( index, 1 )
-                }
-                data.QTGate_created_at = ko.computed(() => {
-                    return getTimeFromCreate( data.created_at, this )
-                }) 
-                
-                data.quoted_status = data.quoted_status || null
-                if ( data.quoted_status ) {
-                    data.quoted_status.extended_entities = data.quoted_status.extended_entities || null
-
-                    const user = data.quoted_status.entities && data.quoted_status.entities.user_mentions && data.quoted_status.entities.user_mentions.length ? data.quoted_status.entities.user_mentions : null
-                    data.quoted_status.full_text_split_line = splitLine ( user, data.quoted_status.full_text ) 
-                }
-                data.retweeted_status = data.retweeted_status || null
-
-                if ( data.retweeted_status ) {
-                    data.retweeted_status.favorite_count_ko = ko.observable ( data.retweeted_status.favorite_count )
-                    data.retweeted_status.favorited_ko = ko.observable ( data.retweeted_status.favorited )
-                    data.retweeted_status.favoritedLoader_ko = ko.observable ( false )
-                    data.retweeted_status.QTGate_created_at = ko.computed (() => {
-                        return getTimeFromCreate( data.retweeted_status.created_at, this )
-                    })
-                    data.retweeted_status.extended_entities = data.retweeted_status.extended_entities || null
-                    const user = data.retweeted_status.entities && data.retweeted_status.entities.user_mentions && data.retweeted_status.entities.user_mentions.length ? data.retweeted_status.entities.user_mentions : null
-                    data.retweeted_status.full_text_split_line = splitLine ( user, data.retweeted_status.full_text )
-                    data.retweeted_status.quoted_status = data.retweeted_status.quoted_status || null
-                    if ( data.retweeted_status.quoted_status ) {
-                        data.retweeted_status.quoted_status.extended_entities = data.retweeted_status.quoted_status.extended_entities || null
-                        const user = data.retweeted_status.quoted_status.entities && data.retweeted_status.quoted_status.entities.user_mentions && data.retweeted_status.quoted_status.entities.user_mentions.length 
-                            ? data.retweeted_status.quoted_status.entities.user_mentions : null
-                        data.retweeted_status.quoted_status.full_text_split_line = splitLine ( user, data.retweeted_status.quoted_status.full_text )
-                    }
-                }
-                const user = data.entities && data.entities.user_mentions && data.entities.user_mentions.length ? data.entities.user_mentions : null
-                data.full_text_split_line = splitLine ( user, data.full_text )
-                data.extended_entities = data.extended_entities || null
-                data.favorite_count_ko = ko.observable ( data.favorite_count )
-                data.favorited_ko = ko.observable ( data.favorited )
-                data.favoritedLoader_ko = ko.observable ( false )
-                this.currentTimelines.push ( data )
-                this.currentTimelines.sort (( a, b ) => {
-                    return b.id - a.id
-                })
+                return this.twitterPostReturn ( data )
             })
 
-            bottomEvent (() => {
-                if ( ! this.currentTimelines().length || this.bottomEventLoader () ) {
-                    return
-                }
-                this.bottomEventLoader ( true )
-                const maxID = this.currentTimelines()[ this.currentTimelines().length - 1].id
-                return socketIo.emit ( 'getTimelinesNext', this.twitterData()[0], maxID, err => {
-                    return this.getTimeLineCallBack ( err )
-                })
-            })
             this.newTwitterField.push ( new twitterField( this ))
+        }
+
+        public getTimeLinesNext () {
+            if ( this.bottomEventLoader ()) {
+                return
+            }
+            this.bottomEventLoader ( true )
+            this.requestNewTimelinesCount = 0
+            const maxID = this.currentTimelines()[ this.currentTimelines().length - 1 ].id
+            return socketIo.emit ( 'getTimelinesNext', this.twitterData()[0], maxID, err => {
+                return this.getTimeLineCallBack ( err )
+            })
         }
 
 		public selectItem = ( that: any, site: () => number ) => {
@@ -343,8 +424,8 @@ module twitter_layout {
                 }
                 this.currentTwitterAccount ( data[0].twitter_verify_credentials )
                 
-                this.makeAccountMenu ()
-                this.showCurrentTimelines ( true )
+                this.makeAccountMenu1 ()
+                
                 return $( '#sidebarMenu' ).sidebar( 'hide' )
                 
             })
@@ -365,12 +446,17 @@ module twitter_layout {
             return body.stop().animate({ scrollTop: 0 }, 500, 'swing', () => {})
         }
 
-        private makeAccountMenu () {
+        private makeAccountMenu1 () {
             if ( !this.twitterData().length ) {
                 return
             }
             this.showAccountMenu ( true )
             this.bottomEventLoader ( true )
+            this.requestNewTimelinesCount = 0
+            setTimeout (() => {
+                this.bottomEventLoader ( true )
+            }, 1000 * 30 )
+            this.showCurrentTimelines ( true )
             return socketIo.emit ( 'getTimelines', this.twitterData()[0], err => {
                 return this.getTimeLineCallBack ( err )
             })
@@ -403,10 +489,8 @@ module twitter_layout {
                     return this.showServerError ( true )
                 }
                 this.currentTwitterAccount ( data.twitter_verify_credentials )
-                this.makeAccountMenu ()
-                return socketIo.emit ( 'getTimelines', this.twitterData()[0], err => {
-                    return this.getTimeLineCallBack ( err )
-                })
+                this.makeAccountMenu1 ()
+                
             })
         }
 
@@ -459,6 +543,8 @@ module twitter_layout {
             this.currentTimelines([])
             socketIo.emit ( 'saveAccounts', this.twitterData())
             this.bottomEventLoader ( true )
+            this.requestNewTimelinesCount = 0
+            this.showCurrentTimelines ( true )
             return socketIo.emit ( 'getTimelines', item, err => {
                 return this.getTimeLineCallBack ( err )
             })
@@ -527,6 +613,46 @@ module twitter_layout {
                 }).modal ('show')
             
             //return $( '#newTwitterWindow' ).modal( 'setting', 'closable', true )
+        }
+
+
+        private newTwitterData ( twiData: twitterField ) {
+            if ( ! twiData.inputText().length && ! twiData.images().length ) {
+                return null
+            }
+            const TwitterData: twitter_postData  = {
+                text: twiData.inputText(),
+                images: twiData.images (),
+                media_data: null
+            }
+            return TwitterData
+        }
+
+        public newTwitterClick () {
+            const data = []
+            this.newTwitterField().forEach ( n => {
+                const nn = this.newTwitterData ( n )
+                if ( !nn ) {
+                    return
+                }
+                data.push ( nn )
+            })
+            if ( !data.length ) {
+                return
+            }
+            this.shownewTwitterApprove ( false )
+            $( '#newTwitterWindow' ).modal ( 'hide' )
+            this.newTwitterField ([ new twitterField ( this )])
+
+            return socketIo.emit ( 'twitter_postNewTweet', this.twitterData()[0], data, ( err: Error, data ) => {
+                if ( err ) {
+                    return alert ( err )
+                }
+                if ( data ) {
+                    return this.twitterPostReturn ( data )
+                }
+            })
+
         }
 
     }
