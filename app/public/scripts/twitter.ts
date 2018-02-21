@@ -2,7 +2,8 @@ const aMin_Time = 1000 * 60
 const aHour_Time = 60 * aMin_Time
 const aDay = aHour_Time * 24
 let bottomDown = false
-const splitLine = ( user: any[], fullText: string ) => {
+
+const splitLine = ( user: any[], fullText: string, entities: twitter_entities ) => {
     if ( user && user.length ) {
         user.forEach ( n => {
             const matchText = new RegExp(`( )?RT `,'g')
@@ -10,14 +11,28 @@ const splitLine = ( user: any[], fullText: string ) => {
             fullText = fullText.replace ( matchText, '')
         })
     }
+    
     if ( typeof fullText !== 'string' || !fullText.length ) {
         return fullText;
     }
-    const uu = fullText.split (/\n/)
-    if ( uu.length === 1 ) {
-        return fullText
+    if ( entities && entities.urls && entities.urls.length ) {
+        entities.urls.forEach ( n => {
+            fullText = fullText.replace ( n.url, `<a target="_blank" href="${ n.expanded_url }" style="color:#ABB8C2;">${ n.expanded_url }</a>` )
+        })
     }
-    return '<p>' + uu.join ('</p><p>') + '</p>'
+    fullText = fullText.replace (/https\:\/\/t.co\/\S*/, '')
+
+
+    const uu = fullText.split (/\n/)
+
+    if ( uu.length === 1 ) {
+        return `<p>${ fullText }</p>`
+    }
+    const ret = '<p>' + uu.join ('</p><p>') + '</p>'
+    
+    return ret
+    
+    
 }
 
 const monthToText = [
@@ -293,20 +308,24 @@ module twitter_layout {
             if ( ++this.requestNewTimelinesCount === 20 ) {
                 this.bottomEventLoader( false )
             }
+
+
             const index = this.currentTimelines().findIndex( n => { return n.id_str === data.id_str })
             if ( index > -1 ) {
                 this.currentTimelines.splice ( index, 1 )
             }
             data.QTGate_created_at = ko.computed(() => {
                 return getTimeFromCreate( data.created_at, this )
-            }) 
+            })
+
+
             
             data.quoted_status = data.quoted_status || null
             if ( data.quoted_status ) {
                 data.quoted_status.extended_entities = data.quoted_status.extended_entities || null
 
                 const user = data.quoted_status.entities && data.quoted_status.entities.user_mentions && data.quoted_status.entities.user_mentions.length ? data.quoted_status.entities.user_mentions : null
-                data.quoted_status.full_text_split_line = splitLine ( user, data.quoted_status.full_text ) 
+                data.quoted_status.full_text_split_line = splitLine ( user, data.quoted_status.full_text, data.quoted_status.entities ) 
             }
             data.retweeted_status = data.retweeted_status || null
 
@@ -319,17 +338,17 @@ module twitter_layout {
                 })
                 data.retweeted_status.extended_entities = data.retweeted_status.extended_entities || null
                 const user = data.retweeted_status.entities && data.retweeted_status.entities.user_mentions && data.retweeted_status.entities.user_mentions.length ? data.retweeted_status.entities.user_mentions : null
-                data.retweeted_status.full_text_split_line = splitLine ( user, data.retweeted_status.full_text )
+                data.retweeted_status.full_text_split_line = splitLine ( user, data.retweeted_status.full_text, data.retweeted_status.entities )
                 data.retweeted_status.quoted_status = data.retweeted_status.quoted_status || null
                 if ( data.retweeted_status.quoted_status ) {
                     data.retweeted_status.quoted_status.extended_entities = data.retweeted_status.quoted_status.extended_entities || null
                     const user = data.retweeted_status.quoted_status.entities && data.retweeted_status.quoted_status.entities.user_mentions && data.retweeted_status.quoted_status.entities.user_mentions.length 
                         ? data.retweeted_status.quoted_status.entities.user_mentions : null
-                    data.retweeted_status.quoted_status.full_text_split_line = splitLine ( user, data.retweeted_status.quoted_status.full_text )
+                    data.retweeted_status.quoted_status.full_text_split_line = splitLine ( user, data.retweeted_status.quoted_status.full_text, data.retweeted_status.quoted_status.entities )
                 }
             }
             const user = data.entities && data.entities.user_mentions && data.entities.user_mentions.length ? data.entities.user_mentions : null
-            data.full_text_split_line = splitLine ( user, data.full_text )
+            data.full_text_split_line = splitLine ( user, data.full_text, data.entities )
             data.extended_entities = data.extended_entities || null
             data.favorite_count_ko = ko.observable ( data.favorite_count )
             data.favorited_ko = ko.observable ( data.favorited )
@@ -454,7 +473,7 @@ module twitter_layout {
             this.bottomEventLoader ( true )
             this.requestNewTimelinesCount = 0
             setTimeout (() => {
-                this.bottomEventLoader ( true )
+                this.bottomEventLoader ( false )
             }, 1000 * 30 )
             this.showCurrentTimelines ( true )
             return socketIo.emit ( 'getTimelines', this.twitterData()[0], err => {

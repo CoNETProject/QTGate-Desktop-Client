@@ -136,6 +136,10 @@ export default class twitter1 {
 		return this.saveTwitterData ( CallBack )
 	}
 
+	private createTweetData ( CallBack ) {
+
+	}
+
 	private listenAfterLogin ( socket: SocketIOClient.Socket ) {
 		socket.on ( 'addTwitterAccount', ( addTwitterAccount: TwitterAccount, CallBack ) => {
 			delete addTwitterAccount['twitter_verify_credentials']
@@ -282,6 +286,7 @@ export default class twitter1 {
 			
 		})
 	}
+
 	private _mediaUpdata ( client, mediaData: twitter_mediaData, CallBack ) {
 		
 		return Async.waterfall ([
@@ -477,18 +482,20 @@ export default class twitter1 {
 			}
 			
 			if ( res.Args && res.Args.length > 0 ) {
-				let uu:twitter_post = null
+
+				let uu: twitter_post = null
+
 				try {
-					uu = JSON.parse ( Buffer.from ( res.Args [0], 'base64').toString ())
+					uu = JSON.parse ( Buffer.from ( res.Args [0], 'base64' ).toString ())
 				} catch ( ex ) {
 					return saveLog (`getTimelines QTClass.request return JSON.parse Error!`)
 				}
-				saveLog (`twitter_home_timeline order [${ uu.order }]`)
-				return CallBack (  null, uu )
+
+				saveLog ( `twitter_home_timeline order [${ uu.order }]` )
+				return CallBack ( null, uu )
 			}
 			if ( res.error ) {
-				console.log ( `this.localServer.QTClass.request ERROR typeof res.error = ${ typeof res.error  }`)
-				
+				console.log ( `this.localServer.QTClass.request ERROR typeof res.error = ${ typeof res.error  }` )
 				return CallBack ( res.error )
 			}
 			
@@ -512,17 +519,17 @@ export default class twitter1 {
 			}
 			
 			if ( res.Args && res.Args.length > 0 ) {
-				let uu:twitter_post = null
+				let uu: twitter_post = null
 				try {
-					uu = JSON.parse ( Buffer.from ( res.Args [0], 'base64').toString ())
+					uu = JSON.parse ( Buffer.from ( res.Args [0], 'base64' ).toString ())
 				} catch ( ex ) {
-					return saveLog (`getTimelines QTClass.request return JSON.parse Error!`)
+					return saveLog ( `getTimelines QTClass.request return JSON.parse Error!` )
 				}
-				saveLog (`twitter_home_timeline order [${ uu.order }]`)
-				return CallBack (  null, uu )
+				saveLog ( `twitter_home_timeline order [${ uu.order }]` )
+				return CallBack ( null, uu )
 			}
 			if ( res.error ) {
-				console.log ( `this.localServer.QTClass.request ERROR typeof res.error = ${ typeof res.error  }`)
+				console.log ( `this.localServer.QTClass.request ERROR typeof res.error = ${ typeof res.error }`)
 				
 				return CallBack ( res.error )
 			}
@@ -557,36 +564,7 @@ export default class twitter1 {
 	}
 
 }
-interface twitter_uploadImageInitData_imageObj {
-	image_type: string
-	w: number
-	h: number
-}
-interface twitter_uploadImageInitData {
-	media_id: number
-	media_id_string: string
-	size: number
-	expires_after_secs: number
-	image: twitter_uploadImageInitData_imageObj
-}
 
-interface twitter_uploadImageInitData_status_processing_info {
-	state: string					//				in_progress, failed, succeeded
-	check_after_secs: number
-	progress_percent: number
-	error?: {
-		code: number
-		name: string
-		message: string
-	}
-}
-
-interface twitter_uploadImageInitData_status {
-	media_id: number
-	media_id_string: string
-	expires_after_secs: number
-	processing_info: twitter_uploadImageInitData_status_processing_info
-}
 const getUrlBuffer = ( url: string, CallBack ) => {
     return Https.get ( url, res => {
         const { statusCode } = res

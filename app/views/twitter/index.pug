@@ -129,7 +129,7 @@ block jumbotron1
                         .description
                             .ui.grid.one.column( style="margin: 0px;min-width: 350px;")
                                 .row(data-bind="visible: !retweeted_status " style="padding: 0px;")
-                                    span( data-bind = " html: full_text_split_line " )
+                                    span( data-bind = " html: full_text_split_line " style="overflow: hidden;")
                                 .row.ui.shape( data-bind="visible: extended_entities && !retweeted_status")
                                     .sides( data-bind=" foreach: extended_entities && extended_entities.media && extended_entities.media.length ? extended_entities.media : []" style="width: 100%;")
                                         img.ui.image.rounded.side( data-bind = "attr: { src: media_url_https },css: { active: $index() === 0}")

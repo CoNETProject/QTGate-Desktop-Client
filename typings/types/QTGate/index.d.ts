@@ -391,6 +391,22 @@ interface twitter_media {
 interface twitter_extended_entities extends twitter_post {
     media: twitter_media[]
 }
+interface twitter_entities_media {
+
+}
+interface twitter_entities_urls {
+    display_url: string
+    expanded_url: string
+    indices: string[]
+    url: string
+}
+interface twitter_entities {
+    hashtags: any[]
+    media: twitter_entities_media[]
+    symbols: any[]
+    urls: twitter_entities_urls[]
+}
+
 interface twitter_post {
     order: number
     contributors: any
@@ -428,6 +444,7 @@ interface twitter_post {
     truncated: boolean
     user: Twitter_verify_credentials
 }
+
 interface twitter_mediaData {
 	total_bytes: number
 	media_type: string
@@ -439,4 +456,37 @@ interface twitter_postData {
     text: string,
     images: string[],
     media_data: twitter_mediaData[]
+}
+
+
+interface twitter_uploadImageInitData_imageObj {
+	image_type: string
+	w: number
+	h: number
+}
+
+interface twitter_uploadImageInitData {
+	media_id: number
+	media_id_string: string
+	size: number
+	expires_after_secs: number
+	image: twitter_uploadImageInitData_imageObj
+}
+
+interface twitter_uploadImageInitData_status_processing_info {
+	state: string					//				in_progress, failed, succeeded
+	check_after_secs: number
+	progress_percent: number
+	error?: {
+		code: number
+		name: string
+		message: string
+	}
+}
+
+interface twitter_uploadImageInitData_status {
+	media_id: number
+	media_id_string: string
+	expires_after_secs: number
+	processing_info: twitter_uploadImageInitData_status_processing_info
 }
