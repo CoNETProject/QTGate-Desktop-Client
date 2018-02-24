@@ -116,6 +116,7 @@ enum lang { 'zh', 'ja', 'en', 'tw' }
 const QTGateFolder = join ( Os.homedir(), '.QTGate' )
 const QTGateLatest = join ( QTGateFolder, 'latest' )
 const QTGateTemp = join ( QTGateFolder, 'tempfile' )
+const QTGateVideo = join ( QTGateTemp, 'videoTemp')
 
 let isSingleInstanceCheck = true
 let localServer1 = null
@@ -447,8 +448,10 @@ const appReady = () => {
     series([
         next => checkFolder ( QTGateFolder, next ),
         next => checkFolder ( QTGateLatest, next ),
-        next => checkFolder ( QTGateTemp, next )
+        next => checkFolder ( QTGateTemp, next ),
+        next => checkFolder ( QTGateVideo, next )
     ], err => {
+        console.log (`appReady series runback err [${ err }]`)
         const menu = Menu.buildFromTemplate(template)
         Menu.setApplicationMenu(menu)
         if ( ! localServer1 ) {

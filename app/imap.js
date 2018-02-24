@@ -838,8 +838,9 @@ class qtGateImap extends Event.EventEmitter {
         timers_1.clearTimeout(this.imapStream.appendWaitResponsrTimeOut);
         timers_1.clearTimeout(this.imapStream.idleNextStop);
         this.emit('end', err);
-        if (this.socket && typeof this.socket.end === 'function')
+        if (this.socket && typeof this.socket.end === 'function') {
             this.socket.end();
+        }
     }
     logout() {
         this.imapStream.logout(() => {
@@ -1069,6 +1070,21 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
     rImap.once('error', err => {
         saveLog(`rImap.once ( 'error' ) [${err.message}]`);
         return doCallBack(err, null);
+    });
+};
+exports.readMedia = (IMapConnect, fileName, CallBack) => {
+    let _callback = false;
+    let rImap = new qtGateImapRead(IMapConnect, fileName, true, true, mail => {
+        const retText = exports.getMailAttached(mail);
+        _callback = true;
+        CallBack(null, retText);
+        return rImap.destroyAll(null);
+    });
+    rImap.once('end', err => {
+        if (err && !_callback) {
+            return CallBack(err);
+        }
+        rImap = null;
     });
 };
 const pingPongTimeOut = 1000 * 30;

@@ -100,6 +100,7 @@ var lang;
 const QTGateFolder = path_1.join(Os.homedir(), '.QTGate');
 const QTGateLatest = path_1.join(QTGateFolder, 'latest');
 const QTGateTemp = path_1.join(QTGateFolder, 'tempfile');
+const QTGateVideo = path_1.join(QTGateTemp, 'videoTemp');
 let isSingleInstanceCheck = true;
 let localServer1 = null;
 let tray = null;
@@ -388,8 +389,10 @@ const appReady = () => {
     async_1.series([
         next => checkFolder(QTGateFolder, next),
         next => checkFolder(QTGateLatest, next),
-        next => checkFolder(QTGateTemp, next)
+        next => checkFolder(QTGateTemp, next),
+        next => checkFolder(QTGateVideo, next)
     ], err => {
+        console.log(`appReady series runback err [${err}]`);
         const menu = Menu.buildFromTemplate(template);
         Menu.setApplicationMenu(menu);
         if (!localServer1) {

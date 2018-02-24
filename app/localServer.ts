@@ -78,7 +78,7 @@ export default class localServer {
 	public savedPasswrod = ''
 	public imapDataPool: IinputData_server [] = []
 	private CreateKeyPairProcess: RendererProcess = null
-	private QTGateConnectImap: number = -1
+	public QTGateConnectImap: number = -1
 	private sendRequestToQTGate = false
 	public qtGateConnectEmitData: IQtgateConnect = null
 	private bufferPassword = null

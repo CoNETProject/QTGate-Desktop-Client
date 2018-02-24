@@ -26,13 +26,12 @@ const splitLine = ( user: any[], fullText: string, entities: twitter_entities ) 
     const uu = fullText.split (/\n/)
 
     if ( uu.length === 1 ) {
-        return `<p>${ fullText }</p>`
+        return `<p style="margin-bottom: 0px;">${ fullText }</p>`
     }
-    const ret = '<p>' + uu.join ('</p><p>') + '</p>'
+    const ret = '<p style="margin-bottom: 0px;">' + uu.join ('</p><p style="margin-bottom: 0px;">') + '</p>'
     
     return ret
-    
-    
+
 }
 
 const monthToText = [
@@ -154,6 +153,7 @@ interface twitter_text_parseTweet {
     displayRangeStart: number
     displayRangeEnd: number
 }
+
 
 module twitter_layout {
     export class twitterField {
@@ -305,10 +305,12 @@ module twitter_layout {
         private bottomEventLoader = ko.observable ( false )
 
         private twitterPostReturn ( data: twitter_post ) {
+            if ( ! data ) {
+                return alert ('no data ')
+            }
             if ( ++this.requestNewTimelinesCount === 20 ) {
                 this.bottomEventLoader( false )
             }
-
 
             const index = this.currentTimelines().findIndex( n => { return n.id_str === data.id_str })
             if ( index > -1 ) {
@@ -318,12 +320,12 @@ module twitter_layout {
                 return getTimeFromCreate( data.created_at, this )
             })
 
-
             
             data.quoted_status = data.quoted_status || null
             if ( data.quoted_status ) {
                 data.quoted_status.extended_entities = data.quoted_status.extended_entities || null
 
+                //fixVideoFolder ( data.quoted_status.extended_entities )
                 const user = data.quoted_status.entities && data.quoted_status.entities.user_mentions && data.quoted_status.entities.user_mentions.length ? data.quoted_status.entities.user_mentions : null
                 data.quoted_status.full_text_split_line = splitLine ( user, data.quoted_status.full_text, data.quoted_status.entities ) 
             }
@@ -337,23 +339,29 @@ module twitter_layout {
                     return getTimeFromCreate( data.retweeted_status.created_at, this )
                 })
                 data.retweeted_status.extended_entities = data.retweeted_status.extended_entities || null
+                //fixVideoFolder ( data.retweeted_status.extended_entities )
+                
                 const user = data.retweeted_status.entities && data.retweeted_status.entities.user_mentions && data.retweeted_status.entities.user_mentions.length ? data.retweeted_status.entities.user_mentions : null
                 data.retweeted_status.full_text_split_line = splitLine ( user, data.retweeted_status.full_text, data.retweeted_status.entities )
                 data.retweeted_status.quoted_status = data.retweeted_status.quoted_status || null
                 if ( data.retweeted_status.quoted_status ) {
                     data.retweeted_status.quoted_status.extended_entities = data.retweeted_status.quoted_status.extended_entities || null
+
+                    //fixVideoFolder ( data.retweeted_status.quoted_status.extended_entities )
                     const user = data.retweeted_status.quoted_status.entities && data.retweeted_status.quoted_status.entities.user_mentions && data.retweeted_status.quoted_status.entities.user_mentions.length 
                         ? data.retweeted_status.quoted_status.entities.user_mentions : null
                     data.retweeted_status.quoted_status.full_text_split_line = splitLine ( user, data.retweeted_status.quoted_status.full_text, data.retweeted_status.quoted_status.entities )
                 }
             }
             const user = data.entities && data.entities.user_mentions && data.entities.user_mentions.length ? data.entities.user_mentions : null
-            data.full_text_split_line = splitLine ( user, data.full_text, data.entities )
+            data.full_text_split_line = splitLine ( null, data.full_text, data.entities )
             data.extended_entities = data.extended_entities || null
-            data.favorite_count_ko = ko.observable ( data.favorite_count )
-            data.favorited_ko = ko.observable ( data.favorited )
+            //fixVideoFolder ( data.extended_entities )
+            data.favorite_count_ko = ko.observable ( data.retweeted_status ? data.retweeted_status.favorite_count : data.favorite_count )
+            data.favorited_ko = ko.observable ( data.retweeted_status ? data.retweeted_status.favorited : data.favorited )
             data.favoritedLoader_ko = ko.observable ( false )
             this.currentTimelines.push ( data )
+            $('.row.ui.shape').shape()
             return this.currentTimelines.sort (( a, b ) => {
                 return b.id - a.id
             })
@@ -474,7 +482,7 @@ module twitter_layout {
             this.requestNewTimelinesCount = 0
             setTimeout (() => {
                 this.bottomEventLoader ( false )
-            }, 1000 * 30 )
+            }, 1000 * 120 )
             this.showCurrentTimelines ( true )
             return socketIo.emit ( 'getTimelines', this.twitterData()[0], err => {
                 return this.getTimeLineCallBack ( err )
@@ -672,6 +680,10 @@ module twitter_layout {
                 }
             })
 
+        }
+
+        public timelinesViewSharp ( id_str: string ) {
+            return $(`.shape[sharp-id='${ id_str }']`).shape ('flip over')
         }
 
     }

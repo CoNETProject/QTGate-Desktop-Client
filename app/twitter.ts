@@ -14,13 +14,16 @@ import * as openpgp from 'openpgp'
 import * as Https from 'https'
 import * as Util from 'util'
 import * as Jimp from 'jimp'
+import * as Imap from './imap'
+import * as Uuid from 'node-uuid'
 
 import * as Twitter from 'twitter'
 import * as Twitter_text from 'twitter-text'
 
 
 const QTGateFolder = Path.join ( Os.homedir(), '.QTGate' )
-const Twitter_root = Path.join ( QTGateFolder, 'twitter' )
+const tempFiles = Path.join ( QTGateFolder, 'tempfile' )
+const QTGateVideo = Path.join ( tempFiles, 'videoTemp' )
 const view_root = Path.join ( __dirname, 'views' )
 const ErrorLogFile = Path.join ( QTGateFolder, 'twitter.log')
 let flag = 'w'
@@ -46,6 +49,8 @@ export default class twitter1 {
     private serverReady = false
 	private twitterData: TwitterAccount[] = []
 	private twitterDataInit = false
+	private doingCreateTweetData = false
+	private tweetTimeLineDataPool: { post: twitter_post, CallBack } [] = []
 
 	private addTwitterAccount ( account: TwitterAccount ) {
 		if ( ! this.twitterData.length ) {
@@ -136,8 +141,147 @@ export default class twitter1 {
 		return this.saveTwitterData ( CallBack )
 	}
 
-	private createTweetData ( CallBack ) {
+	private getMedia ( mediaString: string, CallBack ) {
+		const files = mediaString.split (',')
+		let ret = Buffer.allocUnsafe(0)
+		//console.log ( files )
+		Async.eachSeries ( files, ( n, next ) => {
+			if ( /^http[s]*\:\/\//.test( n ) ) {
+				console.log (`unknow file name: [${ n }] skip` )
+				return next ()
+			}
+			return Imap.readMedia ( this.localServer.imapDataPool [ this.localServer.QTGateConnectImap ], n, ( err, data: Buffer ) => {
+				if ( err ) {
+					return next ( err )
+				}
+				ret = Buffer.concat ([ ret, data ])
+				next ()
+			})
+		}, err  => {
+			if ( err ) {
+				console.log (`getMedia error try again`, err )
+				
+				return this.getMedia ( mediaString, CallBack )
+			}
+			
+			return CallBack ( null, ret.toString( 'base64' ).replace ( /\r\n/g, '' ))
+		})
+	}
 
+	private getTweetMediaData ( media: twitter_media[], CallBack  ) {
+		const uu = media && media.length && media[0].video_info ? media[0].video_info : null
+		if ( uu && uu.QTDownload ) {
+			return this.getVideo ( uu, CallBack )
+		}
+		Async.eachSeries ( media, ( n: twitter_media, next ) => {
+			n.video_info = null
+			return this.getMedia ( n.media_url_https, ( err, data ) => {
+				if ( err ) {
+					return next ()
+				}
+				n.media_url_https = data ? `data:image/png;base64,${ data }` : n.media_url_https
+				return next ()
+			})
+		}, CallBack )
+
+	}
+
+	private getQuote_status ( tweet: twitter_post, CallBack ) {
+		if ( tweet.quoted_status ) {
+			
+			const entities = tweet.quoted_status.extended_entities = tweet.quoted_status.extended_entities || null
+			if ( entities && entities.media && entities.media.length ) {
+				console.log (`getTweetMediaData [${ entities.media.map ( n => { return n.media_url_https })}]`)
+				return this.getTweetMediaData ( tweet.quoted_status.extended_entities.media, CallBack )
+			}
+		}
+		if ( tweet.retweeted_status ) {
+			const entities = tweet.retweeted_status.extended_entities = tweet.retweeted_status.extended_entities || null
+			if ( entities && entities.media && entities.media.length ) {
+				console.log (`getTweetMediaData [${ entities.media.map ( n => { return n.media_url_https })}]`)
+				return this.getTweetMediaData ( tweet.retweeted_status.extended_entities.media, CallBack )
+			}
+		}
+		return CallBack ()
+	}
+
+	private getVideo ( m: twitter_media_video_info, CallBack ) {
+		if ( !m || !m.QTDownload ) {
+			return CallBack ()
+		}
+		return this.getMedia ( m.QTDownload, ( err, data ) => {
+			if ( data ) {
+				const file = Uuid.v4() + '.mp4'
+				const viode = Buffer.from ( data, 'base64' )
+				return Fs.writeFile ( Path.join ( QTGateVideo, file ), viode, err => {
+					m.QTDownload = `/videoTemp/${ file }`
+					console.log (`save video file: [${ file }]`)
+					return CallBack ()
+				})
+			}
+			return CallBack ()
+			
+		})
+	}
+
+	private createTweetData_next ( tweet: twitter_post, err: Error, data: string[][], CallBack ) {
+		
+		tweet.user.profile_image_url_https = `data:image/png;base64,${ data [0]}`
+		if ( tweet.retweeted && tweet.retweeted.user ) {
+			tweet.retweeted.user.profile_image_url_https = `data:image/png;base64,${ data [1]}`
+		}
+		if ( tweet.retweeted_status && tweet.retweeted_status.user ) {
+			tweet.retweeted_status.user.profile_image_url_https  = `data:image/png;base64,${ data [1]}`
+		}
+		
+		if ( !tweet.retweeted_status && tweet.extended_entities && tweet.extended_entities.media && tweet.extended_entities.media.length ) {
+			return this.getTweetMediaData ( tweet.extended_entities.media, err => {
+				return this.getQuote_status ( tweet, CallBack )
+			})
+		}
+		return this.getQuote_status ( tweet, CallBack )
+	}
+
+
+	private createTweetData ( tweet: twitter_post, CallBack ) {
+		
+		if ( this.doingCreateTweetData ) {
+			return this.tweetTimeLineDataPool.push ({
+				post: tweet,
+				CallBack: CallBack
+			})
+		}
+		this.doingCreateTweetData = true
+		
+		if ( !tweet ) {
+			saveLog (`createTweetData got Null tweet data `)
+			return CallBack ( new Error ('have no tweet data!'))
+		}
+		const action = [
+			next => this.getMedia ( tweet.user.profile_image_url_https, next )
+		]
+		if ( tweet.retweeted && tweet.retweeted.user ) {
+			action.push (
+				next => this.getMedia ( tweet.retweeted.user.profile_image_url_https, next )
+			)
+		}
+		if ( tweet.retweeted_status && tweet.retweeted_status.user ) {
+			action.push (
+				next => this.getMedia ( tweet.retweeted_status.user.profile_image_url_https, next )
+			)
+		}
+		return Async.series ( action, ( err, data ) => {
+			
+			return this.createTweetData_next ( tweet, err, data, err1 => {
+				this.doingCreateTweetData = false
+				CallBack ( null, tweet )
+				if ( this.tweetTimeLineDataPool.length ) {
+					const uu = this.tweetTimeLineDataPool.shift ()
+					return this.createTweetData ( uu.post, uu.CallBack )
+				}
+			})
+		})
+        
 	}
 
 	private listenAfterLogin ( socket: SocketIOClient.Socket ) {
@@ -164,20 +308,35 @@ export default class twitter1 {
 				if ( err ) {
 					return CallBack ( err )
 				}
+
 				if ( tweets ) {
-					return socket.emit ( 'getTimelines', tweets )
+					return this.createTweetData ( tweets, ( err, tweet ) => {
+						return socket.emit ( 'getTimelines', tweet )
+					})
 				}
 				
 			})
 		})
 
 		socket.on ( 'getTimelines', ( item: TwitterAccount, CallBack ) => {
+			delete item ['twitter_verify_credentials']
 			return this.getTimelines ( item, ( err, tweets: twitter_post ) => {
 				if ( err ) {
 					return CallBack ( err )
 				}
-
-				return socket.emit ( 'getTimelines', tweets )
+				
+				return this.createTweetData ( tweets, ( err, tweet: twitter_post ) => {
+					console.log (`this.createTweetData CallBack!`)
+					
+						if ( err ) {
+							console.log (`getTweetCount error`, err )
+						}
+						
+						return socket.emit ( 'getTimelines', tweet )
+					
+					
+				})
+				
 			})
 		})
 
@@ -411,8 +570,8 @@ export default class twitter1 {
         this.ex_app.set ( 'views', view_root )
         this.ex_app.set ( 'view engine', 'pug' )
 
-        this.ex_app.use ( cookieParser ())
-		this.ex_app.use ( Express.static ( Twitter_root ))
+		this.ex_app.use ( cookieParser ())
+		this.ex_app.use ( Express.static ( tempFiles ))
         this.ex_app.use ( Express.static ( Path.join ( __dirname, 'public' )))
 
         this.ex_app.get ( '/Twitter', ( req, res ) => {
@@ -432,7 +591,16 @@ export default class twitter1 {
         })
 
         this.httpServer.listen ( twitterListenPort )
-        saveLog ( `Twitter Server start up!` )
+		saveLog ( `Twitter Server start up!` )
+		Async.waterfall ([
+			next => Fs.readdir ( QTGateVideo, next ),
+			( files: string[], next ) => Async.eachSeries ( files.map ( n => { return Path.join ( QTGateVideo, n )}), Fs.unlink, next )
+		], err => {
+			if ( err ) {
+				return console.log (`Fs.readdir error [${ err }]`)
+			}
+			console.log (`Cleanup video temp success.`)
+		})
 
 	}
 
@@ -503,7 +671,6 @@ export default class twitter1 {
 	}
 
 	private getTimelines ( account: TwitterAccount, CallBack ) {
-		delete account['twitter_verify_credentials']
 		
 		const com: QTGateAPIRequestCommand = {
 			command: 'twitter_home_timeline',
@@ -511,7 +678,7 @@ export default class twitter1 {
 			error: null,
 			requestSerial: Crypto.randomBytes(8).toString ('hex' )
 		}
-		console.log ( Util.inspect ( account ))
+
 		return this.localServer.QTClass.request ( com, ( err, res: QTGateAPIRequestCommand ) => {
 
 			if ( err ) {

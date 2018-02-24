@@ -371,22 +371,34 @@ interface twitter_size {
     resize: string
     w: number
 }
+interface twitter_media_video_info_variants {
+    bitrate: number
+    content_type: string
+    url: string
+}
+interface twitter_media_video_info {
+    aspect_ratio: number []
+    duration_millis: number
+    variants: twitter_media_video_info_variants[]
+    QTDownload: string
+}
 interface twitter_media {
-    display_url: string
-    expanded_url: string
-    id: number
-    id_str: string
-    indices: number []
-    media_url: string
-    media_url_https: string
-    sizes: {
+    display_url?: string
+    expanded_url?: string
+    id?: number
+    id_str?: string
+    indices?: number []
+    media_url?: string
+    media_url_https?: string
+    sizes?: {
         large: twitter_size
         medium: twitter_size
         small: twitter_size
         thumb: twitter_size
     }
-    type: string        //  photo
-    url: string
+    type?: string        //  photo
+    url?: string
+    video_info: twitter_media_video_info
 }
 interface twitter_extended_entities extends twitter_post {
     media: twitter_media[]
@@ -406,7 +418,9 @@ interface twitter_entities {
     symbols: any[]
     urls: twitter_entities_urls[]
 }
+interface tweetCountSummary {
 
+}
 interface twitter_post {
     order: number
     contributors: any
@@ -443,6 +457,7 @@ interface twitter_post {
     text: string
     truncated: boolean
     user: Twitter_verify_credentials
+    tweetCountSummary: tweetCountSummary
 }
 
 interface twitter_mediaData {

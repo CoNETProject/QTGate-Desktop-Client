@@ -969,8 +969,10 @@ export class qtGateImap extends Event.EventEmitter {
         clearTimeout ( this.imapStream.appendWaitResponsrTimeOut )
         clearTimeout ( this.imapStream.idleNextStop )
         this.emit ( 'end', err )
-        if ( this.socket && typeof this.socket.end === 'function' )
+        if ( this.socket && typeof this.socket.end === 'function' ) {
             this.socket.end()
+        }
+            
         
     }
 
@@ -1023,6 +1025,7 @@ export class qtGateImapwrite extends qtGateImap {
 export class qtGateImapRead extends qtGateImap {
 
     private openBox = false
+
     public fetchAndDelete ( Uid: string, CallBack ) {
         if ( !this.openBox )
             return CallBack ( new Error ('not ready!'))
@@ -1236,6 +1239,23 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
     })
 
 
+}
+
+export const readMedia = ( IMapConnect: imapConnect, fileName: string, CallBack ) => {
+    let _callback = false
+    let rImap = new qtGateImapRead ( IMapConnect, fileName, true, true, mail => {
+        const retText = getMailAttached ( mail )
+        _callback = true
+        CallBack ( null, retText )
+        return rImap.destroyAll ( null )
+    })
+
+    rImap.once ( 'end', err => {
+        if ( err && !_callback ) {
+            return CallBack ( err )
+        }
+        rImap = null
+    })
 }
 
 const pingPongTimeOut = 1000 * 30
@@ -1528,3 +1548,5 @@ export class imapPeer extends Event.EventEmitter {
     }
 
 }
+
+

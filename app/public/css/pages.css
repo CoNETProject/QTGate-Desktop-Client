@@ -870,7 +870,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   background: rgba(255,255,255,0.4);
 }
 .flapLeft i, .flapeRight i {
-  color: white;
+  color:grey;
   position: absolute;
   margin-top: -1em;
 }
