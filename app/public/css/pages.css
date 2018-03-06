@@ -946,3 +946,6 @@ color: rgba(0, 0, 0, 0.6)!important;
 .cardContentHeader {
     max-height: 3em;
 }
+.templateImapAccount {
+   color: blue;
+}

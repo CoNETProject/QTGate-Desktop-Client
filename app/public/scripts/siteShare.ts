@@ -143,6 +143,7 @@ const infoDefine = [
             addAccount:'添加推特账户',
             following: '正在关注',
             followers:'关注者',
+            videoSizeOver: '视频超推特限制: 尺寸 < (1280x1024)，文件 < 300MB，总时间 < 140秒，请转换视频后再上传',
             second: '秒',
             min: '分',
             retweeted: '已转推',
@@ -348,7 +349,7 @@ const infoDefine = [
 
         imapInformation: {
             title: '通讯专用Email邮箱设置',
-            tempImapAccount: `自己开设邮箱有困难？请使用<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud%E8%87%A8%E6%99%82%E5%B8%B3%E6%88%B6')">QTGate提供的临时IMAP帐号供各位测试使用</a>`,
+            tempImapAccount: `申请临时邮箱有困难？您可以暂时使用<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud%E8%87%A8%E6%99%82%E5%B8%B3%E6%88%B6')">QTGate提供的临时IMAP帐号供各位测试使用</a>`,
             infomation: `请设置QTGate通讯专用Email邮箱信息。由于此账户的用户名和密码信息会提交给QTGate系统，为了防止您的个人信息被泄漏，请新申请一个临时Email账户。目前QTGate技术对应<a href="#" onclick="return linkClick ('https://www.icloud.com/')">苹果iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/')">微软OUTLOOK</a>，<a href="#" onclick="return linkClick ('https://tw.mail.yahoo.com/')">雅虎邮箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄罗斯ZOHO邮箱</a>，<a href="#" onclick=" return linkClick ('https://gmail.com')">Google邮箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美国在线GMX邮箱</a>，QTGate强力推荐使用苹果公司的Email可以达到最佳速度(@OPN无IP连结技术只对应苹果公司iCloud邮箱)。密码请使用Email服务商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">应用密码</a>。对于Email供应商在应用密码申请时，须<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/%E9%96%8B%E5%95%9F%E5%85%A9%E6%AD%A5%E9%A9%9F%E9%A9%97%E8%AD%89-sln5013.html')" >二步认证</a>并提供手机号码接受验证码，为保护您的隐私，建议使用免费在线代理接收验证码服务。( 如<a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a> ) 更多请 <a href="#" onclick="return linkClick ('http://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E5%85%8D%E8%B4%20%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%20%E7%A0%81&rsv_pq=e94f47a50001f66f&rsv_t=b03ePiy3rHH0T4FVoWB8Hx9vrVdZLzVhhErWOo4xdBpjDw%2BtGri%2BViTaVAw&rqlang=cn&rsv_enter=1&rsv_sug3=42&rsv_sug1=5&rsv_sug7=100')">百度查找</a>，<a href="#" onclick="return linkClick ('https://www.google.com/search?q=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&oq=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&aqs=chrome..69i57j69i60.254j0j4&sourceid=chrome&ie=UTF-8')">Google查找</a>。`,
             serverDetail: '详细设定：',
             imapServer: 'IMAP服务器设定',
@@ -452,7 +453,8 @@ const infoDefine = [
                 '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在SMTP详细设定中选择忽略证书错误。 ',
                 'SMTP连结提示未知错误', 
                 '存在相同Email账号',
-                '您的系统还未连接到QTGate网络！'
+                '您的系统还未连接到QTGate网络！',
+                '您的邮箱提示您账号已无可使用容量，请清理邮箱后再试'
             ]
         },
 
@@ -564,7 +566,7 @@ const infoDefine = [
             app:['Q梯', 'Q信', 'QT石洞','QT平台业务定制','QT谷歌','QT推特','QT Instagram','QT纽时','QT微信'],
             
             dimmer: [
-                'QTGate提供的高质量定制代理服务器业务，能够让您隐身安全的不受别人注意的网上冲浪。',
+                'QTGate提供的高质量定制VPN服务器业务，能够让您隐身安全的不受别人注意的网上冲浪。',
                 'QTGate提供的推特风格隐身匿名不被封锁的社交媒体',
                 'QTGate提供的安全隐私文件存储系统',
                 'QTGate承接定制各类公众服务类及跨国企业私有APP业务',
@@ -729,6 +731,7 @@ const infoDefine = [
             following: 'フォロー',
             followers:'フォロワー',
             second: '秒',
+            videoSizeOver: `ビデオがTwitter規格: 140秒、300MB、(1280x1024)を超えています`,
             month: '月',
             day:'日',
             min: '分',
@@ -1194,7 +1197,8 @@ const infoDefine = [
                 'SMTPサーバのセキュリティ証明書信頼できません。詐欺や、お使いのコンピューターからサーバーに送信されると情報を盗み取る意図が示唆されている場合があります。',
                 'SMTPサーバへ接続ができません。',
                 '同じEmailアカンウトが既に存在します。',
-                'QTGateと接続ができていません！'
+                'QTGateと接続ができていません！',
+                'ご利用メールアドレスのメールボックス容量がいっぱいになっています。'
             ]
         },
 
@@ -1326,6 +1330,7 @@ const infoDefine = [
             second: 's',
             min: 'm',
             hour: 'h',
+            videoSizeOver: `This video is over Twitter specifications: 140's or 300MB or (1280 x 1024).`,
             retweeted: 'Retweeted',
             month:'m',
             day: 'd',
@@ -1828,7 +1833,8 @@ const infoDefine = [
                 `Email server did respond to SMTP's username or an error in password.`, 
                 `There is a problem with this SMTP email server’s security certificate!`, 
                 `Connecting to SMTP Email server received an unknown error!`, 'Please check email account!',
-                'Does not establishing connection to QTGate yet.'
+                'Does not establishing connection to QTGate yet.',
+                'Your mail account has exceeded (over quota). '
             ]
         },
 
@@ -1966,6 +1972,7 @@ const infoDefine = [
             day: '日',
             close:'關閉',
             replying: '回覆: ',
+            videoSizeOver: '視頻超推特限制: 尺寸 <(1280x1024)，文件 <  300MB，時間 < 140秒，請轉換視頻後再上傳',
             twitterBottonTitle:['發推','全部發推'],
             newTwitterTitle: ['撰写新推文','撰写新对话串'],
             returnEdit: '回編輯',
@@ -1981,7 +1988,7 @@ const infoDefine = [
             qtgateGateway: 'QTGate提供的高質量上網技術iOPN和@OPN，在QTGate全球16個區域，當場定制您專屬的代理服務器，變換您的IP地址隱身無障礙的訪問互聯網',
             
             dimmer: [
-                'QTGate提供的高質量定制代理服務器業務，能夠讓您隱身安全的不受別人注意的網上沖浪。 ',
+                'QTGate提供的高質量定制VPN服務器業務，能夠讓您隱身安全的不受別人注意的網上沖浪。 ',
                 'QTGate提供的推特風格隱身匿名不被封鎖的社交媒體',
                 'QTGate提供的安全隱私文件存儲系統',
                 'QTGate承接定制各類公眾服務類及跨國企業私有APP業務',
@@ -2302,7 +2309,7 @@ const infoDefine = [
 
         imapInformation: {
             title: '通訊專用Email郵箱設置',
-            tempImapAccount: `郵箱申請有困難？您可以暫時使用<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud%E8%87%A8%E6%99%82%E5%B8%B3%E6%88%B6')">QTGate提供的臨時IMAP帳號供各位測試</a>`,
+            tempImapAccount: `臨時郵箱申請有困難？您可以暫時使用<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud%E8%87%A8%E6%99%82%E5%B8%B3%E6%88%B6')">QTGate提供的臨時IMAP帳號供各位測試</a>`,
             infomation: `請設置QTGate通訊專用Email郵箱信息。由於此賬戶的用戶名和密碼信息會提交給QTGate系統，為了防止您的個人信息被洩漏，請新申請一個臨時Email賬戶。目前QTGate技術對應<a href="#" onclick="return linkClick ('https://www.icloud.com/')">Apple iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/mobile/?WT.mc_id=mscom')">微軟OUTLOOK</a>，<a href="#" onclick="return linkClick ('http://tw.mail.yahoo.com/')">雅虎郵箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄羅斯ZOHO郵箱</a>，<a href="#" onclick="return linkClick ('https://gmail.com')">Google郵箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美國在線GMX郵箱</a>，QTGate強力推薦使用蘋果公司的Email可以達到最佳速度(@OPN無IP連結技術只對應蘋果公司iCloud郵箱)。密碼請使用Email服務商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">應用密碼</a>。對於Email供應商在應用密碼申請時，須打開<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/%E9%96%8B%E5%95%9F%E5%85%A9%E6%AD%A5%E9%A9%9F%E9%A9%97%E8%AD%89-sln5013.html')">二步認證</a>並必須提供手機號碼接受驗證碼，為保護您的隱私，建議使用免費在線代理接收驗證碼服務。如 ( <a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a> ) 更多請 <a href="#" onclick="return linkClick ('http://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&rsv_pq=e94f47a50001f66f&rsv_t=b03ePiy3rHH0T4FVoWB8Hx9vrVdZLzVhhErWOo4xdBpjDw%2BtGri%2BViTaVAw&rqlang=cn&rsv_enter=1&rsv_sug3=42&rsv_sug1=5&rsv_sug7=100')">百度查找</a>，<a href="#" onclick="return linkClick ('https://www.google.com/search?q=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&oq=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&aqs=chrome..69i57j69i60.254j0j4&sourceid=chrome&ie=UTF-8')">Google查找</a>。`,
             serverDetail: '詳細設定：',
             imapServer: 'IMAP伺服器設定',
@@ -2407,7 +2414,8 @@ const infoDefine = [
                 '伺服器證書錯誤！您可能正在連接到一個仿冒的Email伺服器，如果您肯定這是您希望連接的伺服器，請在SMTP詳細設定中選擇忽略證書錯誤。',
                 'SMTP連結提示未知錯誤',
                 '您已有相同的Email賬戶',
-                '您的系統還未連接到QTGate網絡！'
+                '您的系統還未連接到QTGate網絡！',
+                '您的郵箱提示您賬號已無可使用容量，請清理郵箱後再試'
             ]
         },
 

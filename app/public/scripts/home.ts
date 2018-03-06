@@ -1507,7 +1507,7 @@ module view_layout {
             }
             this.sendConnectRequestMail ( false )
             this.reSendConnectMail ( false )
-            //this.menuClick ( 3, true )
+            this.menuClick ( 3, true )
             this.QTGateConnectActive ( !this.keyPair().verified )
             this.QTGateConnectRegionActive ( this.keyPair().verified )
             //      progress bar area

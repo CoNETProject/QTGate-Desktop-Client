@@ -565,9 +565,10 @@ block jumbotron1
 										i.edit.outline.icon.large.blue
 								.description
 									form.ui.form.fluid( data-bind = " visible: imapDataEditShow () ")
-										p.ui.dividing.header.imapItemCardTitle()
-											span( data-bind = " text: infoDefine [ $root.languageIndex() ].imapInformation.title, visible: $root.showQTGateImapAccount()")
-											a.pull-right( data-bind="visible: appPaassword, text: infoDefine [ $root.languageIndex() ].imapInformation.appPassword, click: () => { $root.appPassword ( iMapServerName())} " href="#" style="color: red;")
+										.field
+											p.ui.dividing.header.imapItemCardTitle
+												span( data-bind = " text: infoDefine [ $root.languageIndex() ].imapInformation.title, visible: $root.showQTGateImapAccount()")
+												a.pull-right( data-bind = "visible: appPaassword, text: infoDefine [ $root.languageIndex() ].imapInformation.appPassword, click: () => { $root.appPassword ( iMapServerName())} " href="#" style="color: red;")
 										.two.fields
 											.field.required( data-bind = " css: { error: emailAddressShowError ()}")
 												.ui.left.icon.input
@@ -691,7 +692,7 @@ block jumbotron1
 										i.icon.add.user( style = " color: white!important;")
 
 			//-				QTGateConnectActive() && MenuItems()[3]
-			//-#QTGateConnectContent.content( data-bind = "visible: QTGateConnectActive() && MenuItems()[3] " style = "margin-top: 3em;")
+			#QTGateConnectContent.content( data-bind = "visible: QTGateConnectActive() && MenuItems()[3] " style = "margin-top: 3em;")
 				#QTGateConnecting.ui.tiny.steps.top.attached.hideArea( data-bind = "css: { 'two': QTGateConnecting() < 2, 'three': QTGateConnecting () === 2 || QTGateConnecting () > 3 && QTGateConnecting() < 6 }")
 					.step.completed( style = "padding: 8px;")
 						a.floating.ui.red.circular.label.activating.element( data-bind = " text: '!', visible: QTGateConnecting() === 3, attr: { 'data-html': infoDefine[ languageIndex() ].error_message.imapErrorMessage [ QTGateConnectError() ]}")

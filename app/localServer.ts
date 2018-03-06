@@ -571,13 +571,19 @@ export default class localServer {
 		//	
 		socket.on ( 'connectQTGate1', uuid => {
 			const index = this.imapDataPool.findIndex ( n => { return n.uuid === uuid })
-			if ( index < 0 )
+			if ( index < 0 ) {
 				return
+			}
+			if ( this.QTClass ) {
+				this.QTClass.Ping ()
+			}
+			/*
 			const imap = this.imapDataPool [ index ]
-			saveLog (`socket.on ( 'connectQTGate1')  uuid = [${ uuid }]`)
+			saveLog ( `socket.on ( 'connectQTGate1')  uuid = [${ uuid }]`)
 			imap.confirmRisk = true
 			this.qtGateConnectEmitData ? this.qtGateConnectEmitData.needSentMail = true : this.qtGateConnectEmitData = { needSentMail: true }
 			return this.emitQTGateToClient1 ( socket, uuid )
+			*/
 		})
 
 		socket.on ( 'checkPort', ( portNum, CallBack ) => {
@@ -1175,7 +1181,7 @@ export default class localServer {
 			return ret
 		}))
 		Async.each ( testArray, ( n, next ) => {
-			this._smtpVerify ( n, ( err ) => {
+			return this._smtpVerify ( n, ( err ) => {
 
 				if ( err > 0 ) {
 					saveLog ( `smtpVerify ERROR: err number = [${ err }]`)
@@ -1327,12 +1333,22 @@ export default class localServer {
 				saveLog (`imapTest error [${ err.message }]`)
 				const message = err.message
 				if ( message && message.length ) {
-					if ( /Auth|Lookup failed|Invalid|Login|username/i.test( message ))
+					if ( /Auth|Lookup failed|Invalid|Login|username/i.test( message )) {
 						return CallBack ( 3 )
-					if ( /ECONNREFUSED/i.test ( message ))
+					}
+						
+					if ( /ECONNREFUSED/i.test ( message )) {
 						return CallBack ( 4 )
-					if ( /certificate/i.test ( message ))
-                        return CallBack ( 5 )
+					}
+
+					if (/OVERQUOTA/i.test ( message )) {
+						return CallBack ( 13 )
+					}
+						
+					if ( /certificate/i.test ( message )) {
+						return CallBack ( 5 )
+					}
+                        
                     if ( /timeout/i.test ( message )) {
                         return CallBack ( 7 )
 					}
@@ -1354,7 +1370,29 @@ export default class localServer {
 		})
 	}
 
+	private tryCleanupMailBox ( imapData: IinputData, CallBack  ) {
+		const wImap = new Imap.qtGateImapwrite ( imapData, 'any')
+		return wImap.once ( 'ready', () => {
+			saveLog ( `tryCleanupMailBox wImap ready!`)
+			return wImap.ListAllFolders (( err, folders: string[] ) => {
+
+				if ( err ) {
+					
+					return saveLog (`tryCleanupMailBox ListAllFolders got error: [${ err.message || 'null message'}]`)
+				}
+				return Async.eachSeries ( folders, ( n, next ) => {
+					const folderName = n.splice (',')[1]
+					if ( /INBOX/i.test ( folderName )) {
+						return next ()
+					}
+					return wImap.deleteBox ( folderName,  next )
+				}, CallBack )
+			})
+		})
+	}
+
 	private emitQTGateToClient1 ( socket: SocketIO.Socket, _imapUuid: string ) {
+		
 		saveLog ( `doing emitQTGateToClient! with _imapUuid [${ _imapUuid }]` )
 		this.qtGateConnectEmitData = this.qtGateConnectEmitData || {}
 		this.qtGateConnectEmitData.haveImapUuid = _imapUuid && _imapUuid.length ? true : false 
@@ -1431,7 +1469,14 @@ export default class localServer {
 			if ( ! this.imapDataPool.length )
 				return
 			saveLog ( `doConnect with imapData [${ imapData.email }]`)
-			
+			/*
+			return this.tryCleanupMailBox ( imapData, err => {
+				if ( err ) {
+					return saveLog ( `tryCleanupMailBox return error [${ err.message || 'no message '}]`)
+				}
+				return saveLog (`tryCleanupMailBox success!`)
+			})
+			*/
 			this.QTClass = new ImapConnect ( imapData, this.qtGateConnectEmitData, sendMailIftimeOut, this, this.savedPasswrod, ( err?: number ) => {
 				console.trace (`ImapConnect exit with [${ err }]`)
 				if ( err !== null ) {
@@ -1517,15 +1562,26 @@ export default class localServer {
 				saveLog (`imapTest error [${ err.message }]`)
 				const message = err.message
 				if ( message && message.length ) {
-					if ( /Auth|Lookup failed|Invalid|Login|username/i.test( message ))
+					if ( /Auth|Lookup failed|Invalid|Login|username/i.test( message )) {
 						return socket.emit ( id + '-imap', 3 )
-					if ( /ECONNREFUSED/i.test ( message ))
+					}
+						
+					if ( /ECONNREFUSED/i.test ( message )) {
 						return socket.emit ( id + '-imap', 4 )
-					if ( /certificate/i.test ( message ))
-                        return socket.emit ( id + '-imap', 5 )
+					}
+						
+					if ( /certificate/i.test ( message )) {
+						return socket.emit ( id + '-imap', 5 )
+					}
+                        
                     if ( /timeout/i.test ( message )) {
                         return socket.emit ( id + '-imap', 7 )
 					}
+
+					if (/OVERQUOTA/i.test ( message )) {
+						return socket.emit ( id + '-imap', 13 )
+					}
+
 					if ( /ENOTFOUND/i.test ( message )) {
 						return socket.emit ( id + '-imap', 6 )
 					}

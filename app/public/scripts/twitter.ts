@@ -117,17 +117,108 @@ const convertSvgToPng = ( svgUrlData: string, CallBack ) => {
     }
     return image.src = svgUrlData
 }
+const maxVideoSize = 1024 * 150000
+var BASE64_MARKER = ';base64,'
+const fileReadChunkSize  = 1000 * 1024 // 1 Mbytes
 
+function parseFile ( process, item: twitter_layout.twitterField , file, CallBack ) {
+    const fileSize = file.size
+    let offset = 0
+    const self = this // we need a reference to the current object
+    let first = true
+    
+    const chunkReaderBlock = ( _offset, length, _file ) => {
+        const r = new FileReader()
+        const blob = _file.slice ( _offset, length + _offset )
+
+        r.onload = ( evt: ProgressEvent & { target: { result: string, error: Error }})  => {
+
+            if ( evt.target.error ) {
+                return CallBack ( evt.target.error )
+            }
+            let uu = evt.target.result 
+            if ( first ) {
+                uu = evt.target.result.split(',')[1]
+            }
+
+            return socketIo.emit ( 'mediaFileUpdata', file.name, uu, first, err => {
+                first = false
+                if ( err ) {
+                    return CallBack ( err )
+                }
+                offset += evt.target.result.length
+                if ( offset >= fileSize ) {
+                    
+                    return CallBack ()
+                }
+                process.progress ({
+                    percent: Math.round ( offset * 100 / fileSize )
+                })
+                // of to the next chunk
+                return chunkReaderBlock ( offset, fileReadChunkSize, file ) 
+            })
+            
+        }
+        r.readAsDataURL ( blob )
+    }
+
+    // now let's start the read with the first block
+    chunkReaderBlock ( offset, fileReadChunkSize, file )
+}
+
+const maxVideoWH = 1280 * 1024
+const mixVideoWH = 32 * 32
+const maxDuration = 140
 const readFile = ( ee ) => {
     if ( !ee ) {
         return 
     }
-    const file = ee.files[0]
-    if ( ! file.type.match( /image.*/ )) {
+    const file  = ee.files[0]
+
+    if ( ! file || !file.type.match ( /^video.(mp4$|x\-m4v$)|^image.(png$|jpg$|jpeg$|gif$)/ )) {
         return
     }
     const uu = parseInt ( $( ee ).attr( 'itemIndex' ))
     const item = twitter_view.newTwitterField()[ uu ]
+    const length = file.size
+    
+
+    if ( file.type.match ( /^video.(mp4$|x\-m4v$)/ )) {
+        item.uploadVideo ( true )
+        item.showToolBar ( false )
+        item.videoSize = length
+        const _process = $('.videoItemUpload').progress('reset').progress ({
+            percent: 0
+        })
+        return parseFile ( _process, item, file, err => {
+            item.uploadVideo ( false )
+            if ( err ) {
+                return item.fileReadError ( true )
+            }
+            //      file on end!
+            
+            item.video( `/videoTemp/${ file.name }`)
+            const videoTag = $(`video[video-id='${ file.name }']`)
+
+            const listenEvent = () => {
+                videoTag.off ( 'loadeddata' )
+                //videoTag.removeEventListener ( 'loadeddata', listenEvent )
+                const oo: HTMLVideoElement = videoTag[0]
+                const width = oo.videoHeight
+                const height = oo.videoHeight
+                const videoTimeCount = oo.duration
+                const wh = width * height
+                if ( wh > maxVideoWH || wh < mixVideoWH || file.size > maxVideoSize || videoTimeCount > maxDuration ) {
+                    twitter_view.newTwitterFieldError ( true )
+                    return item.newTwitterFieldError ( true )
+                }
+            }
+            return videoTag.on ( 'loadeddata', listenEvent )
+            
+            
+        })
+    }
+    
     const reader = new FileReader()
     reader.onload = e => {
         const rawData: string = reader.result
@@ -138,10 +229,11 @@ const readFile = ( ee ) => {
                 return twitter_view.checkNewTwrrtWindowClosable ()
             })
         }
+        twitter_view.checkNewTwrrtWindowClosable ()
         item.images.push ( rawData )
-        return twitter_view.checkNewTwrrtWindowClosable ()
     }
-    return reader.readAsDataURL( file )
+
+    return reader.readAsDataURL ( file )
 }
 
 interface twitter_text_parseTweet {
@@ -167,9 +259,18 @@ module twitter_layout {
         public files = ko.observable ('')
         public uuid = uuid_generate()
         public images = ko.observableArray ([])
+        public video = ko.observable ('')
+        
+        public videoSize = 0
         private twitterLength = 0
         private lastTextlength = 0
         public textAreaError = ko.observable ( false )
+        public newTwitterFieldError = ko.observable ( false )
+        public fileReadError = ko.observable ( false )
+        public uploadVideo = ko.observable ( false )
+        public videoFileName = ko.computed (() => {
+            return this.video ().replace ( '/videoTemp/','' )
+        })
         constructor ( private twitter: twitter ) {
             this.inputText.subscribe ( ns => {
                 this.textAreaError ( false )
@@ -242,6 +343,13 @@ module twitter_layout {
             this.images.splice ( index, 1 )
             return this.twitter.checkNewTwrrtWindowClosable ()
         }
+
+        public deleteVideo () {
+            this.video ('')
+            this.newTwitterFieldError ( false )
+            this.twitter.newTwitterFieldError ( false )
+            return this.twitter.checkNewTwrrtWindowClosable ()
+        }
         
     }
     export class twitter {
@@ -277,7 +385,9 @@ module twitter_layout {
         public addButtonDisabled = ko.observable ( true )
         public showDistroynewTwitter = ko.observable ( true )
         public shownewTwitterApprove = ko.observable ( false )
-        
+        public newTwitterFieldError = ko.observable ()
+        public addATwitterAccount = ko.observable ( false )         //      doing add a new account 
+        private processBarTime: NodeJS.Timer = null
         public config: KnockoutObservable < install_config> = ko.observable ({
             firstRun: true,
             alreadyInit: false,
@@ -484,6 +594,7 @@ module twitter_layout {
                 this.bottomEventLoader ( false )
             }, 1000 * 120 )
             this.showCurrentTimelines ( true )
+            this.currentTimelines([])
             return socketIo.emit ( 'getTimelines', this.twitterData()[0], err => {
                 return this.getTimeLineCallBack ( err )
             })
@@ -507,14 +618,26 @@ module twitter_layout {
 
         public requestTwitterUser ( twitterAccount: TwitterAccount ) {
             this.makeCurrentAccount ( twitterAccount )
-            this.showLoader ( true )
+            this.addATwitterAccount ( true )
+            this.addTwitterProgress ()
             this.resetAddAccountError ()
-            this.showAddTwitterAccount ( false )
+            
             return socketIo.emit ( 'addTwitterAccount', twitterAccount, ( data: TwitterAccount  ) => {
-                this.showLoader ( false )
+                clearTimeout ( this.processBarTime )
+                this.addATwitterAccount ( false )
+                $('.AddTwitterAccountProgress').progress('reset')
                 if ( !data ) {
                     return this.showServerError ( true )
                 }
+                if ( !data.twitter_verify_credentials ) {
+                    this.apiKeyError ( true )
+                    this.apiSecretError ( true )
+                    this.accessTokenError ( true )
+                    return this.accessTokenSecretError ( true )
+                    
+                }
+                this.showAddTwitterAccount ( false )
+                this.twitterData.push ( data )
                 this.currentTwitterAccount ( data.twitter_verify_credentials )
                 this.makeAccountMenu1 ()
                 
@@ -529,6 +652,22 @@ module twitter_layout {
             this.accessToken ( account.access_token_key )
             this.accessTokenSecret ( account.access_token_secret )
             return this.showAddTwitterAccount ( true )
+        }
+
+        private addTwitterProgress() {
+            const _process = $('.AddTwitterAccountProgress').progress('reset').progress ({
+                percent: 0
+            })
+            let count = 0
+            const keep = () => {
+                _process.progress ({
+                    percent: count ++
+                })
+                return this.processBarTime = setTimeout (() => {
+                    return keep ()
+                }, 1000 )
+            }
+            return keep()
         }
 
         public addTwitter () {
@@ -631,8 +770,13 @@ module twitter_layout {
         public checkNewTwrrtWindowClosable () {
             let HideWindow = false
             this.newTwitterField().forEach ( n => {
-                HideWindow = n.images().length > 0 || n.inputText().length > 0 
+                HideWindow = n.images().length > 0 || n.inputText().length > 0
+                if ( n.newTwitterFieldError () ) {
+                    this.newTwitterFieldError ( true )
+                }
+                
             })
+            
             this.showDistroynewTwitter ( HideWindow )
             
                 return $( '#newTwitterWindow' ).modal({
@@ -650,25 +794,29 @@ module twitter_layout {
             const TwitterData: twitter_postData  = {
                 text: twiData.inputText(),
                 images: twiData.images (),
-                media_data: null
+                videoSize: twiData.videoSize,
+                videoFileName: twiData.videoFileName(),
+                media_data: []
             }
             return TwitterData
         }
 
         public newTwitterClick () {
             const data = []
+            this.shownewTwitterApprove ( false )
+            $( '#newTwitterWindow' ).modal ( 'hide' )
+            $( '#newTwitterWindow' ).modal ( 'hide' )
             this.newTwitterField().forEach ( n => {
                 const nn = this.newTwitterData ( n )
                 if ( !nn ) {
-                    return
+                    return this.newTwitterField ([ new twitterField ( this )])
                 }
                 data.push ( nn )
             })
             if ( !data.length ) {
-                return
+                return this.newTwitterField ([ new twitterField ( this )])
             }
-            this.shownewTwitterApprove ( false )
-            $( '#newTwitterWindow' ).modal ( 'hide' )
+            
             this.newTwitterField ([ new twitterField ( this )])
 
             return socketIo.emit ( 'twitter_postNewTweet', this.twitterData()[0], data, ( err: Error, data ) => {

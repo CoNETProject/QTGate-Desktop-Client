@@ -471,6 +471,8 @@ interface twitter_postData {
     text: string,
     images: string[],
     media_data: twitter_mediaData[]
+    videoSize: number
+    videoFileName: string
 }
 
 

@@ -34,6 +34,7 @@ export default class ImapConnect extends Imap.imapPeer {
 	public localGlobalIpAddress = null
 	private sendConnectRequestMail = false
 	private timeOutWhenSendConnectRequestMail: NodeJS.Timer = null
+	public imapDomain = this.imapData.imapUserName.split ('@')[1]
 
 	private errNumber ( err ) {
 		if ( typeof err === 'number')
@@ -232,6 +233,7 @@ export default class ImapConnect extends Imap.imapPeer {
 			return poolData.CallBack ( null, ret )
 			
 		}
+		
 		saveLog ( `Class ImapConnect start up!` )
 	}
 

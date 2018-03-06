@@ -13,7 +13,7 @@ block jumbotron
         .image.content( style="background: rgba(171, 184, 194, 0.1);padding-bottom: 0px;")
             .ui.avatar.image
                 img( data-bind=" attr: { src: profile_image_url_https }")
-            .ui.form.description( data-bind="foreach: $root.newTwitterField " style="width: 100%;padding-left: 0.5em;")
+            .ui.form.description( data-bind = "foreach: $root.newTwitterField " style = "width: 100%;padding-left: 0.5em;")
                 .field
                     .ui.icon.input( data-bind="css: { error: textAreaError ()}")
                         i.textShow.icon( style = "top: 100%; margin-top: -25px; width: 4em;")
@@ -22,26 +22,37 @@ block jumbotron
                                 include twitterInputTextCountCircle.svg
                         textarea( data-bind = " hasFocus: showToolBar(), click: textAreaClick, textInput: inputText, style: { height: textAreaHeight()+'em' }" row="2" style="margin-bottom: 0px;padding-bottom: 2em;")
                 .fields( data-bind = "visible: showToolBar()")
-                    .field( data-bind="visible: images().length < 4" style = "cursor: pointer;width: 28em;")
+                    .field( data-bind="visible: images().length < 4 && ! video().length && !uploadVideo() " style = "cursor: pointer;width: 28em;")
                         .ui.left.icon.input
                             i.icon.large.photo.link( style = "margin: 0px;margin-left: -0.7em; margin-top: -0.3em;")
-                            input( type = "file" onchange="readFile ( this )" data-bind="attr: { itemIndex: $index()}" accept="image/*" style = "opacity: 0; margin-left: -3em;margin-top: -1em;")
-                    .field( data-bind="visible: $root.newTwitterField().length > 1, click: () => { $root.shownewTwitterApprove(false); return $root.deleteTweetItem ( $index()); }")
+                            input( type = "file" onchange = "readFile ( this )" data-bind = "attr: { itemIndex: $index(), accept: images().length ? 'image/gif,image/jpeg,image/jpg,image/png' : 'image/gif,image/jpeg,image/jpg,image/png,video/mp4,video/x-m4v' }" style = "opacity: 0; margin-left: -3em;margin-top: -1em;")
+                    .field( data-bind = "visible: $root.newTwitterField().length > 1, click: () => { $root.shownewTwitterApprove(false); return $root.deleteTweetItem ( $index()); }")
                         i.icon.trash.large.outline.tweetTrashButton( style="margin: 0px;" )
                 .field( data-bind=" visible: true")
                     p( data-bind=" text: infoDefine [ $root.languageIndex()].twitter.imageSizeOver")
-                .fields( data-bind = "visible: images().length > 0, foreach: images ")
-                    
+                .fields( data-bind = "visible: images().length, foreach: images ")
                     .field
                         img.ui.tiny.top.aligned.image( data-bind="attr: { src: $data }")
                         span( style = "margin-left: -1em;" data-bind = " click: () => { $parent.deleteImage( $index() ) }")
                             i.icon.remove.big.circle.link
+                .field( data-bind = "visible: uploadVideo()")
+                    .ui.progress.olive.tiny.videoItemUpload
+                        .bar
+                .field( data-bind = "visible: video().length" )
+                    
+                    .ui( data-bind = " css: { segment: newTwitterFieldError() }")
+                        a.ui.top.red.attached.label( data-bind = " visible: newTwitterFieldError(), click: deleteVideo, text: infoDefine [ $root.languageIndex()].twitter.videoSizeOver ")
+                        .ui.medium.image
+                            a.ui.right.corner.label( data-bind = " click: deleteVideo " )
+                                i.icon.blue.remove
+                            video.image( data-bind = "attr: { src: video, 'video-id': videoFileName() }" muted autoplay controls preload = "none" style = "object-fit: cover;height: 100%; width: 100%;")
+                        
                         
                         
         .actions( style = "background: rgba(171, 184, 194, 0.1);")
             //-.circular.ui.icon.button( data-bind = "css : { disabled: $root.addButtonDisabled ()}")
                 i.icon.plus( data-bind = "click: () => { return $root.addNewTweet(); }" style = "color:white ")
-            .ui.twitter.button( data-bind = "click: () => { $root.newTwitterClick() }, text: infoDefine [ $root.languageIndex()].twitter.twitterBottonTitle [ $root.newTwitterField().length === 1 ? 0 : 1 ] ")
+            .ui.twitter.button( data-bind = "css: { disabled: $root.newTwitterFieldError()}, click: () => { $root.newTwitterClick() }, text: infoDefine [ $root.languageIndex()].twitter.twitterBottonTitle [ $root.newTwitterField().length === 1 ? 0 : 1 ] ")
                 i.twitter.icon
 
 block jumbotron1
@@ -87,17 +98,21 @@ block jumbotron1
             p( data-bind = " html: infoDefine [ languageIndex()].twitter.newTwitterAccount " )
             h3( data-bind = "visible: showAccountError(), text: infoDefine [ languageIndex()].twitter.accountError" style="color:brown;")
             form.ui.form( data-bind = " submit: addTwitter ")
-                .field( data-bind="css: { error: apiKeyError }")
-                    input( data-bind = " value: apiKey " type="text" placeholder = "API key")
-                .field( data-bind="css: { error: apiSecretError }")
-                    input( data-bind = " value: apiSecret " type="text" placeholder = "API Secret")
-                .field( data-bind="css: { error: accessTokenError }")
-                    input( data-bind = " value: accessToken " type="text" placeholder = "Access Token")
-                .field( data-bind="css: { error: accessTokenSecretError }")
-                    input( data-bind = " value: accessTokenSecret " type="text" placeholder = "Access Token Secret")
-                .field
-                    .ui.grey.basic.button( data-bind="click: () => { return showAddTwitterAccount ( false );},visible: twitterData().length ,text: infoDefine [ languageIndex()].twitter.close")
-                    .ui.positive.basic.button( data-bind="text: infoDefine [ languageIndex()].twitter.addAccount, click: addTwitter")
+                .field( data-bind = "visible: addATwitterAccount()")
+                    .ui.progress.olive.tiny.AddTwitterAccountProgress
+                        .bar
+                .inputArea( data-bind="visible: ! addATwitterAccount()")
+                    .field( data-bind="css: { error: apiKeyError }")
+                        input( data-bind = " value: apiKey " type="text" placeholder = "API key")
+                    .field( data-bind="css: { error: apiSecretError }")
+                        input( data-bind = " value: apiSecret " type="text" placeholder = "API Secret")
+                    .field( data-bind="css: { error: accessTokenError }")
+                        input( data-bind = " value: accessToken " type="text" placeholder = "Access Token")
+                    .field( data-bind="css: { error: accessTokenSecretError }")
+                        input( data-bind = " value: accessTokenSecret " type="text" placeholder = "Access Token Secret")
+                    .field
+                        .ui.grey.basic.button( data-bind="click: () => { return showAddTwitterAccount ( false );},visible: twitterData().length ,text: infoDefine [ languageIndex()].twitter.close")
+                        .ui.positive.basic.button( data-bind="text: infoDefine [ languageIndex()].twitter.addAccount, click: addTwitter")
 
         .content( data-bind = "visible: showServerError()" style = "padding: 4em;" )
             p( data-bind = "text: infoDefine [ languageIndex()].error_message.imapErrorMessage[12] ")
@@ -133,7 +148,7 @@ block jumbotron1
                                     span( data-bind = " html: full_text_split_line " style="overflow: hidden;")
                                 
                                 .row.ui( data-bind = "css: { shape: extended_entities && extended_entities.media && extended_entities.media.length > 1 }, visible: extended_entities && !retweeted_status && !quoted_status, attr : { 'sharp-id' : extended_entities ? id_str : '' }, with: extended_entities " style="padding: 0px;" )
-                                    .ui.grid.one.column
+                                    .ui.grid.one.column(style = "padding-left: 1em;")
                                         .row( data-bind = " visible: media[0].additional_media_info && media[0].additional_media_info.title && media[0].additional_media_info.title.length ")
                                             p( data-bind= "text: media[0].additional_media_info && media[0].additional_media_info.title ? media[0].additional_media_info.title : ''")
                                         .row( data-bind="visible: media[0].video_info ")
@@ -158,7 +173,7 @@ block jumbotron1
                                         .row( style = "padding: 0px;")
                                             span( data-bind = " html: full_text_split_line " style="overflow: hidden;" )
                                         .row.ui( data-bind = "css: { shape: extended_entities && extended_entities.media && extended_entities.media.length > 1 }, visible: extended_entities, attr : { 'sharp-id' : extended_entities ? id_str : '' }, with: extended_entities " style="padding: 0px;" )
-                                            .ui.grid.one.column
+                                            .ui.grid.one.column(style = "padding-left: 1em;")
                                                 .row( data-bind = " visible: media[0].additional_media_info && media[0].additional_media_info.title && media[0].additional_media_info.title.length ")
                                                     p( data-bind= "text: media[0].additional_media_info && media[0].additional_media_info.title ? media[0].additional_media_info.title : ''")
                                                 .row( data-bind="visible: media[0].video_info ")
@@ -172,8 +187,8 @@ block jumbotron1
                                             .fluid.ui.twitter.button( data-bind = "click: ()=> { return $root.timelinesViewSharp( id_str);} " )
                                                 i.icon.twitter
 
-                                        .row.ui.segment( data-bind = "visible: quoted_status, with: quoted_status" style="padding: 0px;margin-top: 0.2em; padding-bottom: .5em;padding-top: .5em;")
-                                            .ui.grid.one.column
+                                        .row.ui.segment( data-bind = "visible: quoted_status, with: quoted_status" style = "overflow: hidden;padding: 0px;margin-top: 0.2em; padding-bottom: .5em;padding-top: .5em;")
+                                            .ui.grid.one.column(style = "padding-left: 1em;")
                                                 .row( style="padding: 0px; padding-right: 0.5em; padding-left: 0.5em;")
                                                     span( data-bind = " text: user.name " style="color: black")
                                                     i.large.icons( data-bind = "visible: user.verified " style = "color: #1da1f2; margin-left: 0.2em;")
@@ -220,7 +235,7 @@ block jumbotron1
                                         .row( style = "padding: 0px; padding-bottom:0.5em; padding-right: 0.5em; padding-left: 0.5em;")
                                             span( data-bind = " html: full_text_split_line " style="overflow: hidden;" )
                                         .row.ui( data-bind = "css: { shape: extended_entities && extended_entities.media && extended_entities.media.length > 1 }, visible: extended_entities, attr : { 'sharp-id' : extended_entities ? id_str : '' }, with: extended_entities " style="padding: 0px;" )
-                                            .ui.grid.one.column
+                                            .ui.grid.one.column(style = "padding-left: 1em;")
                                                 .row( data-bind = " visible: media[0].additional_media_info && media[0].additional_media_info.title && media[0].additional_media_info.title.length ")
                                                     p( data-bind= "text: media[0].additional_media_info && media[0].additional_media_info.title ? media[0].additional_media_info.title : ''")
                                                 .row( data-bind="visible: media[0].video_info ")
