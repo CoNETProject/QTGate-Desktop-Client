@@ -577,13 +577,13 @@ export default class localServer {
 			if ( this.QTClass ) {
 				this.QTClass.Ping ()
 			}
-			/*
+			
 			const imap = this.imapDataPool [ index ]
 			saveLog ( `socket.on ( 'connectQTGate1')  uuid = [${ uuid }]`)
 			imap.confirmRisk = true
 			this.qtGateConnectEmitData ? this.qtGateConnectEmitData.needSentMail = true : this.qtGateConnectEmitData = { needSentMail: true }
 			return this.emitQTGateToClient1 ( socket, uuid )
-			*/
+			
 		})
 
 		socket.on ( 'checkPort', ( portNum, CallBack ) => {
