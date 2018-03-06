@@ -5,17 +5,17 @@
 
 ## Download 下載 ダウンロード
 
-### [The latest 最新版 v1.3.0](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
+### [The latest 最新版 v1.3.1](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
 
-[windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.0/qtgate.Setup.1.3.0.ia32.exe)
+[windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.1/qtgate.Setup.1.3.1.ia32.exe)
 
-[windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.0/qtgate.Setup.1.3.0.exe)
+[windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.1/qtgate.Setup.1.3.1.exe)
 
-[MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.0/qtgate-1.3.0.dmg)
+[MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.1/qtgate-1.3.1.dmg)
 
-[Linux deb](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.0/qtgate_1.3.0_amd64.deb)
+[Linux deb](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.1/qtgate_1.3.1_amd64.deb)
 
-[Linux pacman](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.0/qtgate-1.3.0.pacman)
+[Linux pacman](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.1/qtgate-1.3.1.pacman)
 
 ## Description 項目概要
 
