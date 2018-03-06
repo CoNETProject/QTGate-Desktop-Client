@@ -1104,7 +1104,7 @@ block jumbotron1
 					h4( data-bind = "text: infoDefine[ languageIndex() ].thirdParty.information" style="color: #B5CC18;")
 					.ui.link.cards( data-bind="foreach: appList " style = " margin-top: 0.5em; ")
 						
-						.card.AppCardTop( data-bind = "click: () => { click( $root )} ")
+						.card.AppCardTop( data-bind = "click: () => { click( $root )}, visible: show")
 							.content.cardContentHeader
 								a.ui.orange.right.corner.label.comeSoon( data-bind = "visible: comeSoon, attr: { 'data-content': infoDefine[ $root.languageIndex() ].thirdParty.comesoon }")
 									i.icon.warning.sign

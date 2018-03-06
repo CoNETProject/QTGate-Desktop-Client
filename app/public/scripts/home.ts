@@ -2931,6 +2931,7 @@ const appList = [
         commentCount: ko.observable(),
         titleColor: '#0066cc',
         comeSoon: false,
+        show: true,
         click: ( view: view_layout.view ) => { return view.QTGateAppClick () },
         image: '/images/qtgateGateway.png'
     },{
@@ -2940,6 +2941,7 @@ const appList = [
         commentCount: ko.observable(0),
         titleColor: '#006600',
         comeSoon: true,
+        show: true,
         image: '/images/qtchat.png',
         click: ( view: view_layout.view ) => { return },
     },{
@@ -2949,6 +2951,7 @@ const appList = [
         commentCount: ko.observable(0),
         titleColor: '#990000',
         comeSoon: true,
+        show: true,
         image: '/images/qtStorage.png',
         click: ( view: view_layout.view ) => { return },
     },{
@@ -2958,6 +2961,7 @@ const appList = [
         commentCount: ko.observable(0),
         titleColor: '#09b83e',
         comeSoon: false,
+        show: true,
         image: '/images/512x512.png',
         click: ( view: view_layout.view ) => { return },
     },{
@@ -2967,6 +2971,7 @@ const appList = [
         commentCount: ko.observable(0),
         titleColor: '#4885ed',
         comeSoon: true,
+        show: true,
         image: '/images/Google__G__Logo.svg',
         click: ( view: view_layout.view ) => { return },
     },{
@@ -2976,38 +2981,60 @@ const appList = [
         commentCount: ko.observable(0),
         titleColor: '#00aced',
         comeSoon: false,
+        show: true,
         image: '/images/Twitter_Logo_Blue.svg',
         click: ( view: view_layout.view ) => { 
             const { shell } = require ( 'electron' )
             event.preventDefault ()
             return shell.openExternal ( `http://${ view.config().localIpAddress[0] }:2000/Twitter` )
         },
-    },{
+    },
+
+    {
         name: 'QTInstagram',
         likeCount: ko.observable (0),
         liked: ko.observable (false),
         commentCount: ko.observable(0),
         titleColor: '#cd486b',
+        show: false,
         image: '/images/Instagram_logo_2016.svg',
         comeSoon: true,
         click: ( view: view_layout.view ) => { return },
-    },{
+    }
+    
+    ,{
         name: 'QTNYTime',
         likeCount: ko.observable (0),
         liked: ko.observable (false),
         commentCount: ko.observable(0),
         titleColor: 'grey',
         comeSoon: true,
+        show: true,
         image: '/images/nyt.png',
         click: ( view: view_layout.view ) => { return },
-    },{
+    },
+    
+    {
         name: 'QTWeChat',
         likeCount: ko.observable (0),
         liked: ko.observable (false),
         commentCount: ko.observable(0),
         titleColor: '#09b83e',
         comeSoon: true,
+        show: false,
         image: '/images/wechat.svg',
+        click: ( view: view_layout.view ) => { return },
+    }
+    
+    ,{
+        name: 'QTBitcoin',
+        show: true,
+        likeCount: ko.observable (0),
+        liked: ko.observable ( false ),
+        commentCount: ko.observable(0),
+        titleColor: '#FF9900',
+        comeSoon: true,
+        image: '/images/Bitcoin.svg',
         click: ( view: view_layout.view ) => { return },
     }
 ]

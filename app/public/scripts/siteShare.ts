@@ -563,19 +563,19 @@ const infoDefine = [
             comesoon:'即将推出',
             information: 'QTG平台的应用程序',
             qtgateGateway: 'QTGate提供的高质量上网技术iOPN和@OPN，在QTGate全球16个区域，当场定制您专属的代理服务器，变换您的IP地址隐身无障碍的访问互联网',
-            app:['Q梯', 'Q信', 'QT石洞','QT平台业务定制','QT谷歌','QT推特','QT Instagram','QT纽时','QT微信'],
+            app:['Q梯', 'Q信', 'QT石洞','QT平台业务定制','QT谷歌','QT推特','QT Instagram','QT纽时','QT微信','QT比特币钱包'],
             
             dimmer: [
-                'QTGate提供的高质量定制VPN服务器业务，能够让您隐身安全的不受别人注意的网上冲浪。',
-                'QTGate提供的推特风格隐身匿名不被封锁的社交媒体',
-                'QTGate提供的安全隐私文件存储系统',
-                'QTGate承接定制各类公众服务类及跨国企业私有APP业务',
-                'QTGate提供的免VPN免代理谷歌检索客户端',
-                'QTGate提供的免VPN免代理推特客户端',
-                'QTGate提供的免VPN免代理Instagram客户端',
-                'QTGate提供的免VPN免代理纽约时报客户端',
-                'QTGate提供的隐身微信客户端，可点对点加密通讯',
-                
+                '高质量定制VPN代理服务器，让您隐身安全不受注意的网上冲浪。 ',
+                '推特风格隐身匿名去中心化不被封锁的社交媒体',
+                '安全隐私文件存储系统',
+                'QTG承接定制各类公众服务类及跨国企业私有APP业务',
+                '免代理匿名谷歌检索客户端',
+                '免代理匿名推特客户端',
+                '免代理匿名Instagram客户端',
+                '免代理匿名纽约时报客户端',
+                '免代理匿名微信客户端，点对点加密通讯',
+                '不被封锁的比特币钱包客户端'
             ]
         }, 
 
@@ -751,18 +751,19 @@ const infoDefine = [
             comesoon:'まもなく登場します。',
             information: 'QTGプラットフォームアプリケーション',
             qtgateGateway:'QTGateご提供する高品質ゲットウェイサービス、グローバルに１６区域とQTGate独自のiOPNと@OPN技術により、貴方のIPアドレスをカバーして、静かに無障害にインターネットの世界へ可能です。',
-            app:['QTGate', 'QTChat', 'QTStorage','QTカスタム業務','QT for Google','QT for Tweet','QT for Instagram','QT for NY Time','QT for WeChat'],
+            app:['QTGate', 'QTChat', 'QTStorage','QTカスタム業務','QT for Google','QT for Tweet','QT for Instagram','QT for NY Time','QT for WeChat','QT ' ],
             
             dimmer: [
-                'QTGateご提供する高品質ゲットウェイサービス、静かに無障害にインターネットの世界へ可能です。',
-                'QTGateご提供するツイートスタイルの匿名ソーシャルメディア',
-                'QTGateご提供する匿名ファイルプライバシーストレージ',
-                'QTGateプラットフォームに公衆及び私有ビジネスAPPの作成業務',
-                'QTGateご提供するVPN不要あなたのIPアドレスをカバーして匿名Googleサーチ端末',
-                'QTGateご提供するVPN不要あなたのIPアドレスをカバーして匿名Tweet端末',
-                'QTGateご提供するVPN不要あなたのIPアドレスをカバーして匿名Instagram端末',
-                'QTGateご提供するVPN不要あなたのIPアドレスをカバーして匿名NY Time端末',
-                'QTGateご提供するVPN不要あなたのIPアドレスをカバーして匿名WeChat端末',
+                '高品質ゲットウェイサービス、静かに自由になるインターネットの世界へ',
+                'ツイートスタイルの匿名ソーシャルメディア',
+                'QTGご提供する匿名ファイルプライバシーストレージ',
+                'QTGプラットフォームに公衆及び私有ビジネスAPPの作成業務',
+                'QTGご提供するVPN不要な匿名Googleサーチ端末',
+                'QTGご提供するVPN不要な匿名Tweet端末',
+                'QTGご提供するVPN不要な匿名Instagram端末',
+                'QTGご提供するVPN不要な匿名NY Time端末',
+                'QTGご提供するVPN不要な匿名WeChat端末',
+                'QTGご提供する無障害通信ビットコイン財布端末'
                 
             ]
         }, 
@@ -1348,19 +1349,19 @@ const infoDefine = [
             information: 'QTG platform APPs.',
             comesoon:'Come soon.',
             qtgateGateway: 'QTGate gateway service. High speed, total privacy, ultra secure and easy to use. Your gateway to a secure and open internet.',
-            app:['QTGate', 'QTChat', 'QTStorage','QT Custom','QT for Google','QT for Tweet','QT for Instagram','QT for NY Time','QT for WeChat'],
+            app:['QTGate', 'QTChat', 'QTStorage','QT Custom','QT for Google','QT for Tweet','QT for Instagram','QT for NY Time','QT for WeChat','QT for Bitcoin'],
             
             dimmer: [
                 'QTGate gateway service. High speed, to a secure and open internet.',
-                'Private and secure, Tweet style social media.',
+                'Private and secure, decentralized Tweet style social media.',
                 'The secure and Private cloud storage and file sharing.',
-                'QTGate provate custom business for public and private APP.',
+                'Provate custom business solution for public or private APPs in QTG platform.',
                 'Privacy Google search client without VPN.',
                 'Privacy Tweet client without VPN.',
                 'Privacy Instagram client without VPN.',
                 'Privacy NY Time client without VPN.',
                 'Privacy WeChat client without VPN.',
-                
+                'QTG for Bitcoin wallet, without VPN.'
             ]
         }, 
         account:{
@@ -1984,19 +1985,20 @@ const infoDefine = [
         thirdParty: {
             information: 'QTG匿名平台應用程序',
             comesoon:'即將登場',
-            app:['Q梯','Q信','QT石洞','QT平台業務訂製','QT谷歌','QT推特','QT Instagram','QT紐時','QT微信'],
+            app:['Q梯','Q信','QT石洞','QT平台業務訂製','QT谷歌','QT推特','QT Instagram','QT紐時','QT微信','QT比特幣錢包'],
             qtgateGateway: 'QTGate提供的高質量上網技術iOPN和@OPN，在QTGate全球16個區域，當場定制您專屬的代理服務器，變換您的IP地址隱身無障礙的訪問互聯網',
             
             dimmer: [
-                'QTGate提供的高質量定制VPN服務器業務，能夠讓您隱身安全的不受別人注意的網上沖浪。 ',
-                'QTGate提供的推特風格隱身匿名不被封鎖的社交媒體',
-                'QTGate提供的安全隱私文件存儲系統',
-                'QTGate承接定制各類公眾服務類及跨國企業私有APP業務',
-                'QTGate提供的免VPN免代理谷歌檢索客戶端',
-                'QTGate提供的免VPN免代理推特客戶端',
-                'QTGate提供的免VPN免代理Instagram客戶端',
-                'QTGate提供的免VPN免代理紐約時報客戶端',
-                'QTGate提供的隱身微信客戶端，可點對點加密通訊',
+                '高質量定制VPN代理服務器，讓您隱身安全不受注意的網上沖浪。',
+                '推特風格隱身匿名去中心化不被封鎖的社交媒體',
+                '安全隱私文件存儲系統',
+                'QTG承接定制各類公眾服務類及跨國企業私有APP業務',
+                '免代理匿名谷歌檢索客戶端',
+                '免代理匿名推特客戶端',
+                '免代理匿名Instagram客戶端',
+                '免代理匿名紐約時報客戶端',
+                '免代理匿名微信客戶端，點對點加密通訊',
+                '不被封鎖的比特幣錢包客戶端'
                 
             ]
         }, 

@@ -79,7 +79,7 @@ block jumbotron1
                             .data( data-bind = " text: followers_count + ' ' + infoDefine [ $root.languageIndex()].twitter.followers ")
             <!-- /ko -->
     .pusher
-        .language( style="z-index: 999;top: 0.6em;right: 1em;position: fixed;width: 2em;")
+        .language( style="z-index: 999;top: 0.7em;right: 1em;position: fixed;width: 2em;")
             .ui.text.shape.languageText( data-bind = " click: selectItem " )
                 .sides
                     span.ui.header.side.en.languageItem.languageTextCoverColor
@@ -117,8 +117,9 @@ block jumbotron1
         .content( data-bind = "visible: showServerError()" style = "padding: 4em;" )
             p( data-bind = "text: infoDefine [ languageIndex()].error_message.imapErrorMessage[12] ")
         .ui.top.fixed.secondary.menu( style = "background-color: #0084b4" )
-            .item( data-bind = "click: showNewTwrrtWindow, visible: !showLogin()" style = "margin:0 auto;cursor: pointer;" )
-                i.icon.large.twitter.inverted( style = "margin:0px;" )
+            .item( data-bind = "visible: !showLogin()" style = "margin:0 auto;cursor: pointer;" )
+                i.icon.large.twitter.inverted( data-bind="visible: !bottomEventLoader()" style = "margin:0px;" )
+                i.notched.circle.large.loading.icon( data-bind="visible: bottomEventLoader()" style = "margin:0px; color: white" )
             .currentAccount( style = "position: absolute; cursor: pointer;top: 0.5em;left: 1em;" data-bind = " click: () => { $('#sidebarMenu').sidebar('toggle')}, visible: showAccountMenu()" )
                 img.ui.avatar.image( data-bind = " attr: { src: currentTwitterAccount() && currentTwitterAccount().profile_image_url_https ? currentTwitterAccount().profile_image_url_https : ''}") 
             .left.menu( data-bind = " visible: showLogin() " )
@@ -126,6 +127,8 @@ block jumbotron1
                     .ui.icon.input.field( data-bind = "css: { error: passwordError() }")
                         input( type="password" data-bind = "value: password, attr : { placeholder: infoDefine [ languageIndex()].Home_keyPairInfo_view.password1 }")
                         i.icon.checkmark.link( data-bind = "click: login " )
+            .item( data-bind = " visible: !showLogin(), click: showNewTwrrtWindow" style="cursor: pointer;right: 3em;padding: 0em;position: absolute;")
+                img.ui.mini.image( src="/images/TWPost.svg")
         .content.TimelinesView( data-bind = "visible: showCurrentTimelines() " )
             #TimelinesView.ui.list( data-bind = "foreach: currentTimelines " style="background-color:white;")
                 .item( data-bind = "visible: user" style = "padding: 1em;")
@@ -146,7 +149,7 @@ block jumbotron1
                             .ui.grid.one.column( style="margin: 0px")
                                 .row( data-bind =" visible: !retweeted_status " style="padding: 0px;")
                                     span( data-bind = " html: full_text_split_line " style="overflow: hidden;")
-                                
+
                                 .row.ui( data-bind = "css: { shape: extended_entities && extended_entities.media && extended_entities.media.length > 1 }, visible: extended_entities && !retweeted_status && !quoted_status, attr : { 'sharp-id' : extended_entities ? id_str : '' }, with: extended_entities " style="padding: 0px;" )
                                     .ui.grid.one.column(style = "padding-left: 1em;")
                                         .row( data-bind = " visible: media[0].additional_media_info && media[0].additional_media_info.title && media[0].additional_media_info.title.length ")
@@ -272,8 +275,6 @@ block jumbotron1
             i.close.icon
             .header( data-bind=" html: infoDefine [ languageIndex()].twitter.urlInfo ")
             p( data-bind = " text: `http://${ config() && config().localIpAddress && config().localIpAddress.length ? config().localIpAddress[0]: '127.0.0.1' }:2000/Twitter` ")
-        .content( data-bind = " visible: bottomEventLoader() " style = "padding: 4em;background-color: #0084b4;" )
-            .ui.active.centered.inline.loader
     
 
         
