@@ -42,7 +42,7 @@ export default class ImapConnect extends Imap.imapPeer {
 		if ( !err || ! err.message )
 			return null
 		const message = err.message
-		if ( /Auth|Lookup failed|Invalid|Login|username/i.test( message ))
+		if ( /auth|login|log in|Too many simultaneous|UNAVAILABLE/i.test( message ))
 			return 3
 		if ( /ECONNREFUSED/i.test ( message ))
 			return 4
@@ -193,7 +193,7 @@ export default class ImapConnect extends Imap.imapPeer {
 			saveLog ( 'clearTimeout timeOutWhenSendConnectRequestMail !' )
 			clearTimeout ( this.timeOutWhenSendConnectRequestMail )
 			if ( ! ret.requestSerial ) {
-				saveLog ( `newMail have not ret.requestSerial, doing switch ( ret.command ) `)
+				saveLog ( `newMail have not ret.requestSerial, ${ JSON.stringify ( ret )} doing switch ( ret.command ) `)
 				
 				switch ( ret.command ) {
 
@@ -214,7 +214,7 @@ export default class ImapConnect extends Imap.imapPeer {
 							return saveLog ( `got Command from server "changeDocker" localServer.proxyServer or localServer.connectCommand is null!!`)
 							
 						}
-						saveLog (`on changeDocker container = [${ container }]`)
+						saveLog ( `on changeDocker container = [${ container }]` )
 						return this.localServer.proxyServer.sendCommand ( 'changeDocker', container )
 
 					}

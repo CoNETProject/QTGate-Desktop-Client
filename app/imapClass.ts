@@ -22,6 +22,10 @@ import * as Crypto from 'crypto'
 import * as Stream from 'stream'
 import * as Dns from 'dns'
 import * as res from './res'
+import * as Fs from 'fs'
+
+import * as Path from 'path'
+import * as Os from 'os'
 
 const corePeerCount = 6
 const maxUpline = 10
@@ -43,7 +47,7 @@ const makeWImap = ( imapData: IinputData, writeFolder: string, wImapPool: Imap.q
 			if ( index > -1 ) {
 				wImapPool.splice ( index, 1 )
 			}
-			const exitWithUnContinue = err && err.message && /Auth|Lookup failed|Invalid|Login|username/i.test( err.message ) ? true : false
+			const exitWithUnContinue = err && err.message && /auth|login|log in|Too many simultaneous|UNAVAILABLE/i.test( err.message ) ? true : false
 			
 			if ( keepConnect && ! exitWithUnContinue ) {
 				console.log (`[${ writeFolder }] keepConnect now doing connect()`)
@@ -70,14 +74,14 @@ const makeWImap = ( imapData: IinputData, writeFolder: string, wImapPool: Imap.q
 const makeRImap = ( imapData: IinputData, readFolder: string, rImapPool: Imap.qtGateImapRead[], keepConnect: boolean, newMail: ( mail: Buffer ) => void ) => {
 	let error = null
 	const connect = () => {
-		const rImap = new Imap.qtGateImapRead (imapData, readFolder, false, false, newMail )
+		const rImap = new Imap.qtGateImapRead (imapData, readFolder, false, newMail )
 		rImap.once ( 'end', err => {
 			console.log (`\n [${ readFolder }] rImap.once ( 'end' )`, err )
 			const index = rImapPool.findIndex ( n => { return n.listenFolder === readFolder })
 			if ( index > -1 ) {
 				rImapPool.splice ( index, 1 )
 			}
-			const exitWithUnContinue = err && err.message && /Auth|Lookup failed|Invalid|Login|username/i.test( err.message ) ? true : false
+			const exitWithUnContinue = err && err.message && /auth|login|log in|Too many simultaneous|UNAVAILABLE/i.test( err.message ) ? true : false
 			
 			if ( keepConnect && ! exitWithUnContinue ) {
 				console.log (`rImap [${ readFolder }] keepConnect now doing connect()`)
@@ -420,7 +424,7 @@ class imapPeerControl {
 	}
 	*/
 
-	constructor ( private imapData: IinputData, private writeFolder: string, private readFolder: string, server: boolean ) {
+	constructor ( public imapData: IinputData, private writeFolder: string, private readFolder: string, server: boolean ) {
 		
 		for ( let i = 0; i < corePeerCount;  i ++ ) {
 			const _readFolder = i + '-' + this.readFolder
@@ -777,4 +781,27 @@ export class imapServerControl extends imapPeerControl {
         return this.newNetConnect ( _buf, seriesNumber )
 	}
 
+}
+const QTGateFolder = Path.join ( Os.homedir(), '.QTGate' )
+const tempFiles = Path.join ( QTGateFolder, 'tempfile' )
+const QTGateVideo = Path.join ( tempFiles, 'videoTemp' )
+
+export const readMediaToFile1 = ( imapPeer: Imap.imapPeer, fileName: string, dirPath: string, CallBack ) => {
+    let _callback = false
+    let rImap = new Imap.qtGateImapRead ( imapPeer.imapData, fileName, true, mail => {
+        const retText = Imap.getMailAttachedBase64 ( mail )
+        
+		rImap.logout ()
+		
+        return Fs.writeFile ( Path.join ( dirPath, fileName) , 'utf8', err => {
+            _callback = true
+            return CallBack ( err )
+        })
+        
+	})
+
+    rImap.once ( 'end', err => {
+		
+		rImap = null
+    })
 }

@@ -19,13 +19,14 @@ import * as Uuid from 'node-uuid'
 import * as UploadFile from './uploadFile'
 import * as Twitter from 'twitter'
 import * as Twitter_text from 'twitter-text'
+import * as ImapPeer from './imapClass'
 
 
 const QTGateFolder = Path.join ( Os.homedir(), '.QTGate' )
 const tempFiles = Path.join ( QTGateFolder, 'tempfile' )
 const QTGateVideo = Path.join ( tempFiles, 'videoTemp' )
 const view_root = Path.join ( __dirname, 'views' )
-const ErrorLogFile = Path.join ( QTGateFolder, 'twitter.log')
+const ErrorLogFile = Path.join ( QTGateFolder, 'twitter.log' )
 let flag = 'w'
 const configPath = Path.join ( QTGateFolder, 'config.json' )
 const twitterListenPort = 2000
@@ -41,7 +42,11 @@ const saveLog = ( log: string ) => {
 		flag = 'a'
 	})
 }
-
+interface uploadFileBuffer {
+	part: number
+	serial: string
+	_buf: Buffer
+}
 
 export default class twitter1 {
     private ex_app
@@ -152,7 +157,7 @@ export default class twitter1 {
 			return CallBack ( null, '')
 		}
 		//console.log ( files )
-		return Imap.readMedia111 ( this.localServer.imapDataPool [ this.localServer.QTGateConnectImap ], files[0], CallBack )
+		return Imap.imapGetMediaFile ( this.localServer.imapDataPool [ this.localServer.QTGateConnectImap ], files[0], CallBack )
 	}
 
 	private getTweetMediaData ( media: twitter_media[], CallBack  ) {
@@ -192,8 +197,8 @@ export default class twitter1 {
 		}
 		return CallBack ()
 	}
-
-	private getVideo22222 ( m: twitter_media_video_info, CallBack ) {
+/*
+	private getVideo2222233 ( m: twitter_media_video_info, CallBack ) {
 		
 		if ( !m || !m.QTDownload ) {
 			return CallBack ()
@@ -236,7 +241,7 @@ export default class twitter1 {
 		})
 
 	}
-
+*/
 	private getVideo ( m: twitter_media_video_info, CallBack ) {
 		if ( !m || !m.QTDownload ) {
 			return CallBack ()
@@ -388,12 +393,12 @@ export default class twitter1 {
 				return CallBack ('format error!')
 			}
 			delete account[ 'twitter_verify_credentials']
+			saveLog ( `twitter_postNewTweet doing postTweetViaQTGate`)
 			return this.postTweetViaQTGate ( account, postData[0], ( err, data ) => {
 				if ( err ) {
-
+					return CallBack ( err )
 				}
-				const kkk = data 
-				return CallBack ( err, data )
+				
 			})
 		})
 
@@ -401,17 +406,16 @@ export default class twitter1 {
 			return CallBack ( Twitter_text.parseTweet ( twitterText ))
 		})
 
-		socket.on ( 'mediaFileUpdata', ( uploadId, data: string, first: boolean, CallBack ) => {
+		socket.on ( 'mediaFileUpdata', ( uploadId, data: Buffer, part: number, CallBack ) => {
 			
 			const fileName = Path.join ( QTGateVideo, uploadId )
-			if ( !data ) {
-				return CallBack ()
+			//		the end!
+			
+			if ( !part ) {
+				Fs.writeFile ( fileName, data, 'binary', CallBack )
+			} else {
+				Fs.appendFile ( fileName, data, 'binary',CallBack )
 			}
-			const _buf = Buffer.from ( data, 'base64' )
-			if ( first ) {
-				return Fs.writeFile ( fileName, _buf, CallBack )
-			}
-			return Fs.appendFile ( fileName, _buf, CallBack )
 		})
 
 		return socket.on ( 'saveAccounts', ( twitterAccounts: TwitterAccount[] ) => {
@@ -424,7 +428,7 @@ export default class twitter1 {
 		})
 	}
 
-	private getMedia1 ( mediaData: string, CallBack ) {
+	private getPictureBase64ToTwitter_mediaData ( mediaData: string, CallBack ) {
 		
 		const media = mediaData.split(',')
 		const type = media[0].split(';')[0].split (':')[1]
@@ -546,22 +550,25 @@ export default class twitter1 {
 	}
 
 	private QT_PictureMediaUpload ( data: twitter_postData, CallBack ) {
-
+		let imageIndex = 0
 		return Async.eachSeries ( data.images, ( n: string, next ) => {
 			return Async.waterfall ([
-				_next => this.getMedia1 ( n, _next ),
+				_next => this.getPictureBase64ToTwitter_mediaData ( n, _next ),
 				( media: twitter_mediaData, _next ) => {
 					media.media_id_string = Path.join ( QTGateVideo,  Uuid.v4 ())
 					data.media_data.push ( media )
 					return Fs.writeFile ( media.media_id_string, Buffer.from ( media.rawData, 'base64' ), 'binary', _next )
 				},
 				_next => {
-					return UploadFile.sendFile ( data.media_data[ data.media_data.length - 1 ].media_id_string, this.localServer.QTClass, ( err, files ) => {
+
+					return UploadFile.sendFile3 ( data.media_data[ data.media_data.length - 1 ].media_id_string, this.localServer.QTClass, ( err, files ) => {
 						if ( err ) {
 							saveLog (`QT_PictureMediaUpload UploadFile.sendFile error: [${ err.message }]`)
 							return _next ( err )
 						}
-						data.media_data[ data.media_data.length - 1 ].media_id_string = files
+						const media = data.media_data[ imageIndex ++ ]
+						media.media_id_string = files
+						delete media.rawData
 						return _next ()
 					})
 				}
@@ -592,10 +599,10 @@ export default class twitter1 {
 		], CallBack )
 		
 	}
-
+/*
 	private _mediaVideoUpdata ( client, data: twitter_postData, CallBack ) {
 		return Async.waterfall ([
-			next => UploadFile.EncodeBase64 ( data.videoFileName, null, next ),
+			next => UploadFile.EncodeBase641 ( data.videoFileName, null, next ),
 			( files: string[], next ) => {
 				data.videoFileName = files.join (',')
 				return this._mediaVideoUpload ( client, data, next )
@@ -603,7 +610,7 @@ export default class twitter1 {
 			next => this._afterMediaUpload ( null, data, client, next )
 		], CallBack )
 	}
-
+*/
 	private _afterMediaUpload ( err, data: twitter_postData, client, CallBack ) {
 		if ( err ) {
 			return CallBack ( err )
@@ -627,7 +634,7 @@ export default class twitter1 {
 			return CallBack ( null, twReturn )
 		})
 	}	
-
+/*
 	private _uploadMedia ( account: TwitterAccount, data: twitter_postData, CallBack ) {
 		const client = Twitter ( account )
 
@@ -653,13 +660,15 @@ export default class twitter1 {
 		return  this._afterMediaUpload ( null, data, client, CallBack )
 		
 	}
-
+*/
 	private QT_VideoMediaUpload ( data: twitter_postData, CallBack ) {
-		return UploadFile.EncodeBase64 ( data.videoFileName, null, ( files: string[], next ) => {
+		return UploadFile.sendFile3 ( Path.join ( QTGateVideo, data.videoFileName), this.localServer.QTClass, ( err, files: string[] ) => {
+			if ( err ) {
+				return CallBack ( err )
+			}
+			saveLog (`QT_VideoMediaUpload got files ${ files }`)
 			data.videoFileName = files.join (',')
-			return Async.eachSeries ( files, ( n, next ) => {
-				UploadFile.sendFile ( n, this.localServer.QTClass, next )
-			}, CallBack )
+			return CallBack ()
 		})
 	}
 
@@ -669,14 +678,24 @@ export default class twitter1 {
 				saveLog (`postTweetViaQTGate post got error: [${ err.message }] `)
 				return Callback ( err )
 			}
+
 			delete account['twitter_verify_credentials']
+			delete postData.images
 			const com: QTGateAPIRequestCommand = {
 				command: 'twitter_post',
 				Args: [ account, postData ],
 				error: null,
 				requestSerial: Crypto.randomBytes( 10 ).toString ( 'hex' )
 			}
+			Imap.imapGetMediaFilesFromString ( this.localServer.QTClass.imapData, postData.videoFileName, QTGateVideo, ( err1, data ) => {
+				if ( err1 ) {
+					saveLog ( `Imap.imapGetMediaFilesFromString got error [${ err }]`)
+				}
+				saveLog ( `Imap.imapGetMediaFilesFromString success! [${ data }]`)
+			})
+			/*
 			return this.localServer.QTClass.request ( com, Callback )
+			*/
 		}
 		if ( postData.images && postData.images.length ) {
 			return this.QT_PictureMediaUpload ( postData, post )

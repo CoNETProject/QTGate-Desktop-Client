@@ -124,8 +124,7 @@ const fileReadChunkSize  = 1000 * 1024 // 1 Mbytes
 function parseFile ( process, item: twitter_layout.twitterField , file, CallBack ) {
     const fileSize = file.size
     let offset = 0
-    const self = this // we need a reference to the current object
-    let first = true
+    let first = 0
     
     const chunkReaderBlock = ( _offset, length, _file ) => {
         const r = new FileReader()
@@ -136,19 +135,15 @@ function parseFile ( process, item: twitter_layout.twitterField , file, CallBack
             if ( evt.target.error ) {
                 return CallBack ( evt.target.error )
             }
-            let uu = evt.target.result 
-            if ( first ) {
-                uu = evt.target.result.split(',')[1]
-            }
-
-            return socketIo.emit ( 'mediaFileUpdata', file.name, uu, first, err => {
-                first = false
+            const uu = evt.target.result
+            
+            return socketIo.emit ( 'mediaFileUpdata', file.name, uu, first ++, err => {
+                
                 if ( err ) {
                     return CallBack ( err )
                 }
-                offset += evt.target.result.length
+                offset += length
                 if ( offset >= fileSize ) {
-                    
                     return CallBack ()
                 }
                 process.progress ({
@@ -159,7 +154,7 @@ function parseFile ( process, item: twitter_layout.twitterField , file, CallBack
             })
             
         }
-        r.readAsDataURL ( blob )
+        r.readAsArrayBuffer ( blob )
     }
 
     // now let's start the read with the first block
@@ -589,15 +584,18 @@ module twitter_layout {
             }
             this.showAccountMenu ( true )
             this.bottomEventLoader ( true )
+            /*
             this.requestNewTimelinesCount = 0
             setTimeout (() => {
                 this.bottomEventLoader ( false )
             }, 1000 * 120 )
             this.showCurrentTimelines ( true )
             this.currentTimelines([])
+            /*
             return socketIo.emit ( 'getTimelines', this.twitterData()[0], err => {
                 return this.getTimeLineCallBack ( err )
             })
+            */
         }
 
         public getTimeLineCallBack ( err: Error[] ) {
@@ -788,7 +786,7 @@ module twitter_layout {
 
 
         private newTwitterData ( twiData: twitterField ) {
-            if ( ! twiData.inputText().length && ! twiData.images().length ) {
+            if ( ! twiData.inputText().length && ! twiData.images().length && ! twiData.videoFileName ) {
                 return null
             }
             const TwitterData: twitter_postData  = {

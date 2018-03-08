@@ -1333,7 +1333,7 @@ export default class localServer {
 				saveLog (`imapTest error [${ err.message }]`)
 				const message = err.message
 				if ( message && message.length ) {
-					if ( /Auth|Lookup failed|Invalid|Login|username/i.test( message )) {
+					if ( /auth|login|log in|Too many simultaneous|UNAVAILABLE/i.test( message )) {
 						return CallBack ( 3 )
 					}
 						

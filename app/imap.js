@@ -29,6 +29,7 @@ const os_1 = require("os");
 const timers_1 = require("timers");
 const buffer_1 = require("buffer");
 const Fs = require("fs");
+const Upload = require("./uploadFile");
 const MAX_INT = 9007199254740992;
 const debug = true;
 const QTGateFolder = path_1.join(os_1.homedir(), '.QTGate');
@@ -505,8 +506,9 @@ class ImapServerSwitchStream extends Stream.Transform {
         this.Tag = `A${this.imapServer.TagCount}`;
         this.cmd = `${this.Tag} LOGOUT`;
         this.debug ? debugOut(this.cmd, false) : null;
-        if (this.writable)
+        if (this.writable) {
             return this.push(this.cmd + '\r\n');
+        }
         callabck();
     }
     append(text, CallBack) {
@@ -721,7 +723,7 @@ class ImapServerSwitchStream extends Stream.Transform {
             return this._logout(callback);
         };
         if (this.imapServer.listenFolder && this.runningCommand) {
-            console.log(`logout_process [this.imapServer.listenFolder && this.runningCommand], doing this.idleStop ()`);
+            saveLog(`logout_process [this.imapServer.listenFolder && this.runningCommand], doing this.idleStop ()`);
             this.idleCallBack = doLogout;
             return this.idleStop();
         }
@@ -754,6 +756,9 @@ class ImapServerSwitchStream extends Stream.Transform {
                     if (/^EXPUNGE$/i.test(cmdArray[2])) {
                         if (parseInt(cmdArray[1])) {
                         }
+                    }
+                    if (/^RECENT$/i.test(cmdArray[2]) && parseInt(cmdArray[1]) > 0) {
+                        newSwitchRet = true;
                     }
                     return _callback();
                 }
@@ -904,11 +909,12 @@ const appendFromFile = (imap, fileName, CallBack) => {
     }
     return Fs.stat(fileName, (err, stat) => {
         if (err) {
-            console.log(`appendFromFile s.stat got error!`, err);
+            saveLog(`appendFromFile s.stat got error! [${err.message}]`);
             return CallBack(err);
         }
         imap.canDoLogout = false;
         imap.doCommandCallback = (err, info) => {
+            saveLog(`appendFromFile doCommandCallback err [${err}], info [${info}]`);
             imap.canDoLogout = true;
             return imap.checkLogout(() => {
                 return CallBack(err, info);
@@ -916,12 +922,12 @@ const appendFromFile = (imap, fileName, CallBack) => {
         };
         let readFile = Fs.createReadStream(fileName, { encoding: 'utf8' });
         readFile.once('close', () => {
-            console.log(`appendFromFile readFile.once close!`);
+            saveLog(`appendFromFile readFile.once close! imap.writable [${imap.writable}]`);
             if (imap.writable) {
-                imap.push('\r\n');
+                return imap.push('\r\n\r\n');
             }
-            imap.resume();
-            return Fs.unlink(fileName, () => { });
+            //imap.resume()
+            //return Fs.unlink ( fileName, () => {})
         });
         imap.commandProcess = (text1, cmdArray, _next, _callback) => {
             switch (cmdArray[0]) {
@@ -941,8 +947,7 @@ const appendFromFile = (imap, fileName, CallBack) => {
             }
         };
         imap.Tag = `A${imap.imapServer.TagCount}`;
-        imap.cmd = `APPEND "${imap.imapServer.writeFolder}" {${stat.size}${imap.imapServer.literalPlus ? '+' : ''}}`;
-        imap.cmd = `${imap.Tag} ${imap.cmd}`;
+        imap.cmd = `${imap.Tag} APPEND "${imap.imapServer.writeFolder}" {${stat.size}${imap.imapServer.literalPlus ? '+' : ''}}`;
         const time = stat.size / 1000 + 2000;
         imap.debug ? debugOut(imap.cmd, false) : null;
         if (!imap.writable) {
@@ -955,7 +960,11 @@ const appendFromFile = (imap, fileName, CallBack) => {
         //console.log (`*************************************  append time = [${ time }] `)
         if (imap.imapServer.literalPlus) {
             return readFile.on('data', (chunk) => {
-                return imap.push(chunk);
+                if (imap.writable) {
+                    //saveLog (`appendFromFile append stream length [${ chunk.length }]`)
+                    return imap.push(chunk.toString());
+                }
+                return imap.imapServer.socket.end();
             });
         }
     });
@@ -971,7 +980,7 @@ class qtGateImapwrite extends qtGateImap {
             this.ready = this.canAppend = true;
         });
     }
-    appendFromFile2(fileName, CallBack) {
+    appendFromFile3(fileName, CallBack) {
         if (!this.ready || !this.canAppend) {
             return this.appenfFilesPool.push({
                 fileName: fileName,
@@ -981,10 +990,11 @@ class qtGateImapwrite extends qtGateImap {
         this.canAppend = false;
         return appendFromFile(this.imapStream, fileName, err => {
             this.canAppend = true;
+            //saveLog ( `qtGateImapwrite appendFromFile CallBack err = [${ err && err.message ? err.message : null }]`)
             CallBack(err);
             if (this.appenfFilesPool.length) {
                 const uu = this.appenfFilesPool.shift();
-                return this.appendFromFile2(uu.fileName, uu.CallBack);
+                return this.appendFromFile3(uu.fileName, uu.CallBack);
             }
         });
     }
@@ -1021,7 +1031,7 @@ class qtGateImapwrite extends qtGateImap {
 }
 exports.qtGateImapwrite = qtGateImapwrite;
 class qtGateImapRead extends qtGateImap {
-    constructor(IMapConnect, listenFolder, isEachMail, deleteBoxWhenEnd, newMail) {
+    constructor(IMapConnect, listenFolder, deleteBoxWhenEnd, newMail) {
         super(IMapConnect, listenFolder, deleteBoxWhenEnd, null, debug, newMail);
         this.openBox = false;
         this.once('ready', () => {
@@ -1076,7 +1086,7 @@ exports.imapBasicTest = (IMapConnect, CallBack) => {
     const doCatchMail = (id, _CallBack) => {
         let didFatch = false;
         let err = null;
-        let rImap = new qtGateImapRead(IMapConnect, listenFolder, false, false, mail => {
+        let rImap = new qtGateImapRead(IMapConnect, listenFolder, false, mail => {
             saveLog(`new mail`);
             const attach = exports.getMailAttached(mail);
             if (!attach) {
@@ -1154,7 +1164,7 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
             return CallBack(err, ret);
         }
     };
-    let rImap = new qtGateImapRead(IMapConnect, listenFolder, false, false, mail => {
+    let rImap = new qtGateImapRead(IMapConnect, listenFolder, false, mail => {
         rImap.logout();
         rImap = null;
         const attach = exports.getMailAttached(mail);
@@ -1218,19 +1228,11 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
         return doCallBack(err, null);
     });
 };
-exports.readMedia111 = (IMapConnect, fileName, CallBack) => {
-    let _callback = false;
-    let rImap = new qtGateImapRead(IMapConnect, fileName, true, true, mail => {
+exports.imapGetMediaFile = (IMapConnect, fileName, CallBack) => {
+    let rImap = new qtGateImapRead(IMapConnect, fileName, true, mail => {
+        rImap.logout();
         const retText = exports.getMailAttachedBase64(mail);
-        _callback = true;
-        CallBack(null, retText);
-        return rImap.logout();
-    });
-    rImap.once('end', err => {
-        if (err && !_callback) {
-            return CallBack(err);
-        }
-        rImap = null;
+        return CallBack(null, retText);
     });
 };
 const pingPongTimeOut = 1000 * 30;
@@ -1377,7 +1379,7 @@ class imapPeer extends Event.EventEmitter {
             }
         });
         this.wImap.once('error', err => {
-            if (err && err.message && /AUTH|certificate|LOGIN/i.test(err.message)) {
+            if (err && err.message && /auth|login|log in|Too many simultaneous|UNAVAILABLE/i.test(err.message)) {
                 return this.destroy(1);
             }
             saveLog(`imapPeer this.wImap on error [${err.message}]`);
@@ -1406,7 +1408,7 @@ class imapPeer extends Event.EventEmitter {
     }
     newReadImap() {
         saveLog(`newReadImap!`);
-        this.rImap = new qtGateImapRead(this.imapData, this.listenBox, false, false, email => {
+        this.rImap = new qtGateImapRead(this.imapData, this.listenBox, false, email => {
             this.mail(email);
         });
         this.rImap.once('ready', () => {
@@ -1419,7 +1421,7 @@ class imapPeer extends Event.EventEmitter {
         });
         this.rImap.once('error', err => {
             saveLog(`rImap on Error [${err.message}]`);
-            if (err && err.message && /AUTH|certificate|LOGIN/i.test(err.message)) {
+            if (err && err.message && /auth|login|log in|Too many simultaneous|UNAVAILABLE/i.test(err.message)) {
                 return this.destroy(1);
             }
             this.rImap.destroyAll(null);
@@ -1433,7 +1435,7 @@ class imapPeer extends Event.EventEmitter {
         });
     }
     makeWriteFolder(CallBack) {
-        let uu = new qtGateImapRead(this.imapData, this.writeBox, false, false, email => { });
+        let uu = new qtGateImapRead(this.imapData, this.writeBox, false, email => { });
         uu.once('ready', () => {
             uu.destroyAll(null);
             this.pingUuid = null;
@@ -1480,9 +1482,6 @@ class imapPeer extends Event.EventEmitter {
                 return saveLog(`sendDone got error [${err.message}]`);
         });
     }
-    trySendToRemoteFromFile1Less10MB(fileName, CallBack) {
-        return exports.trySendToRemoteFromFile1Less10MB(this, fileName, CallBack);
-    }
 }
 exports.imapPeer = imapPeer;
 exports.sendMediaData = (imapPeer, mediaData, CallBack) => {
@@ -1493,7 +1492,7 @@ exports.sendMediaData = (imapPeer, mediaData, CallBack) => {
     wImap.once('error', err => {
         _err = err;
         wImap.logout();
-        if (err.message && /AUTH|certificate|LOGIN/i.test(err.message)) {
+        if (err.message && /auth|login|log in|Too many simultaneous|UNAVAILABLE/i.test(err.message)) {
             if (!_return) {
                 _return = true;
                 return CallBack(err);
@@ -1521,40 +1520,43 @@ exports.sendMediaData = (imapPeer, mediaData, CallBack) => {
         });
     });
 };
-exports.trySendToRemoteFromFile1Less10MB = (imapPeer, fileName, CallBack) => {
+exports.trySendToRemoteFromFile1Less10MB4 = (imapPeer, fileName, CallBack) => {
     //saveLog (`doing trySendToRemoteFromFile1Less10MB fileName = [${ fileName }]`)
-    const writeBox = fileName.replace(/temp\//, '');
+    const filePath = fileName.split('/videoTemp/');
+    const writeBox = filePath[filePath.length - 1];
     let _return = false;
     let wImap = new qtGateImapwrite(imapPeer.imapData, writeBox);
     wImap.once('error', err => {
-        wImap.destroyAll(err);
-        if (err && err.message && /AUTH|certificate|LOGIN/i.test(err.message)) {
+        wImap.logout();
+        if (err && err.message && /auth|login|log in|Too many simultaneous|UNAVAILABLE/i.test(err.message)) {
             if (!_return) {
                 _return = true;
                 return CallBack(err);
             }
             return;
         }
-        return exports.trySendToRemoteFromFile1Less10MB(imapPeer, fileName, CallBack);
+        return exports.trySendToRemoteFromFile1Less10MB4(imapPeer, fileName, CallBack);
     });
     wImap.once('end', err => {
         wImap = null;
-        //saveLog ( `trySendToRemoteFromFile on end! err = [${ err }]` )
-        if (!_return) {
-            _return = true;
-            return CallBack(err);
-        }
+        Fs.unlink(fileName, () => {
+            //saveLog ( `trySendToRemoteFromFile on end! err = [${ err }]` )
+            if (!_return) {
+                _return = true;
+                return CallBack(err);
+            }
+        });
     });
     wImap.once('ready', () => {
         //saveLog ( `trySendToRemoteFromFile wImap on ready for [${ fileName }]`)
-        return wImap.imapStream.createBox(false, writeBox, err => {
-            wImap.appendFromFile2(fileName, err => {
-                wImap.destroyAll(err);
-                if (!_return) {
-                    _return = true;
-                    return CallBack();
-                }
-            });
+        return Async.series([
+            next => wImap.imapStream.createBox(false, writeBox, next),
+            next => wImap.appendFromFile3(fileName, next),
+            next => wImap.logout()
+        ], err => {
+            if (err) {
+                return wImap.destroyAll(err);
+            }
         });
     });
 };
@@ -2077,17 +2079,20 @@ class streamImap extends Stream.Transform {
         return this.emit('end');
     }
 }
-exports.readMediaToFile = (IMapConnect, fileName, tempFolderName, CallBack) => {
-    const writeFileName = path_1.join(tempFolderName, fileName);
-    let _CallBack = false;
-    const imap = new streamImap(IMapConnect, fileName, writeFileName);
-    const doCallBack = err => {
-        if (_CallBack) {
-            return;
+exports.imapGetMediaFilesFromString = (IMapConnect, files, folder, CallBack) => {
+    const fileArray = files.split(',');
+    if (!fileArray.length) {
+        return CallBack(new Error(' no file!'));
+    }
+    Async.eachSeries(fileArray, (n, next) => {
+        Async.waterfall([
+            _next => exports.imapGetMediaFile(IMapConnect, n, _next),
+            (mediaData, _next) => Fs.writeFile(path_1.join(folder, n), mediaData, 'utf8', _next)
+        ], next);
+    }, err => {
+        if (err) {
+            return CallBack(err);
         }
-        _CallBack = true;
-        CallBack(err, writeFileName);
-    };
-    imap.once('end', doCallBack);
-    imap.once('error', doCallBack);
+        return Upload.joinFiles(files, CallBack);
+    });
 };
