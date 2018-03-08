@@ -6,7 +6,6 @@ const SaveLog = require("./saveLog");
 const localServer_1 = require("./localServer");
 const { remote } = require('electron');
 const QTGatePongReplyTime = 1000 * 30;
-const testPingTimes = 5;
 let mainWindow = null;
 const reqtestTimeOut = 1000 * 30;
 const port = remote.getCurrentWindow().rendererSidePort;

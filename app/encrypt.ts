@@ -5,16 +5,20 @@ import * as Async from 'async'
 import * as Http from 'http'
 import * as Https from 'https'
 import * as Net from 'net'
-const openpgp = require ( 'openpgp' )
 import * as Crypto from 'crypto'
-const keyServer = 'https://pgp.mit.edu'
-const QTGateSignKeyID = /3acbe3cbd3c1caa9/i
+import * as SaveLog from './saveLog'
 
-declare const feedbackFilePath
-declare const saveLog
-declare const testPingTimes
-declare const port
-declare const remote
+const QTGateSignKeyID = /3acbe3cbd3c1caa9/i
+const openpgp = require ( 'openpgp' )
+const keyServer = 'https://pgp.mit.edu'
+
+const QTGateFolder = Path.join ( Os.homedir(), '.QTGate' )
+const configPath = Path.join ( QTGateFolder, 'config.json' )
+
+const feedbackFilePath = Path.join ( QTGateFolder,'.feedBack.json')
+
+const testPingTimes = 5
+const saveLog = SaveLog.saveLog
 
 export const encryptWithKey = ( data: string, targetKey: string, privateKey: string, password: string, CallBack ) => {
 	if (!data || !data.length || !targetKey || !targetKey.length || !privateKey || !privateKey.length ) {
@@ -364,10 +368,6 @@ export const InitConfig = ( first: boolean, version, port ) => {
 	return ret
 }
 
-export const _doUpdate = ( tag: string  ) => {
-	saveLog ( `_doUpdate tag = [${ tag }]` )
-	remote.getCurrentWindow()._doUpdate ( tag, port )
-}
 
 export const checkKey = ( keyID: string, CallBack ) => {
 	const hkp = new openpgp.HKP( keyServer )

@@ -687,15 +687,16 @@ export default class twitter1 {
 				error: null,
 				requestSerial: Crypto.randomBytes( 10 ).toString ( 'hex' )
 			}
+			/*
 			Imap.imapGetMediaFilesFromString ( this.localServer.QTClass.imapData, postData.videoFileName, QTGateVideo, ( err1, data ) => {
 				if ( err1 ) {
 					saveLog ( `Imap.imapGetMediaFilesFromString got error [${ err }]`)
 				}
 				saveLog ( `Imap.imapGetMediaFilesFromString success! [${ data }]`)
 			})
-			/*
-			return this.localServer.QTClass.request ( com, Callback )
 			*/
+			return this.localServer.QTClass.request ( com, Callback )
+			
 		}
 		if ( postData.images && postData.images.length ) {
 			return this.QT_PictureMediaUpload ( postData, post )

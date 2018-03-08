@@ -326,20 +326,19 @@ export default class localServer {
 
 			return this.QTClass.request ( com, ( err: number, res: QTGateAPIRequestCommand ) => {
 				if ( err ) {
-					console.log ( err )
-					return saveLog ( 'getAvaliableRegion QTClass.request callback error! STOP')
+					return saveLog ( `getAvaliableRegion QTClass.request callback error! STOP [${ err }]`)
 				}
 				if ( res && res.dataTransfer && res.dataTransfer.productionPackage ) {
 					this.config.freeUser = /free/i.test ( res.dataTransfer.productionPackage )
 				}
-					
+				saveLog (`getAvaliableRegion got return Args [0] [${ JSON.stringify ( res.Args[0] )}]`)
 				CallBack ( res.Args[0], res.dataTransfer, this.config )
 				
 				//		Have gateway connect!
 				this.saveConfig ()
 				
 				if ( res.Args[ 1 ]) {
-
+					saveLog (`getAvaliableRegion got return Args [1] [${ JSON.stringify ( res.Args[1] )}]`)
 					if ( ! this.proxyServer || ! this.connectCommand ) {
 						const arg: IConnectCommand[] = this.connectCommand = res.Args[1]
 						arg.forEach ( n => {
@@ -349,7 +348,7 @@ export default class localServer {
 					}
 					return socket.emit ( 'QTGateGatewayConnectRequest', -1, res.Args[ 1 ] )
 				}
-
+				saveLog (`getAvaliableRegion got return Args [2] [${ JSON.stringify ( res.Args[2] )}]`)
 				this.regionV1 = res.Args[2]
 			})
 		})
@@ -895,7 +894,7 @@ export default class localServer {
 			
 			socket.once ( 'newVersionInstall', ( CallBack: any ) => {
 				if ( this.config.newVerReady )
-					return Encrypto._doUpdate ( this.config.newVersion )
+					return _doUpdate ( this.config.newVersion, this.port )
 			})
 			
 			socket.on ( 'checkPemPassword', ( password: string, callBack: any ) => {
@@ -1600,4 +1599,10 @@ export default class localServer {
 		this.httpServer.close ()
 	}
 	
+}
+
+
+const _doUpdate = ( tag: string, port: number  ) => {
+	saveLog ( `_doUpdate tag = [${ tag }]` )
+	remote.getCurrentWindow()._doUpdate ( tag, port )
 }

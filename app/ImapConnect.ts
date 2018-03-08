@@ -18,8 +18,8 @@
 import * as Imap from './imap'
 import * as Encrypt from './encrypt'
 import localServer from './localServer'
-import * as Async from 'async'
 import * as Util from 'util'
+import * as Async from 'async'
 import * as SaveLog from './saveLog'
 const saveLog = SaveLog.saveLog
 

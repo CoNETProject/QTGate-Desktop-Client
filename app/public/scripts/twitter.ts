@@ -584,18 +584,18 @@ module twitter_layout {
             }
             this.showAccountMenu ( true )
             this.bottomEventLoader ( true )
-            /*
+            
             this.requestNewTimelinesCount = 0
             setTimeout (() => {
                 this.bottomEventLoader ( false )
             }, 1000 * 120 )
             this.showCurrentTimelines ( true )
             this.currentTimelines([])
-            /*
+            
             return socketIo.emit ( 'getTimelines', this.twitterData()[0], err => {
                 return this.getTimeLineCallBack ( err )
             })
-            */
+            
         }
 
         public getTimeLineCallBack ( err: Error[] ) {

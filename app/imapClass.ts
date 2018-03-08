@@ -16,8 +16,8 @@
  */
 
 import * as Imap from './imap'
-import * as Async from 'async'
 import * as Net from 'net'
+import * as Async from 'async'
 import * as Crypto from 'crypto'
 import * as Stream from 'stream'
 import * as Dns from 'dns'
