@@ -586,6 +586,7 @@ module twitter_layout {
             this.bottomEventLoader ( true )
             
             this.requestNewTimelinesCount = 0
+            
             setTimeout (() => {
                 this.bottomEventLoader ( false )
             }, 1000 * 120 )

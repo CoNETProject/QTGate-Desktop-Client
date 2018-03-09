@@ -561,13 +561,13 @@ export default class twitter1 {
 				},
 				_next => {
 
-					return UploadFile.sendFile3 ( data.media_data[ data.media_data.length - 1 ].media_id_string, this.localServer.QTClass, ( err, files ) => {
+					return UploadFile.sendFile3 ( data.media_data[ data.media_data.length - 1 ].media_id_string, this.localServer.QTClass, ( err, files: string[] ) => {
 						if ( err ) {
 							saveLog (`QT_PictureMediaUpload UploadFile.sendFile error: [${ err.message }]`)
 							return _next ( err )
 						}
 						const media = data.media_data[ imageIndex ++ ]
-						media.media_id_string = files
+						media.media_id_string = files.join (',')
 						delete media.rawData
 						return _next ()
 					})
