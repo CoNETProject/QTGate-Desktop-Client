@@ -31,6 +31,7 @@ import * as Path from 'path'
 import * as Socks from './socket5ForiOpn'
 import gateWay from './gateway'
 import * as Os from 'os'
+import * as Util from 'util'
 const { remote } = require ( "electron" )
 
 const whiteIpFile = 'whiteIpList.json'
@@ -491,9 +492,10 @@ const saveLog = ( log: string ) => {
 
 let server: proxyServer = null
 remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand[] ) => {
+	const _data = data[0]
 	console.log ( `************************** start proxyServer *****************************\r\n ${ data }\r\n` )
-
-	server = new proxyServer ( [], new Map(), data[0].localServerIp, data[0].localServerPort, 'pac', 5000, data, 50000, data[0].AllDataToGateway|| true, [] )
+	console.log (`${ Util.inspect ( _data )}`)
+	server = new proxyServer ( [], new Map(), _data.localServerIp, _data.localServerPort, 'pac', 5000, data, 50000, _data.AllDataToGateway || true, [] )
 })
 
 remote.getCurrentWindow().on( 'changeDocker', ( data: IConnectCommand ) => {

@@ -62,7 +62,7 @@ const findQTGateImap = ( imapPool: IinputData_server[] ) => {
     return index
 }
 
-const DEBUG = false
+const DEBUG = true
 
 export default class localServer {
     private ex_app = null

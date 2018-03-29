@@ -726,7 +726,7 @@ const infoDefine = [
             serverTitle:'サーバー'
         },
         twitter: {
-            newTwitterAccount: `TwitterのAPPインフォーメーションを入力してください。APPインフォーメーション作成する事がわからない場合は<a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/%E5%89%B5%E5%BB%BA%E6%82%A8%E7%9A%84QTGate%E6%8E%A8%E7%89%B9%E6%87%89%E7%94%A8'">ここ</a>をクリックしてください。`,
+            newTwitterAccount: `TwitterのAPPインフォーメーションを入力してください。APPインフォーメーション作成する事がわからない場合は<a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/Create-Twitter-APP'">ここ</a>をクリックしてください。`,
             addAccount:'Twitterアカウントを追加',
             following: 'フォロー',
             followers:'フォロワー',
@@ -1324,7 +1324,7 @@ const infoDefine = [
             serverTitle:'Server'
         },
         twitter: {
-            newTwitterAccount: `Please input Twitter APP information. How to create Twitter APP please click <a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/%E5%89%B5%E5%BB%BA%E6%82%A8%E7%9A%84QTGate%E6%8E%A8%E7%89%B9%E6%87%89%E7%94%A8'">hear</a> to got more information.`,
+            newTwitterAccount: `Please input Twitter APP information. How to create Twitter APP please click <a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/Create-Twitter-APP'">hear</a> to got more information.`,
             addAccount:'Add an Twitter account',
             following: 'Following',
             followers:'Followers',

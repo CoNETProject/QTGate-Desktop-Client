@@ -125,11 +125,11 @@ export default class gateWay {
 		httpBlock.once ( 'error', err => {
 			socket.end ( res._HTTP_404 )
 		})
-		const _socket = Net.createConnection ( gateway.gateWayPort||80, gateway.gateWayIpAddress, () => {
+		const _socket = Net.createConnection ( gateway.gateWayPort || 80, gateway.gateWayIpAddress, () => {
 			
 			encrypt.write ( Buffer.from ( JSON.stringify ( uuuu ), 'utf8' ))
 		})
 		encrypt.pipe ( _socket ).pipe ( httpBlock ).pipe ( decrypt ).pipe ( socket ).pipe ( encrypt )
-		console.log (`new requestGetWay use gateway[${ gateway.gateWayIpAddress }]`)
+		console.log (`new requestGetWay use gateway[${ gateway.gateWayIpAddress }: ${ gateway.gateWayPort || 80 }]`)
 	}
 }
