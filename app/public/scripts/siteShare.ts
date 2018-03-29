@@ -1346,22 +1346,18 @@ const infoDefine = [
             accountError:'Twitter return error: Invalid or expired token. error. Please check your account APP information and try again.'
         },
         thirdParty: {
-            information: 'QTG platform APPs.',
+            information: 'CoNET platform',
             comesoon:'Come soon.',
-            qtgateGateway: 'QTGate gateway service. High speed, total privacy, ultra secure and easy to use. Your gateway to a secure and open internet.',
-            app:['QTGate', 'QTChat', 'QTStorage','QT Custom','QT for Google','QT for Tweet','QT for Instagram','QT for NY Time','QT for WeChat','QT for Bitcoin'],
+            qtgateGateway: 'CoGate gateway service. High speed, total privacy, ultra secure and easy to use. Your gateway to a secure and open internet.',
+            app:['CoGate', 'CoMsg', 'CoBox', 'CoMail', 'Co Custom', 'Co for Google', 'Co for Tweet'],
             
             dimmer: [
-                'QTGate gateway service. High speed, to a secure and open internet.',
+                'Advanced private custom gateway service',
                 'Private and secure, decentralized Tweet style social media.',
                 'The secure and Private cloud storage and file sharing.',
                 'Provate custom business solution for public or private APPs in QTG platform.',
                 'Privacy Google search client without VPN.',
-                'Privacy Tweet client without VPN.',
-                'Privacy Instagram client without VPN.',
-                'Privacy NY Time client without VPN.',
-                'Privacy WeChat client without VPN.',
-                'QTG for Bitcoin wallet, without VPN.'
+                'Privacy Tweet client without VPN.'
             ]
         }, 
         account:{

@@ -5,7 +5,7 @@
 
 ## Download ダウンロード 下載
 
-### [The latest 最新版 v1.3.5](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
+### [The latest 最新版 v1.3.4](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
 
 [windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.4/qtgate.Setup.1.3.4.ia32.exe)
 
@@ -20,10 +20,10 @@
 ## Description
 ### CoNET platform as product of [CoNET](https://github.com/QTGate/CoNET) provides a series of services that allows users to improve their security, privacy and freedom on the Internet.
 
-- **CoGate** has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to ensure data is secure and your identity stays protected. Designed to bypass deep packet inspection (DPI) firewalls while providing secure and private access to the open internet, anywhere in the world. CoGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use CoGate’s OPN services to access the open internet with total protection and security.
+- **CoGate** Advanced private custom gateway service, it has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to ensure data is secure and your identity stays protected. Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world. CoGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use CoGate’s services to access the open internet with total protection and security.
 
     1. [@OPN](https://github.com/QTGate/atOPN) is our patent pending technology that creates a “Quiet” private network by obfuscating encrypted data packets over IMAP email servers, refracting the data thru our QTGate servers, to achieve an obfuscated private network. @OPN provides true anonymous internet communications, where your IP address is fully hidden to our servers and target servers.
-    2. [iOPN](https://github.com/QTGate/iOPN) is designed to bypass detection that can block other internet privacy tools, such as a VPN. With features such as:
+    2. [iOPN](https://github.com/QTGate/iOPN) is designed to bypass detection that can block other internet privacy tools, such as VPN or Tor. With features such as:
         1. **IP-Shifting** : IPs don’t stay the same, they automatically refresh every 2 hours. No one stays on a website all day, thus iOPN has a fresh IP every 2 hours to make it look like users are surfing and further help bypass detection.
         2. **Multi-gateway** : Using multiple gateways helps to further obfuscate traffic, by dispersing data over 2 or more IPs (up to 4). This helps evade detection by disguising user’s traffic to look like visiting multiple sites. A VPN transfers all the data over one IP.
         3. **Short connect** : Using iOPN looks like just normal web traffic, with short open/closed connections to target servers like regular web browsing. While a VPN tunnel looks like it’s always maintaining a connection, that makes it easy to detect.
