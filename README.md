@@ -34,7 +34,7 @@
 
 - **CoMail** - Mail client on CoNET allows user keep their anonymous to access mailbox, send and receive encrypted email, it support IMAP and SMTP protocol.
 
-- **CoNewsRoom** - 
+- **CoNewsChannels** - New Channels include BBC, USA Today, NYTime.
 
 - **Co for Twitter** - Twitter client allowing user access Twitter keep anonymous, user reach Twitter who may live in a area that restricted access to Twitter.
 
