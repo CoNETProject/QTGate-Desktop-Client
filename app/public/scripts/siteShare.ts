@@ -1346,7 +1346,7 @@ const infoDefine = [
             accountError:'Twitter return error: Invalid or expired token. error. Please check your account APP information and try again.'
         },
         thirdParty: {
-            information: 'CoNET platform',
+            information: 'CoNET APPs',
             comesoon:'Come soon.',
             qtgateGateway: 'CoGate gateway service. High speed, total privacy, ultra secure and easy to use. Your gateway to a secure and open internet.',
             app:['CoGate', 'CoMsg', 'CoBox', 'CoMail', 'CoNewsChannels','Co Custom', 'Co for Google', 'Co for Tweet'],
