@@ -231,8 +231,8 @@ const infoDefine = [
         },
         
         QTGateInfo: {
-            title:'QTGate功能简介',
-            version:'本机QTGate版本：v',
+            title:'功能简介',
+            version:'本机版本：v',
             detail:[{
                 header: '隐身匿名自由上网OPN',
                 color: '#a333c8',
@@ -263,13 +263,13 @@ const infoDefine = [
         },
 
         cover: {
-            firstTitle1: '让您上网从此隐身',
-            firstTitle2: '自由安全风雨无阻',
+            firstTitle1: 'CoNET',
+            firstTitle2: '安全隐私自由的互联网',
             start: '开门'
         },
         
         firstNote: {
-            title: '欢迎使用QTGate，感谢您使用我们的产品和服务(下称“服务”)。本服务由总部设在加拿大的QTGate Systems Inc.下称“QTGate”提供。',
+            title: '欢迎使用QTGate，感谢您使用我们的产品和服务(下称“服务”)。本服务由总部设在加拿大的CoNET技术有限公司.下称“CoNET”提供。',
             firstPart: '您使用我们的服务即表示您已同意本条款。请仔细阅读。使用我们的服务，您必须遵守服务中提供的所有政策。',
             detail: [
                 {
@@ -417,7 +417,7 @@ const infoDefine = [
             creatDate: '密钥创建日期：',
             keyLength: '密钥位强度：',
             password: '请输入长度大于五位的密码',
-            password1: '请输入Q梯客户端密码',
+            password1: '请输入平台密码',
             keyID: '密钥对ID：',
             logout: '退出登录',
             deleteKeyPairInfo: '请注意：如果您没有备份您的QTGate系统的话，删除现有的密钥将使您的QTGate设定全部丢失，您有可能需要重新设置您的QTGate系统。如果您的注册Email没有变化，您的QTGate账户支付信息不会丢失！',
@@ -561,9 +561,9 @@ const infoDefine = [
 
         thirdParty: {
             comesoon:'即将推出',
-            information: 'QTG平台的应用程序',
+            information: 'CoNET平台APP',
             qtgateGateway: 'QTGate提供的高质量上网技术iOPN和@OPN，在QTGate全球16个区域，当场定制您专属的代理服务器，变换您的IP地址隐身无障碍的访问互联网',
-            app:['Q梯', 'Q信', 'QT石洞','QT平台业务定制','QT谷歌','QT推特','QT Instagram','QT纽时','QT微信','QT比特币钱包'],
+            app:['Co定制代理服务器', 'CoMsg', 'Co云文件存储','Co业务定制','Co邮件','Co推特','Co新闻屋','Co谷歌'],
             
             dimmer: [
                 '高质量定制VPN代理服务器，让您隐身安全不受注意的网上冲浪。 ',
@@ -751,7 +751,7 @@ const infoDefine = [
             comesoon:'まもなく登場します。',
             information: 'QTGプラットフォームアプリケーション',
             qtgateGateway:'QTGateご提供する高品質ゲットウェイサービス、グローバルに１６区域とQTGate独自のiOPNと@OPN技術により、貴方のIPアドレスをカバーして、静かに無障害にインターネットの世界へ可能です。',
-            app:['QTGate', 'QTChat', 'QTStorage','QTカスタム業務','QT for Google','QT for Tweet','QT for Instagram','QT for NY Time','QT for WeChat','QT ' ],
+            app:['Co定制代理服务器', 'CoMsg', 'Co云文件存储','Co业务定制','Co邮件','Co推特','Co新闻屋','Co谷歌'],
             
             dimmer: [
                 '高品質ゲットウェイサービス、静かに自由になるインターネットの世界へ',
@@ -841,8 +841,8 @@ const infoDefine = [
         },
 
         QTGateInfo: {
-            title:'QTGate機能紹介',
-            version:'本機QTGateバージョン：v',
+            title:'機能紹介',
+            version:'バージョン：v',
             detail:[{
                 color: '#a333c8',
                 icon: 'exchange',
@@ -993,7 +993,7 @@ const infoDefine = [
         },
 
         cover: {
-            firstTitle1: 'これからあなたのデバイスを',
+            firstTitle1: 'CoNET',
             firstTitle2: '隠れて安全自由なネットワークへ',
             start: 'オプンドア'
         },
@@ -1136,7 +1136,7 @@ const infoDefine = [
             creatDate:'暗号鍵ペア作成日：',
             keyLength: '暗号鍵ペアビット長さ：',
             password: '長さ5位以上のパスワードを入力してください',
-            password1: 'QTGate端末パスワード',
+            password1: '端末パスワード',
             logout: 'ログアウト',
             keyID: '暗号鍵ID：',
             deleteKeyPairInfo: '鍵ペアを削除することで、現在のQTGate設定は全部なくなって、一からQTGateの設定をやり直しが必要です。但しあなたのQTGateアカウトEmailアドレスは前回と同じであれば、QTGateアカウトを戻れます。',
@@ -1432,8 +1432,8 @@ const infoDefine = [
         },
 
         QTGateInfo: {
-            title:'QTGate Features',
-            version:'Installed QTGate veriosn：v',
+            title:'Features',
+            version:'Installed veriosn：v',
             detail:[{
                 color: '#a333c8',
                 icon: 'exchange',
@@ -1484,8 +1484,8 @@ const infoDefine = [
         },
 
         cover: {
-            firstTitle1: 'Browse Quietly',
-            firstTitle2: 'Your Gateway to a Secure and Open Internet',
+            firstTitle1: 'CoNET',
+            firstTitle2: 'Security Privacy And Freedom on the Internet',
             start: 'ENTER NOW'
         },
 
@@ -1593,12 +1593,12 @@ const infoDefine = [
         },
 
         firstNote:  {
-            title:　'Thank you for using our products and services (the “Services” or “Service”). The Services are provided by QTGate Systems Inc. (“QTGate”).',
+            title:　'Thank you for using our products and services (the “Services” or “Service”). The Services are provided by CoNET Technology Inc. (“CoNET”).',
             firstPart: 'By using our Services, you are agreeing to these terms. Please read them carefully.',
             detail: [
                 {
                     header: 'Terms of Service',
-                    detail: 'This Terms of Service document (the “Terms”) outlines the terms and conditions of use of Services provided by QTGate Systems Inc. These Terms also govern the use of and access to QTGate’s content (the “Content”), which includes the QTGate’s website (the “Site”), applications (the “Apps”), and any tools, software provided by QTGate (the “Software”).'
+                    detail: 'This Terms of Service document (the “Terms”) outlines the terms and conditions of use of Services provided by CoNET Technology Inc. These Terms also govern the use of and access to QTGate’s content (the “Content”), which includes the QTGate’s website (the “Site”), applications (the “Apps”), and any tools, software provided by QTGate (the “Software”).'
                 }, {
                     header: null,
                     detail: 'Before using QTGate’s Services, please read this agreement thoroughly. If You have any questions concerning the content of this agreement or what it implies, please contact QTGate at email address: support@QTGate.com'
@@ -1693,7 +1693,7 @@ const infoDefine = [
                     detail: 'QTGate also reserves the right, but is not obligated to, at its sole discretion and without providing prior notice, to block, delete, filter or restrict by any means, any materials or data it deems potential or actual violations of the restrictions set forth in these Terms of Use and also any other actions that may subject the QTGate or its customers to any liability. QTGate disclaims any and all liability for any failure on our part to prevent such materials or information from being transmitted over the Service and/or into Your computing device.'
                 },{
                     header: 'Limitation of Liability',
-                    detail: 'QTGate will not be liable for any damages or loss caused by viruses, denial-of-service, attacks or any other technologically harmful material that my infect Your computer, its peripherals, data stored on it or on its peripherals, computer programs or any other proprietary material due to the use of the Services or due to Your downloading of anything which is posted on the QTGate’s website or any website which is linked there to. In no event will QTGate Systems Inc., its suppliers, distributors,  partners, affiliates, subsidiaries, members, officers, or employees be liable for lost profits, revenues, or data, financial losses or indirect, special, consequential, exemplary, or punitive damages, or for any other loss or damages of any kind, even if they have been advised of the possibility thereof. The foregoing shall not apply to the extent prohibited by applicable law. To the extent permitted by law, the total liability of QTGate, and its suppliers and distributors, for any claims under these terms, including for any implied warranties, is limited to the amount You paid QTGate to use the Services.'
+                    detail: 'QTGate will not be liable for any damages or loss caused by viruses, denial-of-service, attacks or any other technologically harmful material that my infect Your computer, its peripherals, data stored on it or on its peripherals, computer programs or any other proprietary material due to the use of the Services or due to Your downloading of anything which is posted on the QTGate’s website or any website which is linked there to. In no event will CoNET, its suppliers, distributors,  partners, affiliates, subsidiaries, members, officers, or employees be liable for lost profits, revenues, or data, financial losses or indirect, special, consequential, exemplary, or punitive damages, or for any other loss or damages of any kind, even if they have been advised of the possibility thereof. The foregoing shall not apply to the extent prohibited by applicable law. To the extent permitted by law, the total liability of QTGate, and its suppliers and distributors, for any claims under these terms, including for any implied warranties, is limited to the amount You paid QTGate to use the Services.'
                 },{
                     header: 'Indemnification',
                     detail: 'You agree to hold harmless and indemnify QTGate, its officers, directors, agents, employees,  members, partners, suppliers, their affiliates, and its or their shareholders, directors, and employees from any and all claims, suit or action arising from or related to the use of QTGate’s Services, Apps, Content, Site, or Software or violation of these terms, including any liability or expense arising from claims, losses, damages, suits, judgments, litigation costs and attorney’s’ fees. We may, at our sole discretion, assume the exclusive defense and control of any matter subject to indemnification by you. The assumption of such defense or control by us, however, shall not excuse any of your indemnity obligations. If you are using our Services on behalf of a business, that business accepts these terms.'
@@ -1769,7 +1769,7 @@ const infoDefine = [
             creatDate:'Creation date：',
             keyLength: 'Bit Length：',
             password: '5-character minimum password.',
-            password1: 'QTGate client Password',
+            password1: 'Platform Password',
             logout: 'Logout',
             keyID: 'ID：',
             deleteKeyPairInfo: 'Note: By deleting your key pair, you will lose your current account settings. You will need to set up QTGate account settings again. If your email address is the same as the one used previously, you may restore your QTGate account balance.',
@@ -2191,8 +2191,8 @@ const infoDefine = [
         },
 
         QTGateInfo: {
-            title:'QTGate功能簡介',
-            version:'本機安裝的QTGate版本：v',
+            title:'功能簡介',
+            version:'本機安裝版本：v',
             detail:[{
                 color: '#a333c8',
                 icon: 'exchange',
@@ -2223,8 +2223,8 @@ const infoDefine = [
         },
 
         cover: {
-            firstTitle1: '讓您上網從此隱身',
-            firstTitle2: '自由安全風雨無阻',
+            firstTitle1: 'CoNET',
+            firstTitle2: '安全隱私自由的互聯網',
             start: '開門'
         },
 
@@ -2233,7 +2233,7 @@ const infoDefine = [
         },
 
         firstNote:{
-            title: '歡迎使用QTGate，感謝您使用我們的產品和服務(下稱“服務”)。本服務由總部設在加拿大的QTGate Systems Inc.下稱“QTGate”提供。 ',
+            title: '歡迎使用CoNET，感謝您使用我們的產品和服務(下稱“服務”)。本服務由總部設在加拿大的CoNET Technology Inc.下稱“CoNET”提供。 ',
             firstPart: '您使用我們的服務即表示您已同意本條款。請仔細閱讀。使用我們的服務，您必須遵守服務中提供的所有政策。',
             detail:[
                 {
@@ -2350,7 +2350,7 @@ const infoDefine = [
             creatDate:'密鑰創建日期：',
             keyLength: '密鑰位強度：',
             password: '請輸入長度大於五位的密碼',
-            password1: '請輸入Q梯客戶端密碼',
+            password1: '請輸入平台密碼',
             logout:'退出登錄',
             deleteKeyPairInfo: '請注意：如果您沒有備份您的QTGate系統的話，刪除現有的密鑰將使您的QTGate設定全部丟失，您有可能需要重新設置您的QTGate系統。如果您的註冊Email沒有變化，您的QTGate賬戶支付信息不會丟失！',
             delete: '刪除',

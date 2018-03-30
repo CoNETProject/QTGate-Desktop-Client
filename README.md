@@ -34,6 +34,8 @@
 
 - **CoMail** - Mail client on CoNET allows user keep their anonymous to access mailbox, send and receive encrypted email, it support IMAP and SMTP protocol.
 
+- **CoNewsRoom** - 
+
 - **Co for Twitter** - Twitter client allowing user access Twitter keep anonymous, user reach Twitter who may live in a area that restricted access to Twitter.
 
 - **Co for Google** - Google search client allowing user access Google search keep anonymous user reach Google search who may live in a area that restricted access to Twitter.
@@ -54,7 +56,7 @@ This bate version have not support UDP proxy
 
 ## License 版權 
 
-Copyright (c) QTGate Systems Inc. All rights reserved.
+Copyright (c) 2018 CoNET Technology Inc. All rights reserved.
 
 Licensed under the [MIT](LICENSE) License.
 

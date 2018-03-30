@@ -1,8 +1,7 @@
 "use strict";
 /*!
- * Copyright 2017 QTGate systems Inc. All Rights Reserved.
+ * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
  *
- * QTGate systems Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -131,13 +130,13 @@ class ImapServerSwitchStream extends Stream.Transform {
         if (this._login) {
             switch (commandLine[0]) {
                 case '+': /////       +
-                case '*': {
+                case '*': { /////       *
                     return this.commandProcess(commandLine, cmdArray, _next, callback);
                 }
                 case 'I': //  IDLE
                 case 'D': //  NODE
                 case 'N': //  NOOP
-                case 'A': {
+                case 'A': { /////       A
                     timers_1.clearTimeout(this.appendWaitResponsrTimeOut);
                     timers_1.clearTimeout(this.idleResponsrTime);
                     if (this.Tag !== cmdArray[0]) {
@@ -257,7 +256,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         };
         this.commandProcess = (text, cmdArray, next, callback) => {
             switch (cmdArray[0]) {
-                case '*': {
+                case '*': { /////       *
                     //          check imap server is login ok
                     if (/^CAPABILITY$/i.test(cmdArray[1]) && cmdArray.length > 2) {
                         const kkk = cmdArray.slice(2).join(' ');
@@ -428,7 +427,7 @@ class ImapServerSwitchStream extends Stream.Transform {
             }
         };
         switch (cmdArray[0]) {
-            case '*': {
+            case '*': { /////       *
                 //          check imap server is login ok
                 if (/^ok$/i.test(cmdArray[1]) && this.first) {
                     this.first = false;
@@ -1760,7 +1759,7 @@ class streamImap extends Stream.Transform {
         };
         this.commandProcess = (text, cmdArray, next, callback) => {
             switch (cmdArray[0]) {
-                case '*': {
+                case '*': { /////       *
                     //          check imap server is login ok
                     if (/^CAPABILITY$/i.test(cmdArray[1]) && cmdArray.length > 2) {
                         const kkk = cmdArray.slice(2).join(' ');
@@ -1798,7 +1797,7 @@ class streamImap extends Stream.Transform {
             }
         };
         switch (cmdArray[0]) {
-            case '*': {
+            case '*': { /////       *
                 //          check imap server is login ok
                 if (/^ok$/i.test(cmdArray[1]) && this.first) {
                     this.first = false;
@@ -2041,13 +2040,13 @@ class streamImap extends Stream.Transform {
         if (this._login) {
             switch (commandLine[0]) {
                 case '+': /////       +
-                case '*': {
+                case '*': { /////       *
                     return this.commandProcess(commandLine, cmdArray, _next, callback);
                 }
                 case 'I': //  IDLE
                 case 'D': //  NODE
                 case 'N': //  NOOP
-                case 'A': {
+                case 'A': { /////       A
                     if (this.Tag !== cmdArray[0]) {
                         return this.serverCommandError(new Error(`this.Tag[${this.Tag}] !== cmdArray[0] [${cmdArray[0]}]\ncommandLine[${commandLine}]`), callback);
                     }

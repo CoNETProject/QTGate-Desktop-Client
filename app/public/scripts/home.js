@@ -1,7 +1,6 @@
 /*!
- * Copyright 2017 QTGate systems Inc. All Rights Reserved.
+ * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
  *
- * QTGate systems Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -2562,7 +2561,7 @@ var view_layout;
 })(view_layout || (view_layout = {}));
 const appList = [
     {
-        name: 'QTGate',
+        name: 'CoGate',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
         commentCount: ko.observable(),
@@ -2570,26 +2569,26 @@ const appList = [
         comeSoon: false,
         show: true,
         click: (view) => { return view.QTGateAppClick(); },
-        image: '/images/qtgateGateway.png'
+        image: '/images/CoGate.png'
     }, {
-        name: 'QTChat',
+        name: 'CoMsg',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
         commentCount: ko.observable(0),
         titleColor: '#006600',
         comeSoon: true,
         show: true,
-        image: '/images/qtchat.png',
+        image: '/images/CoMsg.png',
         click: (view) => { return; },
     }, {
-        name: 'QTStorage',
+        name: 'CoBox',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
         commentCount: ko.observable(0),
         titleColor: '#990000',
         comeSoon: true,
         show: true,
-        image: '/images/qtStorage.png',
+        image: '/images/CoBox.png',
         click: (view) => { return; },
     }, {
         name: 'QTCustom',
@@ -2627,17 +2626,6 @@ const appList = [
         },
     },
     {
-        name: 'QTInstagram',
-        likeCount: ko.observable(0),
-        liked: ko.observable(false),
-        commentCount: ko.observable(0),
-        titleColor: '#cd486b',
-        show: false,
-        image: '/images/Instagram_logo_2016.svg',
-        comeSoon: true,
-        click: (view) => { return; },
-    },
-    {
         name: 'QTNYTime',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
@@ -2646,28 +2634,6 @@ const appList = [
         comeSoon: true,
         show: true,
         image: '/images/nyt.png',
-        click: (view) => { return; },
-    },
-    {
-        name: 'QTWeChat',
-        likeCount: ko.observable(0),
-        liked: ko.observable(false),
-        commentCount: ko.observable(0),
-        titleColor: '#09b83e',
-        comeSoon: true,
-        show: false,
-        image: '/images/wechat.svg',
-        click: (view) => { return; },
-    },
-    {
-        name: 'QTBitcoin',
-        show: true,
-        likeCount: ko.observable(0),
-        liked: ko.observable(false),
-        commentCount: ko.observable(0),
-        titleColor: '#FF9900',
-        comeSoon: true,
-        image: '/images/Bitcoin.svg',
         click: (view) => { return; },
     }
 ];
