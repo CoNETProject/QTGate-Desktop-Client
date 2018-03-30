@@ -2954,7 +2954,29 @@ const appList = [
         image: '/images/CoBox.png',
         click: ( view: view_layout.view ) => { return },
     },{
-        name: 'QTCustom',
+        name: 'CoMail',
+        likeCount: ko.observable (0),
+        liked: ko.observable (false),
+        commentCount: ko.observable(0),
+        titleColor: '#09b83e',
+        comeSoon: true,
+        show: true,
+        image: '/images/coMail.png',
+        click: ( view: view_layout.view ) => { return },
+    },
+    {
+        name: 'coNews',
+        likeCount: ko.observable (0),
+        liked: ko.observable (false),
+        commentCount: ko.observable(0),
+        titleColor: 'grey',
+        comeSoon: true,
+        show: true,
+        image: '/images/coNews.png',
+        click: ( view: view_layout.view ) => { return },
+    },
+    {
+        name: 'CoCustom',
         likeCount: ko.observable (0),
         liked: ko.observable (false),
         commentCount: ko.observable(0),
@@ -2964,7 +2986,7 @@ const appList = [
         image: '/images/512x512.png',
         click: ( view: view_layout.view ) => { return },
     },{
-        name: 'QTGoogle',
+        name: 'CoGoogle',
         likeCount: ko.observable (0),
         liked: ko.observable (false),
         commentCount: ko.observable(0),
@@ -2974,7 +2996,7 @@ const appList = [
         image: '/images/Google__G__Logo.svg',
         click: ( view: view_layout.view ) => { return },
     },{
-        name: 'QTTweet',
+        name: 'CoTweet',
         likeCount: ko.observable (0),
         liked: ko.observable (false),
         commentCount: ko.observable(0),
@@ -2987,17 +3009,6 @@ const appList = [
             event.preventDefault ()
             return shell.openExternal ( `http://${ view.config().localIpAddress[0] }:2000/Twitter` )
         },
-    }
-    ,{
-        name: 'QTNYTime',
-        likeCount: ko.observable (0),
-        liked: ko.observable (false),
-        commentCount: ko.observable(0),
-        titleColor: 'grey',
-        comeSoon: true,
-        show: true,
-        image: '/images/nyt.png',
-        click: ( view: view_layout.view ) => { return },
     }
 ]
 const oneMB = 1024 * 1000

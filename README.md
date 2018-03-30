@@ -18,6 +18,7 @@
 [Linux pacman](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.4/qtgate-1.3.4.pacman)
 
 ## Description
+![http protocol](/resources/CoPlatform.png?raw=true)
 ### CoNET platform as product of [CoNET](https://github.com/QTGate/CoNET) provides a series of services that allows users to improve their security, privacy and freedom on the Internet.
 
 - **CoGate** Advanced private custom gateway service, it has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to ensure data is secure and your identity stays protected. Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world. CoGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use CoGate’s services to access the open internet with total protection and security.
