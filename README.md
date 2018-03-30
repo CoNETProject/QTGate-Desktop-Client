@@ -82,7 +82,7 @@
 
 - **Co for Google** - 免費免翻牆匿名Google檢索客戶端
 
-[幫助](https://github.com/QTGate/QTGate-Desktop-Client/wiki)
+## [幫助](https://github.com/QTGate/QTGate-Desktop-Client/wiki)
 
 ## Build 編譯 ビルド
 
