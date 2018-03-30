@@ -83,7 +83,8 @@
 - **Co for Google** - 免費免翻牆匿名Google檢索客戶端
 
 ## [幫助](https://github.com/QTGate/QTGate-Desktop-Client/wiki)
-
+![http protocol](/resources/twitter.png?raw=true)
+![http protocol](/resources/QTStorage.png?raw=true)
 ## Build 編譯 ビルド
 
 npm run [mac|win32|win|linux]
