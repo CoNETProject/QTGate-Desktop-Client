@@ -19,9 +19,8 @@
 
 ## Description
 ![http protocol](/resources/CoPlatform.png?raw=true)
-### CoNET platform as product of [CoNET](https://github.com/QTGate/CoNET) provides a series of services that allows users to improve their security, privacy and freedom on the Internet.
-
-- **CoGate** Advanced private custom gateway service, it has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to ensure data is secure and your identity stays protected. Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world. CoGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use CoGate’s services to access the open internet with total protection and security.
+### CoNET platform as product of [CoNET](https://github.com/QTGate/CoNET) provides a series of services that allows users to improve their security, privacy and freedom on the Internet
+- **CoGate** Advanced private custom gateway service, it has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to Ensure data is secure and your identity stays protected. Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world. CoGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use CoGate’s services to access the open internet with total protection and security.
 
     1. [@OPN](https://github.com/QTGate/atOPN) is our patent pending technology that creates a “Quiet” private network by obfuscating encrypted data packets over IMAP email servers, refracting the data thru our QTGate servers, to achieve an obfuscated private network. @OPN provides true anonymous internet communications, where your IP address is fully hidden to our servers and target servers.
     2. [iOPN](https://github.com/QTGate/iOPN) is designed to bypass detection that can block other internet privacy tools, such as VPN or Tor. With features such as:
@@ -29,17 +28,38 @@
         2. **Multi-gateway** : Using multiple gateways helps to further obfuscate traffic, by dispersing data over 2 or more IPs (up to 4). This helps evade detection by disguising user’s traffic to look like visiting multiple sites. A VPN transfers all the data over one IP.
         3. **Short connect** : Using iOPN looks like just normal web traffic, with short open/closed connections to target servers like regular web browsing. While a VPN tunnel looks like it’s always maintaining a connection, that makes it easy to detect.
 
-- **CoMsg** – A Twitter-Style social media use decentralized database ( blockchain ) it provide secure and anonymous.
+- **CoMsg** – A Twitter-Style social media use decentralized database ( blockchain ), End-to-End encrypted message, provide secure and anonymous.
 
-- **CoBox** – private data storing allow user to store encrypted and shared files append draft message use multiple email account.
+- **CoBox** – Private data storing allow user to store encrypted and shared files append to draft message it may multiple free email account.
 
-- **CoMail** - Mail client on CoNET allows user keep their anonymous to access mailbox, send and receive encrypted email, it support IMAP and SMTP protocol.
+- **CoMail** - Mail client on CoNET allows user keep their anonymous to access mailbox, send and receive OpenPGP encrypted email, it support IMAP and SMTP protocol.
 
 - **CoNewsChannels** - News Channels is APP for popular news paper include BBC, USA Today, NYTime...
 
-- **Co for Twitter** - Twitter client allowing user access Twitter keep anonymous, user reach Twitter who may live in a area that restricted access to Twitter.
+- **Co for Twitter** - Twitter client allowing user access Twitter keep anonymous, doing End-To-End encrypted Twitter message, user reach Twitter who may live in a area that restricted access to Twitter.
 
-- **Co for Google** - Google search client allowing user access Google search keep anonymous user reach Google search who may live in a area that restricted access to Twitter.
+- **Co for Google** - Google search client allowing user access Google search keep anonymous user reach Google search who may live in a area that restricted access to Google.
+
+## 詳細
+### CoNET プラットフォームは[CoNET](https://github.com/QTGate/CoNET)に接続して、匿名と安全とプライバシーなオンラインツールです。
+- **CoGate**はカスタムゲットウェイサービスです。独自の混乱させるプロトコル技術によって、知能化ファイアウォールを無視し、安全とプライバシーなインターネットへ可能です。
+
+    1. [@OPN](https://github.com/QTGate/atOPN)独自のIAMP混乱させるプロトコル技術のゲットウェイサービスです。ユーザはゲットウェイへ直接接続ではく、ユーザとゲットウェイとも第三方メールサバーに接続して通信することです。ユーザ側IPアドレス隠してVPNトンネルを確立し完全的な匿名ネットワーク環境をすることです。
+    2. [iOPN](https://github.com/QTGate/iOPN)独自のHTTP混乱させるプロトコル技術のゲットウェイサービスです。ユーザはゲットウェイへ直接接続して、高速速いVPNトンネルを確立する通信技術です。以下の特徴があります
+        1. **超短寿命ゲットウェイ** 独自技術のユーザー気付かないまま、二時間ごとにゲットウェイサーバーを破壊して、新しいサーバー及びIPアドレスに切り替えします。ネットの検閲、監視するシステムにデータ分析を混乱させることです。
+        2. **同時に複数のゲットウェイ** 独自技術の複数ゲットウェイを同時にすることにより、ユーザは複数サイドを検閲する模様と、大流量を分散して、ネットの検閲、監視するシステムにデータ分析を混乱させるできます。
+
+- **CoMsg** – 分散化データベースを使ってツイート風ソーシャルメディア、エンドツーエンド暗号化メッセージ、匿名安全なフリースピーチ環境を提供します。
+
+- **CoBox** – マルチフリーメールアカウントの余った容量を利用して、ファイルを暗号化し、シュレッダーして複数のアカウントへ下書きとして保存します。強く無料と無制限は特徴です。
+
+- **CoMail** - メールクライアントです、匿名でご自分のメールボックスにアクセス、OpenPGPによる暗号化とサインしたメールの送受信ができます。
+
+- **CoNewsChannels** - ニュースのチャンネルです、知能化ファイアウォールを無視しVPNなし匿名で多くの特集や媒体へアクセスすることがですます。
+
+- **Co for Twitter** - ツイートクライアントです、知能化ファイアウォールを無視しツイートにアクセスができます。CoNET同士にエンドツーエンド暗号化ツイートメッセージサポートです。
+
+- **Co for Google** - 知能化ファイアウォールを無視しVPNなし匿名でGoogleサーチへアクセスすることがですます。
 
 ## Build 編譯 ビルド
 
