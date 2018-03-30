@@ -81,6 +81,9 @@
 - **Co for Twitter** - 免費免翻牆匿名推特客戶端，在對方也是CoNET用戶的前提下，支持點對點推特加密私信，支持複數推特帳號。
 
 - **Co for Google** - 免費免翻牆匿名Google檢索客戶端
+
+[幫助](https://github.com/QTGate/QTGate-Desktop-Client/wiki)
+
 ## Build 編譯 ビルド
 
 npm run [mac|win32|win|linux]
