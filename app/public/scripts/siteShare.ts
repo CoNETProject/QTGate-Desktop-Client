@@ -1349,7 +1349,7 @@ const infoDefine = [
             information: 'CoNET platform',
             comesoon:'Come soon.',
             qtgateGateway: 'CoGate gateway service. High speed, total privacy, ultra secure and easy to use. Your gateway to a secure and open internet.',
-            app:['CoGate', 'CoMsg', 'CoBox', 'CoMail', 'Co News Chnnels','Co Custom', 'Co for Google', 'Co for Tweet'],
+            app:['CoGate', 'CoMsg', 'CoBox', 'CoMail', 'CoNewsChannels','Co Custom', 'Co for Google', 'Co for Tweet'],
             
             dimmer: [
                 'Advanced private custom gateway service',
