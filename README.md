@@ -20,6 +20,8 @@
 ## Description
 ![http protocol](/resources/CoPlatform.png?raw=true)
 ### CoNET platform as product of [CoNET](https://github.com/QTGate/CoNET) provides a series of services that allows users to improve their security, privacy and freedom on the Internet
+- local web server support all other devices include mobile device to use CoNET platform service.
+
 - **CoGate** Advanced private custom gateway service, it has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to Ensure data is secure and your identity stays protected. Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world. CoGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use CoGate’s services to access the open internet with total protection and security.
 
     1. [@OPN](https://github.com/QTGate/atOPN) is our patent pending technology that creates a “Quiet” private network by obfuscating encrypted data packets over IMAP email servers, refracting the data thru our QTGate servers, to achieve an obfuscated private network. @OPN provides true anonymous internet communications, where your IP address is fully hidden to our servers and target servers.
@@ -42,6 +44,8 @@
 
 ## 詳細
 ### CoNET プラットフォームは[CoNET](https://github.com/QTGate/CoNET)に接続して、匿名と安全とプライバシーなオンラインツールです。
+- インストールをしたの後ローカルウェブサイトが立ち上げます、他のデバイスはローカルウェブサイトによって、以下のサービスを使えます。
+
 - **CoGate**はカスタムゲットウェイサービスです。独自の混乱させるプロトコル技術によって、知能化ファイアウォールを無視し、安全とプライバシーなインターネットへ可能です。
 
     1. [@OPN](https://github.com/QTGate/atOPN)独自のIAMP混乱させるプロトコル技術のゲットウェイサービスです。ユーザはゲットウェイへ直接接続ではく、ユーザとゲットウェイとも第三方メールサバーに接続して通信することです。ユーザ側IPアドレス隠してVPNトンネルを確立し完全的な匿名ネットワーク環境をすることです。
@@ -63,10 +67,12 @@
 
 ## 項目詳細
 ### CoNET平台集成了接入[CoNET](https://github.com/QTGate/CoNET)匿名網絡後的一系列應用程序
+- 安裝完成後在本地計算機上提供一個網站，手機等其他設備可以通過本地網站使用CoNET平台的下列服務。
+
 - **CoGate**高級訂製代理服務器，原理與機制和SS相接近，使用獨創的二種網絡通訊混淆技術，讓使用者能夠得到安全隱私和網絡自由
 
     1. [@OPN](https://github.com/QTGate/atOPN)獨自技術開發的IMAP網絡混淆代理服務，客戶端和代理服務器均通過第三方郵箱，建立虛擬通訊管道，具有完全不使用IP地址，徹底隱私上網。
-    2. [iOPN](https://github.com/QTGate/iOPN)獨自技術開發的HTTP明碼網絡混淆代理服務，客戶端直接連結訂製服務器，具有數據交換數度快，響應及時和高帶寬特點。它還具有以下的首創功能：
+    2. [iOPN](https://github.com/QTGate/iOPN)獨自技術開發的HTTP明碼網絡混淆代理服務，客戶端直接連結所訂製的代理服務器，具有數據交換數度快，響應及時和高帶寬特點。它還具有以下的首創功能：
         1. **超短壽命代理服務器** 採用獨自的技術，代理服務器每二個小時即銷毀，客戶端不知不覺中自動切換連結新代理服務器，變動IP的代理服務器讓網絡監控變得更困難。
         2. **同時使用複數代理服務器** 首創的同時可使用多台代理服務器技術，讓您的大流量分散到多個服務器，來對抗流量監控技術。
 
