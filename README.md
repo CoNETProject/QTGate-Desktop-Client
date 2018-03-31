@@ -20,7 +20,7 @@
 ## Description
 ![http protocol](/resources/CoPlatform.png?raw=true)
 ### CoNET platform as product of [CoNET](https://github.com/QTGate/CoNET) provides a series of services that allows users to improve their security, privacy and freedom on the Internet
-- local web server support all other devices include mobile device to use CoNET platform service.
+- All other devices may use CoNET platform service via local website after launching CoNET platform.
 
 - **CoGate** Advanced private custom gateway service, it has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to Ensure data is secure and your identity stays protected. Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world. CoGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use CoGate’s services to access the open internet with total protection and security.
 
@@ -44,7 +44,7 @@
 
 ## 詳細
 ### CoNET プラットフォームは[CoNET](https://github.com/QTGate/CoNET)に接続して、匿名と安全とプライバシーなオンラインツールです。
-- インストールをしたの後ローカルウェブサイトが立ち上げます、他のデバイスはローカルウェブサイトによって、以下のサービスを使えます。
+- インストールをしたの後ローカルウェブサイトが立ち上げます、他のデバイスはローカルウェブサイトによって、以下のサービスが使えます。
 
 - **CoGate**はカスタムゲットウェイサービスです。独自の混乱させるプロトコル技術によって、知能化ファイアウォールを無視し、安全とプライバシーなインターネットへ可能です。
 
@@ -67,7 +67,7 @@
 
 ## 項目詳細
 ### CoNET平台集成了接入[CoNET](https://github.com/QTGate/CoNET)匿名網絡後的一系列應用程序
-- 安裝完成後在本地計算機上提供一個網站，手機等其他設備可以通過本地網站使用CoNET平台的下列服務。
+- 安裝完成後在計算機上提供一個本地網站，手機和其他設備可以通過本地網站，使用CoNET平台的下列服務。
 
 - **CoGate**高級訂製代理服務器，原理與機制和SS相接近，使用獨創的二種網絡通訊混淆技術，讓使用者能夠得到安全隱私和網絡自由
 
