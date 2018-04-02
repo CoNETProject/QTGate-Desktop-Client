@@ -1868,7 +1868,7 @@ const infoDefine = [
         },
 
         QTGateRegion: {
-            title: 'QTGate gateway area',
+            title: 'CoGate gateway area',
             available: 'Available',
             speedTest: 'Speed test：',
             unavailable: 'Unavailable',

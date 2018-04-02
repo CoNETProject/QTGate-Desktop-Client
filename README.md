@@ -22,7 +22,7 @@
 ### CoNET platform as product of [CoNET](https://github.com/QTGate/CoNET) provides a series of services that allows users to improve their security, privacy and freedom on the Internet
 - All other devices may use CoNET platform service via local website after launching CoNET platform.
 - CoNET platform provide a local DNS server that allowing its users to keep PRIVACY and ENCRYPTION.
-- **CoGate** Advanced private custom gateway service, it has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to Ensure data is secure and your identity stays protected. Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world. CoGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use CoGate’s services to access the open internet with total protection and security.
+- **CoGate** Advanced private custom gateway service, it has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to Ensure data is secure and your identity stays protected. It will startup a local proxy server that acts as an intermediary for requests from clients seeking resources from CoNET gateway server after connected CoNET gateway server. Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world. CoGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use CoGate’s services to access the open internet with total protection and security.
 
     1. [@OPN](https://github.com/QTGate/atOPN) is our patent pending technology that creates a “Quiet” private network by obfuscating encrypted data packets over IMAP email servers, refracting the data thru our QTGate servers, to achieve an obfuscated private network. @OPN provides true anonymous internet communications, where your IP address is fully hidden to our servers and target servers.
     2. [iOPN](https://github.com/QTGate/iOPN) is designed to bypass detection that can block other internet privacy tools, such as VPN or Tor. With features such as:
@@ -48,7 +48,7 @@
 
 - ローカルDNSサーバを無料で提供します。匿名と安全とプライバシーなネットワーク環境をサポートします。
 
-- **CoGate**はカスタムゲットウェイサービスです。独自の混乱させるプロトコル技術によって、知能化ファイアウォールを無視し、安全とプライバシーなインターネットへ可能です。
+- **CoGate**はカスタムゲットウェイサービスです。グローバルに十五エリアの内ゲットウェイサーバーを選んで、クネクションをしてから、ローカルプロクシサーバが立ち上がります、全てのデバイスはネットワークのプロクシサー設定にこのローカルプロクシサーバに設定したことで、独自の混乱させるプロトコル技術によって、知能化ファイアウォールを無視し、安全とプライバシーなインターネットへ可能です。
 
     1. [@OPN](https://github.com/QTGate/atOPN)独自のIAMP混乱させるプロトコル技術のゲットウェイサービスです。ユーザはゲットウェイへ直接接続ではく、ユーザとゲットウェイとも第三方メールサバーに接続して通信することです。ユーザ側IPアドレス隠してVPNトンネルを確立し完全的な匿名ネットワーク環境をすることです。
     2. [iOPN](https://github.com/QTGate/iOPN)独自のHTTP混乱させるプロトコル技術のゲットウェイサービスです。ユーザはゲットウェイへ直接接続して、高速速いVPNトンネルを確立する通信技術です。以下の特徴があります
@@ -73,7 +73,7 @@
 
 - 提供免費的本地DNS服務器，其他設備可以通過設定本機DNS來獲得匿名安全和對抗DNS污染。
 
-- **CoGate** - 高級**訂製**代理服務器，原理與機制和SS相接近，使用獨創的二種網絡通訊**混淆**技術，讓使用者能夠得到安全隱私和網絡自由
+- **CoGate** - 高級**訂製**代理服務器，原理與機制和SS相接近，使用獨創的二種網絡通訊**混淆**技術，在全球15個區域內當場訂製個性化的代理服務器，CoNET平台會自動啟動一個本地代理服務器，其他設備可以通過網絡設置這台本地代理服務器，來連結互聯網，能夠得到安全隱私和網絡自由。
 
     1. [@OPN](https://github.com/QTGate/atOPN)獨自技術開發的IMAP網絡混淆代理服務，客戶端和代理服務器均通過第三方郵箱，建立虛擬通訊管道，具有完全不使用IP地址，徹底隱私上網。
     2. [iOPN](https://github.com/QTGate/iOPN)獨自技術開發的HTTP明碼網絡混淆代理服務，客戶端直接連結所訂製的代理服務器，具有數據交換數度快，響應及時和高帶寬特點。它還具有以下的首創功能：
