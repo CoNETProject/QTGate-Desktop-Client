@@ -22,17 +22,14 @@
 ### CoNET platform as product of [CoNET](https://github.com/QTGate/CoNET) provides a series of services that allows users to improve their security, privacy and freedom on the Internet
 - All other devices may use CoNET platform service via local website after launching CoNET platform.
 - CoNET platform provide a local DNS server that allowing its users to keep PRIVACY and ENCRYPTION.
-- **CoGate** Advanced private custom gateway service, it has engineered unique networking technologies used to establish “Quiet” private networks by obfuscating encrypted data packets to Ensure data is secure and your identity stays protected. It will startup a local proxy server that acts as an intermediary for requests from clients seeking resources from CoNET gateway server after connected CoNET gateway server. Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world. CoGate keeps no logs of your online traffic and all data is encrypted using industry-tested and accepted encryption standards. Use CoGate’s services to access the open internet with total protection and security.
-
-    1. [@OPN](https://github.com/QTGate/atOPN) is our patent pending technology that creates a “Quiet” private network by obfuscating encrypted data packets over IMAP email servers, refracting the data thru our QTGate servers, to achieve an obfuscated private network. @OPN provides true anonymous internet communications, where your IP address is fully hidden to our servers and target servers.
-    2. [iOPN](https://github.com/QTGate/iOPN) is designed to bypass detection that can block other internet privacy tools, such as VPN or Tor. With features such as:
-        1. **IP-Shifting** : IPs don’t stay the same, they automatically refresh every 2 hours. No one stays on a website all day, thus iOPN has a fresh IP every 2 hours to make it look like users are surfing and further help bypass detection.
-        2. **Multi-gateway** : Using multiple gateways helps to further obfuscate traffic, by dispersing data over 2 or more IPs (up to 4). This helps evade detection by disguising user’s traffic to look like visiting multiple sites. A VPN transfers all the data over one IP.
+- **CoGate** Advanced private custom gateway service. It will startup a local proxy server that acts as an intermediary for requests from clients seeking resources from CoNET gateway server after connected CoNET gateway server. CoGate disguise the VPN traffic looks like IMAP or HTTP protocol, Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world.
+        1. **IP-Shifting** : IPs don’t stay the same, they automatically refresh every 2 hours. No one stays on a website all day. Make it look like users are surfing and further help bypass detection.
+        2. **Multi-gateway** : Using multiple gateways helps to further obfuscate traffic and decentralized bandwidth, by dispersing data over 2 or more IPs (up to 4). This helps evade detection by disguising user’s traffic to look like visiting multiple sites.
         3. **Short connect** : Using iOPN looks like just normal web traffic, with short open/closed connections to target servers like regular web browsing. While a VPN tunnel looks like it’s always maintaining a connection, that makes it easy to detect.
 
 - **CoMsg** – A Twitter-Style social media use decentralized database ( blockchain ), End-to-End encrypted message, provide secure and anonymous.
 
-- **CoBox** – Private data storing allow user to store encrypted and shared files append to draft message it may multiple free email account.
+- **CoBox** – Private data storing allow user to store encrypted and shared files append draft message to email space. it may use multiple email space.
 
 - **CoMail** - Mail client on CoNET allows user keep their anonymous to access mailbox, send and receive OpenPGP encrypted email, it support IMAP and SMTP protocol.
 
