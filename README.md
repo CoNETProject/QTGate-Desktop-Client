@@ -23,9 +23,11 @@
 - All other devices may use CoNET platform service via local website after launching CoNET platform.
 - CoNET platform provide a local DNS server that allowing its users to keep PRIVACY and ENCRYPTION.
 - **CoGate** Advanced private custom gateway service. It will startup a local proxy server that acts as an intermediary for requests from clients seeking resources from CoNET gateway server after connected CoNET gateway server. CoGate disguise the VPN traffic looks like IMAP or HTTP protocol, Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world.
-        1. **IP-Shifting** : IPs don’t stay the same, they automatically refresh every 2 hours. No one stays on a website all day. Make it look like users are surfing and further help bypass detection.
-        2. **Multi-gateway** : Using multiple gateways helps to further obfuscate traffic and decentralized bandwidth, by dispersing data over 2 or more IPs (up to 4). This helps evade detection by disguising user’s traffic to look like visiting multiple sites.
-        3. **Short connect** : Using iOPN looks like just normal web traffic, with short open/closed connections to target servers like regular web browsing. While a VPN tunnel looks like it’s always maintaining a connection, that makes it easy to detect.
+1. **IP-Shifting** : IPs don’t stay the same, they automatically refresh every 2 hours. No one stays on a website all day. Make it look like users are surfing and further help bypass detection.
+
+2. **Multi-gateway** : Using multiple gateways helps to further obfuscate traffic and decentralized bandwidth, by dispersing data over 2 or more IPs (up to 4). This helps evade detection by disguising user’s traffic to look like visiting multiple sites.
+
+3. **Short connect** : Using iOPN looks like just normal web traffic, with short open/closed connections to target servers like regular web browsing. While a VPN tunnel looks like it’s always maintaining a connection, that makes it easy to detect.
 
 - **CoMsg** – A Twitter-Style social media use decentralized database ( blockchain ), End-to-End encrypted message, provide secure and anonymous.
 
