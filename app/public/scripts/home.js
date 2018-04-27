@@ -206,36 +206,6 @@ const QTGateRegionsSetup = [
         title: 'iOPN'
     }
 ];
-const nextExpirDate = (expire) => {
-    const now = new Date();
-    const _expire = new Date(expire);
-    _expire.setHours(0, 0, 0, 0);
-    if (now.getTime() > _expire.getTime()) {
-        return _expire;
-    }
-    const nextExpirDate = new Date(expire);
-    nextExpirDate.setMonth(now.getMonth());
-    nextExpirDate.setFullYear(now.getFullYear());
-    if (nextExpirDate.getTime() < now.getTime()) {
-        nextExpirDate.setMonth(now.getMonth() + 1);
-        return nextExpirDate;
-    }
-    return _expire;
-};
-const getRemainingMonth = (expire) => {
-    const _expire = new Date(expire);
-    const _nextExpirDate = nextExpirDate(expire);
-    return _expire.getFullYear() === _nextExpirDate.getFullYear() ? _expire.getMonth() - _nextExpirDate.getMonth() : (12 - _nextExpirDate.getMonth() + _expire.getMonth());
-};
-const getAmount = (amount) => {
-    if (!amount)
-        return null;
-    if (typeof amount === 'number') {
-        amount = amount.toString();
-    }
-    const ret = amount.split('.');
-    return ret.length === 1 ? amount + '.00' : amount;
-};
 const _QTGateRegions = [
     {
         icon: 'india',
@@ -2714,66 +2684,6 @@ const planArray = [
         showNote: false
     }
 ];
-const DayTime = 1000 * 60 * 60 * 24;
-const monthTime = 30 * DayTime;
-const yearTime = 12 * monthTime;
-const getPlanPrice = (plan, isAnnualPlan) => {
-    switch (plan) {
-        //		1GB/month 100MB/day
-        case 'free': {
-            return 0;
-        }
-        //		50GB/month
-        case 'p1': {
-            return isAnnualPlan ? 34.56 : 3.88;
-        }
-        //		300GB/month
-        case 'p2': {
-            return isAnnualPlan ? 58.00 : 6.88;
-        }
-        //		1TB/month
-        case 'p3': {
-            return isAnnualPlan ? 167.00 : 19.88;
-        }
-        //		2TB/month
-        case 'p4': {
-            return isAnnualPlan ? 335.00 : 39.88;
-        }
-        //		4TB/month
-        case 'p5': {
-            return isAnnualPlan ? 670.00 : 79.88;
-        }
-        //		ERROR
-        default: {
-            return parseInt('none');
-        }
-    }
-};
-const getCurrentPlanCancelBalance = (expiration, planName) => {
-    const price = getPlanPrice(planName, true);
-    const normalPrice = getPlanPrice(planName, false);
-    const usedMonth = 12 - getRemainingMonth(expiration);
-    const passedCost = Math.round((price - normalPrice * usedMonth) * 100) / 100;
-    return passedCost > 0 ? passedCost : 0;
-};
-const getExpire = (startDate, isAnnual) => {
-    const start = new Date(startDate);
-    const now = new Date();
-    const passedMonth = Math.round((now.getTime() - start.getTime()) / monthTime - 0.5);
-    isAnnual ? start.setFullYear(start.getFullYear() + 1) : start.setMonth(passedMonth + 1);
-    return start;
-};
-const getCurrentPlanUpgradelBalance = (expiration, planName, isAnnual) => {
-    if (!isAnnual) {
-        return getPlanPrice(planName, false);
-    }
-    const price = getPlanPrice(planName, true);
-    if (!price)
-        return null;
-    const usedMonth = 12 - getRemainingMonth(expiration) + 1;
-    const passedCost = Math.round((price - price * usedMonth / 12) * 100) / 100;
-    return passedCost;
-};
 const view = new view_layout.view();
 ko.applyBindings(view, document.getElementById('body'));
 const u = '.' + view.tLang();

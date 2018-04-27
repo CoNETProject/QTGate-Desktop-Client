@@ -131,6 +131,105 @@ const initLanguageCookie = () => {
     $ ( "html" ).trigger( 'languageMenu', cc )
     return cc
 }
+const DayTime = 1000 * 60 * 60 * 24
+const monthTime = 30 * DayTime
+const yearTime = 12 * monthTime
+const getPlanPrice = ( plan: string, isAnnualPlan: boolean ) => {
+	switch ( plan ) {
+		//		1GB/month 100MB/day
+		case 'free': {
+			return 0
+		}
+		//		50GB/month
+		case 'p1': {
+			return isAnnualPlan ? 34.56: 3.88
+		}
+		//		300GB/month
+		case 'p2': {
+			return isAnnualPlan ? 58.00: 6.88
+		}
+		//		1TB/month
+		case 'p3': {
+			return isAnnualPlan ? 167.00: 19.88
+		}
+		//		2TB/month
+		case 'p4': {
+			return isAnnualPlan ? 335.00: 39.88
+		}
+		//		4TB/month
+		case 'p5': {
+			return isAnnualPlan ? 670.00: 79.88
+		}
+		//		ERROR
+		default: {
+			return parseInt ('none')
+		}
+
+	}
+}
+
+const nextExpirDate = ( expire: string ) => {
+    const now = new Date ()
+    const _expire = new Date ( expire )
+    _expire.setHours ( 0,0,0,0 )
+    if ( now.getTime() > _expire.getTime ()) {
+        return _expire
+    }
+    const nextExpirDate = new Date ( expire )
+    nextExpirDate.setMonth ( now.getMonth())
+    nextExpirDate.setFullYear ( now.getFullYear())
+
+    if ( nextExpirDate.getTime() < now.getTime ()) {
+        nextExpirDate.setMonth ( now.getMonth() + 1 )
+        return nextExpirDate
+    }
+
+    return _expire
+}
+
+const getRemainingMonth = ( expire: string ) => {
+    const _expire = new Date ( expire )
+    const _nextExpirDate = nextExpirDate ( expire )
+    return _expire.getFullYear () === _nextExpirDate.getFullYear () ? _expire.getMonth() - _nextExpirDate.getMonth() : ( 12 - _nextExpirDate.getMonth() + _expire.getMonth() )
+}
+
+const getAmount = ( amount ) => {
+    if ( !amount )
+        return null
+    if ( typeof amount === 'number' ) {
+        amount = amount.toString()
+    }
+    const ret = amount.split('.')
+    return ret.length === 1 ? amount + '.00' : amount 
+}
+const getCurrentPlanCancelBalance = ( expiration: string, planName: string ) => {
+	
+    const price = getPlanPrice ( planName, true )
+    const normalPrice = getPlanPrice ( planName, false )
+    const usedMonth = 12 - getRemainingMonth ( expiration )
+	const passedCost = Math.round (( price - normalPrice * usedMonth ) * 100 ) / 100
+	return passedCost > 0 ? passedCost : 0
+}
+
+const getExpire = ( startDate: Date, isAnnual: boolean ) => {
+	const start = new Date( startDate )
+	const now = new Date ()
+	const passedMonth = Math.round (( now.getTime () - start.getTime () ) / monthTime - 0.5 )
+	isAnnual ? start.setFullYear ( start.getFullYear() + 1 ) : start.setMonth ( passedMonth + 1 )
+	return start
+}
+
+const getCurrentPlanUpgradelBalance = ( expiration: string, planName: string, isAnnual: boolean ) => {
+	if ( !isAnnual ) {
+        return getPlanPrice ( planName, false )
+    }
+    const price = getPlanPrice ( planName, true )
+    if ( !price )
+        return null
+    const usedMonth = 12 - getRemainingMonth ( expiration ) + 1
+	const passedCost = Math.round (( price -  price * usedMonth / 12 ) * 100 ) / 100
+	return passedCost
+}
 
 const infoDefine = [
 	{
@@ -405,7 +504,7 @@ const infoDefine = [
             KeypairLength: '请选择加密通讯用密钥对长度：这个数字越大，通讯越难被破解，但会增加通讯量和运算时间。',
             GenerateKeypair: '<em>系统正在生成用于通讯和签名的RSA加密密钥对，计算机需要运行产生大量的随机数字有，可能需要几分钟时间，尤其是长度为4096的密钥对，需要特别长的时间，请耐心等待。关于RSA加密算法的机制和原理，您可以访问维基百科：' +
                 `<a href='https://zh.wikipedia.org/wiki/RSA加密演算法' target="_blank" onclick="return linkClick ('https://zh.wikipedia.org/wiki/RSA加密演算法')" >https://zh.wikipedia.org/wiki/RSA加密演算法</a></em>`,
-            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密钥对, 它是您的系统信息加密，身份认证及和QTGate通讯使用的重要工具。 RSA密钥对的密码请妥善保存，Email地址栏应填入您的常用Email地址, 它将被用作您的QTGate账号。<em style="color:red;">需注意的是QTGate.com域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区email服务，您有可能接收不到由QTGate发回的账号确认Email，以完成QTGate设定。</em>',
+            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密钥对, 它是您的系统信息加密，身份认证及和CoNET网络通讯使用的重要工具。 RSA密钥对的密码请妥善保存，Email地址栏应填入您的常用邮箱地址, 它将被用作您的CoNET网络账号。 <em style="color:red;">需注意的是CoNET域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区邮箱服务，您将有可能由于接收不到CoNET发回的账号确认Email，而不能够完成CoNET的设定。</em>',
             accountEmailInfo: '由于QTGate域名在某些国家和地区被防火墙屏蔽，而不能正常收发Email，如果您是处于防火墙内的用户，建议使用防火墙外部的邮件服务商。'
         },
 
@@ -1223,7 +1322,7 @@ const infoDefine = [
                 '選択していたゲットウェーエリアは只今接続不能になっております、後ほどもう一度試しにしてください。',
                 'IMAPアカウトでEMAIL送信する際エラーが発生しました、一回退出し、起動して見てくださいね。重複発生した場合はIMAPアカウトのウェーブページでアカウトをアンロック操作を必要かもしれない。',
                 'CoNETエラーが発生したした。一回退出してCoNETを再起動してください。',
-                'アララーー、あなたには負けるそ。'
+                'アララー、あなたには負けるそ。'
             ],
             activeing: '通信中'
         },
@@ -1796,7 +1895,7 @@ const infoDefine = [
             GenerateKeypair: '<em>Generating RSA Key pair. Please wait, as it may take a few minutes. More time will be needed if you selected 4096 bit key length. Information about RSA keypair system can be found here:' +
                 `<a href='hhttp://en.wikipedia.org/wiki/RSA_(cryptosystem)' target="_blank" onclick="return linkClick ('https://en.wikipedia.org/wiki/RSA_(cryptosystem)')">https://en.wikipedia.org/wiki/RSA_(cryptosystem)</a></em>`,
             systemPassword: 'CoNET Client System Password',
-            inputEmail: `This RSA key is a private key used for authentication, identification and secure encryption/decryption of data transmission within CoNET’s system. The password and key are not stored by CoNET. You cannot reset your password if lost and you cannot access CoNET services without your password. Please store your password in a safe place. <em style="color: red;">CoNET’s domain may be blocked in some regions. Please use an email account with servers outside these regions,</em>`,
+            inputEmail: `This RSA key is a private key used for authentication, identification and secure encryption/decryption of data transmission within CoNET network. The password and key are not stored by CoNET. You cannot reset your password if lost and you cannot access CoNET services without your password. Please store your password in a safe place. <em style="color: red;">CoNET’s domain may be blocked in some regions. Please use an email account with servers outside these regions,</em>`,
             accountEmailInfo: `Because CoNET may be on a firewall's black list in some regions. It is best to choose an email account with servers outside your region’s firewall.`
         },
         
@@ -2375,7 +2474,7 @@ const infoDefine = [
             systemAdministratorEmail:'RSA密鑰生成',
             GenerateKeypair: '<em>系統正在生成用於通訊和簽名的RSA加密密鑰對，計算機需要運行產生大量的隨機數字，可能需要幾分鐘時間，尤其是長度為4096的密鑰對，需要特別長的時間，請耐心等待。關於RSA加密算法的機制和原理，您可以訪問維基百科：' +
                 `<a href='#' target="_blank" onclick="return linkClick ('https://zh.wikipedia.org/wiki/RSA加密演算法')">https://zh.wikipedia.org/wiki/RSA加密演算法</a></em>`,
-            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密鑰對, 它是您的系統信息加密，身份認證及和CoNET網絡通訊使用的重要工具。 RSA密鑰對的密碼請妥善保存，Email地址欄應填入您的常用Email地址, 它將被用作您的CoNET網絡賬號。<em style="color:red;">需注意的是QTGate.com域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区email服务，您將有可能接收不到由QTGate發回的賬號確認Email，以完成QTGate設定。</em>',
+            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密鑰對, 它是您的系統信息加密，身份認證及和CoNET網絡通訊使用的重要工具。 RSA密鑰對的密碼請妥善保存，Email地址欄應填入您的常用邮箱地址, 它將被用作您的CoNET網絡賬號。<em style="color:red;">需注意的是CoNET域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区邮箱服务，您將有可能由于接收不到CoNET發回的賬號確認Email，而不能够完成CoNET的設定。</em>',
             accountEmailInfo: `由於CoNET域名在某些國家和地區被防火牆屏蔽，而不能正常收發CoNET的Email，如果您是處於防火牆內的用戶，建議使用防火牆外部的郵件服務商。`
         },
         

@@ -28,7 +28,7 @@ block jumbotron
 					button.circular.ui.icon.button.inverted.coverNextButton( href="#" data-bind = " click: startClick ")
 						i.icon.arrow.right
 			img.company( src="/images/150.svg")
-		#firstNode()
+		#firstNode
 			.content.firstNodeContent
 				.ui.header( data-bind = " text: infoDefine[ languageIndex() ].firstNote.title " style = " margin-left: 30px; margin-right: 100px;")
 				.ui.divider
@@ -1128,9 +1128,9 @@ block jumbotron1
 	.ui.basic.modal
 		.ui.icon.header
 			i.heartbeat.icon( data-bind="text: infoDefine [ languageIndex() ].error_message.title, visible: !hacked () ")
-			i.icon.spy.big( data-bind=" visible: hacked()")
+			i.icon.spy.big( data-bind=" visible: hacked ")
 		.content
 			p( data-bind = " text: modalContent ")
 		.actions
-			.ui.red.inverted.button( data-bind=" text: infoDefine [ languageIndex() ].linuxUpdate.exit, click: exit, visible:!hacked() ")
+			.ui.red.inverted.button( data-bind=" text: infoDefine [ languageIndex() ].linuxUpdate.exit, click: exit, visible: hacked ")
 				

@@ -1,10 +1,13 @@
 import * as Path from 'path'
 const { remote, screen, desktopCapturer } = require ( 'electron' )
 
-
+const testElectronSystem = () => {
+	
+}
 export default class RendererProcess {
 	private win = null
 	constructor ( name: string, data: any, debug: boolean, CallBack ) {
+
 		this.win = new remote.BrowserWindow ({ show: debug  })
 		this.win.setIgnoreMouseEvents ( !debug )
 		if ( debug ) {
@@ -29,6 +32,7 @@ export default class RendererProcess {
 			}
 		})
 		this.win.loadURL ( `file://${ Path.join ( __dirname, name +'.html')}` )
+		
 	}
 	public cancel ( ) {
 		if ( this.win && typeof this.win.destroy === 'function' ) {
