@@ -3,7 +3,7 @@ html
 	include header
 	//-<style> ::-webkit-scrollbar { display: none; } </style>
 	body#body( data-bind = "style: { overflow: overflowShow() ? 'auto' : 'hidden'} ")
-		#languageArea
+		#languageArea( style="z-index: 999;")
 			.ui.text.shape.languageText( data-bind = " click: selectItem " )
 				.sides
 					span.ui.header.side.en.languageItem.languageTextCoverColor
@@ -29,6 +29,12 @@ html
 	script( src='/scripts/semantic.min.js', type="text/javascript" )
 	script( src='/scripts/knockout.js', type="text/javascript" )
 	script( src='/scripts/knockout.animate.js', type="text/javascript" )
+	script( src='/scripts/cleave.min.js', type="text/javascript" )
 	script( src='/scripts/socket.io.min.js', type="text/javascript" )
+	script( src='/scripts/d3.min.js', type="text/javascript" )
+	script( src='/scripts/c3.min.js', type="text/javascript" )
+	script( src='/scripts/siteShare.js', type="text/javascript" )
 	script( src='/scripts/home.js', type="text/javascript" )
+	script( src='https://checkout.stripe.com/checkout.js')
+	script( src='https://js.stripe.com/v3/')
 	<script>if ( window.module ) module = window.module;</script>

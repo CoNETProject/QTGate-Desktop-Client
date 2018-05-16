@@ -1,7 +1,6 @@
 /*!
- * Copyright 2017 QTGate systems Inc. All Rights Reserved.
+ * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
  *
- * QTGate systems Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +14,6 @@
  * limitations under the License.
  */
 
-/// <reference path="../typings/types/v7/index.d.ts" />
 import * as Net from 'net'
 import * as Http from 'http'
 import * as Dns from 'dns'
@@ -32,6 +30,7 @@ import * as Path from 'path'
 import * as Socks from './socket5ForiOpn'
 import gateWay from './gateway'
 import * as Os from 'os'
+import * as Util from 'util'
 const { remote } = require ( "electron" )
 
 const whiteIpFile = 'whiteIpList.json'
@@ -75,26 +74,6 @@ export const checkDomainInBlackList = ( BlackLisk: string[], domain: string, Cal
 
 		return CallBack ( null, result )
 	})
-}
-
-const otherRespon = ( path: string, host: string, port: number, UserAgent: string ) => {
-	
-	const option = {
-		host: host,
-		port: port,
-		path: '/' + path,
-		method: 'GET',
-		headers: {
-			//'Upgrade-Insecure-Requests': 1,
-			Host: host + ':' + port,
-			'Accept': '*/*',
-			'Accept-Language': 'en-US',
-			'Connection': 'keep-alive',
-			'Accept-Encoding': 'gzip, deflate',
-			'User-Agent': UserAgent || 'Mozilla/5.0',
-		}
-	}
-	return option
 }
 
 const testLogin = ( req: Buffer, loginUserList: string ) => {
@@ -304,7 +283,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 		}
 		return
 	}
-
+	console.log (`new http`)
 	return checkDomainInBlackList ( blackDomainList, hostName, ( err, result: boolean ) => {
 		
 		if ( result ) {
@@ -316,7 +295,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 		const isIp = Net.isIP ( hostName )
 		const hostIp: domainData = ! isIp ? domainListPool.get ( hostName ) : { dns: [{ family: isIp, address: hostName, expire: null, connect: [] }], expire: null }
         
-        if ( ! hostIp ) {
+        if ( ! hostIp && ! this.useGatWay ) {
 
 			return isAllBlackedByFireWall ( hostName,  ip6, gatway, userAgent, domainListPool, ( err, _hostIp ) => {
 				if ( err ) {
@@ -366,23 +345,22 @@ const getPac = ( hostIp: string, port: number, http: boolean, sock5: boolean ) =
 		isInNet ( dnsResolve( host ), "10.0.0.0", "255.0.0.0" )) {
 			return "DIRECT";
 		}
-	return "${ http ? 'PROXY': ( sock5 ? 'SOCKS5' : 'SOCKS' ) } ${ hostIp }:${ port.toString() }";
-	}`
+		return "${ http ? 'PROXY': ( sock5 ? 'SOCKS5' : 'SOCKS' ) } ${ hostIp }:${ port.toString() }";
 	
-	return res._HTTP_200 ( FindProxyForURL )
+	}`
+	//return "${ http ? 'PROXY': ( sock5 ? 'SOCKS5' : 'SOCKS' ) } ${ hostIp }:${ port.toString() }; ";
+	return res.Http_Pac ( FindProxyForURL )
 }
 
-
-
 export class proxyServer {
-	public UdpServer = new Socks.UdpDgram ()
 	private hostLocalIpv4: { network: string, address: string } []= []
 	private hostLocalIpv6: string = null
 	private hostGlobalIpV4: string = null
 	private hostGlobalIpV6: string = null
 	private network = false
 	private getGlobalIpRunning = false
-	public gateway = new gateWay ( this.serverIp, this.serverPort, this.password )
+	public gateway = new gateWay ( this.multipleGateway )
+	
 	private saveWhiteIpList () {
 		if ( this.whiteIpList.length > 0 )
 			Fs.writeFile ( Path.join( __dirname, whiteIpFile ), JSON.stringify( this.whiteIpList ), { encoding: 'utf8' }, err => {
@@ -396,7 +374,7 @@ export class proxyServer {
 		if ( this.getGlobalIpRunning )
 			return 
 		this.getGlobalIpRunning = true
-
+		saveLog(`doing getGlobalIp!`)
 		gateWay.hostLookup ( testGatewayDomainName, null, ( err, data ) => {
 			if ( err )
 				return console.log ( 'getGlobalIp ERROR:', err.message )
@@ -414,8 +392,7 @@ export class proxyServer {
 
 			const domain = data
 			if ( ! domain )
-				return console.log ( `[${ gateWay.serverIp } : ${ gateWay.serverPort }] Gateway connect Error!` )
-			console.log ( `[${ gateWay.serverIp } : ${ gateWay.serverPort }] Gateway connect success!` )
+				return console.log ( `[] Gateway connect Error!` )
 			console.log ( '****************************************' )
 
 		})
@@ -423,7 +400,7 @@ export class proxyServer {
 	}
     
 	constructor ( public whiteIpList: string[], public domainListPool: Map < string, domainData >, private localProxyServerIP: string, 
-		private port: number, private securityPath: string, private serverIp: string, private serverPort: number, private password: string, public checkAgainTimeOut: number, 
+		private port: number, private securityPath: string,  public checkAgainTimeOut: number, private multipleGateway: IConnectCommand[],
 		public connectHostTimeOut: number, public useGatWay: boolean, public domainBlackList: string[] ) {
 		this.getGlobalIp ( this.gateway )
 		let socks = null
@@ -431,19 +408,21 @@ export class proxyServer {
 			const ip = socket.remoteAddress
 			const isWhiteIp = this.whiteIpList.find ( n => { return n === ip }) ? true : false
 			let agent = 'Mozilla/5.0'
-			console.log (`new socket!`)
+				//	windows 7 GET PAC User-Agent: Mozilla/5.0 (compatible; IE 11.0; Win32; Trident/7.0)
+
+
 			socket.once ( 'data', ( data: Buffer ) => {
 				const dataStr = data.toString()
 				if ( /^GET \/pac/.test ( dataStr )) {
 					const httpHead = new HttpProxyHeader ( data )
 					agent = httpHead.headers['user-agent']
-					const sock5 = /Windows NT|Darwin|Firefox/i.test ( agent ) && ! /CFNetwork/i.test (agent)
+					const sock5 = /Firefox/i.test ( agent ) || /Windows NT|WinHttp-Autoproxy-Service|Darwin/i.test ( agent ) && ! /CFNetwork|WOW64/i.test ( agent )
 					
-					let ret = getPac ( this.localProxyServerIP, this.port, false, sock5 )
-					if ( /pacHttp/.test( dataStr ))
-						ret = getPac ( this.localProxyServerIP, this.port, true, sock5 )
-					console.log ( `/GET \/pac from :[${ socket.remoteAddress }] sock5 [${ sock5 }] agent [${ agent }] httpHead.headers [${ Object.keys(httpHead.headers)}]`)
+					
+					const ret = getPac ( httpHead.host, this.port, /pacHttp/.test( dataStr ), sock5 )
+					console.log ( `/GET \/pac from :[${ socket.remoteAddress }] sock5 [${ sock5 }] agent [${ agent }] httpHead.headers [${ Object.keys( httpHead.headers )}]`)
 					console.log ( dataStr )
+					console.log ( ret )
 					return socket.end ( ret )
 				}
 
@@ -461,7 +440,7 @@ export class proxyServer {
 					socks = null
 				console.log ( `[${ip}] socket.on error`, err.message )
 			})
-			socket.once ('end', () => {
+			socket.once ( 'end', () => {
 				socks = null
 			})
 		})
@@ -472,9 +451,7 @@ export class proxyServer {
 		})
 
 		server.listen ( port, () => {
-			console.log (`remote server: [${ serverIp }]:[${ serverPort }]`)
 			return console.log ( 'proxy start success on port :', port, 'security path = ', securityPath )
-
 		})
 
 
@@ -482,14 +459,14 @@ export class proxyServer {
 	}
 
 	public changeDocker ( data: IConnectCommand ) {
-		if ( !data.gateWayIpAddress || !data.gateWayPort || !data.imapData.randomPassword ) {
-			return saveLog (`ERROR: changeDocker data ERROR: gateWayIpAddress [${ data.gateWayIpAddress }] gateWayPort [${ data.gateWayPort }] data.imapData.randomPassword [${ data.imapData.randomPassword }]`)
+
+		const index = this.multipleGateway.findIndex ( n => { return n.containerUUID === data.containerUUID })
+		if ( index < 0 ) {
+			this.multipleGateway.push ( data )
+			return saveLog (`on changeDocker [${ data.containerUUID }] Add it`)
 		}
-		this.serverIp = data.gateWayIpAddress
-		this.serverPort = data.gateWayPort
-		this.password = data.imapData.randomPassword
-		this.gateway = new gateWay ( this.serverIp, this.serverPort, this.password )
-		saveLog (`changeDocker gateWayIpAddress [${ data.gateWayIpAddress }] gateWayPort [${ data.gateWayPort }] data.imapData.randomPassword [${ data.imapData.randomPassword }]`)
+		this.multipleGateway [ index ] = data
+		return this.gateway = new gateWay ( this.multipleGateway )
 	}
 
 }
@@ -513,16 +490,16 @@ const saveLog = ( log: string ) => {
 }
 
 let server: proxyServer = null
-remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand ) => {
-	saveLog ( `************************** start proxyServer *****************************\r\n ${ JSON.stringify( data )}\r\n` )
-	server = new proxyServer ([], new Map(), data.localServerIp, data.localServerPort, 'pac', data.gateWayIpAddress, data.gateWayPort, data.imapData.randomPassword,
-		 5000, 50000, data.AllDataToGateway, [] )
-	
+remote.getCurrentWindow().once ( 'firstCallBack', ( data: IConnectCommand[] ) => {
+	const _data = data[0]
+	console.log ( `************************** start proxyServer *****************************\r\n ${ data }\r\n` )
+	console.log (`${ Util.inspect ( _data )}`)
+	server = new proxyServer ( [], new Map(), _data.localServerIp, _data.localServerPort, 'pac', 5000, data, 50000, _data.AllDataToGateway || true, [] )
 })
+
 remote.getCurrentWindow().on( 'changeDocker', ( data: IConnectCommand ) => {
 	saveLog ( `got changeDocker event! data [${ JSON.stringify ( data )}]`)
 	server.changeDocker ( data )
 })
-
 
 remote.getCurrentWindow().emit ( 'first' )

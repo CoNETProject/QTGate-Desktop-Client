@@ -1,7 +1,6 @@
 /*!
- * Copyright 2017 QTGate systems Inc. All Rights Reserved.
+ * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
  *
- * QTGate systems Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -53,7 +52,14 @@ Cache-Control: private, max-age=0
 
 ${ _HTTP_598_body }
 `
+export const Http_Pac = ( body: string ) => {
+	return `HTTP/1.1 200 OK
+Content-Type: application/x-ns-proxy-autoconfig
+Connection: keep-alive
+Content-Length: ${ body.length }
 
+${ body }\r\n\r\n`
+}
 export const _HTTP_200 = ( body: string ) => {
 	return `HTTP/1.1 200 OK
 Content-Type: text/html; charset=UTF-8

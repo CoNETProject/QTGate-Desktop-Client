@@ -1,7 +1,6 @@
 /*!
- * Copyright 2017 QTGate systems Inc. All Rights Reserved.
+ * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
  *
- * QTGate systems Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -26,6 +25,8 @@ import * as Rfc1928 from './rfc1928'
 import * as res from './res'
 import * as Async from 'async'
 import * as imapClass from './imapClass'
+import * as Socks from './socket5ForiAtOpn'
+import { Socket } from 'net';
 const { remote } = require ( "electron" )
 
 interface dnsAddress {
@@ -33,10 +34,6 @@ interface dnsAddress {
 	family: number
 	expire: Date
 	connect: number[]
-}
-interface domainData {
-	dns: dnsAddress[]
-	expire: number
 }
 
 const whiteIpFile = 'whiteIpList.json'
@@ -67,17 +64,27 @@ const closeClientSocket = ( socket: Net.Socket, status: number, body: string ) =
 	return socket.resume ()
 }
 
-const isAllBlackedByFireWall = ( hostName: string, ip6: boolean, checkAgainTime: number, imapClass: imapClass.imapClientControl, domainListPool: Map < string, domainData >,
+export const isAllBlackedByFireWall = ( hostName: string, ip6: boolean, checkAgainTime: number, imapClass: imapClass.imapClientControl, domainListPool: Map < string, domainData >,
 	CallBack: ( err?: Error, hostIp?: domainData ) => void ) => {
 
 	const hostIp = domainListPool.get ( hostName )
 	const now = new Date ().getTime ()
+
 	if ( ! hostIp || hostIp.expire < now ) {
-		console.log (`imapClass.nslookupRequest [${ hostName }]`)
+		console.log ( `imapClass.nslookupRequest [${ hostName }]`)
 		return imapClass.nslookupRequest ( hostName, ( err, ipadd ) => {
-			if ( err )
+			if ( err ) {
+				CallBack ( err )
 				return console.log ( `imapClass.nslookupRequest callback err `, err )
-			return CallBack ( err, ipadd )
+			}
+				
+			try {
+				const ret = JSON.parse ( ipadd.toString())
+				return CallBack ( null, ret )
+			} catch ( ex ) {
+				return CallBack ( ex )
+			}
+			
 		})
 	}
 		
@@ -85,7 +92,7 @@ const isAllBlackedByFireWall = ( hostName: string, ip6: boolean, checkAgainTime:
 	return CallBack ( null, hostIp )
 }
 
-const checkDomainInBlackList = ( domainBlackList: string[], domain: string, CallBack ) => {
+export const checkDomainInBlackList = ( domainBlackList: string[], domain: string, CallBack ) => {
 	
 	if ( Net.isIP ( domain )) {
 		return CallBack ( null, domainBlackList.find ( n => { return n === domain }) ? true : false )
@@ -185,7 +192,7 @@ const _connect = ( hostname: string, hostIp: string, port: number, clientSocket:
 	return socket.connect ( port, hostIp )
 }
 
-const tryConnectHost = ( hostname: string, hostIp: domainData, port: number, data: Buffer, clientSocket: Net.Socket, isSSLConnect: boolean, 
+export const tryConnectHost = ( hostname: string, hostIp: domainData, port: number, data: Buffer, clientSocket: Net.Socket, isSSLConnect: boolean, 
 	checkAgainTimeOut: number, connectTimeOut: number, gateway: boolean, CallBack ) => {
 
 	if ( isSSLConnect ) {
@@ -303,6 +310,23 @@ const httpImapProxy = ( imapClass: imapClass.imapClientControl, clientSocket: Ne
 
 }
 
+const getPac = ( hostIp: string, port: number, http: boolean, sock5: boolean ) => {
+	
+		const FindProxyForURL = `function FindProxyForURL ( url, host )
+		{
+			if ( isInNet ( dnsResolve( host ), "0.0.0.0", "255.0.0.0") ||
+			isInNet( dnsResolve( host ), "172.16.0.0", "255.240.255.0") ||
+			isInNet( dnsResolve( host ), "127.0.0.0", "255.255.255.0") ||
+			isInNet ( dnsResolve( host ), "192.168.0.0", "255.255.0.0" ) ||
+			isInNet ( dnsResolve( host ), "10.0.0.0", "255.0.0.0" )) {
+				return "DIRECT";
+			}
+			return "${ http ? 'PROXY': ( sock5 ? 'SOCKS5' : 'SOCKS' ) } ${ hostIp }:${ port.toString() }";
+		
+		}`
+		//return "${ http ? 'PROXY': ( sock5 ? 'SOCKS5' : 'SOCKS' ) } ${ hostIp }:${ port.toString() }; ";
+		return res.Http_Pac ( FindProxyForURL )
+	}
 export default class imapProxyServer {
 	
 	private hostLocalIpv4: { network: string, address: string } []= []
@@ -311,7 +335,7 @@ export default class imapProxyServer {
 	private hostGlobalIpV6: string = null
 	private network = false
 	private getGlobalIpRunning = false
-	private imapClass = new imapClass.imapClientControl ( this.imapData )
+	public imapClass = new imapClass.imapClientControl ( this.imapData )
 
 	private saveWhiteIpList () {
 		if ( this.whiteIpList.length > 0 )
@@ -334,15 +358,29 @@ export default class imapProxyServer {
 		return _HTTP_200 ( FindProxyForURL )
 	}
 	*/
-	constructor ( private whiteIpList: string[], private domainListPool: Map < string, domainData >, 
-		private port: number, private securityPath: string, private checkAgainTimeOut: number, private imapData: IinputData,
-		private connectHostTimeOut: number, useGatWay: boolean, domainBlackList: string[] ) {
+	constructor ( private whiteIpList: string[], public domainListPool: Map < string, domainData >, 
+		private port: number, private securityPath: string, public checkAgainTimeOut: number, private imapData: IinputData,
+		public connectHostTimeOut: number, public useGatWay: boolean, public domainBlackList: string[] ) {
 
 		const server = Net.createServer ( socket => {
 			const ip = socket.remoteAddress
 			const isWhiteIp = this.whiteIpList.find ( n => { return n === ip }) ? true : false
-			
+			let socks = null
+			let agent = null
 			socket.once ( 'data', ( data: Buffer ) => {
+				const dataStr = data.toString()
+				if ( /^GET \/pac/.test ( dataStr )) {
+					const httpHead = new HttpProxyHeader ( data )
+					agent = httpHead.headers['user-agent']
+					const sock5 = /Firefox/i.test (agent) || /Windows NT|Darwin|Firefox/i.test ( agent ) && ! /CFNetwork|WOW64/i.test ( agent )
+					
+					
+					const ret = getPac ( httpHead.host, this.port, /pacHttp/.test( dataStr ), sock5 )
+					console.log ( `/GET \/pac from :[${ socket.remoteAddress }] sock5 [${ sock5 }] agent [${ agent }] httpHead.headers [${ Object.keys(httpHead.headers)}]`)
+					console.log ( dataStr )
+					console.log ( ret )
+					return socket.end ( ret )
+				}
 				/*
 				if ( ! isWhiteIp ) {
 					console.log ('! isWhiteIp', data.toString ('utf8'))
@@ -357,14 +395,21 @@ export default class imapProxyServer {
 				}
 				*/
 				switch ( data.readUInt8 ( 0 )) {
-					case 0x4:
-						return console.log ( 'SOCK4 connect' )
-					case 0x5:
+					case 0x4: {
+						console.log ( 'SOCK4 connect' )
+						return socks = new Socks.sockt4 ( socket, data, agent, this )
+					}
+						
+					case 0x5: {
 						console.log ( 'socks5 connect' )
-						return //new socks5 ( socket )
-					default:
+						return socks = new Socks.socks5 ( socket, agent, this )
+					}
+
+					default: {
 						return httpImapProxy ( this.imapClass, socket, data, useGatWay, this.hostGlobalIpV6 ? true : false,  connectHostTimeOut,
 							domainListPool, checkAgainTimeOut, domainBlackList )
+					}
+						
 				}
 			})
 

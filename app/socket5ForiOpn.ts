@@ -1,7 +1,6 @@
 /*!
- * Copyright 2017 QTGate systems Inc. All Rights Reserved.
+ * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
  *
- * QTGate systems Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -107,7 +106,7 @@ export class socks5 {
 				retBuffer.REP = Rfc1928.Replies.CONNECTION_NOT_ALLOWED_BY_RULESET
 				return this.closeSocks5 ( retBuffer.buffer )
 			}
-			if ( this.host ) {
+			if ( this.host && !this.proxyServer.useGatWay ) {
 				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.agent, this.proxyServer.domainListPool, ( err, _hostIp ) => {
 					if ( err ) {
 						console.log ( `[${ this.host }] Blocked!`)
@@ -130,13 +129,12 @@ export class socks5 {
 			
 		})
 	}
-
+	/*
 	private udpProcess ( data: Rfc1928.Requests ) {
 		data.REP = Rfc1928.Replies.GRANTED
-		data.port = this.proxyServer.UdpServer.port
 		return this.socket.write ( data.buffer )
 	}
-
+	*/
 	private connectStat2 ( data: Buffer ) {
 
 		const req = new Rfc1928.Requests ( data )
@@ -180,12 +178,12 @@ export class socks5 {
 			return this.closeSocks5 ( req.buffer )
 		}
 		if ( this.cmd === Rfc1928.CMD.UDP_ASSOCIATE )
-			return this.udpProcess ( req )
+			return console.log ('')
 		return this.connectStat2_after ( req )
 	}
 
 	constructor ( private socket: Net.Socket,private agent: string, private proxyServer: proxyServer.proxyServer ) {
-
+		console.log (`new socks 5`)
 		this.socket.once ( 'data', ( chunk: Buffer ) => {
 			return this.connectStat2 ( chunk )
 		})
@@ -204,6 +202,7 @@ export class sockt4 {
 	private clientIP = this.socket
 	private keep = false
 	constructor ( private socket: Net.Socket, private buffer: Buffer, private agent: string, private proxyServer: proxyServer.proxyServer ) {
+		console.log (`new socks 4`)
 		switch ( this.cmd ) {
 			case Rfc1928.CMD.CONNECT: {
 				this.keep = true
@@ -270,7 +269,7 @@ export class sockt4 {
 				console.log ( `[${ this.host }] Blocked!`)
 				return this.socket.end ( this.req.request_failed )
 			}
-			if ( this.host ) {
+			if ( this.host && !this.proxyServer.useGatWay ) {
 				console.log (`socks4 host [${ this.host }]`)
 				return proxyServer.isAllBlackedByFireWall ( this.host, false, this.proxyServer.gateway, this.agent, this.proxyServer.domainListPool, ( err, _hostIp ) => {
 					if ( err ) {
@@ -294,7 +293,6 @@ export class sockt4 {
 		})
 	}
 }
-
 
 export class UdpDgram {
 	private server: Dgram.Socket = null
@@ -329,5 +327,3 @@ export class UdpDgram {
 		this.createDgram ()
 	}
 }
-
-const uu = new UdpDgram ()

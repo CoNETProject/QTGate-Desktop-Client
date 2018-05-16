@@ -1,7 +1,6 @@
 /*!
- * Copyright 2017 QTGate systems Inc. All Rights Reserved.
+ * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
  *
- * QTGate systems Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +14,7 @@
  * limitations under the License.
  */
 
-const DEBUG = false
+const DEBUG = true
 
 import * as Fs from 'fs'
 import * as Os from 'os'
@@ -24,7 +23,10 @@ import { series } from 'async'
 import * as freePort from 'portastic'
 import { format } from 'url'
 import { spawn } from 'child_process'
-const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater } = require ( 'electron' )
+import * as path from 'path'
+import * as Crypto from 'crypto'
+
+const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater, desktopCapturer } = require ( 'electron' )
   
 const handleSquirrelEvent = () => {
     if ( process.argv.length === 1 || process.platform !== 'win32') {
@@ -47,11 +49,11 @@ const handleSquirrelEvent = () => {
       } catch (error) {}
   
       return spawnedProcess;
-    };
-  
+    }
+
     const spawnUpdate = function(args) {
       return spawn(updateDotExe, args);
-    };
+    }
   
     const squirrelEvent = process.argv[1];
     switch (squirrelEvent) {
@@ -83,13 +85,15 @@ const handleSquirrelEvent = () => {
         // we update to the new version - it's the opposite of
         // --squirrel-updated
   
-        app.quit();
-        return true;
+        app.quit()
+        return true
     }
   }
-if ( handleSquirrelEvent()) {
+
+  if ( handleSquirrelEvent()) {
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 }
+
 const makeSingleInstance = () => {
 
     //  For Mac App Store build
@@ -99,17 +103,19 @@ const makeSingleInstance = () => {
         createWindow ()
     })
 }
+
 if ( makeSingleInstance ()) {
     app.quit ()
 }
+
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion()
-
 
 enum lang { 'zh', 'ja', 'en', 'tw' }
 const QTGateFolder = join ( Os.homedir(), '.QTGate' )
 const QTGateLatest = join ( QTGateFolder, 'latest' )
 const QTGateTemp = join ( QTGateFolder, 'tempfile' )
+const QTGateVideo = join ( QTGateTemp, 'videoTemp')
 
 let isSingleInstanceCheck = true
 let localServer1 = null
@@ -119,6 +125,49 @@ let mainWindow = null
 let doReady = false
 const ErrorLogFile = join ( QTGateFolder, 'indexError.log' )
 export let port = 3000 + Math.round ( 10000 * Math.random ())
+
+const takeScreen = ( CallBack ) => {
+    
+    desktopCapturer.getSources ({ types: [ 'window', 'screen' ], thumbnailSize: { width: 850, height: 480 }}, ( error, sources ) => {
+        if ( error ) throw error
+        const debug = true
+        sources.forEach ( n => {
+            
+            if ( n.name === 'QTGate' ) {
+                const screenshotFileName = Crypto.randomBytes(10).toString('hex') + '.png'
+                const screenshotSavePath = path.join ( QTGateTemp, screenshotFileName )
+                Fs.writeFile ( screenshotSavePath, n.thumbnail.toPng(), error => {
+                    if ( error ) {
+                        console.log ( error )
+                        return CallBack ( error )
+                    }
+                        
+
+                    CallBack ( null, screenshotFileName )
+                    /*
+                    let win = new remote.BrowserWindow ({
+                        minWidth: 900,
+                        minHeight: 600,
+                        backgroundColor: '#ffffff',
+                    })
+                    if ( debug ) {
+                        win.webContents.openDevTools()
+                        win.maximize()
+                        
+                    }
+                    win.loadURL ( `http://127.0.0.1:${ this.config().serverPort }/feedBack?imagFile=${ screenshotUrl }` )
+                    win.once ( 'closed', () => {
+                        win = null
+                    })
+                    */
+                })
+            }
+        })
+        
+    })
+    
+}
+
 const hideWindowDownload = ( downloadUrl, saveFilePath, Callback ) => {
     let _err = null
     if ( !downloadUrl ) {
@@ -187,12 +236,14 @@ const hideWindowDownload = ( downloadUrl, saveFilePath, Callback ) => {
         return win.loadURL ( downloadUrl )
     })
 }
+
 const saveLog = ( log: string ) => {
 	const data = `${ new Date().toUTCString () }: ${ log }\r\n`
 	Fs.appendFile ( ErrorLogFile, data, err => {
 		
 	})
 }
+
 const _doUpdate = ( tag_name: string, _port ) => {
 	let url = null
 	
@@ -378,23 +429,28 @@ const findPort = ( CallBack ) => {
         return findPort ( CallBack )
     })
 }
-const template = [
-    {
-        label: 'Edit',
-        submenu: [
-          {role: 'copy' },
-          {role: 'paste' },
-          { role: 'quit' }
+const isMacOS = process.platform === 'darwin'
+
+const template = [{
+        submenu:[
+        { role: 'undo', visible: isMacOS },
+        { role: 'redo', visible: isMacOS },
+        { role: 'selectall', visible: isMacOS },
+        { role: 'copy', visible: isMacOS },
+        { role: 'paste', visible: isMacOS },
+        { role: 'quit', visible: isMacOS }
         ]
-    }
-]
+    }]
+
 
 const appReady = () => {
     series([
         next => checkFolder ( QTGateFolder, next ),
         next => checkFolder ( QTGateLatest, next ),
-        next => checkFolder ( QTGateTemp, next )
+        next => checkFolder ( QTGateTemp, next ),
+        next => checkFolder ( QTGateVideo, next )
     ], err => {
+        console.log (`appReady series runback err [${ err }]`)
         const menu = Menu.buildFromTemplate(template)
         Menu.setApplicationMenu(menu)
         if ( ! localServer1 ) {
@@ -402,7 +458,9 @@ const appReady = () => {
                 localServer1 = new BrowserWindow ({ show: DEBUG })
                 localServer1.setIgnoreMouseEvents ( !DEBUG )
                 localServer1.rendererSidePort = port
+                localServer1.debug = DEBUG
                 localServer1.createWindow = createWindow
+                localServer1.takeScreen = takeScreen
                 localServer1._doUpdate = _doUpdate
                 DEBUG ? localServer1.webContents.openDevTools() : null
                 //localServer1.maximize ()
@@ -422,10 +480,10 @@ const appReady = () => {
                         protocol: 'file:',
                         slashes: true
                     }))
-                }, 5000 )
+                }, 500 )
             })
         } else {
-            saveLog (`app.once ( 'ready') have localServer1 & createWindow()`)
+            saveLog ( `app.once ( 'ready') have localServer1 & createWindow()` )
             createWindow ()
         }
 

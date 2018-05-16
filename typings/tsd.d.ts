@@ -6,3 +6,4 @@
 /// <reference path="types/jquery/index.d.ts" />
 /// <reference path="types/knockout/index.d.ts" />
 /// <reference path="types/v7/index.d.ts" />
+/// <reference path="types/twitter-text/index.d.ts" />

@@ -389,6 +389,14 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   margin: 0px;
   display: block;
   width: 100%;
+  position: absolute;
+}
+.coverNextButton {
+  opacity: 0.5;
+  background: cadetblue;
+}
+.coverNextButton:hover {
+  opacity: 0.8;
 }
 .languageText {
   width: 100%;
@@ -400,7 +408,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   opacity: 0.4;
 }
 .titleText{
-  top:120px;
+  top: 5em;
   text-align: center;
   z-index: 99;
   position: relative;
@@ -426,7 +434,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   color: white!important;
 }
 .VideoBoxButtom {
-  top: 230px;
+  top: 20em;
   position: relative;
   width: 100%;
   z-index: 98;
@@ -438,7 +446,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
 }
 .company {
   top: -110px;
-  left: 80%;
+  left: 82%;
   width: 130px;
   font-weight: lighter!important;
   color: white;
@@ -460,7 +468,7 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
 .feedBack {
   position: fixed;
   z-index: 100;
-  top: 0.6em;
+  top: 0em;
   right: 1.1em;
   opacity: 0.5;
 }
@@ -478,10 +486,12 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   color: blue;
 
 }
+
+
 .WindowsUseInfoLocalServerIp {
   position: relative;
-  left: 13.2em;
-  top: 15.5em;
+  left: 10.4em;
+  top: 12.5em;
   color: blue;
 }
 .WindowsUseInfoPort{
@@ -724,4 +734,218 @@ h1>.badge, h2>.badge, h3>.badge, h4>.badge,h5>.badge,h6>.badge {
   display: block!important;
   height: 25px!important;
   width: 25px!important;
+}
+
+.priceFont {
+    font-size: small;
+    font-style: italic;
+    font-weight: lighter;
+}
+
+.hideCardImage {
+  opacity: 0.2
+}
+.showCardImage {
+  opacity: 1
+}
+/**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+ .StripeElement {
+  background-color: white;
+  height: 40px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  box-shadow: 0 1px 3px 0 #e6ebf1;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+  box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+  border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}
+.usDollar {
+  font-weight: lighter;
+  font-style: italic;
+  padding-left: 0.5em;
+  font-size: smaller;
+}
+.amount {
+  font-size: large;
+  font-weight: bold;
+  color: darkslategray;
+}
+.tweetTime:before {
+  content: "\00b7";
+}
+.reTwitter{
+  color:#17bf63
+}
+.favorited {
+  color:#e0245e;
+}
+.comment, .retweeted, .favorite {
+   cursor: pointer;
+}
+@media only screen and ( max-width: 1144px ) {
+   .TimelinesView {
+    background-color: white;
+    padding: 0em;
+    padding-top: 4em;
+   }
+   #QTGateStartScreen {
+    display: block;
+  }
+   #QTGateStartScreen-Device {
+     display: none;
+   }
+   #TimelinesView {
+    max-width:100%;
+    margin: 0px auto;
+   }
+   .itemContent {
+    max-width: 90%;
+   }
+}
+@media only screen and (min-width: 992px) {
+  
+}
+
+@media screen and ( max-width: 801px ) {
+  .TimelinesView {
+   background-color: white;
+   padding: 0em;
+   padding-top: 4em;
+  }
+  #QTGateStartScreen-Device {
+    display: block;
+  }
+  #QTGateStartScreen {
+    display: none;
+  }
+  #TimelinesView {
+   max-width:100%;
+   margin: 0px auto;
+  }
+  .itemContent {
+   max-width: 90%;
+  }
+}
+
+@media screen and ( min-width: 800px ) {
+  #QTGateStartScreen {
+    display: block;
+  }
+  #QTGateStartScreen-Device {
+    display: none;
+  }
+  .TimelinesView {
+    background-color: #e6ecf0;
+    padding: 4em;
+  }
+  #TimelinesView {
+    max-width:590px;
+    margin: 0px auto;
+  }
+  .itemContent {
+    max-width:530px;
+  }
+}
+.flapLeft, .flapeRight {
+  position: relative;
+  cursor: pointer;
+}
+
+.flapLeft i:hover, .flapeRight i:hover {
+  background: rgba(255,255,255,0.4);
+}
+.flapLeft i, .flapeRight i {
+  color:grey;
+  position: absolute;
+  margin-top: -1em;
+}
+.tweetTrashButton {
+   cursor: pointer;
+    color: grey;
+}
+.tweetTrashButton:hover {
+  color: red;
+}
+.tweetPhotoButton{
+    background: transparent!important;
+    color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    right: 0.5em;
+    margin-top: 2.5em;
+}
+.tweetPhotoButton:hover {
+  color: rgba(0, 0, 0, 0.6);
+
+}
+.newTweetCloseButton{
+  color: rgba(0, 0, 0, 0.2)!important;
+  cursor: pointer;
+  position: absolute;
+  top: 0.3em;
+  right: 0.3em;
+}
+.newTweetCloseButton:hover {
+color: rgba(0, 0, 0, 0.6)!important;
+
+}
+.approveButtons {
+  position: absolute;
+}
+.ui.modal {
+  top: 15em;
+  width: 600px;
+}
+#QTGateStartScreen{
+  height: 100%;
+}
+#QTGateStartScreen .VideoBox{
+  display: block;
+  width: 600px;
+}
+#QTGateStartScreen .VideoBox .iframe {
+  width: 550px;
+  height: 310px;
+  overflow: hidden;
+  border-radius: 25px;
+}
+#QTGateStartScreen-Drive{
+  height: 100%;
+}
+#QTGateStartScreen-Drive .VideoBox{
+  display: block;
+
+}
+#QTGateStartScreen-Drive .VideoBox .iframe {
+  overflow: hidden;
+  border-radius: 25px;
+}
+.AppCardTop {
+   max-width: 11em!important;
+}
+.AppCardImageArea {
+  background: white!important;
+}
+.AppCardImage {
+    max-width: 6em!important;
+}
+.cardContentHeader {
+    max-height: 3em;
+}
+.templateImapAccount {
+   color: blue;
 }

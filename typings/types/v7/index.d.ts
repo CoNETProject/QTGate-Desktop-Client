@@ -8,7 +8,6 @@
 //                 Wilco Bakker <https://github.com/WilcoBakker>
 //                 Daniel Imms <https://github.com/Tyriar>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-
 /************************************************
 *                                               *
 *               Node.js v7.x API                *
@@ -1141,7 +1140,6 @@ declare module "zlib" {
 
     export namespace constants {
         // Allowed flush values.
-
         export const Z_NO_FLUSH: number;
         export const Z_PARTIAL_FLUSH: number;
         export const Z_SYNC_FLUSH: number;
@@ -1151,7 +1149,6 @@ declare module "zlib" {
         export const Z_TREES: number;
 
         // Return codes for the compression/decompression functions. Negative values are errors, positive values are used for special but normal events.
-
         export const Z_OK: number;
         export const Z_STREAM_END: number;
         export const Z_NEED_DICT: number;
@@ -1163,14 +1160,12 @@ declare module "zlib" {
         export const Z_VERSION_ERROR: number;
 
         // Compression levels.
-
         export const Z_NO_COMPRESSION: number;
         export const Z_BEST_SPEED: number;
         export const Z_BEST_COMPRESSION: number;
         export const Z_DEFAULT_COMPRESSION: number;
 
         // Compression strategy.
-
         export const Z_FILTERED: number;
         export const Z_HUFFMAN_ONLY: number;
         export const Z_RLE: number;
@@ -2738,7 +2733,6 @@ declare module "fs" {
 
     export namespace constants {
         // File Access Constants
-
         /** Constant for fs.access(). File is visible to the calling process. */
         export const F_OK: number;
 
@@ -2752,7 +2746,6 @@ declare module "fs" {
         export const X_OK: number;
 
         // File Open Constants
-
         /** Constant for fs.open(). Flag indicating to open a file for read-only access. */
         export const O_RDONLY: number;
 
@@ -2799,7 +2792,6 @@ declare module "fs" {
         export const O_NONBLOCK: number;
 
         // File Type Constants
-
         /** Constant for fs.Stats mode property for determining a file's type. Bit mask used to extract the file type code. */
         export const S_IFMT: number;
 
@@ -2825,7 +2817,6 @@ declare module "fs" {
         export const S_IFSOCK: number;
 
         // File Mode Constants
-
         /** Constant for fs.Stats mode property for determining access permissions for a file. File mode indicating readable, writable and executable by owner. */
         export const S_IRWXU: number;
 

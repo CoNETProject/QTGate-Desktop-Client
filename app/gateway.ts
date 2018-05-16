@@ -1,7 +1,6 @@
 /*!
- * Copyright 2017 QTGate systems Inc. All Rights Reserved.
+ * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
  *
- * QTGate systems Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -62,29 +61,38 @@ class hostLookupResponse extends Stream.Writable {
 export default class gateWay {
 	
 	private userAgent = null
-
-	private request ( str: string ) {
-		return Buffer.from ( otherRequestForNet ( str, this.serverIp, this.serverPort, this.userAgent ), 'utf8' )
+	private currentGatewayPoint = 0
+	private currentgateway: multipleGateway
+	
+	private request ( str: string, gateway: IConnectCommand ) {
+		return Buffer.from ( otherRequestForNet ( str, gateway.gateWayIpAddress, gateway.gateWayPort, this.userAgent ), 'utf8' )
 	}
 
-	constructor ( public serverIp: string, public serverPort: number, private password: string ) {
+	private getCurrentGateway () {
+		if ( ++ this.currentGatewayPoint > this.multipleGateway.length - 1 ) {
+			this.currentGatewayPoint = 0
+		}
+		return this.multipleGateway [ this.currentGatewayPoint ]
+	}
+
+	constructor ( private multipleGateway: IConnectCommand[]) {
 	}
 
 	public hostLookup ( hostName: string, userAgent: string, CallBack: ( err?: Error, hostIp?: domainData ) => void ) {
 
 
 		const _data = new Buffer ( JSON.stringify ({ hostName: hostName }), 'utf8' )
-		
-		const encrypt = new Compress.encryptStream ( this.password, 3000, ( str: string ) => {
-			return this.request ( str )
+		const gateway = this.getCurrentGateway ()
+		const encrypt = new Compress.encryptStream ( gateway.randomPassword, 3000, ( str: string ) => {
+			return this.request ( str, gateway )
 		})
 		
 		const finish = new hostLookupResponse ( CallBack )
 		const httpBlock = new Compress.getDecryptClientStreamFromHttp ()
-		const decrypt = new Compress.decryptStream ( this.password )
+		const decrypt = new Compress.decryptStream ( gateway.randomPassword )
 		
 
-		const _socket = Net.createConnection ({ port: this.serverPort, host: this.serverIp }, () => {
+		const _socket = Net.createConnection ( gateway.gateWayPort,gateway.gateWayIpAddress, () => {
 			encrypt.write ( _data )
 		})
 
@@ -107,41 +115,20 @@ export default class gateWay {
 
 	public requestGetWay ( id: string, uuuu: VE_IPptpStream, userAgent: string, socket: Net.Socket ) {
 		this.userAgent = userAgent
-		const decrypt = new Compress.decryptStream ( this.password )
-		const encrypt = new Compress.encryptStream ( this.password, 3000, ( str: string ) => {
-			return this.request ( str )
+		const gateway = this.getCurrentGateway ()
+		const decrypt = new Compress.decryptStream ( gateway.randomPassword )
+		const encrypt = new Compress.encryptStream ( gateway.randomPassword, 3000, ( str: string ) => {
+			return this.request ( str, gateway )
 		})
 		const httpBlock = new Compress.getDecryptClientStreamFromHttp ()
 		httpBlock.once ( 'error', err => {
 			socket.end ( res._HTTP_404 )
 		})
-		const _socket = Net.createConnection ({ port: this.serverPort, host: this.serverIp }, () => {
+		const _socket = Net.createConnection ( gateway.gateWayPort || 80, gateway.gateWayIpAddress, () => {
 			
 			encrypt.write ( Buffer.from ( JSON.stringify ( uuuu ), 'utf8' ))
 		})
 		encrypt.pipe ( _socket ).pipe ( httpBlock ).pipe ( decrypt ).pipe ( socket ).pipe ( encrypt )
-
-	}
-
-	public requestGetWayTest ( id: string, uuuu: VE_IPptpStream, userAgent: string, socket: Net.Socket ) {
-		console.log ('connect to test port!')
-		const _socket = Net.createConnection ({ port: this.serverPort + 1, host: this.serverIp })
-		
-		_socket.on ( 'connect', () => {
-			const ls = new Compress.printStream ('>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-			const ls1 = new Compress.printStream ('<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-			_socket.pipe ( socket ).pipe ( _socket )
-			const _buf = Buffer.from ( otherRequestForNet ( Buffer.from ( JSON.stringify ( uuuu ), 'utf8' ).toString ( 'base64' ), this.serverIp, this.serverPort, this.userAgent ), 'utf8' )
-			_socket.write ( _buf )
-			
-		})
-		
-		_socket.on ( 'end', () => {
-			return console.log ( 'test gateway END' )
-		})
-
-		_socket.on ( 'error', error => {
-			return console.log ( 'test gateway ERROR:', error.message )
-		})
+		console.log (`new requestGetWay use gateway[${ gateway.gateWayIpAddress }: ${ gateway.gateWayPort || 80 }]`)
 	}
 }
