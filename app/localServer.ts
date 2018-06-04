@@ -231,10 +231,14 @@ export default class localServer {
 			},
 			( next: any ) => this.getPbkdf2 ( this.savedPasswrod, next ),
 			( data: Buffer, next: any ) => {
-				if ( ! options.privateKey.decrypt ( data.toString( 'hex' ))) {
-					return next ( new Error ('saveImapData key password error!' ))
-				}
-				
+				return options.privateKey.decrypt ( data.toString( 'hex' )).then (
+					 next ()
+				).catch ( ex => {
+					next ( ex )
+				})
+			},
+			( kk, next ) => {
+				console.log (`after options.privateKey.decrypt!`, typeof kk, typeof next )
 				Fs.readFile ( imapDataFileName, 'utf8', next )
 			}],( err, data: string ) => {
 
@@ -1252,7 +1256,7 @@ export default class localServer {
 				content: text
 			}]
 		}
-		transporter.sendMail ( mailOptions, ( err: Error, info: any, infoID: any ) => {
+		return transporter.sendMail ( mailOptions, ( err: Error, info: any, infoID: any ) => {
 			
 			if ( err ) {
 				if ( !didTest ) {

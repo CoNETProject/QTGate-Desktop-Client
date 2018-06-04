@@ -16,3 +16,4 @@ node_modules
 .gitignore
 yarn.lock
 *.js
+package-lock.json

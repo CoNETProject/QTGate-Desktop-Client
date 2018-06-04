@@ -589,7 +589,7 @@ const infoDefine = [
         },
 
         QTGateRegion: {
-            title: '代理服务器区域',
+            title: '高级定制代理服务器区域',
             speedTest: '代理服务器速度测试：',
             error: [],
             pingError:'代理服务区域速度检测发生错误，请退出CoNET，以管理员身份再次打开CoNET后，再执行速度检测！',
@@ -1328,7 +1328,7 @@ const infoDefine = [
         },
 
         QTGateRegion: {
-            title: 'ゲットウェイエリア',
+            title: '高級カスタマーゲートウェイサービスエリア',
             speedTest: 'スピードテスト：',
             available: 'サービス中',
             unavailable: '準備しています',
@@ -1963,7 +1963,7 @@ const infoDefine = [
         },
 
         QTGateRegion: {
-            title: 'Gateway area',
+            title: 'Advanced private custom gateway service area.',
             available: 'Available',
             speedTest: 'Speed test：',
             unavailable: 'Unavailable',
@@ -2542,7 +2542,7 @@ const infoDefine = [
         },
 
         QTGateRegion: {
-            title: '代理伺服器區域',
+            title: '高級訂製代理伺服器區域',
             available: '服務中',
             speedTest: '代理伺服器速度測試',
             unavailable: '準備中',

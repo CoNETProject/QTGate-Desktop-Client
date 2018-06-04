@@ -182,7 +182,7 @@ export const getQTGateSign = ( _key ) => {
 
 const myIpServerUrl = [ 'https://ipinfo.io/ip', 'https://icanhazip.com/', 'https://diagnostic.opendns.com/myip', 'http://ipecho.net/plain', 'https://www.trackip.net/ip' ]
 
-const doUrl = ( url: string, CallBack) => {
+const doUrl = ( url: string, CallBack ) => {
 	let ret = ''
 	const res = res => {
 		res.on( 'data', (data: Buffer) => {
@@ -205,7 +205,7 @@ const doUrl = ( url: string, CallBack) => {
 	})
 }
 
-export const myIpServer = ( CallBack ) => {
+export const myIpServer = CallBack => {
 	let ret = false
 	Async.each ( myIpServerUrl, ( n, next ) => {
 		doUrl( n, ( err, data ) => {
@@ -259,8 +259,8 @@ export const emitConfig = ( config: install_config, passwordOK: boolean ) => {
 
 const getBitLength = ( key: any ) => {
     let size = 0;
-    if ( key.primaryKey.mpi.length ) {
-        size = ( key.primaryKey.mpi [0].byteLength () * 8 )
+    if ( key && key.primaryKey && key.primaryKey.mpi && key.primaryKey.mpi.length ) {
+        size = ( key.primaryKey.mpi[0].byteLength () * 8 )
     }
     return size.toString ()
 }

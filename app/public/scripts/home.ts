@@ -1267,6 +1267,7 @@ module view_layout {
             })
 
             this.requestPortNumber.subscribe ( newValue => {
+                
                 this.QTGateGatewayPortError ( false )
                 if ( newValue < 1 || newValue > 65535 ) {
                     this.QTGateGatewayPortError ( true )

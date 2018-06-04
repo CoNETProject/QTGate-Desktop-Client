@@ -18,7 +18,7 @@
 [Linux pacman](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v1.3.4/qtgate-1.3.4.pacman)
 
 ## Description
-![http protocol](/resources/CoPlatform.png?raw=true)
+![http protocol](/resources/CoPlatform2.png?raw=true)
 ### CoNET platform as product of [CoNET](https://github.com/QTGate/CoNET) provides a series of services that allows users to improve their security, privacy and freedom on the Internet
 - All other devices may use CoNET platform service via local website after launching CoNET platform.
 - CoNET platform provide a local DNS server that allowing its users to keep PRIVACY and ENCRYPTION.
@@ -92,7 +92,7 @@
 - **Co for Google** - 免費免翻牆匿名Google檢索客戶端
 
 ## [幫助](https://github.com/QTGate/QTGate-Desktop-Client/wiki)
-![http protocol](/resources/twitter.png?raw=true)
+![http protocol](/resources/CoFortwitter.mp4?raw=true)
 ![http protocol](/resources/QTStorage.png?raw=true)
 ## Build 編譯 ビルド
 

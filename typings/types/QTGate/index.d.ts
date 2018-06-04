@@ -101,6 +101,7 @@ interface QTGateAPIRequestCommand {
     fingerprint?: string
     dataTransfer?: iTransferData
 }
+
 interface iTransferData {
     startDate: string
     transferDayLimit: number
@@ -122,6 +123,7 @@ interface iTransferData {
     paidID: string[]
     automatically: boolean
 }
+
 interface QTGate_DnsAddress {
 	dnsName: string,
 	ipv4: string,
@@ -134,6 +136,7 @@ interface multipleGateway {
     dockerName: string
     password: string
 }
+
 interface requestPoolData {
 	CallBack: ( err?: Error, returnData?: any ) => void
 }
