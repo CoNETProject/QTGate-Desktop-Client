@@ -92,7 +92,7 @@
 - **Co for Google** - 免費免翻牆匿名Google檢索客戶端
 
 ## [幫助](https://github.com/QTGate/QTGate-Desktop-Client/wiki)
-![http protocol](/resources/CoFortwitter.mp4?raw=true)
+[![How to anonymous access twitter with CoNET for Twitter client use email protocol without VPN. And how to download Twitter's video stream to local.](https://img.youtube.com/vi/In15vUhQyIY/0.jpg)](http://www.youtube.com/watch?v=In15vUhQyIY)
 ![http protocol](/resources/QTStorage.png?raw=true)
 ## Build 編譯 ビルド
 
