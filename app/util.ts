@@ -18,7 +18,6 @@ import * as Fs from 'fs'
 import * as Os from 'os'
 import * as Path from 'path'
 import * as Async from 'async'
-const $ = require ('jquery')
 
 const { autoUpdater, remote } = require ( "electron" )
 const preQTGateFolder = Path.join ( Os.homedir(), '.QTGate' )

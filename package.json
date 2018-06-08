@@ -1,6 +1,6 @@
 {
-  "name": "qtgate",
-  "version": "1.3.5",
+  "name": "CoNET",
+  "version": "2.0.0",
   "license": "MIT",
   "description": "CoNET platform",
   "scripts": {
@@ -60,21 +60,18 @@
   },
   "homepage": "https://www.CoNET.com",
   "dependencies": {
-    "async": "^2.6.0",
-    "cleave.js": "^1.3.3",
+    "async": "^2.6.1",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
-    "jimp": "0.2.28",
-    "jquery": "^3.3.1",
+    "jimp": "^0.2.28",
     "net-ping": "^1.2.1",
     "node-uuid": "^1.4.8",
-    "nodemailer": "^4.6.4",
-    "openpgp": "^3.0.8",
+    "nodemailer": "^4.6.5",
+    "openpgp": "^3.0.11",
     "portastic": "^1.0.1",
     "pug": "^2.0.3",
     "raw-socket": "^1.6.0",
-    "socket.io": "^2.1.0",
-    "twitter": "^1.7.1",
+    "socket.io": "^2.1.1",
     "twitter-text": "^2.0.4"
   }
 }

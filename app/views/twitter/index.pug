@@ -1,4 +1,4 @@
-extends ../Shared/twitterLayout.pug
+extends ../shared/twitterLayout.pug
 block jumbotron
     #newTwitterWindow.ui.small.modal( data-bind="with: twitterData().length ? twitterData()[0].twitter_verify_credentials : null" style="margin-top: -50%;!important")
         .header
@@ -112,7 +112,7 @@ block jumbotron1
                         input( data-bind = " value: accessTokenSecret " type="text" placeholder = "Access Token Secret")
                     .field
                         .ui.grey.basic.button( data-bind="click: () => { return showAddTwitterAccount ( false );},visible: twitterData().length ,text: infoDefine [ languageIndex()].twitter.close")
-                        .ui.positive.basic.button( data-bind="text: infoDefine [ languageIndex()].twitter.addAccount, click: addTwitter")
+                        .ui.primary.button( data-bind="text: infoDefine [ languageIndex()].twitter.addAccount, click: addTwitter")
 
         .content( data-bind = "visible: showServerError()" style = "padding: 4em;" )
             p( data-bind = "text: infoDefine [ languageIndex()].error_message.imapErrorMessage[12] ")

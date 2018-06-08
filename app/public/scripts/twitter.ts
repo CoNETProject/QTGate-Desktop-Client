@@ -3,9 +3,9 @@ const aHour_Time = 60 * aMin_Time
 const aDay = aHour_Time * 24
 let bottomDown = false
 
-const splitLine = ( user: any[], fullText: string, entities: twitter_entities ) => {
+const splitLine = function ( user: any[], fullText: string, entities: twitter_entities ) {
     if ( user && user.length ) {
-        user.forEach ( n => {
+        user.forEach ( function ( n )  {
             const matchText = new RegExp(`( )?RT `,'g')
             fullText = fullText.replace ( `@${ n.screen_name }`, '')
             fullText = fullText.replace ( matchText, '')
@@ -16,7 +16,7 @@ const splitLine = ( user: any[], fullText: string, entities: twitter_entities ) 
         return fullText;
     }
     if ( entities && entities.urls && entities.urls.length ) {
-        entities.urls.forEach ( n => {
+        entities.urls.forEach ( function ( n )  {
             fullText = fullText.replace ( n.url, `<a target="_blank" href="${ n.expanded_url }" style="color:#ABB8C2;">${ n.expanded_url }</a>` )
         })
     }
@@ -34,6 +34,34 @@ const splitLine = ( user: any[], fullText: string, entities: twitter_entities ) 
 
 }
 
+socketIo.emit11 = function ( eventName: string, ...args ) {
+    
+    let CallBack = args.pop ()
+    if ( typeof CallBack !== 'function') {
+        CallBack ? args.push ( CallBack ) : null
+        CallBack = null
+    }
+
+    const localTimeOut = setTimeout ( function () {
+        let uu = eventName
+        twitter_view.systemError()
+    }, 10000 )
+
+    const _CallBack = function ( err ) {
+        clearTimeout ( localTimeOut )
+        
+        if ( CallBack ) {
+            socketIo.once ( eventName, function ( ...args ) {
+                return CallBack ( ...args )
+            })
+        }
+        
+    }
+    args.length
+    ? socketIo.emit ( eventName, ...args, _CallBack ) 
+    : socketIo.emit ( eventName, _CallBack )
+}
+
 const monthToText = [
     'Jan',
     'Feb',
@@ -49,25 +77,25 @@ const monthToText = [
     'Dec'
 ]
 
-const getTimeFromCreate = ( created_at: string, twitter: twitter_layout.twitter ) => {
+const getTimeFromCreate = function ( created_at: string, twitter: twitter_layout.twitter ) {
     const now = new Date ()
     const create = new Date ( created_at )
     const offset = now.getTime () - create.getTime ()
     if ( offset < aMin_Time ) {
-        setTimeout(() => {
+        setTimeout( function () {
             return getTimeFromCreate ( created_at, twitter )
         }, 1000 )
         return `${ Math.round ( offset / 1000 )} ${ infoDefine[ twitter.languageIndex()].twitter.second }`
     }
     if ( offset < aHour_Time ) {
-        setTimeout(() => {
+        setTimeout( function () {
             return getTimeFromCreate ( created_at, twitter)
         }, aMin_Time )
         return `${ Math.round ( offset / aMin_Time )} ${ infoDefine[ twitter.languageIndex()].twitter.min }`
     }
 
     if ( offset < aDay ) {
-        setTimeout(() => {
+        setTimeout( function () {
             return getTimeFromCreate ( created_at, twitter )
         }, aHour_Time )
         return `${ Math.round ( offset / aHour_Time )} ${ infoDefine[ twitter.languageIndex()].twitter.hour }`
@@ -94,14 +122,17 @@ const bottomEvent = ( CallBack ) => {
 	})
 }
 */
+
+
+
 const initDashoffset = 50.2655
 const twitterMaxTextCount = 280
 const maxWidth = 2048
 const MaxHeight = 2048
-const convertSvgToPng = ( svgUrlData: string, CallBack ) => {
+const convertSvgToPng = function ( svgUrlData: string, CallBack ) {
     
     let image = new Image()
-    image.onload = () => {
+    image.onload = function () {
         const canvas = document.createElement ( 'canvas' )
         let height = MaxHeight
         let width = maxWidth
@@ -126,18 +157,18 @@ function parseFile ( process, item: twitter_layout.twitterField , file, CallBack
     let offset = 0
     let first = 0
     
-    const chunkReaderBlock = ( _offset, length, _file ) => {
+    const chunkReaderBlock = function ( _offset, length, _file ) {
         const r = new FileReader()
         const blob = _file.slice ( _offset, length + _offset )
 
-        r.onload = ( evt: ProgressEvent & { target: { result: string, error: Error }})  => {
+        r.onload = function ( evt: ProgressEvent & { target: { result: string, error: Error }}) {
 
             if ( evt.target.error ) {
                 return CallBack ( evt.target.error )
             }
             const uu = evt.target.result
             
-            return socketIo.emit ( 'mediaFileUpdata', file.name, uu, first ++, err => {
+            return socketIo.emit11 ( 'mediaFileUpdata', file.name, uu, first ++, function ( err ) {
                 
                 if ( err ) {
                     return CallBack ( err )
@@ -164,7 +195,7 @@ function parseFile ( process, item: twitter_layout.twitterField , file, CallBack
 const maxVideoWH = 1280 * 1024
 const mixVideoWH = 32 * 32
 const maxDuration = 140
-const readFile = ( ee ) => {
+const readFile = function ( ee ) {
     if ( !ee ) {
         return 
     }
@@ -185,7 +216,7 @@ const readFile = ( ee ) => {
         const _process = $('.videoItemUpload').progress('reset').progress ({
             percent: 0
         })
-        return parseFile ( _process, item, file, err => {
+        return parseFile ( _process, item, file, function ( err )  {
             item.uploadVideo ( false )
             if ( err ) {
                 return item.fileReadError ( true )
@@ -195,7 +226,7 @@ const readFile = ( ee ) => {
             item.video( `/videoTemp/${ file.name }`)
             const videoTag = $(`video[video-id='${ file.name }']`)
 
-            const listenEvent = () => {
+            const listenEvent = function () {
                 videoTag.off ( 'loadeddata' )
                 //videoTag.removeEventListener ( 'loadeddata', listenEvent )
                 const oo: HTMLVideoElement = videoTag[0]
@@ -215,11 +246,11 @@ const readFile = ( ee ) => {
     }
     
     const reader = new FileReader()
-    reader.onload = e => {
+    reader.onload = function ( e ) {
         const rawData: string = reader.result
         const type = rawData.split(',')[0].split(':')[1]
         if ( /\/svg/i.test( type )) {
-            return convertSvgToPng ( rawData, _data => {
+            return convertSvgToPng ( rawData,function ( _data ) {
                 item.images.push ( _data )
                 return twitter_view.checkNewTwrrtWindowClosable ()
             })
@@ -230,17 +261,6 @@ const readFile = ( ee ) => {
 
     return reader.readAsDataURL ( file )
 }
-
-interface twitter_text_parseTweet {
-    weightedLength: number
-    valid: boolean
-    permillage: number
-    validRangeStart: number
-    validRangeEnd: number
-    displayRangeStart: number
-    displayRangeEnd: number
-}
-
 
 module twitter_layout {
     export class twitterField {
@@ -263,32 +283,31 @@ module twitter_layout {
         public newTwitterFieldError = ko.observable ( false )
         public fileReadError = ko.observable ( false )
         public uploadVideo = ko.observable ( false )
-        public videoFileName = ko.computed (() => {
-            return this.video ().replace ( '/videoTemp/','' )
-        })
+        public videoFileName 
         constructor ( private twitter: twitter ) {
-            this.inputText.subscribe ( ns => {
-                this.textAreaError ( false )
+			const self = this
+            this.inputText.subscribe ( function ( ns ) {
+                self.textAreaError ( false )
                 const uu = twitter.newTwitterField()
-                if ( ns.length === 0 && this.images().length === 0 && uu.length > 1 ) {
-                    const index = this.twitter.newTwitterField().findIndex ( nn => { return nn.uuid === this.uuid })
+                if ( ns.length === 0 && self.images().length === 0 && uu.length > 1 ) {
+                    const index = self.twitter.newTwitterField().findIndex ( function ( nn ) { return nn.uuid === self.uuid })
                     if ( index > -1 ) {
-                        return this.twitter.newTwitterField.splice ( index, 1 )
+                        return self.twitter.newTwitterField.splice ( index, 1 )
                     }
                     return
                 }
-                const CallBack = () => {
-                    this.stroke_dashoffset ( initDashoffset * ( 1 - this.twitterLength / 280 ))
-                    this.stroke_dashoffset_showDanger ( false )
-                    this.stroke_dashoffset_showSafe ( true )
-                    this.twitter.shownewTwitterApprove ( false )
-                    this.avaliableText ( twitterMaxTextCount - this.twitterLength )
+                const CallBack = function () {
+                    self.stroke_dashoffset ( initDashoffset * ( 1 - self.twitterLength / 280 ))
+                    self.stroke_dashoffset_showDanger ( false )
+                    self.stroke_dashoffset_showSafe ( true )
+                    self.twitter.shownewTwitterApprove ( false )
+                    self.avaliableText ( twitterMaxTextCount - self.twitterLength )
                     
-                    if ( this.twitterLength  > 270 ) {
-                        this.stroke_dashoffset_showSafe ( false )
+                    if ( self.twitterLength  > 270 ) {
+                        self.stroke_dashoffset_showSafe ( false )
                     }
-                    if ( this.twitterLength > 280 ) {
-                        this.stroke_dashoffset_showDanger ( true )
+                    if ( self.twitterLength > 280 ) {
+                        self.stroke_dashoffset_showDanger ( true )
                     }
                     const lastRecordTextLength = uu[ uu.length - 1 ].inputText()
                     twitter.checkNewTwrrtWindowClosable ()
@@ -297,38 +316,41 @@ module twitter_layout {
                     }
                     return twitter.addButtonDisabled ( true )
                 }
-                if ( this.lastTextlength < ns.length ) {
-                    if ( ns.length - this.lastTextlength > 1 || / $/.test ( ns )) {
-                        return socketIo.emit ( 'getTwitterTextLength', ns, ( twTextObj: twitter_text_parseTweet ) => {
+                if ( self.lastTextlength < ns.length ) {
+                    if ( ns.length - self.lastTextlength > 1 || / $/.test ( ns )) {
+                        return socketIo.emit11 ( 'getTwitterTextLength', ns, function ( twTextObj: twitter_text_parseTweet ) {
                             if ( !twTextObj.valid ) {
-                                this.textAreaError ( true )
+                                self.textAreaError ( true )
                             }
-                            this.twitterLength = twTextObj.weightedLength
+                            self.twitterLength = twTextObj.weightedLength
                             CallBack ()
                         })
                     }
-                    this.lastTextlength = ns.length
-                    this.twitterLength += 1
+                    self.lastTextlength = ns.length
+                    self.twitterLength += 1
                     return CallBack ()
                 }
-                if ( this.lastTextlength - ns.length > 1 || / $/.test ( ns )) {
-                    return socketIo.emit ( 'getTwitterTextLength', ns, ( twTextObj: twitter_text_parseTweet ) => {
+                if ( self.lastTextlength - ns.length > 1 || / $/.test ( ns )) {
+                    return socketIo.emit11 ( 'getTwitterTextLength', ns, function ( twTextObj: twitter_text_parseTweet ) {
                         if ( !twTextObj.valid ) {
-                            this.textAreaError ( true )
+                            self.textAreaError ( true )
                         }
-                        this.twitterLength = twTextObj.weightedLength
+                        self.twitterLength = twTextObj.weightedLength
                         CallBack ()
                     })
                 }
-                this.lastTextlength = ns.length
-                this.twitterLength -= 1
+                self.lastTextlength = ns.length
+                self.twitterLength -= 1
                 return CallBack ()
                 
-            })
+			})
+			this.videoFileName = ko.computed ( function () {
+				return self.video ().replace ( '/videoTemp/','' )
+			})
         }
 
         public textAreaClick () {
-            this.twitter.newTwitterField().forEach (n => {
+            this.twitter.newTwitterField().forEach ( function ( n ) {
                 n.showToolBar ( false )
             })
             this.showToolBar ( true )
@@ -410,6 +432,7 @@ module twitter_layout {
         private bottomEventLoader = ko.observable ( false )
 
         private twitterPostReturn ( data: twitter_post ) {
+			const self = this
             if ( ! data ) {
                 return alert ('no data ')
             }
@@ -417,12 +440,12 @@ module twitter_layout {
                 this.bottomEventLoader( false )
             }
 
-            const index = this.currentTimelines().findIndex( n => { return n.id_str === data.id_str })
+            const index = this.currentTimelines().findIndex( function ( n ) { return n.id_str === data.id_str })
             if ( index > -1 ) {
                 this.currentTimelines.splice ( index, 1 )
             }
-            data.QTGate_created_at = ko.computed(() => {
-                return getTimeFromCreate( data.created_at, this )
+            data.QTGate_created_at = ko.computed( function () {
+                return getTimeFromCreate( data.created_at, self )
             })
 
             
@@ -440,8 +463,8 @@ module twitter_layout {
                 data.retweeted_status.favorite_count_ko = ko.observable ( data.retweeted_status.favorite_count )
                 data.retweeted_status.favorited_ko = ko.observable ( data.retweeted_status.favorited )
                 data.retweeted_status.favoritedLoader_ko = ko.observable ( false )
-                data.retweeted_status.QTGate_created_at = ko.computed (() => {
-                    return getTimeFromCreate( data.retweeted_status.created_at, this )
+                data.retweeted_status.QTGate_created_at = ko.computed ( function () {
+                    return getTimeFromCreate( data.retweeted_status.created_at, self )
                 })
                 data.retweeted_status.extended_entities = data.retweeted_status.extended_entities || null
                 //fixVideoFolder ( data.retweeted_status.extended_entities )
@@ -467,45 +490,46 @@ module twitter_layout {
             data.favoritedLoader_ko = ko.observable ( false )
             this.currentTimelines.push ( data )
             $('.row.ui.shape').shape()
-            return this.currentTimelines.sort (( a, b ) => {
+            return this.currentTimelines.sort ( function ( a, b ) {
                 return b.id - a.id
             })
         }
 
         constructor () {
-            socketIo = io ({ reconnectionAttempts: 5, timeout: 1000 })
-            socketIo.once ( 'connect', () => {
-                return socketIo.emit ( 'init', ( err: Error, data: install_config ) => {
+            const self = this
+            socketIo.once ( 'connect', function () {
+                return socketIo.emit11 ( 'init', function ( err: Error, data: install_config ) {
                     if ( !data ) {
-                        return this.showServerError ( true )
+                        return self.showServerError ( true )
                     }
-                    return this.config ( data )
+                    return self.config ( data )
                     
                 })
             })
 
-            socketIo.on ( 'getTimelines', ( data: twitter_post ) => {
-                return this.twitterPostReturn ( data )
+            socketIo.on ( 'getTimelines', function ( data: twitter_post ) {
+                return self.twitterPostReturn ( data )
             })
 
-            this.newTwitterField.push ( new twitterField( this ))
+            self.newTwitterField.push ( new twitterField( self ))
         }
 
         public getTimeLinesNext () {
+			const self = this
             if ( this.bottomEventLoader ()) {
                 return
             }
             this.bottomEventLoader ( true )
             this.requestNewTimelinesCount = 0
             const maxID = this.currentTimelines()[ this.currentTimelines().length - 1 ].id
-            return socketIo.emit ( 'getTimelinesNext', this.twitterData()[0], maxID, err => {
-                return this.getTimeLineCallBack ( err )
+            return socketIo.emit11 ( 'getTimelinesNext', this.twitterData()[0], maxID, function ( err ) {
+                return self.getTimeLineCallBack ( err )
             })
         }
 
-		public selectItem = ( that: any, site: () => number ) => {
+		public selectItem = function ( that: any, site: () => number ) {
 
-            const tindex = lang [ this.tLang ()]
+            const tindex = parseInt ( lang [ this.tLang ()] )
             let index =  tindex + 1
             if ( index > 3 ) {
                 index = 0
@@ -516,8 +540,8 @@ module twitter_layout {
             $.cookie ( 'langEH', this.tLang(), { expires: 180, path: '/' })
             const obj = $( "span[ve-data-bind]" )
             
-            obj.each (( index, element ) => {
-                const self = this
+            obj.each ( function ( index, element ) {
+                
                 const ele = $( element )
                 const data = ele.attr ( 've-data-bind' )
                 if ( data && data.length ) {
@@ -538,25 +562,26 @@ module twitter_layout {
         }
 
         public login () {
+			const self = this
             this.passwordError ( false )
             if ( this.password().length < 5 ) {
                 return this.passwordError ( true )
             }
-            return socketIo.emit ( 'password', this.password(), ( data: TwitterAccount[] ) => {
-                if ( ! data  ) {
-                    return this.passwordError ( true )
+            return socketIo.emit11 ( 'password', this.password(), function ( err, data: TwitterAccount[] ) {
+                if ( err ) {
+                    return self.passwordError ( true )
                 }
-                this.showLogin ( false )
-                data.forEach ( n => {
-                    this.twitterData.push ( n )
+                self.showLogin ( false )
+                data.forEach ( function ( n ) {
+                    self.twitterData.push ( n )
                 })
                 
-                if ( this.twitterData().length === 0 ) {
-                    return this.showAddTwitterAccount ( true )
+                if ( self.twitterData().length === 0 ) {
+                    return self.showAddTwitterAccount ( true )
                 }
-                this.currentTwitterAccount ( data[0].twitter_verify_credentials )
+                self.currentTwitterAccount ( data[0].twitter_verify_credentials )
                 
-                this.makeAccountMenu1 ()
+                self.makeAccountMenu1 ()
                 
                 return $( '#sidebarMenu' ).sidebar( 'hide' )
                 
@@ -575,10 +600,11 @@ module twitter_layout {
             $('#sidebarMenu').sidebar ('hide')
             this.showAddTwitterAccount ( true )
             const body = $( "html, body" )
-            return body.stop().animate({ scrollTop: 0 }, 500, 'swing', () => {})
+            return body.stop().animate({ scrollTop: 0 }, 500, 'swing', function () {})
         }
 
         private makeAccountMenu1 () {
+			const self = this
             if ( !this.twitterData().length ) {
                 return
             }
@@ -587,15 +613,14 @@ module twitter_layout {
             
             this.requestNewTimelinesCount = 0
             
-            setTimeout (() => {
-                this.bottomEventLoader ( false )
-            }, 1000 * 120 )
+            setTimeout ( function () {
+                self.bottomEventLoader ( false )
+			}, 1000 * 120 )
+			
             this.showCurrentTimelines ( true )
             this.currentTimelines([])
             
-            return socketIo.emit ( 'getTimelines', this.twitterData()[0], err => {
-                return this.getTimeLineCallBack ( err )
-            })
+            return socketIo.emit11 ( 'getTimelines', this.twitterData()[0] )
             
         }
 
@@ -620,25 +645,25 @@ module twitter_layout {
             this.addATwitterAccount ( true )
             this.addTwitterProgress ()
             this.resetAddAccountError ()
-            
-            return socketIo.emit ( 'addTwitterAccount', twitterAccount, ( data: TwitterAccount  ) => {
-                clearTimeout ( this.processBarTime )
-                this.addATwitterAccount ( false )
+            const self = this
+            return socketIo.emit11 ( 'addTwitterAccount', twitterAccount, function ( err, data: TwitterAccount  ) {
+                clearTimeout ( self.processBarTime )
+                self.addATwitterAccount ( false )
                 $('.AddTwitterAccountProgress').progress('reset')
                 if ( !data ) {
-                    return this.showServerError ( true )
+                    return self.showServerError ( true )
                 }
                 if ( !data.twitter_verify_credentials ) {
-                    this.apiKeyError ( true )
-                    this.apiSecretError ( true )
-                    this.accessTokenError ( true )
-                    return this.accessTokenSecretError ( true )
+                    self.apiKeyError ( true )
+                    self.apiSecretError ( true )
+                    self.accessTokenError ( true )
+                    return self.accessTokenSecretError ( true )
                     
                 }
-                this.showAddTwitterAccount ( false )
-                this.twitterData.push ( data )
-                this.currentTwitterAccount ( data.twitter_verify_credentials )
-                this.makeAccountMenu1 ()
+                self.showAddTwitterAccount ( false )
+                self.twitterData.push ( data )
+                self.currentTwitterAccount ( data.twitter_verify_credentials )
+                self.makeAccountMenu1 ()
                 
             })
         }
@@ -656,13 +681,14 @@ module twitter_layout {
         private addTwitterProgress() {
             const _process = $('.AddTwitterAccountProgress').progress('reset').progress ({
                 percent: 0
-            })
+			})
+			const self = this
             let count = 0
-            const keep = () => {
+            const keep = function () {
                 _process.progress ({
                     percent: count ++
                 })
-                return this.processBarTime = setTimeout (() => {
+                return self.processBarTime = setTimeout ( function () {
                     return keep ()
                 }, 1000 )
             }
@@ -698,6 +724,7 @@ module twitter_layout {
         }
 
         public selectAccount ( item: TwitterAccount, index ) {
+			const self = this
             $( '#sidebarMenu' ).sidebar( 'hide' )
             if ( this.currentTwitterAccount().id === item.twitter_verify_credentials.id ) {
                 return false
@@ -710,9 +737,7 @@ module twitter_layout {
             this.bottomEventLoader ( true )
             this.requestNewTimelinesCount = 0
             this.showCurrentTimelines ( true )
-            return socketIo.emit ( 'getTimelines', item, err => {
-                return this.getTimeLineCallBack ( err )
-            })
+            return socketIo.emit11 ( 'getTimelines', item )
             
                  
         }
@@ -721,7 +746,7 @@ module twitter_layout {
             
             item.favoritedLoader_ko ( true )
             
-            return socketIo.emit ( 'twitter_favorited' , this.twitterData()[0], item.id_str, !item.favorited_ko(), err => {
+            return socketIo.emit ( 'twitter_favorited' , this.twitterData()[0], item.id_str, !item.favorited_ko(), function ( err ) {
                 item.favoritedLoader_ko ( false )
                 if ( err ) {
                     return
@@ -733,7 +758,7 @@ module twitter_layout {
         }
 
         public addNewTweet () {
-            this.newTwitterField().forEach ( n => {
+            this.newTwitterField().forEach ( function ( n ) {
                 n.showToolBar ( false )
             })
             this.newTwitterField.push ( new twitterField( this ))
@@ -767,11 +792,12 @@ module twitter_layout {
         }
 
         public checkNewTwrrtWindowClosable () {
-            let HideWindow = false
-            this.newTwitterField().forEach ( n => {
+			let HideWindow = false
+			const self = this
+            this.newTwitterField().forEach ( function ( n ) {
                 HideWindow = n.images().length > 0 || n.inputText().length > 0
                 if ( n.newTwitterFieldError () ) {
-                    this.newTwitterFieldError ( true )
+                    self.newTwitterFieldError ( true )
                 }
                 
             })
@@ -801,14 +827,15 @@ module twitter_layout {
         }
 
         public newTwitterClick () {
+			const self = this
             const data = []
             this.shownewTwitterApprove ( false )
             $( '#newTwitterWindow' ).modal ( 'hide' )
             $( '#newTwitterWindow' ).modal ( 'hide' )
-            this.newTwitterField().forEach ( n => {
-                const nn = this.newTwitterData ( n )
+            this.newTwitterField().forEach ( function ( n ) {
+                const nn = self.newTwitterData ( n )
                 if ( !nn ) {
-                    return this.newTwitterField ([ new twitterField ( this )])
+                    return self.newTwitterField ([ new twitterField ( this )])
                 }
                 data.push ( nn )
             })
@@ -818,12 +845,12 @@ module twitter_layout {
             
             this.newTwitterField ([ new twitterField ( this )])
 
-            return socketIo.emit ( 'twitter_postNewTweet', this.twitterData()[0], data, ( err: Error, data ) => {
+            return socketIo.emit11 ( 'twitter_postNewTweet', this.twitterData()[0], data, function ( err: Error, data ) {
                 if ( err ) {
                     return alert ( err )
                 }
                 if ( data ) {
-                    return this.twitterPostReturn ( data )
+                    return self.twitterPostReturn ( data )
                 }
             })
 

@@ -18,7 +18,7 @@
          "zoomInDown", "zoomInLeft", "zoomInRight", "zoomInUp", "zoomOut", "zoomOutDown", "zoomOutLeft", "zoomOutRight", "zoomOutUp"],
         baseAnimateClass = "animated",
         pfx = ["webkit", "moz", "MS", "o", ""];
-
+    const hideClass = 'displayNono'
     function addPrefixedEvent(element, type, callback) {
         for (var p = 0; p < pfx.length; p++) {
             if (!pfx[p]) type = type.toLowerCase();
@@ -50,22 +50,38 @@
         }
     }
 
-    function doAnimationWork(element, animation, callback, state){
-        addClass(element, baseAnimateClass);
-        addClass(element, animation);
-        const EventFun = ( event ) => {
-            removePrefixedEvent(element, "AnimationEnd", EventFun );
-
-            removeClass(element, baseAnimateClass);
-            removeClass(element, animation);
-
-            if (typeof callback === 'function'){
-                callback(event, state);
-            }
+    function doAnimationWork(element, animation, callback, state, delay ){
+        const _element = $(element);
+        if ( _element.hasClass ( hideClass )) {
+            if ( /out/i.test ( animation )) {
+                return ;
+            } 
         }
-        addPrefixedEvent(element, "AnimationEnd", EventFun );
+		setTimeout ( function() {
+            
+			addClass(element, baseAnimateClass);
+            addClass(element, animation);
+            removeClass(element, 'displayNono');
+			const EventFun = function ( event ) {
+				removePrefixedEvent(element, "AnimationEnd", EventFun );
+	
+				removeClass(element, baseAnimateClass);
+                removeClass(element, animation);
+				
+	
+				if (typeof callback === 'function'){
+					callback(event, state);
+                }
+                if ( /out/i.test (animation)) {
+                    $(element).addClass('displayNono')
+                } 
+			}
+			addPrefixedEvent(element, "AnimationEnd", EventFun );
+		}, delay );
+        
+        
     }
-
+    
     ko.bindingHandlers.animate = {
         init: function(element, valueAccessor){
             var data = ko.unwrap(valueAccessor()),
@@ -78,7 +94,8 @@
             if (!data.state){
                 throw new Error('State property must be defined');
             }
-
+            
+           
             animation = ko.unwrap(data.animation);
             animationOn = typeof animation === 'object' ? animation[0] : animation;
             animationOff = typeof animation === 'object' ? animation[1] : animation;
@@ -93,28 +110,37 @@
         },
         update: function(element, valueAccessor){
             var data = ko.unwrap(valueAccessor()),
-                animation, state, toggle, animationOn, animationOff, handler;
+                animation, state, toggle, animationOn, animationOff, handler, delay;
 
             if (!data.animation){
                 throw new Error('Animation property must be defined');
             }
-
+            /*
             if (!data.state){
                 throw new Error('State property must be defined');
             }
-
+            */
             animation = ko.unwrap(data.animation);
-            state = !!ko.unwrap(data.state);
+            state = ko.unwrap( data.state );
+            const _element = $(element);
             animationOn = typeof animation === 'object' ? animation[0] : animation;
-            animationOff = typeof animation === 'object' ? animation[1] : animation;
+			animationOff = typeof animation === 'object' ? animation[1] : animation;
+            if ( _element.hasClass ( hideClass )) {
+                return 
+            }
+            
+            
+            
+            
+			delay = data.delay || 0;
             toggle = animationOn !== animationOff;
             handler = ko.unwrap(data.handler) || undefined;
 
-            if (state){
-                doAnimationWork(element, animationOn, handler, state);
-            } else if (toggle){
-                doAnimationWork(element, animationOff, handler, state);
+            if ( state ){
+                return doAnimationWork(element, animationOn, handler, state, delay);
             }
+            doAnimationWork(element, animationOff, handler, state, delay);
+            
         }
     };
 }));

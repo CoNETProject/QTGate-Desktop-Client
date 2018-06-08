@@ -1,0 +1,17 @@
+extends ../shared/coreLayout.pug
+block jumbotron1
+	
+	section.CoContent.content
+		.ui.green.segment.CoGateCards( style="max-width: 50em;")
+			
+			img.ui.centered.medium.image.huge( src="/images/wrt.png")
+			h3.red( data-bind="text: infoDefine[ $root.languageIndex() ].useInfoMacOS.wrtTestAreaTitle" style="position: absolute;top: 11em;margin-left: 10em;")
+			p( style="position: absolute;top: 18em;margin-left: 2em;")
+				span #{ localIP }
+				span( data-bind="text: infoDefine[ $root.languageIndex() ].useInfoMacOS.localIpAddress" style="padding-left: 1em; color: cadetblue;")
+			p( style="position: absolute;top: 19em;margin-left: 2em;padding-top: 0.5em;padding-bottom: 0.5em; color: crimson;")
+				span #{ globalIP }
+				span( data-bind = "text: infoDefine[ $root.languageIndex() ].useInfoMacOS.globalIpAddress" style="padding-left: 1em; color: red;")
+			
+			h3( data-bind="text: infoDefine[ $root.languageIndex() ].useInfoMacOS.wrtTest")
+			iframe.ui.centered.medium.image.huge( src="https://ip.voidsec.com/" style="width: 100%;height: 40em;border: 0px;")

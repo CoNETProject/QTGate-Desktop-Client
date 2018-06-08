@@ -15,18 +15,18 @@
  */
 
 const DEBUG = true
+const port = 3000
 
 import * as Fs from 'fs'
 import * as Os from 'os'
 import { join, resolve, basename } from  'path'
-import { series } from 'async'
 import * as freePort from 'portastic'
 import { format } from 'url'
 import { spawn } from 'child_process'
 import * as path from 'path'
 import * as Crypto from 'crypto'
 
-const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater, desktopCapturer } = require ( 'electron' )
+const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater, desktopCapturer, shell } = require ( 'electron' )
   
 const handleSquirrelEvent = () => {
     if ( process.argv.length === 1 || process.platform !== 'win32') {
@@ -112,10 +112,6 @@ if ( makeSingleInstance ()) {
 const version = app.getVersion()
 
 enum lang { 'zh', 'ja', 'en', 'tw' }
-const QTGateFolder = join ( Os.homedir(), '.QTGate' )
-const QTGateLatest = join ( QTGateFolder, 'latest' )
-const QTGateTemp = join ( QTGateFolder, 'tempfile' )
-const QTGateVideo = join ( QTGateTemp, 'videoTemp')
 
 let isSingleInstanceCheck = true
 let localServer1 = null
@@ -123,50 +119,6 @@ let localServer1 = null
 let tray = null
 let mainWindow = null
 let doReady = false
-const ErrorLogFile = join ( QTGateFolder, 'indexError.log' )
-export let port = 3000 + Math.round ( 10000 * Math.random ())
-
-const takeScreen = ( CallBack ) => {
-    
-    desktopCapturer.getSources ({ types: [ 'window', 'screen' ], thumbnailSize: { width: 850, height: 480 }}, ( error, sources ) => {
-        if ( error ) throw error
-        const debug = true
-        sources.forEach ( n => {
-            
-            if ( n.name === 'QTGate' ) {
-                const screenshotFileName = Crypto.randomBytes(10).toString('hex') + '.png'
-                const screenshotSavePath = path.join ( QTGateTemp, screenshotFileName )
-                Fs.writeFile ( screenshotSavePath, n.thumbnail.toPng(), error => {
-                    if ( error ) {
-                        console.log ( error )
-                        return CallBack ( error )
-                    }
-                        
-
-                    CallBack ( null, screenshotFileName )
-                    /*
-                    let win = new remote.BrowserWindow ({
-                        minWidth: 900,
-                        minHeight: 600,
-                        backgroundColor: '#ffffff',
-                    })
-                    if ( debug ) {
-                        win.webContents.openDevTools()
-                        win.maximize()
-                        
-                    }
-                    win.loadURL ( `http://127.0.0.1:${ this.config().serverPort }/feedBack?imagFile=${ screenshotUrl }` )
-                    win.once ( 'closed', () => {
-                        win = null
-                    })
-                    */
-                })
-            }
-        })
-        
-    })
-    
-}
 
 const hideWindowDownload = ( downloadUrl, saveFilePath, Callback ) => {
     let _err = null
@@ -237,13 +189,6 @@ const hideWindowDownload = ( downloadUrl, saveFilePath, Callback ) => {
     })
 }
 
-const saveLog = ( log: string ) => {
-	const data = `${ new Date().toUTCString () }: ${ log }\r\n`
-	Fs.appendFile ( ErrorLogFile, data, err => {
-		
-	})
-}
-
 const _doUpdate = ( tag_name: string, _port ) => {
 	let url = null
 	
@@ -256,25 +201,25 @@ const _doUpdate = ( tag_name: string, _port ) => {
         console.log (`process.platform === linux`)
 		return
 	}
-    saveLog (`start update with url [${ url }] [${ tag_name }] [${ Buffer.from (tag_name).toString('hex')}]`)
+    
     autoUpdater.on ( 'update-availabe', () => {
-        saveLog ( 'update available' )
+        console.log ( 'update available' )
     })
 
     autoUpdater.on ( 'error', err => {
-        saveLog ( 'systemError autoUpdater.on error ' + err.message )
+        console.log ( 'systemError autoUpdater.on error ' + err.message )
     })
 
     autoUpdater.on('checking-for-update', () => {
-        saveLog ( `checking-for-update [${ url }]` )
+        console.log ( `checking-for-update [${ url }]` )
     })
 
     autoUpdater.on( 'update-not-available', () => {
-        saveLog ( 'update-not-available' )
+        console.log ( 'update-not-available' )
     })
 
     autoUpdater.on( 'update-downloaded', e => {
-        saveLog ( "Install?" )
+        console.log ( "Install?" )
         autoUpdater.quitAndInstall ()
     })
 
@@ -298,42 +243,7 @@ const dirTitleErr = [
 ]
 
 const createWindow = () => {
-    if ( mainWindow && typeof mainWindow.isMinimized === 'function') {
-        if ( mainWindow.isMinimized() )
-            mainWindow.restore ()
-        mainWindow.focus ()
-        saveLog ('createWindow have mainWindow')
-        return 
-    }
-    saveLog ('createWindow have not mainWindow')
-    mainWindow = new BrowserWindow ({
-        width: 850,
-        height: 480,
-        minWidth: 850,
-        minHeight: 480,
-        resizable: DEBUG,
-        show: false,
-        backgroundColor: '#ffffff',
-        icon: process.platform === 'linux' ? join ( __dirname, 'app/public/assets/images/512x512.png' ) : join ( __dirname, 'app/qtgate.icns' )
-    })
-    mainWindow.loadURL ( `http://127.0.0.1:${ port }/` )
-    if ( DEBUG ) {
-        mainWindow.webContents.openDevTools()
-        mainWindow.maximize()
-    }
-    
-    mainWindow.once ( 'closed', () => {
-        
-        if ( process.platform === 'win32' || process.platform === 'darwin' )
-            return mainWindow = null
-        
-        return app.quit()
-    })
-
-    mainWindow.once ( 'ready-to-show', () => {
-
-        return mainWindow.show()
-    })
+    shell.openExternal (`http://127.0.0.1:${ port }`)
 
 }
 
@@ -406,29 +316,6 @@ const getLocalLanguage = ( lang: string ) => {
 
 let localLanguage = getLocalLanguage ( app.getLocale ())
 
-const checkFolder = ( folder: string, CallBack: ( err?: Error ) => void ) => {
-    Fs.access ( folder, err => {
-        if ( err ) {
-            return Fs.mkdir ( folder, err1 => {
-                if ( err1 ) {
-                    console.log ( err1 )
-                    return CallBack ( err1 )
-                }
-                return CallBack ()
-            })
-        }
-        return CallBack ()
-    })
-}
-
-const findPort = ( CallBack ) => {
-    return freePort.test ( port ).then ( isOpen => {
-        if ( isOpen )
-            return CallBack ()
-        ++ port
-        return findPort ( CallBack )
-    })
-}
 const isMacOS = process.platform === 'darwin'
 
 const template = [{
@@ -442,64 +329,57 @@ const template = [{
         ]
     }]
 
-
 const appReady = () => {
-    series([
-        next => checkFolder ( QTGateFolder, next ),
-        next => checkFolder ( QTGateLatest, next ),
-        next => checkFolder ( QTGateTemp, next ),
-        next => checkFolder ( QTGateVideo, next )
-    ], err => {
-        console.log (`appReady series runback err [${ err }]`)
-        const menu = Menu.buildFromTemplate(template)
-        Menu.setApplicationMenu(menu)
-        if ( ! localServer1 ) {
-            findPort(() => {
-                localServer1 = new BrowserWindow ({ show: DEBUG })
-                localServer1.setIgnoreMouseEvents ( !DEBUG )
-                localServer1.rendererSidePort = port
-                localServer1.debug = DEBUG
-                localServer1.createWindow = createWindow
-                localServer1.takeScreen = takeScreen
-                localServer1._doUpdate = _doUpdate
-                DEBUG ? localServer1.webContents.openDevTools() : null
-                //localServer1.maximize ()
-                localServer1.loadURL ( format ({
-                    pathname: join( __dirname, 'index.html'),
+    
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
+    if ( ! localServer1 ) {
+        
+            localServer1 = new BrowserWindow ({ show: DEBUG })
+            
+            localServer1._doUpdate = _doUpdate
+            DEBUG ? localServer1.webContents.openDevTools() : null
+            //localServer1.maximize ()
+            localServer1.loadURL ( format ({
+                pathname: join( __dirname, 'index.html'),
+                protocol: 'file:',
+                slashes: true
+            }))
+
+            setTimeout (() => {
+                shell.openExternal (`http://127.0.0.1:${ port }`)
+            }, 2000 )
+            
+            setTimeout (() => {
+                const checkUpload = new BrowserWindow ({ show: DEBUG })
+                
+                DEBUG ? checkUpload.webContents.openDevTools() : null
+                checkUpload.loadURL ( format ({
+                    pathname: join ( __dirname, 'app/update.html'),
                     protocol: 'file:',
                     slashes: true
                 }))
-
-                setTimeout (() => {
-                    const checkUpload = new BrowserWindow ({ show: DEBUG })
-                    checkUpload.rendererSidePort = port
-                    checkUpload.hideWindowDownload = hideWindowDownload
-                    DEBUG ? checkUpload.webContents.openDevTools() : null
-                    checkUpload.loadURL ( format ({
-                        pathname: join ( __dirname, 'app/update.html'),
-                        protocol: 'file:',
-                        slashes: true
-                    }))
-                }, 500 )
-            })
-        } else {
-            saveLog ( `app.once ( 'ready') have localServer1 & createWindow()` )
-            createWindow ()
-        }
-
-        if ( !tray ) {
-            tray = new Tray ( join ( __dirname, '16x16.png' ))
-            tray.on( 'click', () => {
-                saveLog (`tray.on( 'click') `)
-                return createWindow ()
-                
-            })
-
-            const contextMenu = Menu.buildFromTemplate ( data11 [ localLanguage ].tray )
+            }, 500 )
             
-            tray.setContextMenu ( contextMenu )
-        }
-    })
+        
+    } else {
+        
+        createWindow ()
+    }
+
+    if ( !tray ) {
+        tray = new Tray ( join ( __dirname, '16x16.png' ))
+        tray.on( 'click', () => {
+            
+            return createWindow ()
+            
+        })
+
+        const contextMenu = Menu.buildFromTemplate ( data11 [ localLanguage ].tray )
+        
+        tray.setContextMenu ( contextMenu )
+    }
+    
 }
 
 const initialize = () => {
@@ -508,16 +388,18 @@ const initialize = () => {
         if ( doReady )
             return 
         doReady = true
-        saveLog (`app.once ( 'ready')`)
+        
         return appReady ()
     })
 
     app.once ('will-finish-launching', () => {
+        /*
         if ( doReady )
             return 
         doReady = true
-        saveLog (`app.once ('will-finish-launching')`)
+        
         return appReady ()
+        */
     })
 
     app.on ( 'window-all-closed', () => {

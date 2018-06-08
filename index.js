@@ -16,15 +16,11 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const DEBUG = true;
+const port = 3000;
 const Fs = require("fs");
-const Os = require("os");
 const path_1 = require("path");
-const async_1 = require("async");
-const freePort = require("portastic");
 const url_1 = require("url");
-const path = require("path");
-const Crypto = require("crypto");
-const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater, desktopCapturer } = require('electron');
+const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater, desktopCapturer, shell } = require('electron');
 const handleSquirrelEvent = () => {
     if (process.argv.length === 1 || process.platform !== 'win32') {
         return false;
@@ -96,53 +92,11 @@ var lang;
     lang[lang["en"] = 2] = "en";
     lang[lang["tw"] = 3] = "tw";
 })(lang || (lang = {}));
-const QTGateFolder = path_1.join(Os.homedir(), '.QTGate');
-const QTGateLatest = path_1.join(QTGateFolder, 'latest');
-const QTGateTemp = path_1.join(QTGateFolder, 'tempfile');
-const QTGateVideo = path_1.join(QTGateTemp, 'videoTemp');
 let isSingleInstanceCheck = true;
 let localServer1 = null;
 let tray = null;
 let mainWindow = null;
 let doReady = false;
-const ErrorLogFile = path_1.join(QTGateFolder, 'indexError.log');
-exports.port = 3000 + Math.round(10000 * Math.random());
-const takeScreen = (CallBack) => {
-    desktopCapturer.getSources({ types: ['window', 'screen'], thumbnailSize: { width: 850, height: 480 } }, (error, sources) => {
-        if (error)
-            throw error;
-        const debug = true;
-        sources.forEach(n => {
-            if (n.name === 'QTGate') {
-                const screenshotFileName = Crypto.randomBytes(10).toString('hex') + '.png';
-                const screenshotSavePath = path.join(QTGateTemp, screenshotFileName);
-                Fs.writeFile(screenshotSavePath, n.thumbnail.toPng(), error => {
-                    if (error) {
-                        console.log(error);
-                        return CallBack(error);
-                    }
-                    CallBack(null, screenshotFileName);
-                    /*
-                    let win = new remote.BrowserWindow ({
-                        minWidth: 900,
-                        minHeight: 600,
-                        backgroundColor: '#ffffff',
-                    })
-                    if ( debug ) {
-                        win.webContents.openDevTools()
-                        win.maximize()
-                        
-                    }
-                    win.loadURL ( `http://127.0.0.1:${ this.config().serverPort }/feedBack?imagFile=${ screenshotUrl }` )
-                    win.once ( 'closed', () => {
-                        win = null
-                    })
-                    */
-                });
-            }
-        });
-    });
-};
 const hideWindowDownload = (downloadUrl, saveFilePath, Callback) => {
     let _err = null;
     if (!downloadUrl) {
@@ -203,11 +157,6 @@ const hideWindowDownload = (downloadUrl, saveFilePath, Callback) => {
         return win.loadURL(downloadUrl);
     });
 };
-const saveLog = (log) => {
-    const data = `${new Date().toUTCString()}: ${log}\r\n`;
-    Fs.appendFile(ErrorLogFile, data, err => {
-    });
-};
 const _doUpdate = (tag_name, _port) => {
     let url = null;
     if (process.platform === 'darwin') {
@@ -220,21 +169,20 @@ const _doUpdate = (tag_name, _port) => {
         console.log(`process.platform === linux`);
         return;
     }
-    saveLog(`start update with url [${url}] [${tag_name}] [${Buffer.from(tag_name).toString('hex')}]`);
     autoUpdater.on('update-availabe', () => {
-        saveLog('update available');
+        console.log('update available');
     });
     autoUpdater.on('error', err => {
-        saveLog('systemError autoUpdater.on error ' + err.message);
+        console.log('systemError autoUpdater.on error ' + err.message);
     });
     autoUpdater.on('checking-for-update', () => {
-        saveLog(`checking-for-update [${url}]`);
+        console.log(`checking-for-update [${url}]`);
     });
     autoUpdater.on('update-not-available', () => {
-        saveLog('update-not-available');
+        console.log('update-not-available');
     });
     autoUpdater.on('update-downloaded', e => {
-        saveLog("Install?");
+        console.log("Install?");
         autoUpdater.quitAndInstall();
     });
     autoUpdater.setFeedURL(url);
@@ -255,37 +203,7 @@ const dirTitleErr = [
     ]
 ];
 const createWindow = () => {
-    if (mainWindow && typeof mainWindow.isMinimized === 'function') {
-        if (mainWindow.isMinimized())
-            mainWindow.restore();
-        mainWindow.focus();
-        saveLog('createWindow have mainWindow');
-        return;
-    }
-    saveLog('createWindow have not mainWindow');
-    mainWindow = new BrowserWindow({
-        width: 850,
-        height: 480,
-        minWidth: 850,
-        minHeight: 480,
-        resizable: DEBUG,
-        show: false,
-        backgroundColor: '#ffffff',
-        icon: process.platform === 'linux' ? path_1.join(__dirname, 'app/public/assets/images/512x512.png') : path_1.join(__dirname, 'app/qtgate.icns')
-    });
-    mainWindow.loadURL(`http://127.0.0.1:${exports.port}/`);
-    if (DEBUG) {
-        mainWindow.webContents.openDevTools();
-        mainWindow.maximize();
-    }
-    mainWindow.once('closed', () => {
-        if (process.platform === 'win32' || process.platform === 'darwin')
-            return mainWindow = null;
-        return app.quit();
-    });
-    mainWindow.once('ready-to-show', () => {
-        return mainWindow.show();
-    });
+    shell.openExternal(`http://127.0.0.1:${port}`);
 };
 const data11 = [
     {
@@ -351,28 +269,6 @@ const getLocalLanguage = (lang) => {
     return 2;
 };
 let localLanguage = getLocalLanguage(app.getLocale());
-const checkFolder = (folder, CallBack) => {
-    Fs.access(folder, err => {
-        if (err) {
-            return Fs.mkdir(folder, err1 => {
-                if (err1) {
-                    console.log(err1);
-                    return CallBack(err1);
-                }
-                return CallBack();
-            });
-        }
-        return CallBack();
-    });
-};
-const findPort = (CallBack) => {
-    return freePort.test(exports.port).then(isOpen => {
-        if (isOpen)
-            return CallBack();
-        ++exports.port;
-        return findPort(CallBack);
-    });
-};
 const isMacOS = process.platform === 'darwin';
 const template = [{
         submenu: [
@@ -385,73 +281,58 @@ const template = [{
         ]
     }];
 const appReady = () => {
-    async_1.series([
-        next => checkFolder(QTGateFolder, next),
-        next => checkFolder(QTGateLatest, next),
-        next => checkFolder(QTGateTemp, next),
-        next => checkFolder(QTGateVideo, next)
-    ], err => {
-        console.log(`appReady series runback err [${err}]`);
-        const menu = Menu.buildFromTemplate(template);
-        Menu.setApplicationMenu(menu);
-        if (!localServer1) {
-            findPort(() => {
-                localServer1 = new BrowserWindow({ show: DEBUG });
-                localServer1.setIgnoreMouseEvents(!DEBUG);
-                localServer1.rendererSidePort = exports.port;
-                localServer1.debug = DEBUG;
-                localServer1.createWindow = createWindow;
-                localServer1.takeScreen = takeScreen;
-                localServer1._doUpdate = _doUpdate;
-                DEBUG ? localServer1.webContents.openDevTools() : null;
-                //localServer1.maximize ()
-                localServer1.loadURL(url_1.format({
-                    pathname: path_1.join(__dirname, 'index.html'),
-                    protocol: 'file:',
-                    slashes: true
-                }));
-                setTimeout(() => {
-                    const checkUpload = new BrowserWindow({ show: DEBUG });
-                    checkUpload.rendererSidePort = exports.port;
-                    checkUpload.hideWindowDownload = hideWindowDownload;
-                    DEBUG ? checkUpload.webContents.openDevTools() : null;
-                    checkUpload.loadURL(url_1.format({
-                        pathname: path_1.join(__dirname, 'app/update.html'),
-                        protocol: 'file:',
-                        slashes: true
-                    }));
-                }, 500);
-            });
-        }
-        else {
-            saveLog(`app.once ( 'ready') have localServer1 & createWindow()`);
-            createWindow();
-        }
-        if (!tray) {
-            tray = new Tray(path_1.join(__dirname, '16x16.png'));
-            tray.on('click', () => {
-                saveLog(`tray.on( 'click') `);
-                return createWindow();
-            });
-            const contextMenu = Menu.buildFromTemplate(data11[localLanguage].tray);
-            tray.setContextMenu(contextMenu);
-        }
-    });
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
+    if (!localServer1) {
+        localServer1 = new BrowserWindow({ show: DEBUG });
+        localServer1._doUpdate = _doUpdate;
+        DEBUG ? localServer1.webContents.openDevTools() : null;
+        //localServer1.maximize ()
+        localServer1.loadURL(url_1.format({
+            pathname: path_1.join(__dirname, 'index.html'),
+            protocol: 'file:',
+            slashes: true
+        }));
+        setTimeout(() => {
+            shell.openExternal(`http://127.0.0.1:${port}`);
+        }, 2000);
+        setTimeout(() => {
+            const checkUpload = new BrowserWindow({ show: DEBUG });
+            DEBUG ? checkUpload.webContents.openDevTools() : null;
+            checkUpload.loadURL(url_1.format({
+                pathname: path_1.join(__dirname, 'app/update.html'),
+                protocol: 'file:',
+                slashes: true
+            }));
+        }, 500);
+    }
+    else {
+        createWindow();
+    }
+    if (!tray) {
+        tray = new Tray(path_1.join(__dirname, '16x16.png'));
+        tray.on('click', () => {
+            return createWindow();
+        });
+        const contextMenu = Menu.buildFromTemplate(data11[localLanguage].tray);
+        tray.setContextMenu(contextMenu);
+    }
 };
 const initialize = () => {
     app.once('ready', () => {
         if (doReady)
             return;
         doReady = true;
-        saveLog(`app.once ( 'ready')`);
         return appReady();
     });
     app.once('will-finish-launching', () => {
-        if (doReady)
-            return;
-        doReady = true;
-        saveLog(`app.once ('will-finish-launching')`);
-        return appReady();
+        /*
+        if ( doReady )
+            return
+        doReady = true
+        
+        return appReady ()
+        */
     });
     app.on('window-all-closed', () => {
         app.quit();

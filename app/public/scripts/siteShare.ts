@@ -1,4 +1,4 @@
-const uuid_generate = () => {
+const uuid_generate = function () {
     let lut: Array < string > = [];
     for ( let i = 0; i < 256; i++ ) {
         lut [i] = ( i < 16 ? '0' : '') + ( i ).toString ( 16 );
@@ -12,15 +12,16 @@ const uuid_generate = () => {
         lut [ d2 & 0x3f | 0x80 ]+ lut [ d2 >> 8 & 0xff ] + '-' + lut [ d2 >> 16 & 0xff]+ lut [ d2 >> 24 & 0xff ] +
         lut [ d3 & 0xff ]+ lut [ d3 >> 8 & 0xff ] + lut [ d3 >> 16 & 0xff] + lut [ d3 >> 24 & 0xff ];
 }
-const uuID = () => {
+
+const uuID = function () {
     return uuid_generate().replace( /-/g,'')
 }
 
+
 const isElectronRender = typeof process === 'object'
-let socketIo: SocketIOClient.Socket = null
 
 const cookieName = 'langEH'
-const passwdCookieName = 'QTGate'
+const passwdCookieName = 'CoNET'
 const EmailRegexp = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i
 const Menu = {
     'zh':[{
@@ -105,7 +106,7 @@ const Menu = {
 
 enum lang { 'zh', 'ja', 'en', 'tw' }
 
-const initLanguageCookie = () => {
+const initLanguageCookie = function () {
     var cc: string = $.cookie( cookieName )
     
     if ( !cc ) {
@@ -134,7 +135,8 @@ const initLanguageCookie = () => {
 const DayTime = 1000 * 60 * 60 * 24
 const monthTime = 30 * DayTime
 const yearTime = 12 * monthTime
-const getPlanPrice = ( plan: string, isAnnualPlan: boolean ) => {
+
+const getPlanPrice = function ( plan: string, isAnnualPlan: boolean ) {
 	switch ( plan ) {
 		//		1GB/month 100MB/day
 		case 'free': {
@@ -168,7 +170,7 @@ const getPlanPrice = ( plan: string, isAnnualPlan: boolean ) => {
 	}
 }
 
-const nextExpirDate = ( expire: string ) => {
+const nextExpirDate = function ( expire: string ) {
     const now = new Date ()
     const _expire = new Date ( expire )
     _expire.setHours ( 0,0,0,0 )
@@ -187,13 +189,13 @@ const nextExpirDate = ( expire: string ) => {
     return _expire
 }
 
-const getRemainingMonth = ( expire: string ) => {
+const getRemainingMonth = function ( expire: string ) {
     const _expire = new Date ( expire )
     const _nextExpirDate = nextExpirDate ( expire )
     return _expire.getFullYear () === _nextExpirDate.getFullYear () ? _expire.getMonth() - _nextExpirDate.getMonth() : ( 12 - _nextExpirDate.getMonth() + _expire.getMonth() )
 }
 
-const getAmount = ( amount ) => {
+const getAmount = function ( amount ) {
     if ( !amount )
         return null
     if ( typeof amount === 'number' ) {
@@ -202,7 +204,8 @@ const getAmount = ( amount ) => {
     const ret = amount.split('.')
     return ret.length === 1 ? amount + '.00' : amount 
 }
-const getCurrentPlanCancelBalance = ( expiration: string, planName: string ) => {
+
+const getCurrentPlanCancelBalance = function ( expiration: string, planName: string ) {
 	
     const price = getPlanPrice ( planName, true )
     const normalPrice = getPlanPrice ( planName, false )
@@ -211,7 +214,7 @@ const getCurrentPlanCancelBalance = ( expiration: string, planName: string ) => 
 	return passedCost > 0 ? passedCost : 0
 }
 
-const getExpire = ( startDate: Date, isAnnual: boolean ) => {
+const getExpire = function ( startDate: string, isAnnual: boolean ) {
 	const start = new Date( startDate )
 	const now = new Date ()
 	const passedMonth = Math.round (( now.getTime () - start.getTime () ) / monthTime - 0.5 )
@@ -219,7 +222,12 @@ const getExpire = ( startDate: Date, isAnnual: boolean ) => {
 	return start
 }
 
-const getCurrentPlanUpgradelBalance = ( expiration: string, planName: string, isAnnual: boolean ) => {
+function getExpireWithMonths ( month: number ) {
+    let date = new Date()
+    return new Date ( date.setMonth ( date.getMonth() + month ))
+}
+
+const getCurrentPlanUpgradelBalance = function ( expiration: string, planName: string, isAnnual: boolean ) {
 	if ( !isAnnual ) {
         return getPlanPrice ( planName, false )
     }
@@ -268,11 +276,18 @@ const infoDefine = [
             paymentProblem1: '支付遇到问题',
             paymentProblem:'您的当前所在区域看上去银行网关被和谐，您可以使用CoNET网关支付来完成支付',
             QTGatePayRisk: '使用CoNET安全网关支付，如果您有安全疑虑，请使用Stript安全网关支付。',
-            CancelSuccess: ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) => {
+            CancelSuccess: function ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) {
                 return `中止订阅成功。您可以一直使用您的原订阅到${ new Date( PlanExpire) .toLocaleDateString() }为止。以后您将会自动成为CoNET免费用户，可以继续使用CoNET的各项免费功能。${ isAnnual ? `退款金额us$${ returnAmount }会在5个工作日内退还到您的支付卡。`: '下月起CoNET系统不再自动扣款。'} 祝您网络冲浪愉快。`
             },
             currentPlan:'当前订阅: ',
-            cardPaymentErrorMessage:['输入的信用卡号有误，或支付系统不支持您的信用卡！','输入的信用卡期限有误！','输入的信用卡安全码有误！','输入的信用卡持有人邮编有误！','支付失败，支付无法完成请稍后再试','支付数据存在错误','您的付款被发卡行所拒绝'],
+            cardPaymentErrorMessage:[
+                '输入的信用卡号有误，或支付系统不支持您的信用卡！',
+                '输入的信用卡期限有误！',
+                '输入的信用卡安全码有误！',
+                '输入的信用卡持有人邮编有误！',
+                '支付失败，支付无法完成请稍后再试',
+                '支付数据存在错误','您的付款被发卡行所拒绝'
+            ],
             planPrice: '订阅原价：',
             cancelPlanButton:'中止当前订阅',
             needPay: '应付金额：',
@@ -284,7 +299,9 @@ const infoDefine = [
             currentAnnualPlan: ['月度订阅','年度订阅'],
             MonthBandwidthTitle:'月度代理服務器限额：',
             dayBandwidthTitle:'毎日限额：',
-            upgradeTitle:'升级订阅',
+            upgradeTitle:'升级',
+            planExpirDate: function ( year: string, month: string, day: string ) { return `${ year } 年${ month }月${ day }日`},
+            
             accountOptionButton: '账户选项',
             paymentProcessing:'正在通讯中...',
             cantUpgradeMonthly: '年度计划不可降级为月度计划。请先终止您当前订阅的年度计划，再重新申请此月度订阅',
@@ -300,8 +317,8 @@ const infoDefine = [
             paymentSuccessTitile: '謝謝您',
             paymentSuccess:'您的订阅已经完成，数据流量限制已经被更新。祝您网络冲浪愉快。',
             qtgateTeam: 'CoNET开发团队敬上',
-            monthlyAutoPay:( monthCost: number ) => { return `<span>每月自动扣款</span><span class="usDollar">@ us$</span><span class="amount">${ monthCost }</span>/月<span>` },
-            annualPay: ( annual_monthlyCost: string ) => { return `<span>年付款每月只需</span><span class="usDollar">@ us$</span><span class="amount" >${ getAmount (( Math.round ( parseInt( annual_monthlyCost ) / 0.12 ) / 100 ).toString()) }</span>/月<span>`},
+            monthlyAutoPay: function ( monthCost: number ) { return `<span>每月自动扣款</span><span class="usDollar">@ us$</span><span class="amount">${ monthCost }</span>/月<span>` },
+            annualPay: function ( annual_monthlyCost: string ) { return `<span>年付款每月只需</span><span class="usDollar">@ us$</span><span class="amount" >${ annual_monthlyCost }</span>/月<span>`},
             monthlyPay:'月收费',
             expirationYear: '信用卡期限',
             payAmountTitile:'合计支付金额',
@@ -318,7 +335,7 @@ const infoDefine = [
             multiRegion:['单一代理区域并发代理','多代理区域混合并发代理','多代理区域混合并发代理','多代理区域混合并发代理'],
             downGradeMessage:'您正在操作降级您的订阅，如果操作成功您将从下月您的订阅之日起，实行新的订阅，如果您是。',
             cancelPlanMessage:'CoNET的订阅是以月为基本的单位。您的月订阅将在下月您的订阅起始日前被终止，您可以继续使用您的本月订阅计划，您将自动回到免费用户。如果您是每月自动扣款，则下月将不再扣款。如果您是年度订阅计划，您的退款将按普通每月订阅费，扣除您已经使用的月份后计算的差额，将自动返还您所支付的信用卡账号，如果您是使用促销码，或您是测试用户，您的终止订阅将不能被接受。',
-            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
+            cancelPlanMessage1: function ( planName: string, isAnnual: boolean, expire: string ) {
                 return `<span>您的订阅计划是${ isAnnual ? `年度订阅，退还金额将按照您已付年订阅费 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span> - 该订阅原价 <span class="usDollar">us$</span><span class="amount">${ getPlanPrice( planName, false )}</span><span> X 已使用月数(包括本月) </span><span class="amount">${ 12 - getRemainingMonth ( expire )}</span> = 应该退还的金额 <span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span><span>，将在7个工作日内，退还到您原来支付的信用卡账户。</span>`: `月订阅，您的订阅将下次更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>时不再被自动扣款和更新。</span>`}`
             }
         },
@@ -336,39 +353,40 @@ const infoDefine = [
                 header: '隐身匿名自由上网OPN',
                 color: '#a333c8',
                 icon: 'exchange',
-                detail: 'QTGate通过使用<a onclick="return linkClick (`https://zh.wikipedia.org/wiki/%E9%AB%98%E7%BA%A7%E5%8A%A0%E5%AF%86%E6%A0%87%E5%87%86`)" href="#" target="_blank">AES256-GCM</a>和<a onclick="return linkClick (`https://zh.wikipedia.org/wiki/PGP`)" href="#" target="_blank">OpenPGP</a>加密Email通讯，创造了OPN匿名网络通讯技术，QTGate公司首创的@OPN技术，它全程使用加密Email通讯，客户端和代理服务器彼此不用交换IP地址来实现高速通讯。iOPN通讯技术是利用普通HTTP协议下的混淆流量加密技术，能够隐藏变换您的IP地址高速通讯。二种通讯方式都能够让您，隐身和安全及不被检出的上网，保护您的隐私，具有超强对抗网络监控,网络限制和网络阻断。'
+                detail: 'CoNET通过使用<a onclick="return linkClick (`https://zh.wikipedia.org/wiki/%E9%AB%98%E7%BA%A7%E5%8A%A0%E5%AF%86%E6%A0%87%E5%87%86`)" href="#" target="_blank">AES256-GCM</a>和<a onclick="return linkClick (`https://zh.wikipedia.org/wiki/PGP`)" href="#" target="_blank">OpenPGP</a>加密Email通讯，创造了OPN匿名网络通讯技术，CoNET公司首创的@OPN技术，它全程使用加密Email通讯，客户端和代理服务器彼此不用交换IP地址来实现高速通讯。iOPN通讯技术是利用普通HTTP协议下的混淆流量加密技术，能够隐藏变换您的IP地址高速通讯。二种通讯方式都能够让您，隐身和安全及不被检出的上网，保护您的隐私，具有超强对抗网络监控,网络限制和网络阻断。'
             },{
                 color: '#e03997',
                 icon: 'talk outline',
                 header:'无IP点对点即时加密通讯服务QTChat',
-                detail:'QTGate用户之间通过email的点对点即时通讯服务，它具有传统即时通讯服务所不具有的，匿名无IP和用户之保持秘密通讯的功能。QTChat加密通讯服务可以传送文字，图片和视频文件信息，QTGate系统只负责传送信息，不拥有信息，也无法检查信息本身，所以QTGate不承担信息所有的法律责任。QTChat支持群即时通讯，将支持视频流直播服务。'
+                detail:'CoNET用户之间通过email的点对点即时通讯服务，它具有传统即时通讯服务所不具有的，匿名无IP和用户之保持秘密通讯的功能。QTChat加密通讯服务可以传送文字，图片和视频文件信息，CoNET系统只负责传送信息，不拥有信息，也无法检查信息本身，所以CoNET不承担信息所有的法律责任。QTChat支持群即时通讯，将支持视频流直播服务。'
             },{
                 color: '#6435c9',
                 icon: 'cloud upload',
                 header:'加密文件匿名网络云储存及分享功能QTStorage',
-                detail:'用户通过申请多个和不同的免费email服务商账号，可以把一个文件加密拆分成多个部分，分别存储在不同的email账号下，可以保密安全和无限量的使用网络储存。用户还可以通过QTGate系统在QTGate用户之间分享秘密文件。'
+                detail:'用户通过申请多个和不同的免费email服务商账号，可以把一个文件加密拆分成多个部分，分别存储在不同的email账号下，可以保密安全和无限量的使用网络储存。用户还可以通过CoNET系统在CoNET用户之间分享秘密文件。'
             },
             {
                 color: 'darkcyan',
                 icon: 'spy',
                 header: '阻断间谍软件向外送信功能',
-                detail: 'QTGate系统连接全球DNSBL联盟数据库，用户通过订阅QTGate系统黑名单列表，并使用QTGate客户端上网，让潜伏在您电子设备内的间谍软件，它每时每刻收集的信息，不能够被送信到其信息收集服务器，能够最大限的保障您的个人隐私。'
+                detail: 'CoNET系统连接全球DNSBL联盟数据库，用户通过订阅CoNET系统黑名单列表，并使用CoNET客户端上网，让潜伏在您电子设备内的间谍软件，它每时每刻收集的信息，不能够被送信到其信息收集服务器，能够最大限的保障您的个人隐私。'
             },{
                 color: '#6435c9',
                 icon: 'external share',
                 header:'本地VPN服务器',
-                detail:'QTGate用户在户外时可以通过连接自己家里的VPN，来使用QTGate客户端隐身安全上网。'
+                detail:'CoNET用户在户外时可以通过连接自己家里的VPN，来使用CoNET客户端隐身安全上网。'
             }]
         },
 
         cover: {
-            firstTitle1: 'CoNET',
+            firstTitle1: 'CoNET平台',
             firstTitle2: '安全隐私自由的互联网',
-            start: '开门'
+            start: '开门',
+            proxyStoped: 'CoGate定制代理服务器已经停止，如需使用请重新定制代理服务器。'
         },
         
         firstNote: {
-            title: '欢迎使用QTGate，感谢您使用我们的产品和服务(下称“服务”)。本服务由总部设在加拿大的CoNET技术有限公司.下称“CoNET”提供。',
+            title: '欢迎使用CoNET，感谢您使用我们的产品和服务(下称“服务”)。本服务由总部设在加拿大的CoNET技术有限公司.下称“CoNET”提供。',
             firstPart: '您使用我们的服务即表示您已同意本条款。请仔细阅读。使用我们的服务，您必须遵守服务中提供的所有政策。',
             detail: [
                 {
@@ -379,77 +397,78 @@ const infoDefine = [
                     detail: '使用我们的服务并不让您拥有我们的服务或您所访问的内容的任何知识产权。除非您获得相关内容所有者的许可或通过其他方式获得法律的许可，否则您不得使用服务中的任何内容。本条款并未授予您使用我们服务中所用的任何商标或标志的权利。请勿删除、隐藏或更改我们服务上显示的或随服务一同显示的任何法律声明。'
                 },{
                     header: '关于OPN无IP通讯技术和隐私保护的局限性',
-                    detail: 'OPN是QTGate世界首创的使用Email的IMAP协议建造一个无IP通讯环境，在您利用QTGate进行通讯过程中，QTGate无法获得您目前所使用的IP地址（使用iOPN来连结QTGate代理服务器时，您需要向QTGate系统提供您当前的IP地址），可以最大限度的保障您的个人隐私。但是这项技术并不能够保证您的信息绝对的不被泄露，因为您的IP地址有可能被记录在您所使用的Email服务供应商，如果持有加拿大法院令寻求QTGate的Log公开，再和Email服务供应商的Log合并分析，可能会最终得到您的信息。 QTGate并不能够绝对保障您的隐私。 '
+                    detail: 'OPN是CoNET世界首创的使用Email的IMAP协议建造一个无IP通讯环境，在您利用CoNET进行通讯过程中，CoNET无法获得您目前所使用的IP地址（使用iOPN来连结CoNET代理服务器时，您需要向CoNET系统提供您当前的IP地址），可以最大限度的保障您的个人隐私。但是这项技术并不能够保证您的信息绝对的不被泄露，因为您的IP地址有可能被记录在您所使用的Email服务供应商，如果持有加拿大法院令寻求CoNET的Log公开，再和Email服务供应商的Log合并分析，可能会最终得到您的信息。 CoNET并不能够绝对保障您的隐私。 '
                 },
                 {
-                    header: '关于个人隐私保护，系统日志和接收QTGate传送的信息',
+                    header: '关于个人隐私保护，系统日志和接收CoNET传送的信息',
                     detail: '在您使用服务的过程中，我们可能会向您发送服务公告、管理消息和其他信息。您可以选择不接收上述某些信息。'
                 },{
                     header: null,
                     detail: '当您使用我们的服务时，我们为了计费处理会自动收集非常有限的数据流量信息，并存储到服务器日志中。数据流量信息仅用于计算客户应支付通讯费用而收集的，它收集的数据是：日期，用户帐号，所使用的代理区域和代理服务器IP，数据包大小，下载或上传。例如：'
                 },{
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@CoNET.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@CoNET.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 },
                 {
                     header: null,
-                    detail: 'QTGate没有保存除了以上信息以外的任何其他信息。我们会配合并向持有加拿大法院令的执法机构提供此日志文件。如果您是加拿大以外地区的执法机构，有这方面信息披露的需求，请通过加拿大外交部来联系我们：'
+                    detail: 'CoNET没有保存除了以上信息以外的任何其他信息。我们会配合并向持有加拿大法院令的执法机构提供此日志文件。如果您是加拿大以外地区的执法机构，有这方面信息披露的需求，请通过加拿大外交部来联系我们：'
                 },{
                     header: null,
                     detail: '<a class="tag alert" href="http://www.international.gc.ca/">http://www.international.gc.ca/</a>'
                 },
                 {
                     header: '版权所有权',
-                    detail: '该软件是QTGate的智慧产权，并且受到相关版权法，国际版权保护规定和其他在版权授与国家内的相关法律的保护。该软件包含智慧产权材料, 商业秘密及其他产权相关材料。你不能也不应该尝试修改，反向工程操作，反汇编或反编译QTGate服务，也不能由QTGate服务项目创造或衍生其他作品。'
+                    detail: '该软件是CoNET的智慧产权，并且受到相关版权法，国际版权保护规定和其他在版权授与国家内的相关法律的保护。该软件包含智慧产权材料, 商业秘密及其他产权相关材料。你不能也不应该尝试修改，反向工程操作，反汇编或反编译CoNET服务，也不能由CoNET服务项目创造或衍生其他作品。'
                 },
                 {
                     header: null,
-                    detail: '关于我们服务中的软件，QTGate授予您免许可使用费、不可转让的、非独占的全球性个人许可, 允许您使用由QTGate提供的、包含在服务中的软件。本许可仅旨在让您通过本条款允许的方式使用由QTGate提供的服务并从中受益。您不得复制、修改、发布、出售或出租我们的服务, 或所含软件的任何部分。'
+                    detail: '关于我们服务中的软件，CoNET授予您免许可使用费、不可转让的、非独占的全球性个人许可, 允许您使用由CoNET提供的、包含在服务中的软件。本许可仅旨在让您通过本条款允许的方式使用由CoNET提供的服务并从中受益。您不得复制、修改、发布、出售或出租我们的服务, 或所含软件的任何部分。'
                 },{
                     header: '修改与终止服务',
-                    detail: '我们持续改变和改善所提供的服务。我们可能会新增或移除功能或特性，也可能会暂停或彻底停止某项服务。您随时都可以停止使用服务，尽管我们并不希望您会这样做。 QTGate也可能随时停止向您提供服务，或对服务附加或设定新的限制。'
+                    detail: '我们持续改变和改善所提供的服务。我们可能会新增或移除功能或特性，也可能会暂停或彻底停止某项服务。您随时都可以停止使用服务，尽管我们并不希望您会这样做。 CoNET也可能随时停止向您提供服务，或对服务附加或设定新的限制。'
                 },
                 {
                     header: '服务的责任',
-                    detail: '在法律允许的范围内，QTGate及其供应商和分销商不承担利润损失、收入损失或数据、财务损失或间接、特殊、后果性、惩戒性或惩罚性损害赔偿责任。'
+                    detail: '在法律允许的范围内，CoNET及其供应商和分销商不承担利润损失、收入损失或数据、财务损失或间接、特殊、后果性、惩戒性或惩罚性损害赔偿责任。'
                 },{
                     header: '法律规定的贸易禁止事项',
                     detail: '当您按下同意按钮，表示您已经确认您不属于加拿大法律所规定的禁止贸易对象的列表之中。 '
                 },
                 {
                     header: '服务的商业使用',
-                    detail: '如果您代表某家企业使用我们的服务，该企业必须接受本条款。对于因使用本服务或违反本条款而导致的或与之相关的任何索赔、起诉或诉讼，包括因索赔、损失、损害赔偿、起诉、判决、诉讼费和律师费而产生的任何责任或费用，该企业应对QTGate及其关联机构、管理人员、代理机构和员工进行赔偿并使之免受损害。'
+                    detail: '如果您代表某家企业使用我们的服务，该企业必须接受本条款。对于因使用本服务或违反本条款而导致的或与之相关的任何索赔、起诉或诉讼，包括因索赔、损失、损害赔偿、起诉、判决、诉讼费和律师费而产生的任何责任或费用，该企业应对CoNET及其关联机构、管理人员、代理机构和员工进行赔偿并使之免受损害。'
                 }, {
                     header: '本条款的变更和约束力',
                     detail: '关于本条款：我们可以修改上述条款或任何适用于某项服务的附加条款，例如，为反映法律的变更或我们服务的变化而进行的修改。您应当定期查阅本条款。我们会在本网页上公布这些条款的修改通知。我们会在适用的服务中公布附加条款的修改通知。所有修改的适用不具有追溯力，且会在公布十四天或更长时间后方始生效。但是，对服务新功能的特别修改或由于法律原因所作的修改将立即生效。如果您不同意服务的修改条款，应停止使用服务。如果本条款与附加条款有冲突，以附加条款为准。'
                 }
                 , {
                     header: null,
-                    detail: '本条款约束QTGate与您之间的关系，且不创设任何第三方受益权。如果您不遵守本条款，且我们未立即采取行动，并不意味我们放弃我们可能享有的任何权利（例如，在将来采取行动）。如果某一条款不能被强制执行，这不会影响其他条款的效力。加拿大BC省的法律（不包括BC州的法律冲突规则）将适用于因本条款或服务引起的或与之相关的纠纷。因本条款或服务引起的或与之相关的所有索赔，只能向加拿大BC省法院提起诉讼，且您和QTGate同意上述法院拥有属人管辖权。'
+                    detail: '本条款约束CoNET与您之间的关系，且不创设任何第三方受益权。如果您不遵守本条款，且我们未立即采取行动，并不意味我们放弃我们可能享有的任何权利（例如，在将来采取行动）。如果某一条款不能被强制执行，这不会影响其他条款的效力。加拿大BC省的法律（不包括BC州的法律冲突规则）将适用于因本条款或服务引起的或与之相关的纠纷。因本条款或服务引起的或与之相关的所有索赔，只能向加拿大BC省法院提起诉讼，且您和CoNET同意上述法院拥有属人管辖权。'
                 }
             ],
             disagree: '不同意',
-            agreeMent: 'QTGate服务条款和隐私权'
+            agreeMent: 'CoNET服务条款和隐私权'
             
         },
 
         linuxUpdate:{
             newVersionDownload: '点击这里下载并安装',
             step1: '下载新版本',
-            step2: '授权新版本QTGate为可执行文件',
+            step2: '授权新版本CoNET为可执行文件',
             step2J1:'/images/linuxUpdate1_tw.jpg',
             step2J2:'/images/linuxUpdate2_tw.jpeg',
-            step2_detail1: '右键点击已下载的QTGate图标，选择菜单里的文件属性',
+            step2_detail1: '右键点击已下载的CoNET图标，选择菜单里的文件属性',
             step2_detail2: '在权限选项里，选勾“允许档案文件执行”。',
-            step3:'退出旧版本QTGate后，双击QTGate文件执行安装',
-            exit: '退出QTGate',
-            tryAgain:'再次尝试'
+            step3:'退出旧版本CoNET后，双击CoNET文件执行安装',
+            exit: '退出CoNET',
+            tryAgain:'再次尝试',
+            refresh:'刷新页面'
         },
 
         imapInformation: {
             title: '通讯专用Email邮箱设置',
-            tempImapAccount: `申请临时邮箱有困难？您可以暂时使用<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud%E8%87%A8%E6%99%82%E5%B8%B3%E6%88%B6')">QTGate提供的临时IMAP帐号供各位测试使用</a>`,
-            infomation: `请设置QTGate通讯专用Email邮箱信息。由于此账户的用户名和密码信息会提交给QTGate系统，为了防止您的个人信息被泄漏，请新申请一个临时Email账户。目前QTGate技术对应<a href="#" onclick="return linkClick ('https://www.icloud.com/')">苹果iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/')">微软OUTLOOK</a>，<a href="#" onclick="return linkClick ('https://tw.mail.yahoo.com/')">雅虎邮箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄罗斯ZOHO邮箱</a>，<a href="#" onclick=" return linkClick ('https://gmail.com')">Google邮箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美国在线GMX邮箱</a>，QTGate强力推荐使用苹果公司的Email可以达到最佳速度(@OPN无IP连结技术只对应苹果公司iCloud邮箱)。密码请使用Email服务商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">应用密码</a>。对于Email供应商在应用密码申请时，须<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/%E9%96%8B%E5%95%9F%E5%85%A9%E6%AD%A5%E9%A9%9F%E9%A9%97%E8%AD%89-sln5013.html')" >二步认证</a>并提供手机号码接受验证码，为保护您的隐私，建议使用免费在线代理接收验证码服务。( 如<a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a> ) 更多请 <a href="#" onclick="return linkClick ('http://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E5%85%8D%E8%B4%20%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%20%E7%A0%81&rsv_pq=e94f47a50001f66f&rsv_t=b03ePiy3rHH0T4FVoWB8Hx9vrVdZLzVhhErWOo4xdBpjDw%2BtGri%2BViTaVAw&rqlang=cn&rsv_enter=1&rsv_sug3=42&rsv_sug1=5&rsv_sug7=100')">百度查找</a>，<a href="#" onclick="return linkClick ('https://www.google.com/search?q=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&oq=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&aqs=chrome..69i57j69i60.254j0j4&sourceid=chrome&ie=UTF-8')">Google查找</a>。`,
+            tempImapAccount: `申请临时邮箱有困难？您可以暂时使用<a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud%E8%87%A8%E6%99%82%E5%B8%B3%E6%88%B6')">CoNET提供的临时IMAP帐号供各位测试使用</a>`,
+            infomation: `请设置CoNET通讯专用Email邮箱信息。由于此账户的用户名和密码信息会提交给CoNET系统，为了防止您的个人信息被泄漏，请新申请一个临时Email账户。目前CoNET技术对应<a href="#" onclick="return linkClick ('https://www.icloud.com/')">苹果iCloud</a>，<a href="#" onclick="return linkClick ('https://www.microsoft.com/zh-tw/outlook-com/')">微软OUTLOOK</a>，<a href="#" onclick="return linkClick ('https://tw.mail.yahoo.com/')">雅虎邮箱</a>，<a href="#" onclick="return linkClick ('https://www.zoho.com/mail/')">俄罗斯ZOHO邮箱</a>，<a href="#" onclick=" return linkClick ('https://gmail.com')">Google邮箱</a>，<a href="#" onclick="return linkClick ('https://www.gmx.com/mail/#.1559516-header-nav1-2')">美国在线GMX邮箱</a>，CoNET强力推荐使用苹果公司的Email可以达到最佳速度(@OPN无IP连结技术只对应苹果公司iCloud邮箱)。密码请使用Email服务商的<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/SLN15241.html')">应用密码</a>。对于Email供应商在应用密码申请时，须<a href="#" onclick="return linkClick ('https://tw.help.yahoo.com/kb/%E9%96%8B%E5%95%9F%E5%85%A9%E6%AD%A5%E9%A9%9F%E9%A9%97%E8%AD%89-sln5013.html')" >二步认证</a>并提供手机号码接受验证码，为保护您的隐私，建议使用免费在线代理接收验证码服务。( 如<a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a> ) 更多请 <a href="#" onclick="return linkClick ('http://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E5%85%8D%E8%B4%20%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%20%E7%A0%81&rsv_pq=e94f47a50001f66f&rsv_t=b03ePiy3rHH0T4FVoWB8Hx9vrVdZLzVhhErWOo4xdBpjDw%2BtGri%2BViTaVAw&rqlang=cn&rsv_enter=1&rsv_sug3=42&rsv_sug1=5&rsv_sug7=100')">百度查找</a>，<a href="#" onclick="return linkClick ('https://www.google.com/search?q=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&oq=%E5%85%8D%E8%B4%B9%E5%9C%A8%E7%BA%BF%E6%8E%A5%E6%94%B6%E6%89%8B%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A0%81&aqs=chrome..69i57j69i60.254j0j4&sourceid=chrome&ie=UTF-8')">Google查找</a>。`,
             serverDetail: '详细设定：',
             imapServer: 'IMAP服务器设定',
             imapServerInput: 'IMAP服务器IP或域名',
@@ -457,11 +476,11 @@ const infoDefine = [
             Ssl: '使用Ssl加密信息传输：',
             portName: '通讯端口号：',
             otherPortNumber: '其他号码：',
-            Error_portNumber: '端口号应该是从1-65535之间的数字',
+            Error_portNumber: '端口号应该是从1-65535之间，并且不等于22的数字',
             smtpServer: 'SMTP服务器设定',
             smtpServerInput: 'SMTP服务器IP或域名',
             emailServerPassword: '邮箱密码(推荐使用应用专用密码)',
-            imapAccountConform: '<p><dt>警告：</dt></p>当您按下提交按钮时，意味着您已经确认：这个邮箱并不是您常用的邮箱，这是为了使用QTGate系统而特别申请的临时邮箱，您同意承担由此带来的风险，并授权QTGate系统可以使用这个Email邮箱传输信息!',
+            imapAccountConform: function ( iamp, account ) { return `<p class="ui small header brown">警告：</p><p class="grey">当您按下提交按钮时，意味着您已经确认【<B class="red">${ iamp }</B>】是为了使用CoNET系统而特别申请的临时邮箱，您同意承担由此带来的风险，并授权CoNET系统可以使用这个Email邮箱传输信息!</p><p class="grey" >CoNET平台将会向CoNET發送包含以下信息的email：【<B class="red">${ iamp }</B>】及APP密碼，註冊【<B class="red">${ account }</B>】郵箱地址，使用語言，時區，加密公鑰。</p><p class="grey">同时您也同意并授权CoNET可以向您的注册邮箱【<B class="red">${ account }</B>】发送CoNET有关服务，促销，账户及其他信息。</p>`},
             agree: '我已经了解风险，并愿意继续',
             imapOtherCheckError: '不能连接到Email服务器，有可能您设定的服务器名称或IP，通讯端口号有误，请检查您的服务器详细设定！',
             CertificateError: 'Email服务器提示的证书不能被系统信任！您的Email服务器有可能是一个仿冒的，您如果想继续，请在下面详细设定里选择【允许连接到不被信任证书的Email服务器】，但您的Email登陆信息有可能泄漏给此服务器！',
@@ -470,16 +489,33 @@ const infoDefine = [
             AuthenticationFailed: 'Email服务器提示用户名或密码错误，请仔细检查您的用户名和密码！',
             addAEmail: '添加通讯用Email账户',
             tryAgain: '再试一次',
-            connectImap: '连接QTGate',
-            cancelConnect: '终止QTGate连接',
+            connectImap: '连接CoNET',
+            cancelConnect: '终止CoNET连接',
             imapItemTitle: '通讯用邮箱详细信息',
-            imapCheckingStep: ['正在尝试连接email服务器','email伺服器IMAP連接成功','email伺服器SMTP連接成功'],
-            imapResultTitle:'IMAP服务器QTGate通讯评分：',
+            imapCheckingStep: [
+                /* 0 */'正在尝试连接email服务器',
+                /* 1 */'邮件服务器IMAP连接成功, 正在等待CoNET对接。',
+                /* 2 */'邮件服务器SMTP连接成功',
+                /* 3 */'CoNET客户端向CoNET系统发出联机请求Email。和CoNET联机需要额外的时间，请耐心等待。',
+                /* 4 */'成功连接CoNET',
+                /* 5 */'邮件服务器IMAP测试成功',
+                /* 6 */'邮件服务器SMTP测试成功',
+            ],
+            imapResultTitle:'IMAP服务器CoNET通讯评分：',
             testSuccess: 'email服务器连接试验成功！',
             exitEdit: '退出编辑Email帐户',
             deleteImap: '删除IMAP账户',
-            proxyPortError: '端口号应该是从1000-65535之间的数字，或此端口号已被其他APP所占用。请尝试其他号码。',
-            appPassword:'关于APP密码'
+            proxyPortError: '本地代理服务器的端口设定从3001-65535之间的数字，或端口号已被其他APP所占用。请尝试填入其他号码。',
+            appPassword:'关于APP密码',
+            imapCheckError: [
+                '不能连接到邮件服务器，有可能您没有互联网，或所在网络不支持邮件IMAP通讯，请检查您的网络',
+                '邮件服务器提示用户名或密码错误，请仔细检查您的用户名和密码！ ',
+                '邮件服务器证书错误！您所在网络可能存在网络中间人攻击，请换网络环境后再尝试。 ',
+                '邮件服务器发送邮件错误，这通常是您使用的密码是普通密码所致，请换用APP密码后再次尝试',
+                '未连结互联网，请检查网络',
+                '未知错误，请退出CoNET后再试。',
+                '您的邮箱无可用空间错误，请检查邮箱删除不必要的邮件后再试。'
+            ]
         },
 
 		home_index_view: {
@@ -499,19 +535,22 @@ const infoDefine = [
             imapEmailAddress: '邮箱账户名',
             cancel: '放弃操作',
             stopCreateKeyPair: '停止生成密钥对',
+            keyPairCancel: '生成密钥对被中止',
+            keyPairGenerateError: '生成密钥对发生系统错误，请重试！',
+            keyPairGenerateSuccess: '完成生成密钥对',
             continueCreateKeyPair: '继续生成',
             newVersionInstallLoading:'更新中请稍候',
             KeypairLength: '请选择加密通讯用密钥对长度：这个数字越大，通讯越难被破解，但会增加通讯量和运算时间。',
             GenerateKeypair: '<em>系统正在生成用于通讯和签名的RSA加密密钥对，计算机需要运行产生大量的随机数字有，可能需要几分钟时间，尤其是长度为4096的密钥对，需要特别长的时间，请耐心等待。关于RSA加密算法的机制和原理，您可以访问维基百科：' +
                 `<a href='https://zh.wikipedia.org/wiki/RSA加密演算法' target="_blank" onclick="return linkClick ('https://zh.wikipedia.org/wiki/RSA加密演算法')" >https://zh.wikipedia.org/wiki/RSA加密演算法</a></em>`,
-            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密钥对, 它是您的系统信息加密，身份认证及和CoNET网络通讯使用的重要工具。 RSA密钥对的密码请妥善保存，Email地址栏应填入您的常用邮箱地址, 它将被用作您的CoNET网络账号。 <em style="color:red;">需注意的是CoNET域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区邮箱服务，您将有可能由于接收不到CoNET发回的账号确认Email，而不能够完成CoNET的设定。</em>',
-            accountEmailInfo: '由于QTGate域名在某些国家和地区被防火墙屏蔽，而不能正常收发Email，如果您是处于防火墙内的用户，建议使用防火墙外部的邮件服务商。'
+            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密钥对, 它是您的系统信息加密，身份认证及和CoNET网络通讯使用的重要工具。 RSA密钥对的密码请妥善保存，Email地址栏应填入您的常用邮箱地址, 它将被用作您的CoNET网络账号。 <em style="color:brown;">需注意的是CoNET域名在某些网络限制地区可能被列入黑名单，请使用网络自由地区邮箱。</em>',
+            accountEmailInfo: '由于CoNET域名在某些国家和地区被防火墙屏蔽，而不能正常收发Email，如果您是处于防火墙内的用户，建议使用防火墙外部的邮件服务商。'
         },
 
         Home_keyPairInfo_view: {  
             title: '密钥信息',
-            emailNotVerifi: '您的密钥未获QTGate签署认证。',
-            emailVerified: '您的密钥已获QTGate签署认证。',
+            emailNotVerifi: '您的密钥未获CoNET签署认证。',
+            emailVerified: '您的密钥已获CoNET签署认证。',
             NickName: '昵称：',
             creatDate: '密钥创建日期：',
             keyLength: '密钥位强度：',
@@ -519,7 +558,8 @@ const infoDefine = [
             password1: '请输入平台密码',
             keyID: '密钥对ID：',
             logout: '退出登录',
-            deleteKeyPairInfo: '请注意：如果您没有备份您的QTGate系统的话，删除现有的密钥将使您的QTGate设定全部丢失，您有可能需要重新设置您的QTGate系统。如果您的注册Email没有变化，您的QTGate账户支付信息不会丢失！',
+            deleteKeyPairHaveLogin: '请使用登陆后的客户端来删除您的密钥',
+            deleteKeyPairInfo: '请注意：如果您没有备份您的CoNET系统的话，删除现有的密钥将使您的CoNET设定全部丢失，您有可能需要重新设置您的CoNET系统。如果您的注册Email没有变化，您的CoNET账户支付信息不会丢失！',
             delete: '削除',
             locked: '请提供您的RSA密钥以解开密钥后才能继续操作，如果您遗忘了密码，请删除此RSA密钥。',
             systemError:'发生系统错误。如果重复发生，请删除您的密钥，再次设定您的系统！'
@@ -528,7 +568,7 @@ const infoDefine = [
         error_message: {
             title: '错误',
             errorNotifyTitle: '系统错误',
-            EmailAddress: ['请按以下格式输入你的电子邮件地址: someone@example.com.','您已有相同的Email账户','此类Email服务器暂时QTGate技术不能对应。'],
+            EmailAddress: ['请按以下格式输入你的电子邮件地址: someone@example.com.','您已有相同的Email账户','此类Email服务器CoNET暂时技术不支持。'],
             required: '请填写此字段',
             doCancel: '终止完成',
             PasswordLengthError: '密码必须设定为5个字符以上。',
@@ -541,25 +581,30 @@ const infoDefine = [
             offlineError: '您的电脑未连接到互联网，请检查网络后再次尝试！',
             imapErrorMessage: [
                 '未能链接CoNET网络。 CoNET网络可能存在问题，请稍后再次尝试。或联系CoNET服务。 ',
-                '数据格式错误，请重试',
-                '您的电脑未连接到互联网，请检查网络后再次尝试！ ',
-                'Email服务器提示IMAP用户名或密码错！这个错误通常是由于您使用的密码是普通密码，或者您的APP密码已失效，请到您的Email帐户检查您的APP密码，然后再试一次。 ',
-                'Email服务器的指定连接埠连结失败，请检查您的IMAP连接埠设定，如果您在一个防火墙内部，则有可能该端口被防火墙所屏蔽，您可以尝试使用该IMAP伺服器的其他连接埠！ <a href="data-html"></a>',
-                '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在IMAP详细设定中选择忽略证书错误。 ',
-                '无法获得Email服务器域名信息，请检查您的Email服务器设定！或者您的电脑没有互联网，请检查您的互联网状态。 ',
-                '此Email服务器看来可能不能使用CoNET网络通讯技术，请再测试一次或选择其他email服务供应商！ ',
-                'Email服务器提示SMTP用户名或密码错！ ',
-                '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在SMTP详细设定中选择忽略证书错误。 ',
-                'SMTP连结提示未知错误',
-                '存在相同Email账号',
-                '您的系统还未连接到CoNET网络！ ',
-                '您的邮箱提示您账号已无可使用容量，请清理邮箱后再试'
+                '数据格式错误，请重试',
+                '您的电脑未连接到互联网，请检查网络后再次尝试！ ',
+                'Email服务器提示IMAP用户名或密码错！这个错误通常是由于您使用的密码是普通密码，或者您的APP密码已失效，请到您的Email帐户检查您的APP密码，然后再试一次。 ',
+                'Email服务器的指定连接埠连结失败，请检查您的IMAP连接埠设定，如果您在一个防火墙内部，则有可能该端口被防火墙所屏蔽，您可以尝试使用该IMAP伺服器的其他连接埠！ <a href="data-html"></a>',
+                '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在IMAP详细设定中选择忽略证书错误。 ',
+                '无法获得Email服务器域名信息，请检查您的Email服务器设定！或者您的电脑没有互联网，请检查您的互联网状态。 ',
+                '此Email服务器看来可能不能使用CoNET网络通讯技术，请再测试一次或选择其他email服务供应商！ ',
+                'Email服务器提示SMTP用户名或密码错！ ',
+                '服务器证书错误！您可能正在连接到一个仿冒的Email服务器，如果您肯定这是您希望连接的服务器，请在SMTP详细设定中选择忽略证书错误。 ',
+                'SMTP连结提示未知错误',
+                '存在相同Email账号',
+                '您的系统还未连接到CoNET网络！ ',
+                '您的邮箱提示您账号已无可使用容量，请清理邮箱后再试'
             ]
+            ,
+            CoNET_requestError: [
+                /* 0 */'CoNET无响应,正在重新建立CoNET通讯管道，请稍候。',
+                /* 1 */'无效操作！'
+            ],
         },
 
         emailConform: {
             activeViewTitle:'验证您的密钥',
-            info1_1: `您的密钥还未完成验证，CoNET已向您的密钥邮箱发送了一封加密邮件，请检查您的 【`,
+            info1_1: `您的密钥还未完成验证，请点击[发送验证Email]按钮，并检查您的 【`,
             info1_2: `】 邮箱。如果存在多封CoNET的邮件时，请选择最后一封信件。请打开信件并复制邮件内容。如果您还未收到CoNET的邮件，请检查您的密钥邮箱是否准确，或者您可以删除您现有的密钥，重新生成新密钥。`,
             info2: '请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。',
             emailTitle: '感谢您使用CoNET服务',
@@ -570,35 +615,37 @@ const infoDefine = [
             buttom1_2: 'CoNET团队',
             conformButtom: '验 证',
             requestReturn: ['错误！您的请求被拒绝，这可能是您在短时间内多次请求所致，请稍后再试','CoNET已发送激活邮件！'],
-            reSendRequest:'重发验证Email',
+            reSendRequest:'发送验证Email',
             formatError: [
                 '内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。 ',
                 '提供的内容不能被解密，请确认这是在您收到的最后一封从CoNET发送过来的激活信。如果还是没法完成激活，请删除您的密钥重新生成和设定。 ',
                 '和CoNET连接发生错误，请退出重新尝试！ ',
-                '无效激活码！ CoNET已重新发送新的激活Email，并断开与您的连接。请退出CoNET重新启动CoNET后，检查您的邮箱重做激活。 ',
+                '无效激活码！如果存在多封CoNET的邮件时，请选择最后一封信件。',
                 '您的CoNET看上去有问题, 请删除您的密钥，重新设置您的CoNET！ ',
-                'CoNET系统故障，请稍后再试。 ',
+                '抱歉，CoNET系统无应答，可能暂时下线，请您稍后再试。',
                 '您当天的数据通讯量达到上限，请等待明天再试或升级用户类型',
                 '用来通讯的Email设定有错误，请检查IMAP设定后重试，或CoNET不支持此Email类型',
                 '您所选区域不能够连结，请稍候再试',
                 '您的IMAP邮箱发信发生错误。请退出CoNET重试。如果持续发生此故障，您的IMAP帐号有可能被锁住，需要登陆您的IMAP邮箱网站解锁操作。 ',
-                'CoNET程序发生错误，请退出后重启CoNET！',
-                '您是高手，不用我多说了。'
+                '页面会话已过期，请刷新页面以继续，或退出后重新启动CoNET。',
+                'CoNET平台故障，请重新启动CoNET。'
             ],
             activeing: '正在通讯中'
         },
 
         QTGateRegion: {
-            title: '高级定制代理服务器区域',
+            title: '高品质定制代理服务器区域',
             speedTest: '代理服务器速度测试：',
             error: [],
+            CoGateRegionStoped:'所订制的代理服务器已经被停止，如需使用请再次订制.',
             pingError:'代理服务区域速度检测发生错误，请退出CoNET，以管理员身份再次打开CoNET后，再执行速度检测！',
             connectQTGate:'正在获得代理服务器区域信息...',
             available: '服务中',
             unavailable: '准备中',
-            requestPortNumber: 'Q梯代理通讯端口',
+            requestPortNumber: '指定代理服务器通讯端口',
             proxyDomain: '域名解释全程使用CoNET代理服务器端',
             setupCardTitle: '使用连接技术:',
+            paidUse:'本区域只对收费用户开放',
             MultipleGateway: '同时并发使用代理数',
             dataTransfer: '数据通讯：',
             dataTransfer_datail: ['全程使用代理服务器','当不能到达目标时使用代理'],
@@ -611,33 +658,42 @@ const infoDefine = [
             outDoormode: '接受外網訪問',
             GlobalIp: '本机互联网IP地址:',
             option: '高级设置',
+            WebRTCleak:'阻止WebRTC漏洞',
+            WebRTCleakInfo: '本设置后，浏览器的即时会话，端对点通讯等将不再工作。',
             QTGateRegionERROR:['发送连接请求Email到CoNET发生送信错误， 请检查您的IMAP账号的设定。',
                                 ''],
-            GlobalIpInfo: '注意：当您按下【CoNET连结】时您会把您的本机互联网IP提供给CoNET系统，如果您不愿意，请选择【@OPN】技术来使用CoNET服务！没有显示【@OPN】选项是因为@OPN技术目前只支持iCloud邮箱。',
+            GlobalIpInfo: '注意：当您按下【CoNET连结】时您会把您的本机互联网IP提供给CoNET系统，如果您不愿意，请选择【@OPN】技术来使用CoNET服务！没有显示【@OPN】选项，目前只在旧金山区域有效，并只支持iCloud邮箱。',
             sendConnectRequestMail: ['您的CoNET客户端没有联机CoNET网络，客户端已向CoNET系统重新发出联机请求Email。和CoNET联机需要额外的时间，请耐心等待。',
                                      '当您长时间未使用CoNET时，您的连接会被中断。'],
             cacheDatePlaceDate: [{ name:'1小时', id: 1 }, { name:'12小时', id: 12 },{ name:'1日', id: 24 }, { name:'15日', id: 360 }, { name:'1月', id: 720 }, { name:'6月', id: 4320 }, { name:'永远', id: -1 }],
             atQTGateDetail: [
-                '世界首创的CoNET无IP互联网通讯技术，全程使用强加密Email通讯，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私功能，强抗干扰和超強防火墙穿透能力。缺点是有延迟，网络通讯响应受您所使用的email服务供应商的服务器影响，不适合游戏视频会话等通讯。目前该技术只支持iCloud邮箱。',
-                'CoNET独创明码HTTP混淆流量加密通讯技术，能够隐藏变换您的IP地址高速通讯，隐身和保护隐私，抗干扰和超強防火墙穿透能力。缺点是需要使用您的IP来直接连结代理服务器。如果您只是需要自由访问互联网，则推荐使用本技术。',
-                '域名解释使用CoNET代理服务器端，可以防止域名服务器缓存污染，本选项不可修改。',
-                '互联网数据全程使用CoNET代理，可以匿名上网隐藏您的互联网形踪。',
-                '只有当您的本地网络不能够到达您希望访问的目标时，才使用CoNET代理服务器代为连结目标主机，本选项可以节省您的CoNET流量。',
-                '通过本地缓存浏览纪录，当您再次访问目标服务器时可以增加访问速度，减少网络流量，缓存浏览纪录只针对非加密技术的HTTP浏览有效。CoNET使用强加密技术缓存浏览纪录，确保您的隐私不被泄漏。',
-                '不保存缓存信息。',
-                '设置缓存有效时间，您可以及时更新服务器数据,单位为小时。',
-                '本地Proxy服务器，其他手机电脑和IPad等可通过连结此端口来使用CoNET服务。请设定为3001至65535之间的数字。',
-                '通过设置PATH链接路径可以简单给您的Proxy服务器增加安全性，拒绝没有提供PATH的访问者使用您的Proxy服务器。',
-                '同时捆绑使用代理线路数，可以有效降低大流量集中在一个代理服务线路上，容易造成网络监控者注意的风险。',
-                '指定同Q梯代理进行通讯使用的端口号，通过此设置可以规避您所在网段被通讯屏蔽的端口。'
+        /*0*/   '世界首创的CoNET无IP互联网通讯技术，全程使用强加密Email通讯，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私功能，强抗干扰和超強防火墙穿透能力。缺点是有延迟，网络通讯响应受您所使用的email服务供应商的服务器影响，不适合游戏视频会话等通讯。目前该技术只支持iCloud邮箱。',
+        /*1*/   'CoNET独创明码HTTP混淆流量加密通讯技术，能够隐藏变换您的IP地址高速通讯，隐身和保护隐私，抗干扰和超強防火墙穿透能力。缺点是需要使用您的IP来直接连结代理服务器。如果您只是需要自由访问互联网，则推荐使用本技术。',
+        /*2*/   '域名解释使用CoNET代理服务器端，可以防止域名服务器缓存污染，本选项不可修改。',
+        /*3*/   '互联网数据全程使用CoNET代理，可以匿名上网隐藏您的互联网形踪。',
+        /*4*/   '只有当您的本地网络不能够到达您希望访问的目标时，才使用CoNET代理服务器代为连结目标主机，本选项可以加速网速，但失去隐私保护。',
+        /*5*/   '通过本地缓存浏览纪录，当您再次访问目标服务器时可以增加访问速度，减少网络流量，缓存浏览纪录只针对非加密技术的HTTP浏览有效。CoNET使用强加密技术缓存浏览纪录，确保您的隐私不被泄漏。',
+        /*6*/   '不保存缓存信息。',
+        /*7*/   '设置缓存有效时间，您可以及时更新服务器数据,单位为小时。',
+        /*8*/   '本地Proxy服务器，其他手机电脑和IPad等可通过连结此端口来使用CoNET服务。请设定为3001至65535之间的数字。',
+        /*9*/   '通过设置PATH链接路径可以简单给您的Proxy服务器增加安全性，拒绝没有提供PATH的访问者使用您的Proxy服务器。',
+        /*10*/  '同时使用多条代理线路数，可以有效降低大流量集中在一个代理服务线路，降低被网络监控者发现的风险。此选项仅供收费会员使用。',
+        /*11*/  '指定同Q梯代理进行通讯使用的端口号，通过此设置可以规避您所在网段被通讯屏蔽的端口。',
+        /* 12*/ 'Web实时通讯(WebRTC)客户端浏览器之间通过IP地址直接高速通讯技术，有时被恶意泄漏您的真实IP地址。'
                 ]
             
         },
 
         useInfoMacOS: {
-            title:'<p>本地代理服务器已在后台运行，MacOS和Windows用户可以关闭本窗口。</p>您的其他电子设备，可通过设置本地Proxy伺服器，来使用CoNET连接到互联网',
+            title:'<p>本地代理服务器已在后台运行。</p>您的其他电子设备，可通过设置本地Proxy伺服器，来使用CoNET连接到互联网',
             title1:'MacOS 本地代理服务器设定',
-            proxyServerIp:'<p>代理设置选择：<span style="color: red;">自动代理设置</p>',
+            customProxy: '定制服务器生成完成：',
+            webRTCinfo:'阻止WebRTC漏洞，请使用SOCKS代理设置，检查是否漏洞还在，请点击<a target="_blank" href="/Wrt">这里</a>',
+            wrtTest: '以下为测试结果：',
+            localIpAddress:'如果能看到这个IP地址，由于是本地局域网地址泄漏，无关紧要。',
+            globalIpAddress:'如果显示这个IP，您的浏览器泄漏了您真实的IP地址',
+            proxyServerIp:'<p>代理设置选择：<span style="color: brown;">自动代理设置</p>',
+            wrtTestAreaTitle: 'WebRTC漏洞数据泄漏区域',
             proxyServerPort: 'HTTP和HTTPS代理设定：',
             proxyServerPassword: 'SOCKS代理设定：',
             info:[{
@@ -660,19 +716,21 @@ const infoDefine = [
 
         thirdParty: {
             comesoon:'即将推出',
-            information: 'CoNET应用程序',
-            app:['CoVPN','Co','Co雲存儲','Co郵箱','Co新聞頻道','CoNet業務訂製','Co谷歌','Co推特'],
-            qtgateGateway: 'CoNET提供的高質量上網技術iOPN和@OPN，在CoNET全球16個區域，當場定制您專屬的代理服務器，變換您的IP地址隱身無障礙的訪問互聯網',
-            dimmer: [
-                '高質量定制代理服務器，讓您隱身安全不受注意的網上沖浪。 ',
-                '推特風格隱身匿名去中心化不被封鎖的社交媒體',
-                '安全隱私文件存儲系統',
-                '隱身匿名郵件客戶端，免VPN訪問Gmail',
-                '提供免翻牆接受每日世界新聞',
-                'QTG承接定制各類公眾服務類及跨國企業私有APP業務',
-                '免代理匿名谷歌檢索客戶端',
-                '免代理匿名推特客戶端'
-            ]
+            information: 'CoNET平台',
+            app: ['Co定制代理','CoChat','Co云存储','Co邮件','Co新闻频道','CoNET定制业务','Co谷歌','Co推特', 'Co油管','Co加密货币钱包'],
+            qtgateGateway: 'CoNET提供的高质量上网技术iOPN和@OPN，在CoNET全球16个区域，当场定制您专属的代理服务器，变换您的IP地址隐身无障碍的访问互联网',
+            dimmer: [
+                '高质量量身定制代理服务器业务，让您隐身安全不受注意的网上冲浪。 ',
+                '隐身匿名去中心化不被封锁的社交媒体',
+                '安全隐私文件云存储系统',
+                '隐身匿名邮件客户端，可免翻墙访问Gmail',
+                '免翻墙隐身匿名访问世界头条新闻',
+                'QTG承接定制各类公众服务类及跨国企业私有APP业务',
+                '免翻墙匿名隐身谷歌检索客户端',
+                '免翻墙匿名隐身推特客户端',
+                '免翻墙匿名隐身Youtube客户端，可下载视频',
+                '免翻墙匿名隐身加密货币钱包和交易所'
+            ]
         }, 
 
         useInfoAndroid: {
@@ -774,14 +832,18 @@ const infoDefine = [
         QTGateGateway: {
             title: 'CoNET服务使用详细',
             processing: '正在尝试连接CoNET网络...',
-            error: [ '错误：您的账号下已经有一个正在使用CoNET代理服务器的连接，请先把它断开后再尝试连接。',
-                    '错误：您的账号已经无可使用流量，如果您需要继续使用CoNET代理服务器，请升级您的账户类型。如果是免费用户已经使用当天100M流量，请等待到明天继续使用，如您是免费用户已经用完当月1G流量，请等待到下月继续使用。',
-                    '错误：数据错误，请退出并重新启动CoNET！',
-                    '非常抱歉，您请求的代理区域无资源，请选择其他区域或稍后再试',
-                    '对不起，您所请求连接的区域不支持这样的连接技术，请换其他连接方法或选择其他区域连接'],
+            error: [ 
+            /* 0 */ '错误：您的账号下已经有一个正在使用CoNET代理服务器的连接，请先把它断开后再尝试连接。',
+            /* 1 */ '错误：您的账号已经无可使用流量，如果您需要继续使用CoNET代理服务器，请升级您的账户类型。如果是免费用户已经使用当天100M流量，请等待到明天继续使用，如您是免费用户已经用完当月1G流量，请等待到下月继续使用。',
+            /* 2 */ '错误：数据错误，请退出并重新启动CoNET！',
+            /* 3 */ '非常抱歉，您请求的代理区域无资源，请选择其他区域或稍后再试',
+            /* 4 */ '对不起，您所请求连接的区域不支持这样的连接技术，请换其他连接方法或选择其他区域连接',
+            /* 5 */ '@OPN链接技术不支持公用iCloud邮箱，请撤换通讯用IMAP邮箱，换您自有的iCloud邮箱。'
+                ],
             connected:'已连接。',
-            
+            promo: '促销活动',
             upgrade:'升级账号',
+            accountManager:'账户管理',
             userType:['免费用户','付费用户'],
             datatransferToday:'日流量限额：',
             datatransferMonth:'月流量限额：',
@@ -789,8 +851,8 @@ const infoDefine = [
             monthDatatransfer: '本月可使用流量',
             gatewayInfo: ['代理服务器IP地址：','代理服务器连接端口：'],
             userInfoButton: '使用指南',
-            stopGatewayButton:'切断连接',
-            disconnecting: '正在切断中'
+            stopGatewayButton:'停止所定制的服务器',
+            disconnecting: '正在销毁中...'
         },
 
         topWindow: {
@@ -804,7 +866,7 @@ const infoDefine = [
         },
 
         qtGateView: {
-            title: 'CoNET连接',
+            title: '发送定制代理请求',
             mainImapAccount: 'CoNET通讯用邮箱',
             QTGateConnectStatus: 'CoNET连接状态',
             QTGateConnectResultWaiting: '已向CoNET发送连接请求Email。由于是首次连接CoNET网络，系统需要几分钟时间来完成与您的对接，请耐心等待。',
@@ -845,21 +907,24 @@ const infoDefine = [
         
         thirdParty: {
             comesoon:'まもなく登場します。',
-            information: 'CoNETアプリケーション',
+            information: 'CoNETプラットフォーム',
             qtgateGateway:'CoNETご提供する高品質カスタムゲットウェイサービス、グローバルに１６区域とCoNET独自のiOPNと@OPN技術により、貴方のIPアドレスをカバーして、静かに無障害にインターネットの世界へ可能です。',
-            app:['Co定制代理服务器', 'CoMsg', 'Co云文件存储','Co邮件','Co新闻屋','Co业务定制','Co谷歌','Co推特'],
+            app:['CoGate', 'CoMsg', 'CoBox','CoMail','CoNews','Coカスタム','Co for','Co for','Co for','Coウォレット'],
             
             dimmer: [
                 '高品質カスタムゲットウェイサービス、自由になるインターネットの世界へ',
                 'ツイートスタイルの匿名ソーシャルメディア',
                 '匿名プライバシーファイルストレージ',
                 '匿名メール端末',
-                '匿名世界のニュースをチェック',
-                'CoNETに公衆及び私有ビジネスAPPの作成業務',
+                'グロバールニュースをチェック',
+                'CoNETに公衆及び私有ビジネスカスタム業務',
                 '匿名Googleサーチ端末',
                 '匿名Tweet端末',
+                '匿名Youtube端末、ビデオダウンロードをサポート',
+                '匿名ブロックチェーンウォレットとエクスチェンジ'
             ]
         }, 
+
         account:{
             paymentSuccessTitile: '有難うございました。',
             stripePayment: 'オンライン支払い',
@@ -868,7 +933,7 @@ const infoDefine = [
             QTGatePayRisk: 'CoNETセキュリティ経由でお支払いです。遠慮の場合はStripeセキュリティでのお支払いをしてください。',
             paymentProblem1:'支払い支障がある',
             paymentProblem:'あなた現在いる所在地ではバンク支払いがブラックされている模様です。CoNET経由でのお支払いをしてください。',
-            CancelSuccess:( PlanExpire: string, isAnnual: boolean, returnAmount: number ) => {
+            CancelSuccess: function ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) {
                 return `プランキャンセルしました。${ new Date (PlanExpire).toLocaleDateString() }まで、元プランのままCoNETサービスが使えます。そのあとはCoNETのフリーユーザーと戻ります。${ isAnnual? `元プラン残りus$ ${ returnAmount }は５日ウォキンデイ内お支払い使ったカードに戻ります`:`プラン代自動落しは中止されます`}。これからもよろしくお願い申し上げます。`
             },
             paymentSuccess:'あなたのプランをアップグレードしました。これからもよろしくお願い申し上げます。',
@@ -896,7 +961,8 @@ const infoDefine = [
             monthResetDay:'月レセット日：',
 
             dayBandwidthTitle:'日制限：',
-            upgradeTitle:'プランをアップグレード',
+            upgradeTitle:'アプグランド',
+            planExpirDate: function ( year: string, month: string, day: string ) { return `${ year } 年${ month }月${ day }日`},
             accountOptionButton: 'アカウトオプション',
             DowngradeTitle:'ダウングレードオプション',
             cancelPlan:'キャンセルプラン',
@@ -905,12 +971,12 @@ const infoDefine = [
             payAmountTitile:'お支払い金額合計',
             cardNumber: 'クレジットカード番号',
             multiOpn:'OPN並列ゲットウェイ技術',
-            monthlyAutoPay:( monthCost: number ) => { return `<span>口座振替</span><span class="usDollar" >@ us$</span><span class="amount" >${ monthCost }</span>/月<span>` },
+            monthlyAutoPay: function ( monthCost: number ) { return `<span>口座振替</span><span class="usDollar" >@ us$</span><span class="amount" >${ monthCost }</span>/月<span>` },
             cvcNumber: 'セキュリティコード',
             calcelPayment:'キャンセル',
             doPayment:'お支払いにします',
             postcodeTitle: 'カード所有者郵便番号',
-            annualPay:( annual_monthlyCost: string ) => { return `<span>年払いと月換算</span><span class="usDollar">@ us$</span><span class="amount" >${ getAmount (( Math.round ( parseInt( annual_monthlyCost ) / 0.12 ) / 100 ).toString()) }</span>/月<span>`},
+            annualPay: function ( annual_monthlyCost: number ) { return `<span>年払いと月換算</span><span class="usDollar">@ us$</span><span class="amount" >${ annual_monthlyCost }</span>/月<span>`},
             aboutCancel: 'プランをキャンセルについて',
             expirationYear: 'カード期限',
             canadaCard:'*おカード所有者はカナダ所在者とGST(BC)5.0% 自動加算されます',
@@ -922,7 +988,7 @@ const infoDefine = [
             serverShareData1:'並列ゲットウェイ技術を使う際に、同時使う数が独占数を超える場合には、独占リソースを他人と割合にチェアする場合もあります。',
             maxmultigateway: ['最大二つ並列ゲットウェイ','最大四つ並列ゲットウェイ*','最大四つ並列ゲットウェイ'],
             cancelPlanMessage:'CoNETプランは月毎に計算し、来月のあなたの最初加入した日まで、今のプランのままご利用ですます。キャンセルした日から自動的にCoNETの無料ユーザーになります。おアカウトは(月)払いの場合は、来月の自動払いは中止となります。年払いの場合は、ご使った分に月普通料金と計算し控除してから、お支払いを使ったクレジットカードに戻ります。販促コードまたはテストユーザーにはキャンセルすることができません。',
-            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
+            cancelPlanMessage1: function ( planName: string, isAnnual: boolean, expire: string ) {
                 return `<span>あなたのプランは${ isAnnual ? `一年契約です。キャンセルをした場合は、ご利用して頂いた月に普通料金と請求を計算されます。お返し金額は，お支払って頂いたプラン年契約料金 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span><span> - そのプランの普通月料金 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice( planName, false )}</span><span> X ご利用して頂いた月(本月も含めて)：</span><span class="amount">${ 12 - getRemainingMonth ( expire )}</span><span> = 戻る金額 </span><span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span><span>とまります。７日内お支払って頂いたクレジットカードへ返金とします。</span>`: `月プランです。キャンセルにすると次の更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>に自動更新はしませんです。</span>`}`
             }
         },
@@ -997,8 +1063,14 @@ const infoDefine = [
         },
 
         useInfoMacOS: {
-            title:'ローカルプロキシサーバはバックグランドで実行しています。MacoSとWindowsユーザーはこのウィンドウを閉じても構わないです。他のデバイスはローカルプロキシに設定による、CoNET利用してインターネットへアクセスができます。',
+            title:'ローカルプロキシサーバはバックグランドで実行しています。他のデバイスはローカルプロキシに設定による、CoNET利用してインターネットへアクセスができます。',
             title1:'MacOS プロキシ設定',
+            customProxy: 'サーバ作成しました',
+            webRTCinfo:'WebRTC漏れ対応はSOCKSプロキシ設定をしてください。WebRTC漏れをテストするしたい場合は<a href="/Wrt" target="_blank">ここ</a>をクリックしてください',
+            wrtTest: 'テスト結果は以下です：',
+            wrtTestAreaTitle: 'WebRTC漏れデーターエリア',
+            globalIpAddress:'このIPアドレスが提示したら、あなたの真実IPがWebRTC漏れてしまいます。',
+            localIpAddress:'ここのIPはローカルネットワークIPアドレス漏れです、大したことはないです。',
             proxyServerIp:'<p>プロキシの設定に：<span style="color:red;">自動設置</span></p>',
             proxyServerPort: 'HTTPとHTTPSプロキシは：',
             proxyServerPassword: 'SOCKSプロキシは：',
@@ -1086,85 +1158,86 @@ const infoDefine = [
         },
 
         cover: {
-            firstTitle1: 'CoNET',
+            firstTitle1: 'CoNETプラットフォーム',
             firstTitle2: '隠れて安全自由なネットワークへ',
-            start: 'オプンドア'
+            start: 'オプンドア',
+            proxyStoped: 'カスタマーゲートウェイサーバーが停止しました、再作成をしてください。'
         },
 
         firstNote:  {
-            title: 'CoNETの製品およびサービス（以下「本サービス」）をご利用いただきありがとうございます。本サービスはカナダQTGateシステムズ株式会社が提供しています。',
+            title: 'CoNETの製品およびサービス（以下「本サービス」）をご利用いただきありがとうございます。本サービスはカナダCoNETテクノロジ株式会社（以下はCoNETと言い）が提供しています。',
             firstPart: 'ユーザーは、本サービスを利用することにより、本規約に同意することになります。以下を注意してお読みください。',
             detail:[
                 {
                     header: '本サービスのご利用について',
-                    detail: '本サービス内で入手できるすべてのポリシーを遵守してください。本サービスを不正に利用しないでください。たとえば、本サービスの妨害や、QTGateが提供するインターフェースおよび手順以外の方法による、本サービスへのアクセスを試みてはなりません。'
+                    detail: '本サービス内で入手できるすべてのポリシーを遵守してください。本サービスを不正に利用しないでください。たとえば、本サービスの妨害や、CoNETが提供するインターフェースおよび手順以外の方法による、本サービスへのアクセスを試みてはなりません。'
                 },{
                     header: null,
-                    detail: 'ユーザーは、法律（輸出、再輸出に関して適用される法規制を含みます）で認められている場合に限り、本サービスを利用することができます。ユーザーがQTGateの規約やポリシーを遵守しない場合、またはQTGateが不正行為と疑う行為について調査を行う場合に、QTGateはユーザーに対する本サービスの提供を一時停止または停止することができます。'
+                    detail: 'ユーザーは、法律（輸出、再輸出に関して適用される法規制を含みます）で認められている場合に限り、本サービスを利用することができます。ユーザーがCoNETの規約やポリシーを遵守しない場合、またはCoNETが不正行為と疑う行為について調査を行う場合に、CoNETはユーザーに対する本サービスの提供を一時停止または停止することができます。'
                 },{
                     header: '無IP通信技術OPNネットワークはプライベートに限界があります',
-                    detail: 'OPN無IP通信は弊社の革新的技術であります。あなたはQTGate端末ソフトを使ってQTGateシステムとのコミニュケーションはお客さんが無IPでプライベートな通信を行います。（但しiOPN技術を選択してゲットウェーに接続した場合は、お客さんのIPアドレスをQTGateシステムに提示するのが必要です。）でもお客さんのIPアドレスはeメールプロバイダーのログに記録していたかもしれません。裁判所命令を持つカナダの法執行機関はQTGateのログを得て、eメールプロバイダーのログと合併して、お客さんのプライベートインフォメーションを入手することも可能です。'
+                    detail: 'OPN無IP通信は弊社の革新的技術であります。あなたはCoNET端末ソフトを使ってCoNETシステムとのコミニュケーションはお客さんが無IPでプライベートな通信を行います。（但しiOPN技術を選択してゲットウェーに接続した場合は、お客さんのIPアドレスをCoNETシステムに提示するのが必要です。）でもお客さんのIPアドレスはeメールプロバイダーのログに記録していたかもしれません。裁判所命令を持つカナダの法執行機関はCoNETのログを得て、eメールプロバイダーのログと合併して、お客さんのプライベートインフォメーションを入手することも可能です。'
                 },
                 {
                     header: null,
                     detail: 'ユーザーは、本サービスを利用することによって、本サービスまたはアクセスするコンテンツに対するいかなる知的財産権も取得することはありません。ユーザーは、本サービスのコンテンツの所有者から許可を得た場合や、法律によって認められる場合を除き、そのコンテンツを利用することはできません。本規約は、本サービスで使用されている、いかなるブランドまたはロゴを利用する権利もユーザーに与えるものではありません。本サービス内に表示される、または、本サービスに伴って表示されるいかなる法的通知も、削除したり、隠したり、改ざんしてはなりません。'
                 },
                 {
-                    header: '個人情報保護及びQTGateからのインフォーメーションの受信について',
-                    detail: '本サービスの利用に関して、QTGateはユーザーに対してサービスの告知、管理上のメッセージ、およびその他の情報を送信することができます。ユーザーは、これらの通知について、受け取らないことを選択できる場合があります。'
+                    header: '個人情報保護及びCoNETからのインフォーメーションの受信について',
+                    detail: '本サービスの利用に関して、CoNETはユーザーに対してサービスの告知、管理上のメッセージ、およびその他の情報を送信することができます。ユーザーは、これらの通知について、受け取らないことを選択できる場合があります。'
                 }, {
                     header: null,
-                    detail: 'お客様がQTGateサービスをご利用になる際に、お客様のデータ通信料計算のために、ご利用データ量が自動的に収集および保存されます。限られたログは以下のようです。日付、お客様アカウント、ご利用ゲットウェーエリアとゲットウェーIPアドレス、データ量、アップ又はダウンロード。例：'
+                    detail: 'お客様がCoNETサービスをご利用になる際に、お客様のデータ通信料計算のために、ご利用データ量が自動的に収集および保存されます。限られたログは以下のようです。日付、お客様アカウント、ご利用ゲットウェーエリアとゲットウェーIPアドレス、データ量、アップ又はダウンロード。例：'
                 },{
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@CoNET.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@CoNET.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 }, {
                     header: null,
-                    detail: 'QTGateは以上の情報以外には保存することしません。QTGateは以上の情報をカナダーの裁判所命令を持つカナダの法執行機関に協力することがありえます。カナダ以外のこのログ情報を協力する要請のあなたは、まずカナダ外務省までお問い合わせ下さい：'
+                    detail: 'CoNETは以上の情報以外には保存することしません。CoNETは以上の情報をカナダーの裁判所命令を持つカナダの法執行機関に協力することがありえます。カナダ以外のこのログ情報を協力する要請のあなたは、まずカナダ外務省までお問い合わせ下さい：'
                 },{
                     header: null,
                     detail: '<a class="tag alert" href="http://www.international.gc.ca/">http://www.international.gc.ca/</a>'
                 }, {
                     header: 'ソフトウェアの版権について',
-                    detail: 'QTGateは、本サービスの一環としてユーザーに提供するソフトウェアについて、全世界で適用され、譲渡不可で、非独占的な個人使用ライセンスを無償でユーザーに付与します。このライセンスは、QTGateが提供する本サービスを本規約により許可された方法でユーザーが使用し、その便益を享受できるようにすることを唯一の目的としています。'
+                    detail: 'CoNETは、本サービスの一環としてユーザーに提供するソフトウェアについて、全世界で適用され、譲渡不可で、非独占的な個人使用ライセンスを無償でユーザーに付与します。このライセンスは、CoNETが提供する本サービスを本規約により許可された方法でユーザーが使用し、その便益を享受できるようにすることを唯一の目的としています。'
                 }, {
                     header: null,
                     detail: 'ユーザーは、本サービスまたは本サービスに含まれるソフトウェアのどの部分も、複製、変更、配信、販売、貸与することはできず、そのソフトウェアのソース コードのリバース エンジニアリングや抽出を試みることはできません。'
                 }, {
                     header: '本サービスの変更または終了',
-                    detail: 'QTGateは、常に本サービスの変更および改善を行っています。QTGateは、機能性や機能の追加や削除を行うことができ、本サービス全体を一時停止または終了することができます。ユーザーはいつでも本サービスの利用を終了することができます。QTGateもいつでも、ユーザーに対する本サービスの提供を停止し、または、本サービスに対する制限を追加または新規に設定することができます。'
+                    detail: 'CoNETは、常に本サービスの変更および改善を行っています。CoNETは、機能性や機能の追加や削除を行うことができ、本サービス全体を一時停止または終了することができます。ユーザーはいつでも本サービスの利用を終了することができます。CoNETもいつでも、ユーザーに対する本サービスの提供を停止し、または、本サービスに対する制限を追加または新規に設定することができます。'
                 }, {
                     header: '保証および免責',
-                    detail: 'QTGateは、商業上合理的な水準の技術および注意のもとに本サービスを提供し、ユーザーに本サービスの利用を楽しんでいただくことを望んでいますが、本サービスについて約束できないことがあります。'
+                    detail: 'CoNETは、商業上合理的な水準の技術および注意のもとに本サービスを提供し、ユーザーに本サービスの利用を楽しんでいただくことを望んでいますが、本サービスについて約束できないことがあります。'
                 }, {
                     header: null,
-                    detail: '本規約または追加規定に明示的に規定されている場合を除き、QTGateまたはそのサプライヤーもしくはディストリビューターのいずれも、本サービスについて具体的な保証を行いません。たとえば QTGateは、本サービス内のコンテンツ、本サービスの特定の機能、その信頼性、利用可能性、またはユーザーのニーズに応える能力について、何らの約束もしません。本サービスは「現状有姿で」提供されます。'
+                    detail: '本規約または追加規定に明示的に規定されている場合を除き、CoNETまたはそのサプライヤーもしくはディストリビューターのいずれも、本サービスについて具体的な保証を行いません。たとえば CoNETは、本サービス内のコンテンツ、本サービスの特定の機能、その信頼性、利用可能性、またはユーザーのニーズに応える能力について、何らの約束もしません。本サービスは「現状有姿で」提供されます。'
                 }, {
-                    header: '本サービスに対するQTGateの責任',
-                    detail: '法律で認められる場合には、QTGateならびにそのサプライヤーおよびディストリビューターは、逸失利益、逸失売上もしくはデータの紛失、金銭的損失、または間接損害、特別損害、結果損害もしくは懲罰的損害について責任を負いません。'
+                    header: '本サービスに対するCoNETの責任',
+                    detail: '法律で認められる場合には、CoNETならびにそのサプライヤーおよびディストリビューターは、逸失利益、逸失売上もしくはデータの紛失、金銭的損失、または間接損害、特別損害、結果損害もしくは懲罰的損害について責任を負いません。'
                 }, {
                     header: 'カナダー法律によるサービス禁止対象者',
                     detail:　'あなたはカナダー法律によってサービス禁止対象者ではありませんと確認していた事。'
                 },
                 {
                     header: '事業者による本サービスの利用',
-                    detail: '本サービスを事業者のために利用する場合、その事業者は本規約に同意するものとします。かかる事業者は、QTGateとその関連会社、役員、代理店、従業員を、本サービスの利用または本規約への違反に関連または起因するあらゆる請求申し立て、訴訟、法的措置について、請求申し立て、損失、損害、訴訟、裁判、告訴から生じる法的責任および費用、弁護士費用を含め、免責および補償するものとします。'
+                    detail: '本サービスを事業者のために利用する場合、その事業者は本規約に同意するものとします。かかる事業者は、CoNETとその関連会社、役員、代理店、従業員を、本サービスの利用または本規約への違反に関連または起因するあらゆる請求申し立て、訴訟、法的措置について、請求申し立て、損失、損害、訴訟、裁判、告訴から生じる法的責任および費用、弁護士費用を含め、免責および補償するものとします。'
                 }, {
                     header: '本規約について',
-                    detail: 'QTGateは、たとえば、法律の改正または本サービスの変更を反映するために、本サービスに適用する本規約または特定の本サービスについての追加規定を修正することがあります。ユーザーは定期的に本規約をご確認ください。QTGateは、本規約の修正に関する通知をこのページに表示します。'
+                    detail: 'CoNETは、たとえば、法律の改正または本サービスの変更を反映するために、本サービスに適用する本規約または特定の本サービスについての追加規定を修正することがあります。ユーザーは定期的に本規約をご確認ください。CoNETは、本規約の修正に関する通知をこのページに表示します。'
                 }, {
                     header: null,
                     detail: '追加規定の修正については、該当する本サービス内において通知を表示します。変更は、さかのぼって適用されることはなく、その変更が表示されてから 14 日以降に発効します。ただし、本サービスの新機能に対処する変更または法律上の理由に基づく変更は、直ちに発効するものとします。本サービスに関する修正された規定に同意しないユーザーは、本サービスの利用を停止してください。'
                 }, {
                     header: null,
-                    detail: '本規約と追加規定との間に矛盾が存在する場合には、追加規定が本規約に優先します。本規約は、QTGateとユーザーとの間の関係を規定するものです。本規約は、第三者の受益権を創設するものではありません。ユーザーが本規約を遵守しない場合に、QTGateが直ちに法的措置を講じないことがあったとしても、そのことによって、QTGateが有している権利（たとえば、将来において、法的措置を講じる権利）を放棄しようとしていることを意味するものではありません。'
+                    detail: '本規約と追加規定との間に矛盾が存在する場合には、追加規定が本規約に優先します。本規約は、CoNETとユーザーとの間の関係を規定するものです。本規約は、第三者の受益権を創設するものではありません。ユーザーが本規約を遵守しない場合に、CoNETが直ちに法的措置を講じないことがあったとしても、そのことによって、CoNETが有している権利（たとえば、将来において、法的措置を講じる権利）を放棄しようとしていることを意味するものではありません。'
                 }, {
                     header: null,
-                    detail: 'ある特定の規定が強制執行不可能であることが判明した場合であっても、そのことは他のいずれの規定にも影響を及ぼすものではありません。カナダBC州の抵触法を除き、本規約または本サービスに起因するまたは関連するいかなる紛争に関しても、カナダBC州の法律が適用されます。本規約または本サービスに起因するまたは関連するいかなる主張についても、カナダBC州内に所在する裁判所においてのみ裁判手続を取ることができるものとし、ユーザーとQTGateはその裁判所の対人管轄権に同意するものとします。'
+                    detail: 'ある特定の規定が強制執行不可能であることが判明した場合であっても、そのことは他のいずれの規定にも影響を及ぼすものではありません。カナダBC州の抵触法を除き、本規約または本サービスに起因するまたは関連するいかなる紛争に関しても、カナダBC州の法律が適用されます。本規約または本サービスに起因するまたは関連するいかなる主張についても、カナダBC州内に所在する裁判所においてのみ裁判手続を取ることができるものとし、ユーザーとCoNETはその裁判所の対人管轄権に同意するものとします。'
                 }
             ],
             disagree: 'キャンセル',
-            agreeMent: 'QTGate利用規約とプライバシー'
+            agreeMent: 'CoNET利用規約とプライバシー'
         },
 
         linuxUpdate:{
@@ -1177,7 +1250,8 @@ const infoDefine = [
             step2_detail2: 'アクセス権にポログラムとして実行可能をチェック',
             step3:'旧バージョンCoNETを退出して、新しいCoNETバージョンをダブクリックしてインストールをします。',
             exit: '旧CoNETを退出',
-            tryAgain:'もう一度'
+            tryAgain:'もう一度',
+            refresh:'リロードページ'
         },
 
         topWindow: {
@@ -1195,11 +1269,11 @@ const infoDefine = [
             Ssl: 'Ssl暗号化通信：',
             portName: '通信ポート番号',
             otherPortNumber: 'その他：',
-            Error_portNumber: '通信ポート番号は1から65535までの数字です。',
+            Error_portNumber: '通信ポート番号は1から65535まで、22ではないの数字です。',
             smtpServer: 'SMTP設定',
             smtpServerInput: 'SMTPサーバー名又はIP',
             emailServerPassword: 'Emailパスワード(アプリパスワードお勧め)',
-            imapAccountConform: '<p><dt>以下の事項を確認してから送信ボタンを押してください：</dt></p>このEmailアカンウトはあなたのよく使っているEmailアカンウトと違って、QTGateシステムを使用するのために、一時的新たに作ったEmailアカンウトです。あなたはQTGateにこのEmailアカンウトのフールアクセス権にすることが了承しました。',
+            imapAccountConform: function ( iamp, account ) { return `<p class="ui small header brown">以下の事項をよく確認してから、送信ボタンを押してください：</p><p>このEmailアカンウト「<B class="red">${ iamp }</B>」はあなたがCoNETシステムを使用するのために、一時的新たに作ったEmailアカンウトです。あなたはCoNETにこのEmailアカンウトのアクセス権にすることが了承しました。</p><p>以下の内容をCoNETへ送信することを了承すること：メールアカウント「<B class="red">${ iamp }</B>」とAPPパスワード、メールアドレス「<B class="red">${ account }</B>」、使う言語、タイムゾーン、パブリックキー。</p><p>あなたはCoNETに「<B class="red">${ account }</B>」へCoNETに関わるシステム情報、支払い、アカンウト、販促などを送信することを了承と認可をします。</p>` },
             agree:'私はそのリスクが了承して続きする',
             imapOtherCheckError: 'Emailサーバーに接続ができませんでした。Emailサーバー名又はIPアドレス又は通信ポート番号に間違いがあります、詳細設定で再チェックをしてください。',
             CertificateError: 'Emailサーバーに提示したセキュリティ証明書は信頼できないものです。続くをしたい場合は、詳細設定の中の「セキュリティ証明書信頼でき無くとも接続をする」を選択してください。その場合はあなたのEmailインフォメーションを漏れる可能性があります。',
@@ -1211,13 +1285,30 @@ const infoDefine = [
             connectImap: 'CoNETに接続にします',
             cancelConnect: 'CoNETとの接続を中止します',
             imapItemTitle: '通信用Email詳細設定',
-            imapCheckingStep: ['emailサーバへ接続しています。','emailサーバへIMAP接続しました','emailサーバへSMTP接続しました'],
+            imapCheckingStep: [
+                /* 0 */'emailサーバへ接続しています。',
+                /* 1 */'emailサーバへIMAP接続しました、CoNETからレスポンスを待ちます。',
+                /* 2 */'emailサーバへSMTP接続しました',
+                /* 3 */'CoNETクライアントは接続要請のメールをCoNETシステムへ送信しました、接続を完了するまで時間がかかるのためしばらくお待ちおください。',
+                /* 4 */'CoNETへ接続しました',
+                /* 5 */'emailサーバへIMAP接続しました'
+
+            ],
             imapResultTitle:'IMAPサーバCoNET評価：',
             testSuccess: 'emailサーバのテストが完了しました',
             exitEdit: '退出編集Emailアカンウト',
             deleteImap: 'IMAPアカウトを削除',
-            proxyPortError: 'ポート番号は1000から65535までの数字です。又はこのポート番号は他のアプリが使っています。他の番号にチェンジしてください。',
-            appPassword:'APPパスワードについて'
+            proxyPortError: 'ポート番号は3001から65535までの数字です。又指定したポートは他のアプリが使っています。番号を直してみてください。',
+            appPassword:'APPパスワードについて',
+            imapCheckError: [
+                'Emailサーバーに接続ができませんでした。ネットワークがオフラインか、所在しているネットワークはメール通信プロトコルがサポートしておりません。ネット環境をチェンジしてもう一回してみてください。',
+                'Emailサーバはログインエラーが提示しました。ユーザー名とパスワードを再チェックしてください。',
+                'Emailサーバーに提示したセキュリティ証明書は信頼できないものです。中間者攻撃があるネット環境にいるあもしれないです。ネット環境をチェンジしてもう一回してみてください。',
+                'メール送信の際にエラーが発生しました。そのようなエラーは多分パスワードをAPPパスワードではなく、普通のパースワードを使った模様です。APPパスワードをチェックしてもう一回してみてください。',
+                'ネットはインターネットに接続していない模様です。',
+                'エラーが発生しました。CoNETを一回退出してからもう一回してみてください。',
+                'メールストレージ容量が一杯です、不要なメールを削除してからもう一回してみてください。'
+            ]
         },
 
         Home_keyPairInfo_view: {
@@ -1231,6 +1322,7 @@ const infoDefine = [
             password: '長さ5位以上のパスワードを入力してください',
             password1: '端末パスワード',
             logout: 'ログアウト',
+            deleteKeyPairHaveLogin:'ログインした端末で暗号鍵ペアを削除して下さい。',
             keyID: '暗号鍵ID：',
             deleteKeyPairInfo: '鍵ペアを削除することで、現在のCoNET設定は全部なくなって、一からCoNETの設定をやり直しが必要です。但しあなたのCoNETアカウトEmailアドレスは前回と同じであれば、CoNETアカウトを戻れます。',
             delete: '削除',
@@ -1252,6 +1344,9 @@ const infoDefine = [
             emailAddress: 'CoNETアカウトのEmailアドレス(必須), ',
             SystemAdministratorNickName: 'ニックネーム(必須)',
             creatKeyPair: '暗号鍵ペアを生成...',
+            keyPairCancel: '暗号鍵ペアの生成をキャンセルしました',
+            keyPairGenerateError: '暗号鍵ペアの生成にエラーが発生しました、後ほどもう一回してみて下さい',
+            keyPairGenerateSuccess: '暗号鍵ペアの生成は完了しました',
             systemPassword: 'CoNET端末パスワードの設定',
             stopCreateKeyPair: '暗号鍵ペア生成をキャンセル',
             cancel: '操作停止',
@@ -1260,7 +1355,7 @@ const infoDefine = [
             systemAdministratorEmail: 'RSA暗号鍵ペア生成',
             GenerateKeypair: '<em>強秘匿性通信するのために、RSA暗号鍵ペアを生成中、大量なランダム数字が発生し、数分かかる場合もあります、4096ビットの場合、特に時間がかかります、しばらくお待ち下さい。RSA暗号技術について、ウィキペディア百科辞典を参考してください：' +
                 `<a href='https://ja.wikipedia.org/wiki/RSA暗号' target="_blank" onclick="return linkClick ('https://ja.wikipedia.org/wiki/RSA暗号')">https://ja.wikipedia.org/wiki/RSA暗号</a></em>`,
-            inputEmail: 'お疲れ様です、最後の設定をしましょう。このRSA暗号鍵ペアは本システムに重要な存在です、ユーザーのCoNETへ身元証明、本システムデータを秘密化、CoNETシステムとデータ通信時この暗号鍵ペアを使います。パースワードはCoNETへ保存しませんですから、大事にメモしてください。<em style="color:red;">CoNETはネットワークの制限があるエリアにブラックリスト入っております、あなたはCoNETからのemailは受信不能になりますから、CoNETユーザへ登録完了することができない恐れがございます。</em>',
+            inputEmail: 'お疲れ様です、最後の設定をしましょう。このRSA暗号鍵ペアは本システムに重要な存在です、ユーザーのCoNETへ身元証明、本システムデータを秘密化、CoNETシステムとデータ通信時この暗号鍵ペアを使います。パースワードはCoNETへ保存しませんですから、大事にメモしてください。<em style="color:brown;">CoNETはネットワークの制限があるエリアにブラックリスト入って恐れがあります、ここに制限があるエリアのメールサービスを入れるとCoNETからのメールが受信不能になる可能性もあります、CoNETへ登録完了することができない場合もあります。</em>',
             accountEmailInfo:'CoNETドメイン名は、ファイヤウォールがある場合はブラックリストに入っている可能性がありますから、CoNETシステムへ登録完了することができません。その場合はファイヤウォール外側のEmailシステムを利用してください。'
         },
 
@@ -1293,14 +1388,18 @@ const infoDefine = [
                 '同じEmailアカンウトが既に存在します。',
                 'CoNETと接続ができていません！',
                 'ご利用メールアドレスのメールボックス容量がいっぱいになっています。'
+            ],
+            CoNET_requestError: [
+                /* 0 */'CoNETが応答していなかったです。CoNET通信を再確立しています。しばらくお待ちください！ ',
+                /* 1 */'無効な操作です！'
             ]
         },
 
         emailConform: {
             activeViewTitle:'鍵ペア検証',
             requestReturn: ['エラー発生しました、それは短時間内多数の請求をしたことです。','検証メールを発送しました。'],
-            info1_1:`鍵ペア検証は未完成です。CoNETは宛先 「`,
-            info1_2: `」 に検証メールをしました。メールボックスをチェックしてください。CoNETから多数メールの場合は、最後のを選んでください。CoNETからのメールが見つからない場合は鍵ペアを生成するメールアドレスを正しいかどうかダブチェックしてください。または鍵ペアを削除して新しい鍵ペアを再作成をしてください。`,
+            info1_1:`鍵ペア検証は未完成です。「検証Emailを発行」を押してからメールボクス「`,
+            info1_2: `」をチェックしてください。CoNETから多数メールの場合は、最後のを選んでください。CoNETからのメールが見つからない場合は、鍵ペアを生成するメールアドレスを正しいかどうか、ダブチェックしてください。または鍵ペアを削除して新しい鍵ペアを再作成をしてください。`,
             info2: 'コピーするのは「-----BEGIN PGP MESSAGE-----」から「-----END PGP MESSAGE-----」まで全ての内容をしてください。',
             emailTitle: 'CoNETをご利用頂いて誠に有難うございます',
             emailDetail1: '',
@@ -1309,32 +1408,34 @@ const infoDefine = [
             bottom1_1: '以上',
             bottom1_2: 'CoNETチームより',
             conformButtom: '検 証',
-            reSendRequest:'検証Emailを再発行',
+            reSendRequest:'検証Emailを発行',
             formatError: [
                 'フォーマットエラー、コピーするのは「-----BEGIN PGP MESSAGE-----」から「-----END PGP MESSAGE-----」まで全ての内容をしてください。',
                 'この内容で暗号化解除ができませんでした。鍵ペアEmailアカンウトメールボックス再検査し、CoNETから最後のを選んでください。または鍵ペアを削除して、鍵ペア再発行してください。',
                 'CoNETに接続するのはエラーが発生した、一回退出し、再起動して接続をしてください。',
-                '検証できません！CoNETシステムは接続を切断しました、新たな検証をCoNETアカンウトメールボックスに届きます、まずCoNET再起動してから、再検証をください。',
+                '検証できません！CoNETから多数メールの場合は、最後のを選んでください。',
                 'あなたのCoNETには問題があります、鍵ペアを削除して一から再セットアップしてください。',
-                'CoNETシステムは故障があります、後からもう一度試しにしてください',
+        /*5*/   'ごめんなさい、CoNETシステムは応答してくれません、オフラインかもしれません。後からもう一度試しにしてください',
                 'あなたの今日データ通信はリミットになっていますので、明日まで待ってください。またはユーザー種類をアップグレードをしてください',
                 '通信用IMAPの設定にエラーがあるか又はそのタープのIMAPアカンウトがCoNETサポートしません。よくチェックしてもう一回試しにしてください。',
                 '選択していたゲットウェーエリアは只今接続不能になっております、後ほどもう一度試しにしてください。',
                 'IMAPアカウトでEMAIL送信する際エラーが発生しました、一回退出し、起動して見てくださいね。重複発生した場合はIMAPアカウトのウェーブページでアカウトをアンロック操作を必要かもしれない。',
-                'CoNETエラーが発生したした。一回退出してCoNETを再起動してください。',
-                'アララー、あなたには負けるそ。'
+                'ページセッションが終了しました。続行するにはページを更新するか、またCoNETを再起動してください',
+                'CoNETプラットフォームが故障になったと思いますが、CoNETを再起動してください'
             ],
             activeing: '通信中'
         },
 
         QTGateRegion: {
-            title: '高級カスタマーゲートウェイサービスエリア',
+            title: '高品質カスタマーゲートウェイサービスエリア',
             speedTest: 'スピードテスト：',
             available: 'サービス中',
             unavailable: '準備しています',
-            requestPortNumber: 'サーバーとの通信ポート:',
+            CoGateRegionStoped:'ゲートウェイサーバーシャットダウンされました。',
+            requestPortNumber: 'ゲートウェイサーバーとの通信ポート:',
             proxyDomain:'ドメイン検索はCoNETゲットウェイ側に依頼します。',
             setupCardTitle: '接続技術:',
+            paidUse:'このエリアは契約ユーザーだけ使えます。',
             MultipleGateway: '並列使うゲットウェイ数',
             dataTransfer: '通信データは：',
             dataTransfer_datail: ['全てのデータをOPN経由','ターゲットサーバへ到達不能時だけ'],
@@ -1346,42 +1447,51 @@ const infoDefine = [
             option: '詳細設定',
             localPath: 'ローカルプロキシポートPATHを指定します。',
             outDoormode: '接受外網訪問',
+            WebRTCleak:'WebRTC漏れ対応',
+            WebRTCleakInfo: 'EtoEのゲイムやチャットなど動作しないかもしれません。',
             pingError:'CoNETゲットウェイエリアスピードチェックエラーが発生しました。一回CoNETを終了して、管理者としてCoNETを再起動をして、スピードチェックをしてください。',
             QTGateRegionERROR:['CoNETへ接続要請メールの送信ができなかったです。IMAPアカウントの設定を調べてください。',
             ''],
-            sendConnectRequestMail: ['CoNETクライアントはCoNETシステムとの接続が切れた。再接続要請メールをCoNETシステムへ送信しました、接続を完了するまで時間がかかるのためしばらくお待ちおください。',
-                                    'CoNETに長い間ご利用していなっかた時、接続は切れた場合もあります。'],
+            sendConnectRequestMail: [
+                'CoNETクライアントはCoNETシステムとの接続が切れた。再接続要請メールをCoNETシステムへ送信しました、接続を完了するまで時間がかかるのためしばらくお待ちおください。',
+                'CoNETに長い間ご利用していなっかた時、接続は切れた場合もあります。'],
             GlobalIp: 'グロバールIP:',
-            GlobalIpInfo:'要注意：【CoNET接続】をおすとあなたのグロバールIPアドレスをCoNETシステムに送信しますので、それを遠慮すれば【@OPN】接続を選んでください。【@OPN】が見つからない場合は、@OPN技術がiCloudしか対応しておりません。',
+            GlobalIpInfo:'要注意：【CoNET接続】をおすとあなたのグロバールIPアドレスをCoNETシステムに送信しますので、それを遠慮すれば【@OPN】接続を選んでください。@OPN技術がサンフランシスコリージョンに、iCloudメールしか対応しておりません。',
             cacheDatePlaceDate: [{ name:'1時間', id: 1 }, { name:'12時間', id: 12 },{ name:'一日', id: 24 }, { name:'15日', id: 360 }, { name:'1月', id: 720 }, { name:'6月', id: 4320 }, { name:'永遠', id: -1 }],
             connectQTGate:'CoNETゲットウェーエリアインフォメーションを取得しています...',
             atQTGateDetail: [
-                'CoNETの世界初のIP不要な通信技術です。暗号化したEmailメッセージを通じたゲットウェイに接続することで、身を隠して誰も知らないうちにインターネットへ、プライバシーと強くファイヤウォールをうまくすり抜けることができます。但しお使いメールサーバの性能に次第スピードが遅くなり、長い遅延など短所があります、ゲームやビデオチャットなどに通信障害出る可能性があります。この技術はiCloudアカンウトのみ対応です',
-                'CoNETオリジナル技術のトラフィックをHTTPに偽装した暗号化通信技術です。あなたのIPを使ってゲットウェイに直接接続することで、高速通信とプライバシー、強くファイヤウォールをうまくすり抜けることができます。インターネット自由アクセスのためにCoNETを使うことになら、これをおすすめです。',
-                'ドメイン検索をCoNETゲットウェイ側にすることで DNS cache pollution を防ぐことができます。この選択は必要です。',
-                '全てインターネットデータをCoNETゲットウェイに通じてすることで、匿名でインターネットアクセスします。',
-                'ローカルネットワークが目標サーバに到達不能な際に、CoNETゲットウェイ通じてします。このことでCoNETデータ通信量節約することができます。',
-                'アクセスしたWebサイトを一時ファイルに保持することで、高速レスポンスが利用可能となります、CoNETはいつも暗号化したデータを本機に保存します。但し暗号化通信には不対応です。',
-                'キャッシュを保存しません。',
-                'キャッシュ有効期限の設定によって、いつもサーバ側の最新情報を入手することができます。単位は時間です。',
+        /*0*/   'CoNETの世界初のIP不要な通信技術です。暗号化したEmailメッセージを通じたゲットウェイに接続することで、身を隠して誰も知らないうちにインターネットへ、プライバシーと強くファイヤウォールをうまくすり抜けることができます。但しお使いメールサーバの性能に次第スピードが遅くなり、長い遅延など短所があります、ゲームやビデオチャットなどに通信障害出る可能性があります。この技術はiCloudアカンウトのみ対応です',
+        /*1*/   'CoNETオリジナル技術のトラフィックをHTTPに偽装した暗号化通信技術です。あなたのIPを使ってゲットウェイに直接接続することで、高速通信とプライバシー、強くファイヤウォールをうまくすり抜けることができます。インターネット自由アクセスのためにCoNETを使うことになら、これをおすすめです。',
+        /*2*/   'ドメイン検索をCoNETゲットウェイ側にすることで DNS cache pollution を防ぐことができます。この選択は必要です。',
+        /*3*/   '全てインターネットデータをCoNETゲットウェイに通じてすることで、匿名でインターネットアクセスします。',
+        /*4*/   'ローカルネットワークが目標サーバに到達不能な際に、CoNETゲットウェイ通じてします。このことはネットスピードがアップできますが、プライバシーが無くなります。',
+        /*5*/   'アクセスしたWebサイトを一時ファイルに保持することで、高速レスポンスが利用可能となります、CoNETはいつも暗号化したデータを本機に保存します。但し暗号化通信には不対応です。',
+        /*6*/   'キャッシュを保存しません。',
+        /*7*/   'キャッシュ有効期限の設定によって、いつもサーバ側の最新情報を入手することができます。単位は時間です。',
+        /*8*/   'ローカルプロキシサーバーが他のデバイスをこのポートに接続によってCoNETデータの通信を利用可能です。3001から65535の間の数字を入れてください。',
 
-                'ローカルプロキシサーバーが他のデバイスをこのポートに接続によってCoNETデータの通信を利用可能です。3001から65535の間の数字を入れてください。',
-
-                'ローカルポロックPATHを指定することで、あなたのローカルポロックサーバを簡単セキュリティを与えられます。無断使用を禁止することができます。',
-                '同時に使うゲットウェイ数目を指定します。この技術はネットワークの大流量をいくつかのIPアドレスに分散して、監視者から逃げられます。',
-                'CoNETゲットウェーとの通信ポート番号を指定します。あなた所在するネットワークの制限された通信ポートから避けることができます。'
+        /*9*/   'ローカルポロックPATHを指定することで、あなたのローカルポロックサーバを簡単セキュリティを与えられます。無断使用を禁止することができます。',
+        /*10*/   '同時に使うゲットウェイ数目を指定します。この技術はネットワークの大流量をいくつかのIPアドレスに分散して、監視者から逃げられます。この機能は有料会員しかのです。',
+        /*11*/   'CoNETゲットウェーとの通信ポート番号を指定します。あなた所在するネットワークの制限された通信ポートから避けることができます。',
+        /*12*/   'Web Real-Time Communication (WebRTC)は、ブラウザ間で仲介なしのIPアドレス直接的な、高速やり取りを可能にするオープン標準技術です。悪用の場合は、真実のIPアドレスを検出するをWebRTC漏れと呼ばれるものです'
             ]
         },
 
         QTGateGateway: {
             title: 'CoNETサービス使用詳細',
             processing: 'CoNETネットワークへ接続中...',
-            error: ['エラー：あなたのアカンウトに既にCoNETゲットウェイに接続しているクライアントがありますが、その接続を退出してからもう一度接続してください。',
-                    'エラー：あなたのアカンウトにCoNETゲットウェイデータ通信制限になっております。もし引き続きご利用を頂きたいなら、アカンウトをアップグレードにしてください。フリーアカウントの場合は毎日100M、毎月1GBの通信制限があります。',
-                    'エラー：データフォーマットエラー、CoNETをリスタートしてください。','ごめんなさい、ご請求したゲットウェイエリアは準備中です。そのたのエリアを選ぶか、後ほど接続をしてください。',
-                    'エラー：請求した接続方法はこのエリアに対応しておりません、他のエリアに変更するか他の接続方法へください。'],
+            error: [
+        /* 0 */     'エラー：あなたのアカンウトに既にCoNETゲットウェイに接続しているクライアントがありますが、その接続を退出してからもう一度接続してください。',
+        /* 1 */     'エラー：あなたのアカンウトにCoNETゲットウェイデータ通信制限になっております。もし引き続きご利用を頂きたいなら、アカンウトをアップグレードにしてください。フリーアカウントの場合は毎日100M、毎月1GBの通信制限があります。',
+        /* 2 */     'エラー：データフォーマットエラー、CoNETをリスタートしてください。','ごめんなさい、ご請求したゲットウェイエリアは準備中です。そのたのエリアを選ぶか、後ほど接続をしてください。',
+        /* 3 */     'エラー：請求した接続方法はこのエリアに対応しておりません、他のエリアに変更するか他の接続方法へください。',
+        /* 4 */     '@OPN接続をしたいなら、公衆iCloudアカウントに対応できません、ご自分のiCloudアカウントをCoNET通信アカウントにしてください。'
+                ],
+                    
             connected:'接続しました。',
+            promo: 'プロモーション',
             upgrade:'アップグレードアカンウト',
+            accountManager:'アカンウト',
             userType: ['無料ユーザー','月契約'],
             datatransferToday:'日通信量制限：',
             datatransferMonth:'月通信量制限：',
@@ -1389,21 +1499,21 @@ const infoDefine = [
             monthDatatransfer: '今月使える通信量',
             gatewayInfo: ['ゲットウェイIPアドレス：','ゲットウェイ接続ポート番号：'],
             userInfoButton: '使用ガイド',
-            stopGatewayButton:'ゲットウェイ接続を切る',
-            disconnecting: '接続を切っています'
+            stopGatewayButton:'ゲットウェイサーバを停止します',
+            disconnecting: 'ゲットウェイサーバを破壊しています'
         },
         
         qtGateView: {
-            title: 'CoNET接続',
+            title: 'CoNETへカスタムサーバーの作成を要請',
             QTGateConnectResultWaiting: 'CoNETへ接続請求メールを送信しました。初めてのCoNETへ接続請求ですから、接続完成したまで数分かかる場合もあるかもしれませんが、暫くお待ちをください。',
             mainImapAccount: 'CoNETへ情報交換用Emailアカンウト',
             QTGateDisconnectInfo: 'CoNETと接続はしておりません、通信専用Emailを選択してCoNETへ接続メールを送信します。',
             QTGateConnectError: ['CoNETへメールの送信にエラーが発生しました。通信専用Emailをチェックしてください。'],
             QTGateConnectStatus: 'CoNET接続状態',
             QTGateConnectResult: ['未接続、クリックと接続します。', 'CoNETへ接続中.', 'CoNETに接続しました。', 'CoNETへ接続にエラーが発生しました。IMAP設定を立ち直すしてください。',
-                'QTGateに接続しました。'],
+                'CoNETに接続しました。'],
             QTGateSign: ['あなたの鍵ペア状態','CoNETに信頼サインがないです','CoNETに信頼サインを取得したことで、CoNETのユーザーの間にファイル又はインフォーメーションなど秘密情報を交換する際、あなたの身元証明となります。本人以外のを区別することができます。あなたも持っている鍵ペアで他のCoNETユーサーに信頼サインすることで、あるCoNETユーサーを信頼関係確定することができます。',
-                'QTGateに信頼サインを取得しています','CoNETシステムエラー、CoNETを再起動してからもう一度してみてください。もし直れないならCoNETを一から再インストールしてください。','CoNETシステムエラー']
+                'CoNETに信頼サインを取得しています','CoNETシステムエラー、CoNETを再起動してからもう一度してみてください。もし直れないならCoNETを一から再インストールしてください。','CoNETシステムエラー']
         },
 
         feedBack: {
@@ -1439,20 +1549,22 @@ const infoDefine = [
             accountError:'Twitter return error: Invalid or expired token. error. Please check your account APP information and try again.'
         },
         thirdParty: {
-            information: 'CoNET APPs',
+            information: 'CoNET Platform',
             comesoon:'Come soon.',
             qtgateGateway: 'CoGate gateway service. High speed, total privacy, ultra secure and easy to use. Your gateway to a secure and open internet.',
-            app:['CoGate', 'CoMsg', 'CoBox', 'CoMail', 'CoNewsChannels','Co Custom', 'Co for Google', 'Co for Tweet'],
+            app:['CoGate', 'CoMsg', 'CoBox', 'CoMail', 'CoNews','Co Custom', 'Co for', 'Co for','Co for','CoWallet'],
             
             dimmer: [
                 'Advanced private custom gateway service',
-                'Private and secure, decentralized Tweet style social media',
-                'The secure and Private cloud storage and file sharing',
+                'Private and secure, decentralized social media',
+                'Private cloud storage and file sharing',
                 'Privacy email client',
                 'Discover your world every day',
                 'Custom business solution for public or private APPs in CoNET',
                 'Privacy Google search client',
-                'Privacy Tweet client'
+                'Privacy Tweet client',
+                'Privacy Youtube client. May download Youtube video via 3rd-party webside.',
+                'Privacy blockchain wallet'
             ]
         }, 
         account:{
@@ -1466,7 +1578,7 @@ const infoDefine = [
             paymentSuccess:'Your plan has beed upgraded.',
             qtgateTeam: 'The CoNET Team',
             networkShareTitle:'Bandwidth',
-            CancelSuccess: ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) => {
+            CancelSuccess: function ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) {
                 return `Your subscriptions was cancelled. You may keep use CoNET service with this plan until ${ new Date( PlanExpire ).toLocaleDateString() }. Restrictions apply to free accounts and accounts using promotions. ${ isAnnual ? `Refund amount us$${ returnAmount } will return to your paid card account in 5 working day.` : `Automatically canceled.` } `
             },
             currentPlanExpire: ['Plan expires on: ','Renews at','monthly reset day '],
@@ -1483,7 +1595,8 @@ const infoDefine = [
             MonthBandwidthTitle:'Gateway Bandwidth：',
             dayBandwidthTitle:'Day limited：',
             bandwidthBalance:'Bandwidth remaining: ',
-            upgradeTitle: 'Upgrade account plan',
+            upgradeTitle: 'Upgrade',
+            planExpirDate: function ( year: string, month: string, day: string ) { return `${ month }/${ day } ${ year }`},
             accountOptionButton: 'Account option',
             planPrice: 'Plan price：',
             monthResetDay:'Monthly reset day: ',
@@ -1495,7 +1608,7 @@ const infoDefine = [
             multiOpn:'OPN multi-gateway technology',
             MonthBandwidthTitle1:'Bandwidth',
             serverShare:'Gateway',
-            monthlyAutoPay: ( monthCost: number ) => { return `<span>Billed Monthly</span><span class="usDollar" >@ us$</span><span class="amount" >${ monthCost }</span>/mo<span>` },
+            monthlyAutoPay: function ( monthCost: number ) { return `<span>Billed Monthly</span><span class="usDollar" >@ us$</span><span class="amount" >${ monthCost }</span>/mo<span>` },
             cardNumber: 'Card number',
             paymentProcessing:'Connecting...',
             calcelPayment:'Cancel',
@@ -1504,7 +1617,7 @@ const infoDefine = [
             postcodeTitle: 'Card owner postcode',
             payAmountTitile:'Amount',
             cvcNumber: 'Card Security Code',
-            annualPay:( annual_monthlyCost: string ) => { return `<span>Billed Annually</span><span class="usDollar">@ us$</span><span class="amount" >${ getAmount (( Math.round ( parseInt( annual_monthlyCost ) / 0.12 ) / 100 ).toString()) }</span>/mo<span>`},
+            annualPay: function ( annual_monthlyCost: string ) { return `<span>Billed Annually</span><span class="usDollar">@ us$</span><span class="amount" >${ annual_monthlyCost }</span>/mo<span>`},
             canadaCard:'*For Canadian residents, GST (5%) will be applied automatically.',
             multiRegion:['multi-gateway in single region','multi-gateway in multi-regions*','multi-gateway in multi-regions*','multi-gateway in multi-regions'],
             continue:'Next step',
@@ -1515,7 +1628,7 @@ const infoDefine = [
             aboutCancel: '*About Subscription cancellation',
             cancelPlanMessage: '<span>You may cancel your CoNET subscription at any time from within the this app. You will continue to have access to the CoNET services through the end of your paid period until all remaining subscription time in your account is used up. Please refer to the </span><a class="ui olive tiny label">Terms of Service</a> for cancellation and refund policy. Restrictions may apply to free plans and promotional accounts.',
             serverShareData1:'Your dedicated server will be share ratio when you connected over your dedicated count via use Multi-gateway technology.',
-            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
+            cancelPlanMessage1: function ( planName: string, isAnnual: boolean, expire: string ) {
                 return `<span>Your are on ${ isAnnual ? `annual payment plan</span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span><span>. ${ getRemainingMonth ( expire )} month${ getRemainingMonth ( expire ) > 1 ? 's': '' } are available on your account. Your refund amount will be </span><span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span>.`: `monthly, it will not be renew at </span><span class="amount">${ nextExpirDate ( expire ).toLocaleDateString() }</span><span> if you cancel this plan.</span>`}`
             }
         },
@@ -1579,9 +1692,10 @@ const infoDefine = [
         },
 
         cover: {
-            firstTitle1: 'CoNET',
+            firstTitle1: 'CoNET Platform',
             firstTitle2: 'Security Privacy And Freedom on the Internet',
-            start: 'ENTER NOW'
+            start: 'ENTER NOW',
+            proxyStoped: 'Gateway server shutdown. Please rebuild try again.'
         },
 
         useInfoiOS: {
@@ -1660,10 +1774,16 @@ const infoDefine = [
         },
 
         useInfoMacOS: {
-            proxyServerIp:'<p>Proxy setup: <span style="color: red;">Automatic or Auto-Config</span></p>',
+            proxyServerIp:'<p>Proxy setup: <span style="color: brown;">Automatic or Auto-Config</span></p>',
             proxyServerPort: 'HTTP & HTTPS proxy setup:',
+            webRTCinfo:'Stop WebRTC leak: Please use SOCKS proxy setup. Click <a href="/Wrt" target="_blank">here</a> to check WebRTC leak.',
+            wrtTest: 'Test result: ',
+            customProxy: 'Custom gateway server ready',
+            wrtTestAreaTitle: 'WebRTC leak area',
             proxyServerPassword: 'SOCKS proxy setup:',
-            title:'Local proxy server is running at background. MacOS and windows user may close this window. All other devices can access internet via local proxy setup to use the CoNET OPN.',
+            localIpAddress:'This is intronet IP address, No leak.',
+            globalIpAddress:'This is your real IP address, If show this it is WebRTC leak.',
+            title:'Local proxy server is running at background. All other devices can access internet via local proxy setup to use the CoNET OPN.',
             title1:'MacOS proxy setup',
             info:[{
                 title:'Open the control panel, click on network.',
@@ -1815,13 +1935,14 @@ const infoDefine = [
             step2_detail2: 'Check allow executing file as program in Permissions tab.',
             step3:'Exit old version of CoNET and double click the new CoNET file to run install.',
             exit: 'Exit CoNET',
-            tryAgain:'Try again'
+            tryAgain:'Try again',
+            refresh:'Refresh page.'
         },
 
         imapInformation: {
             title: 'Email account to use by OPN.',
-            tempImapAccount: `Have problem with your IMAP enabled email account? <a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud-temporary-account')">get temporary account.</a>`,
-            infomation: `Please provide an IMAP enabled email account to be used with CoNET’s OPN services. The account name and password will be required. For your personal privacy, please consider registering a new email account to use. CoNET currently supports <a href="#" onclick="return linkClick('https://www.icloud.com/')">Apple iCloud</a>, <a href="#" onclick="return linkClick('https://outlook.live.com/owa/')">Outlook Mail</a>, <a href="#" onclick="return linkClick('https://login.yahoo.com/')">Yahoo Mail</a>, <a href="#" onclick="return linkClick('https://mail.google.com')">GMAIL</a>, <a href="#" onclick="return linkClick('https://www.gmx.com/')">GMX</a>, <a href="#" onclick="return linkClick('https://www.zoho.com/mail/')">ZOHO</a>. (@OPN currently supports iCloud mail only.) For passwords, it is recommended use a <a href="#" onclick="return linkClick('https://help.yahoo.com/kb/SLN15241.html')">generated app-specific password.</a> If using <a href="#" onclick="return linkClick('https://help.yahoo.com/kb/two-step-verification-sln5013.html')">2-step verification</a>, we recommend using a free anonymous SMS receiving site to receive SMS codes, ( such as <a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a>, or <a href="#" onclick="return linkClick('https://www.google.com/search?q=free+anonymous+SMS+receiving+site&oq=free+anonymous+SMS+receiving+site&aqs=chrome..69i57.268j0j4&sourceid=chrome&ie=UTF-8')" >others</a> ).`,
+            tempImapAccount: `Have problem with your IMAP enabled email account? <a href="#" onclick="return linkClick ('https://github.com/QTGate/QTGate-Desktop-Client/wiki/iCloud-temporary-account')"> Get temporary account.</a>`,
+            infomation: `Please provide an IMAP enabled email account to be used to communication with CoNET network. The account name and password will be required. For your personal privacy, please consider registering a new email account to use. CoNET currently supports <a href="#" onclick="return linkClick('https://www.icloud.com/')">Apple iCloud</a>, <a href="#" onclick="return linkClick('https://outlook.live.com/owa/')">Outlook Mail</a>, <a href="#" onclick="return linkClick('https://login.yahoo.com/')">Yahoo Mail</a>, <a href="#" onclick="return linkClick('https://mail.google.com')">GMAIL</a>, <a href="#" onclick="return linkClick('https://www.gmx.com/')">GMX</a>, <a href="#" onclick="return linkClick('https://www.zoho.com/mail/')">ZOHO</a>. (@OPN currently supports iCloud mail only.) For passwords, it is recommended use a <a href="#" onclick="return linkClick('https://help.yahoo.com/kb/SLN15241.html')">generated app-specific password.</a> If using <a href="#" onclick="return linkClick('https://help.yahoo.com/kb/two-step-verification-sln5013.html')">2-step verification</a>, we recommend using a free anonymous SMS receiving site to receive SMS codes, ( such as <a href="#" onclick="return linkClick('http://receive-sms-online.com/')">receive-sms-online.com</a>, <a href="#" onclick="return linkClick('https://sms-online.co/receive-free-sms')" >sms-online.co</a>, <a href="#" onclick="return linkClick('https://receive-a-sms.com/')" >receive-a-sms.com</a>, or <a href="#" onclick="return linkClick('https://www.google.com/search?q=free+anonymous+SMS+receiving+site&oq=free+anonymous+SMS+receiving+site&aqs=chrome..69i57.268j0j4&sourceid=chrome&ie=UTF-8')" >others</a> ).`,
             serverDetail: 'settings:',
             imapServer: 'IMAP server setup',
             imapServerInput: 'IMAP server name or IP address',
@@ -1832,8 +1953,8 @@ const infoDefine = [
             smtpServer: 'SMTP server setup',
             smtpServerInput: 'SMTP server name or IP address',
             emailServerPassword: 'Email account password ( app password )',
-            Error_portNumber: 'Port number should be from 1 to 65535.',
-            imapAccountConform: '<p><dt>By clicking submit you are agreeing to:</dt></p>This email is a temporary account for use with CoNET services. CoNET may have full access to this account in use of CoNET’s services.',
+            Error_portNumber: 'Port number should be from 1 to 65535 and not be 22.',
+            imapAccountConform: function ( imap, account ) { return `<p class="ui small header brown">By clicking submit you are agreeing to:</p><p class="grey">This [<B class="red">${ imap }</B>] email is a temporary account for use with CoNET services. CoNET may have full access to this account in use of CoNET’s services.</p><p>CoNET platform will send a email include: [<B class="red">${ imap }</B>] & APP password, email [<B class="red">${ account }</B>] address, public key, timezone, used language.</p><p>You may receive emails from CoNET.</p>`},
             agree: `I understand and agree to continue.`,
             imapOtherCheckError: 'Cannot connect to email server! Server name, IP address or Port number may have a mistake. Please check the details of your email setup!',
             CertificateError: 'Certificate for this email server is not trusted. Please select "Keep connected even if certificate is not trusted" in settings if you still want to connect. Your email login information maybe leaked to this email server!',
@@ -1845,19 +1966,36 @@ const infoDefine = [
             connectImap: 'Connect to CoNET',
             cancelConnect: 'Stop connecting to CoNET.',
             imapItemTitle: 'Email account details:',
-            imapCheckingStep: ['Trying to connect to email server.','Connected to email server with IMAP.','Connected to email server with SMTP.'],
+            imapCheckingStep: [
+                /* 0 */'Trying to connect to email server.',
+                /* 1 */'Connected to email server with IMAP. Waiting response from CoNET.',
+                /* 2 */'Connected to email server with SMTP.',
+                /* 3 */'Please wait a moment, connecting to CoNET network.',
+                /* 4 */'Connected to CoNET',
+                /* 5 */'Connected to email server with IMAP'
+
+            ],
             imapResultTitle: 'IMAP Server CoNET Communication Rating: ',
             testSuccess: 'Email server setup success!',
             exitEdit: 'Exit edit email account',
             deleteImap: 'Delete IMAP account.',
-            proxyPortError: 'Port number should be a number from 1000 to 65535. Or this port is being used by another process. Please try another port number.',
-            appPassword:'About APP password.'
+            proxyPortError: 'Port number should be a number from 3001 to 65535. Or this port is being used by another process. Please try another port number.',
+            appPassword:'About APP password.',
+            imapCheckError: [
+                /* 0 */'Cannot connect to email server! Your network may offline or do not support IMAP protocol.',
+                /* 1 */'Invalid login username or password! Please check username and password.',
+                /* 2 */'Certificate for this email server is not trusted. You may have Man-in-the-middle attack in your network. Try again when chenged network.',
+                /* 3 */'Sent mail error. It may happened when you use normail password. Check your mail APP password.',
+                /* 4 */'Your network have not internet.',
+                /* 5 */'Unknow error. Please exit CoNET and try it again.',
+                /* 6 */'Over Quota error. Please access your mail account, delete some mail.'
+            ]
         },
 
         Home_keyPairInfo_view: {
             
             title: 'Key pair information',
-
+            deleteKeyPairHaveLogin:'Please delete the key pair use the client that is logging on.',
             emailNotVerifi: 'Key pair has not been signed by CoNET yet.',
             emailVerified: 'Key pair signed by CoNET.',
             NickName: 'Nick name：',
@@ -1867,7 +2005,7 @@ const infoDefine = [
             password1: 'Platform Password',
             logout: 'Logout',
             keyID: 'ID：',
-            deleteKeyPairInfo: 'Note: By deleting your key pair, you will lose your current account settings. You will need to set up CoNET account settings again. If your email address is the same as the one used previously, you may restore your QTGate account balance.',
+            deleteKeyPairInfo: 'Note: By deleting your key pair, you will lose your current account settings. You will need to set up CoNET account settings again. If your email address is the same as the one used previously, you may restore your CoNET account balance.',
             delete: 'Delete',
             locked: 'Please enter your key pair password to continue.',
             systemError: 'System error! Please delete this key pair and set up CoNET again.'
@@ -1887,6 +2025,9 @@ const infoDefine = [
             creatKeyPair: 'Generate key pair...',
             cancel: 'Cancel',
             clickInstall:'Install',
+            keyPairCancel: 'Generate key pair was canceled.',
+            keyPairGenerateError: 'It was system error when generate key pair. Try again please.',
+            keyPairGenerateSuccess: 'Generate key pair was success.',
             continueCreateKeyPair: 'Keep generate.',
             stopCreateKeyPair: 'Cancel generate key pair',
             KeypairLength: 'Select the bit length of your key pair. Larger bit lengths are stronger and harder for a hacker to crack but may result in slower network transfer speeds.',
@@ -1895,7 +2036,7 @@ const infoDefine = [
             GenerateKeypair: '<em>Generating RSA Key pair. Please wait, as it may take a few minutes. More time will be needed if you selected 4096 bit key length. Information about RSA keypair system can be found here:' +
                 `<a href='hhttp://en.wikipedia.org/wiki/RSA_(cryptosystem)' target="_blank" onclick="return linkClick ('https://en.wikipedia.org/wiki/RSA_(cryptosystem)')">https://en.wikipedia.org/wiki/RSA_(cryptosystem)</a></em>`,
             systemPassword: 'CoNET Client System Password',
-            inputEmail: `This RSA key is a private key used for authentication, identification and secure encryption/decryption of data transmission within CoNET network. The password and key are not stored by CoNET. You cannot reset your password if lost and you cannot access CoNET services without your password. Please store your password in a safe place. <em style="color: red;">CoNET’s domain may be blocked in some regions. Please use an email account with servers outside these regions,</em>`,
+            inputEmail: `This RSA key is a private key used for authentication, identification and secure encryption/decryption of data transmission within CoNET’s system. The password and key are not stored by CoNET. You cannot reset your password if lost and you cannot access CoNET services without your password. Please store your password in a safe place. <em style="color: brown;">CoNET’s domain may be blocked in some regions. Please use an email account with servers outside these regions,</em>`,
             accountEmailInfo: `Because CoNET may be on a firewall's black list in some regions. It is best to choose an email account with servers outside your region’s firewall.`
         },
         
@@ -1927,13 +2068,17 @@ const infoDefine = [
                 `Connecting to SMTP Email server received an unknown error!`, 'Please check email account!',
                 'Does not establishing connection to CoNET yet.',
                 'Your mail account has exceeded (over quota). '
+            ],
+            CoNET_requestError: [
+                /* 0 */'Did not received response from CoNET. Try reconnect to CoNET, please wait.',
+                /* 1 */'Invalid request!'
             ]
         },
 
         emailConform: {
             activeViewTitle: 'Active your keypair.',
             emailTitle: 'Welcome to CoNET.',
-            info1_1: 'Please complete key pair verification. A verification email from CoNET has been sent. Please check your [',
+            info1_1: `Please complete key pair verification. Click the button 'Request verification email' to request mail. Please check your [`,
             info1_2: '] mailbox. If you received more then one email from CoNET, please choose the newest email. If you not find the email, please double check your key pair email address. If you have an error, you may delete your key pair and generate a new key pair.',
             info2: 'Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
             emailDetail1: 'Dear ',
@@ -1943,20 +2088,20 @@ const infoDefine = [
             bottom1_2: 'The CoNET team',
             requestReturn: ['ERROR! CoNET system refuse your request, may be you did request repeatedly, please try again late.','Verification mail has been sent.'],
             conformButtom: 'Confirm',
-            reSendRequest:'Request another verification email',
+            reSendRequest:'Request verification email',
             formatError: [
                         'Format error! Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
                         'Oops. Find the lasest mail from CoNET in your key pair email mailbox. Or delete this key pair and rebuild new key pair please.',
                         'Connection to CoNET had an error!. Please exit and restart CoNET.',
-                        'This secret verification code was invalid. CoNET disconnected. A new verification email was sent to your mail box. Please restart CoNET and check your email. Do validate again!',
+                        'This secret verification code was invalid. If you received more then one email from CoNET, please choose the newest email. Do validate again!',
                         'Your CoNET account may have a problem, Please delete your key pair and setup again!',
-                        'There is an error in connection to CoNET, Please try again late.',
+            /**5**/     'Sorry there is an error in connection to CoNET, may be CoNET is offline. Please try again late.',
                         `Your data transfer has hit the daily limit today, please try again tomorrow or upgrade your user type.`,
                         'Your transfer email account may not be working, please check the IMAP account. Or your IMAP accout may not support CoNET system.',
                         'Selected region is unavailable, try again later.',
                         'Your IMAP account recieved an error. Please restart CoNET and try again. If the error is not fixed, You may need check your IMAP account setting to enable third party IMAP applications.',
-                        'CoNET system error! Plesee restart CoNET.',
-                        'Oooooops! How are you today?'
+                        'The page session has expired! Refresh page or restart CoNET plesee.',
+                        'Sorry looks CoNET platform failure, please restart CoNET.'
                     ],
 
             activeing: 'sending...'
@@ -1965,10 +2110,12 @@ const infoDefine = [
         QTGateRegion: {
             title: 'Advanced private custom gateway service area.',
             available: 'Available',
+            CoGateRegionStoped:'Custom gateway server was stopped.',
             speedTest: 'Speed test：',
             unavailable: 'Unavailable',
             proxyDomain:'Domain lookup via CoNET gateway side.',
             setupCardTitle: 'connecting with:',
+            paidUse:'This area offer for subscription user.',
             MultipleGateway: 'Multi-Gateway:',
             dataViaGateway:'All internet data transfered via CoNET gateway.',
             dataTransfer: 'Data:',
@@ -1978,30 +2125,36 @@ const infoDefine = [
             clearCache: 'Delete all cache now',
             localPort:'Local proxy port number:',
             localPath:'HTTP/HTTPS conect path name:',
-            requestPortNumber: 'Gateway port number:',
+            requestPortNumber: 'Gateway server port number:',
             GlobalIp: 'Global IP:',
             option: 'option',
+            WebRTCleak:'Stop WebRTC leak',
+            WebRTCleakInfo: 'End-to-End game and chat may not work.',
             pingError:'CoNET gateway area speed check error! Please exit CoNET and reopen CoNET as administrator. Then do check speed again.',
-            QTGateRegionERROR:['Send connect request mail has an error. Please check your IMAP account settings.',
+            QTGateRegionERROR:[
+                'Send connect request mail has an error. Please check your IMAP account settings.',
             ''],
-            GlobalIpInfo:  `Please note: Both iOPN and @OPN will conceal your IP from others. iOPN offers the highest level of data speeds. @OPN offers additional layer of anonymity with some speed as a trade off.  If [@OPN] option is not available, you may need to check your IMAP email account. (currently @OPN only supports iClould Email.) Please refer to the Terms of Service for our privacy policy.`,
+            GlobalIpInfo:  `Please note: Both iOPN and @OPN will conceal your IP from others. iOPN offers the highest level of data speeds. @OPN offers additional layer of anonymity with some speed as a trade off. [@OPN] option is available in San Francisco, and currently only supports your owniClould Email. Please refer to the Terms of Service for our privacy policy.`,
             cacheDatePlaceholder: 'Web cache freshness lifetime.',
-            sendConnectRequestMail:['CoNET connection maybe down. Please wait a moment, re-connecting to CoNET gateway.',
-                                    'Your connection will reset if you long time non use.'],
+            sendConnectRequestMail:[
+                'CoNET connection maybe down. Please wait a moment, re-connecting to CoNET gateway.',
+                'Your connection will reset if you long time non use.'
+            ],
             cacheDatePlaceDate:[{ name:'1 hour', id: 1 }, { name:'12 hour', id: 12 },{ name:'1 day', id: 24 }, { name:'15 days', id: 360 }, { name:'1 month', id: 720 }, { name:'6 months', id: 4320 }, { name:'forever', id: -1 }],
             atQTGateDetail: [
-                `Recommended for full privacy. @OPN@ uses CoNET’s “Quiet” technology to create a obfuscated private network by refracting encrypted data packets thru email servers. @OPN provides stealth internet communications where your IP address is hidden to client or proxy servers. Gaming and video stream my not be supported due to stability and speeds affected by email server choice. Currently iCloud mail is only supported.`, 
-                'Recommended for high speed open internet access. iOPN uses CoNET’s “Quiet” technology to obfuscate encrypted data traffic to look like normal HTTP communications. iOPN offer security and protection of privacy while allowing access to the open internet.',
-                'Use CoNET’s gateway for domain search to get the right IP address from DNS cache. This is default.', 
-                'Transfer all internet data over OPN.', 
-                'Transfer select data over OPN. Only when unable to connect to certain servers. This may save data on your account transfer limits.',
-                'Web cache (or HTTP cache) is an used for the temporary storage (caching) of web documents, to reduce bandwidth usage, server load, and perceived lag. CoNET always encrypts all web cache data. This does not work for HTTPS connections.',
-                'Do not use web cache.', 
-                'By setting the cache expiration date, you can always obtain the latest information on the server side.',
-                'Local proxy server port number is provided for other devices to use CoNET’s OPN connection. Please set a number from 3001 to 65535.',
-                'Local proxy server http/https access can secure your server.',
-                'The number of gateways to use. This will further help to obfuscate traffic by using multiple servers.',
-                'This is your current CoNET gateway port number, You may change the port number if current one is blocked on your network.'
+        /*0*/   `Recommended for full privacy. @OPN@ uses CoNET’s “Quiet” technology to create a obfuscated private network by refracting encrypted data packets thru email servers. @OPN provides stealth internet communications where your IP address is hidden to client or proxy servers. Gaming and video stream my not be supported due to stability and speeds affected by email server choice. Currently iCloud mail is only supported.`, 
+        /*1*/   'Recommended for high speed open internet access. iOPN uses CoNET’s “Quiet” technology to obfuscate encrypted data traffic to look like normal HTTP communications. iOPN offer security and protection of privacy while allowing access to the open internet.',
+        /*2*/   'Use CoNET’s gateway for domain search to get the right IP address from DNS cache. This is default.', 
+        /*3*/   'Transfer all internet data over OPN.', 
+        /*4*/   'Transfer select data over OPN. Only when unable to connect to certain servers. Network access may speed up but lost your privacy.',
+        /*5*/   'Web cache (or HTTP cache) is an used for the temporary storage (caching) of web documents, to reduce bandwidth usage, server load, and perceived lag. CoNET always encrypts all web cache data. This does not work for HTTPS connections.',
+        /*6*/   'Do not use web cache.', 
+        /*7*/   'By setting the cache expiration date, you can always obtain the latest information on the server side.',
+        /*8*/   'Local proxy server port number is provided for other devices to use CoNET’s OPN connection. Please set a number from 3001 to 65535.',
+        /*9*/   'Local proxy server http/https access can secure your server.',
+        /*10*/   'The number of gateways to use. This will further help to obfuscate traffic by using multiple servers. This is available for subscription only.',
+        /*11*/   'This is your current CoNET gateway port number, You may change the port number if current one is blocked on your network.',
+        /*12*/   'Web Real-Time Communication (WebRTC) is a collection of standardized technologies that allows web browsers high speed to communicate with each other directly via IP address. It also may used for detect your real IP address even you hide IP address via VPN or other tools.',
             ],
             connectQTGate: 'Connecting, Retrieving CoNET gateway information...'
         },
@@ -2009,12 +2162,17 @@ const infoDefine = [
         QTGateGateway: {
             title: 'CoNET service user detail',
             processing: 'Trying to connect to CoNET network...',
-            error: ['Error: Your account has a connection that is using the CoNET proxy server. Please disconnect it before attempting to connect again.',
-                    'Error: Bandwidth maximum. If you would like to continue using OPN, please upgrade your account. Free accounts have a bandwidth maximum of 100MB per a day, 1 GB every month.',
-                    'Error: Data format error. Please restart CoNET.','Error: This area does not have the resources. Please select another area or try connecting again later.',
-                    'Error: This region does not support OPN technology. Please select another area, or change other connect type.'],
+            error: [
+            /* 0 */ 'Error: Your account has a connection that is using the CoNET proxy server. Please disconnect it before attempting to connect again.',
+            /* 1 */ 'Error: Bandwidth maximum. If you would like to continue using OPN, please upgrade your account. Free accounts have a bandwidth maximum of 100MB per a day, 1 GB every month.',
+            /* 2 */ 'Error: Data format error. Please restart CoNET.','Error: This area does not have the resources. Please select another area or try connecting again later.',
+            /* 3 */ 'Error: This region does not support OPN technology. Please select another area, or change other connect type.',
+            /* 4 */ '@OPN support your own iCloud account only. Please change the email account that used to communication with CoNET.'
+                ],
             connected:'connected.',
+            promo: 'Promotions',
             upgrade:'Upgrade account',
+            accountManager:'Account',
             userType:['Free user', 'Subscription'],
             datatransferToday:'The daily bandith limit.：',
             datatransferMonth:'The monthly bandwidth limit.：',
@@ -2022,13 +2180,13 @@ const infoDefine = [
             monthDatatransfer: 'Available bandwidth this month.',
             gatewayInfo: ['Gateway Ip address：','Gateway connection port：'],
             userInfoButton: 'How to use?',
-            stopGatewayButton:'Disconnect',
-            disconnecting: 'Disconnecting'
+            stopGatewayButton:'Stop gateway server',
+            disconnecting: 'Destroying...'
         },
         
         qtGateView: {
             QTGateConnectResultWaiting: 'Please wait. It will may take a few minutes to establish your connection to CoNET.',
-            title: 'CoNET connect',
+            title: 'Send custom server request',
             mainImapAccount: 'Email account for communicating with CoNET',
             QTGateDisconnectInfo: 'CoNET disconnected. Please select an IMAP account to use for connection request. ',
             QTGateConnectStatus: 'Status of CoNET connection',
@@ -2036,8 +2194,9 @@ const infoDefine = [
                 'CoNET disconnected, click to connect to CoNET.','Connecting to CoNET.','CoNET Connected.','Connection stopped with error! Please check IMAP account settings!',
                 'CoNET Connected.'
             ],
-            QTGateSign: ['Keypair status','Your key pair is not signed by CoNET.',
-                'CoNET certification authority is a trusted thus certifying your public keys is yoursalf in CoNET users when you share files of send message to other CoNET user. You also can signing another QTGate users with your keypair for make your trust relationship.',
+            QTGateSign: [
+                'Keypair status','Your key pair is not signed by CoNET.',
+                'CoNET certification authority is a trusted thus certifying your public keys is yoursalf in CoNET users when you share files of send message to other CoNET user. You also can signing another CoNET users with your keypair for make your trust relationship.',
                 'Getting CoNET certification authority.','Opps. System error. Try restart CoNET, if still have please re-install CoNET.','System error!']
         },
         
@@ -2047,7 +2206,7 @@ const infoDefine = [
             okTitle:'Send to CoNET'
         },
 
-	}, {
+	},{
         perment:{
             serverTitle:'伺服器'
         },
@@ -2074,20 +2233,22 @@ const infoDefine = [
             
         },
         thirdParty: {
-            information: 'CoNET應用程序',
+            information: 'CoNET平台',
             comesoon:'即將登場',
-            app:['CoVPN','Co','Co云存储','Co邮箱','Co新闻频道','CoNet業務訂製','Co谷歌','Co推特'],
+            app:['CoGate','CoChat','Co云存储','Co邮箱','Co新闻频道','CoNet業務訂製','Co谷歌','Co推特','Co for','Co加密貨幣錢包'],
             qtgateGateway: 'CoNET提供的高質量上網技術iOPN和@OPN，在CoNET全球16個區域，當場定制您專屬的代理服務器，變換您的IP地址隱身無障礙的訪問互聯網',
             
             dimmer: [
-                '高質量定制代理服務器，讓您隱身安全不受注意的網上沖浪。',
-                '推特風格隱身匿名去中心化不被封鎖的社交媒體',
-                '安全隱私文件存儲系統',
-                '隱身匿名邮件客户端，免VPN访问Gmail',
-                '提供免翻墙接受每日世界新闻',
+                '高質量量身定制代理伺服器業務，讓您隱身安全不受注意的網上沖浪。',
+                '隱身匿名去中心化不被封鎖的社交媒體',
+                '安全隱私文件雲存儲系統',
+                '隱身匿名邮件客户端，可免翻牆访问Gmail',
+                '免翻墙隱身匿名訪問世界頭條新闻',
                 'QTG承接定制各類公眾服務類及跨國企業私有APP業務',
-                '免代理匿名谷歌檢索客戶端',
-                '免代理匿名推特客戶端'
+                '免翻牆匿名隱身谷歌檢索客戶端',
+                '免翻牆匿名隱身推特客戶端',
+                '免翻牆匿名隱身Youtube客戶端',
+                '免翻牆匿名隱身加密貨幣錢包和交易所'
                 
             ]
         }, 
@@ -2102,7 +2263,7 @@ const infoDefine = [
             paymentProblem:'您目前的所在區域看上去銀行網關被和諧，您可以使用CoNET網關支付來完成支付',
             title: '賬戶管理',
             currentPlanExpire: ['訂閱截止日期：','下一次自動續訂日','每月數據重置日'],
-            CancelSuccess: ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) => {
+            CancelSuccess: function ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) {
                 return `中止訂閱成功。您可以一直使用您的原訂閱到${ new Date (PlanExpire).toLocaleDateString() }為止。以後您將會自動成為CoNET免費用戶，可以繼續使用CoNET的各項免費功能。 ${ isAnnual ? `退款金額us$${ returnAmount }會在5個工作日內退還到您的支付卡。 `: '下月起CoNET系統不再自動扣款。 '} 祝您網絡衝浪愉快。`
             },
             currentAnnualPlan: ['月度訂閱','年度訂閱'],
@@ -2120,7 +2281,8 @@ const infoDefine = [
             planPrice: '訂閱價格：',
             MonthBandwidthTitle:'月度代理伺服器限額：',
             dayBandwidthTitle:'每日限額：',
-            upgradeTitle:'升級您的訂閱',
+            upgradeTitle:'升級',
+            planExpirDate: function ( year: string, month: string, day: string ) { return `${ year } 年${ month }月${ day }日`},
             accountOptionButton: '賬戶選項',
             paymentSuccess:'您的訂閱已經完成，數據流量限制已經被更新。祝您網絡衝浪愉快。',
             qtgateTeam: 'CoNET開發團隊敬上',
@@ -2130,8 +2292,8 @@ const infoDefine = [
             cancelPlan:'終止當前訂閱',
             cantCancelInformation: '您的賬戶可能是CoNET測試用戶，或使用優惠碼產生的訂閱用戶，此類賬戶可以升級但不能被中止',
             MonthBandwidthTitle1:'傳送限額',
-            monthlyAutoPay: (monthCost: number ) => { return `<span>每月自動扣款</span><span class="usDollar">@ us$</span><span class="amount" >${ monthCost }</span>/月<span>`},
-            annualPay: ( annual_monthlyCost: string ) => { return `<span>年付款每月只需</span><span class="usDollar">@ us$</span><span class="amount" >${ getAmount (( Math.round ( parseInt( annual_monthlyCost ) / 0.12 ) / 100 ).toString()) }</span>/月<span>`},
+            monthlyAutoPay: function (monthCost: number ) { return `<span>每月自動扣款</span><span class="usDollar">@ us$</span><span class="amount" >${ monthCost }</span>/月<span>`},
+            annualPay: function ( annual_monthlyCost: string ) { return `<span>年付款每月只需</span><span class="usDollar">@ us$</span><span class="amount" >${  annual_monthlyCost }</span>/月<span>`},
             expirationYear: '信用卡期限',
             serverShare:'代理伺服器',
             cardNumber: '信用卡號',
@@ -2150,7 +2312,7 @@ const infoDefine = [
             internetShareData:['共享高速帶寬','獨享高速帶寬*','獨享雙線高速帶寬*','獨享四線高速帶寬'],
             serverShareData1:'OPN併發多代理技術，同時使用數大於獨占數時，會相應分享您所獨占的資源',
             cancelPlanMessage:'可隨時終止您的訂閱，CoNET的訂閱是以月為基本的單位。您的月訂閱將在下月您的訂閱起始日前被終止，您可以繼續使用您的本月訂閱計劃，您將自動回到免費用戶。如果您是每月自動扣款，則下月將不再扣款。如果您是年度訂閱計劃，您的退款將按普通每月訂閱費，扣除您已經使用的月份後計算的差額，將自動返還您所支付的信用卡賬號，如果您是使用促銷碼，或您是測試用戶，您的終止訂閱將不能被接受。 ',
-            cancelPlanMessage1: ( planName: string, isAnnual: boolean, expire: string ) => {
+            cancelPlanMessage1: function ( planName: string, isAnnual: boolean, expire: string ) {
                 return `<span>您的訂閱計劃是${ isAnnual ? `年度訂閱，退還金額將按照您已付年訂閱費</span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span><span> - 該訂閱原價 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice( planName, false )}</span><span> X 已使用月數(包括本月) </span><span class="amount">${ 12 - getRemainingMonth ( expire )}</span><span> = 餘額 </span><span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span><span>，將在7個工作日內，退還到您用來支付的信用卡帳戶。</span>`: `月訂閱，您的訂閱將下次更新日</span><span class="amount">${ nextExpirDate (expire).toLocaleDateString() }</span><span>時不再被自動扣款和更新。</span>`}`
             }
         
@@ -2259,9 +2421,15 @@ const infoDefine = [
         },
 
         useInfoMacOS: {
-            title:'本地代理伺服器已在後台運行，MacOS和Windows用戶可以關閉本窗口。您的其他電子設備，可通過設置本地Proxy伺服器，來使用CoNET連接到互聯網',
+            title:'本地代理伺服器已在後台運行。您的其他電子設備，可通過設置本地Proxy伺服器，來使用CoNET連接到互聯網',
+            wrtTestAreaTitle: 'WebRTC漏洞数据泄漏区域',
+            customProxy: '訂製伺服器完成',
             title1:'MacOS 本地代理伺服器設定',
-            proxyServerIp:'<p>代理設定選擇：<span style="color: red;">自動設定</p>',
+            localIpAddress:'如果能看到這個IP地址，由於是本地局域網地址洩漏，無關緊要。',
+            globalIpAddress:'如果顯示這個IP，您的瀏覽器洩漏了您真實的IP地址',
+            webRTCinfo:'阻止WebRTC漏洞，請使用SOCKS代理設定，檢查是否漏洞還在，請點擊<a href="/Wrt" target="_blank">這裡</a>',
+            wrtTest: '以下為測試結果：',
+            proxyServerIp:'<p>代理設定選擇：<span style="color: brown;">自動設定</p>',
             proxyServerPort: 'HTTP和HTTPS代理的設定為：',
             proxyServerPassword: 'SOCKS代理的設定為：',
             info:[{
@@ -2316,9 +2484,10 @@ const infoDefine = [
         },
 
         cover: {
-            firstTitle1: 'CoNET',
+            firstTitle1: 'CoNET平台',
             firstTitle2: '安全隱私自由的互聯網',
-            start: '開門'
+            start: '開門',
+            proxyStoped: 'CoGate定制代理伺服器已經停止，如需使用請重新定制代理伺服器。'
         },
 
         topWindow: {
@@ -2346,7 +2515,7 @@ const infoDefine = [
                     detail: '當您使用我們的服務時，我們為了計費處理會自動收集非常有限的數據流量信息，並存儲到伺服器日誌中。數據流量信息僅用於計算客戶應支付通訊費用而收集的，它收集的數據是：日期，用戶帳號，所使用的代理服務區域和代理伺服器IP，數據包大小，下載或上傳。例如：'
                 },{
                     header: null,
-                    detail: '<p class="tag info">06/20/2017 18:12:16, info@qtgate.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@qtgate.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
+                    detail: '<p class="tag info">06/20/2017 18:12:16, info@CoNET.com, francisco, 104.236.162.139, 300322 byte up, 482776323 byte down.</p><p class="tag info">06/21/2017 12:04:18, info@CoNET.com, francisco, 104.236.162.139, 1435226 byte up, 11782238 byte down.</p>'
                 },{
                     header: null,
                     detail: 'CoNET沒有保存除了以上信息以外的任何其他信息。我們會配合並向持有加拿大法院令的執法機構提供此日誌文件。如果您是加拿大以外地區的執法機構，有這方面信息披露的需求，請通過加拿大外交部來聯繫我們：'
@@ -2395,7 +2564,8 @@ const infoDefine = [
             step2_detail2: '在權限選項裡，選勾“允許檔案文件執行”。',
             step3:'退出舊版本CoNET後，雙擊CoNET文件執行安裝',
             exit: '退出CoNET',
-            tryAgain:'再次嘗試'
+            tryAgain:'再次嘗試',
+            refresh:'刷新頁面'
         },
 
         imapInformation: {
@@ -2411,9 +2581,9 @@ const infoDefine = [
             otherPortNumber: '其他號碼：',
             smtpServer: 'SMTP伺服器設定',
             smtpServerInput: 'SMTP伺服器設定',
-            Error_portNumber: '連接埠應該是從1-65535之間的數字',
+            Error_portNumber: '連接埠應該是從1-65535之間，並且不是22的數字',
             emailServerPassword: '郵箱密碼(推薦使用應用專用密碼)',
-            imapAccountConform: '<p><dt>警告：</dt></p>當您按下提交按鈕時，意味著您已經確認：這個郵箱並不是您常用的郵箱，這是為了使用CoNET網絡而特別申請的臨時郵箱，您同意承擔由此帶來的風險，並授權CoNET網絡可以使用這個Email郵箱傳輸信息!',
+            imapAccountConform: function ( iamp, account ) { return `<p class="ui small header brown">警告：</p><p class="grey">當您按下提交按鈕時，意味著您已經確認【<B class="red">${ iamp }</B>】是為了使用CoNET系統而特別申請的臨時郵箱，您同意承擔由此帶來的風險，並授權CoNET系統可以使用這個Email郵箱傳輸信息!</p><p class="grey" >CoNET平台將會向CoNET發送包含以下信息的email：【<B class="red">${ iamp }</B>】及APP密碼，註冊【<B class="red">${ account }</B>】郵箱地址，使用語言，時區，加密公鑰。 </p><p class="grey">同時您也同意並授權CoNET可以向您的註冊郵箱【<B class="red">${ account }</B>】發送CoNET有關服務，促銷，賬戶及其他信息。 </p>`},
             agree:'我已經了解風險，並願意繼續',
             imapOtherCheckError: '不能連接到Email伺服器，有可能您設定的伺服器名稱或IP，通訊連接埠有誤，請檢查您的伺服器詳細設定！',
             CertificateError: 'Email伺服器提示的證書不能被系統信任！您的Email伺服器有可能是一個仿冒的，您如果想繼續，請在詳細設定裡選擇【允許連接到不被信任證書的Email伺服器】，但您的Email登陸信息有可能洩漏給此伺服器！',
@@ -2425,17 +2595,34 @@ const infoDefine = [
             connectImap: '連結CoNET網絡',
             cancelConnect: '終止CoNET網絡連接',
             imapItemTitle: '通訊用郵箱詳細信息',
-            imapCheckingStep: ['正在嘗試連接email伺服器','IMAP成功登陸email伺服器','SMTP成功登陸email伺服器'],
+            imapCheckingStep: [
+                /* 0 */'正在尝试连接邮件伺服器',
+                /* 1 */'邮件伺服器IMAP連接成功，正在等待CoNET對接。',
+                /* 2 */'邮件伺服器SMTP連接成功',
+                /* 3 */'CoNET客户端向CoNET系统发出联机请求Email。和CoNET联机需要额外的时间，请耐心等待。',
+                /* 4 */'成功連接CoNET',
+                /* 5 */'邮件伺服器IMAP連接成功'
+
+            ],
             imapResultTitle: 'IMAP伺服器CoNET通訊評分：',
             testSuccess: '電子郵件伺服器連接試驗成功！',
             exitEdit: '退出編輯Email帳戶',
             deleteImap: '刪除IMAP帳戶',
-            proxyPortError: '連接埠應該是從1000-65535之間的數字，或此端口已被其他APP所占用，請再嘗試其他號碼。',
-            appPassword:'關於APP密碼'
+            proxyPortError: '連接埠應該是從3001-65535之間的數字，或此端口已被其他APP所占用，請嘗試填入其他號碼。',
+            appPassword:'關於APP密碼',
+            imapCheckError: [
+                '不能连接到郵件伺服器，有可能您沒有互聯網，或所在網絡不支持郵件IMAP通訊，請檢查您的網絡',
+                '郵件伺服器提示用户名或密码错误，请仔细检查您的用户名和密码！',
+                '郵件伺服器證書錯誤！您所在網絡可能存在網絡中間人攻擊，請換網絡環境後再嘗試。',
+                '郵件伺服器發送郵件錯誤，這通常是您使用的密碼是普通密碼所致，請換用APP密碼後再次嘗試',
+                '未連結互聯網，請檢查網絡',
+                '未知錯誤，請退出CoNET後再試。',
+                '您的郵箱無可用空間錯誤，請檢查郵箱刪除不必要的郵件後再試。'
+            ]
         },
 
         Home_keyPairInfo_view: {
-            
+            deleteKeyPairHaveLogin: '請使用登陸後的客戶端來刪除您的密鑰',
             title: '密鑰信息',
             emailNotVerifi: '您的密鑰未獲CoNET簽署認證。 ',
             emailVerified: '您的密鑰已獲CoNET簽署認證。 ',
@@ -2466,6 +2653,9 @@ const infoDefine = [
             emailAddress: 'Q梯帳戶名稱(Email地址,必填)',
             stopCreateKeyPair: '停止生成密鑰對',
             creatKeyPair: '創建密鑰對..',
+            keyPairCancel: '生成密鑰對被中止',
+            keyPairGenerateError: '生成密鑰對發生系統錯誤，請重試！ ',
+            keyPairGenerateSuccess: '完成生成密鑰對',
             cancel: '放棄操作',
             systemPassword: 'Q梯客戶端密碼設置',
             continueCreateKeyPair: '繼續生成',
@@ -2474,17 +2664,16 @@ const infoDefine = [
             systemAdministratorEmail:'RSA密鑰生成',
             GenerateKeypair: '<em>系統正在生成用於通訊和簽名的RSA加密密鑰對，計算機需要運行產生大量的隨機數字，可能需要幾分鐘時間，尤其是長度為4096的密鑰對，需要特別長的時間，請耐心等待。關於RSA加密算法的機制和原理，您可以訪問維基百科：' +
                 `<a href='#' target="_blank" onclick="return linkClick ('https://zh.wikipedia.org/wiki/RSA加密演算法')">https://zh.wikipedia.org/wiki/RSA加密演算法</a></em>`,
-            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密鑰對, 它是您的系統信息加密，身份認證及和CoNET網絡通訊使用的重要工具。 RSA密鑰對的密碼請妥善保存，Email地址欄應填入您的常用邮箱地址, 它將被用作您的CoNET網絡賬號。<em style="color:red;">需注意的是CoNET域名在某些网络限制地区被列入屏蔽名单，如果您使用的是网络限制地区邮箱服务，您將有可能由于接收不到CoNET發回的賬號確認Email，而不能够完成CoNET的設定。</em>',
+            inputEmail: '让我们来完成设定的最后几个步骤，首先生成RSA密鑰對, 它是您的系統信息加密，身份認證及和CoNET網絡通訊使用的重要組成部分。 RSA密鑰對的密碼請妥善保存，Email地址欄請填入您的常用邮箱地址, 它將被用作您的CoNET網絡賬號。<em style="color:brown;">需注意的是CoNET域名在某些网络限制地区可能被列入黑名单，推薦使用網絡自由地區郵箱。</em>',
             accountEmailInfo: `由於CoNET域名在某些國家和地區被防火牆屏蔽，而不能正常收發CoNET的Email，如果您是處於防火牆內的用戶，建議使用防火牆外部的郵件服務商。`
         },
-        
         error_message: {
             title: '錯誤',
             errorNotifyTitle: '系統錯誤',
             Success: '完成',
             localServerError: '本地伺服器錯誤，請重新啟動CoNET！',
             required: '請填寫此字段',
-            EmailAddress: ['請按照下列格式輸入你的電子郵件地址: someone@example.com.', '您已有相同的Email賬戶','此類Email伺服器暫時CoNET網絡技術不能對應。'],
+            EmailAddress: ['請按照下列格式輸入你的電子郵件地址: someone@example.com.', '您已有相同的Email賬戶','此類Email伺服器CoNET暫時不對應。'],
             PasswordLengthError: '密碼必須設定為5個字符以上。',
             finishedKeyPair: '密鑰對創建完成',
             doCancel: '終止生成',
@@ -2507,18 +2696,23 @@ const infoDefine = [
                 '您已有相同的Email賬戶',
                 '您的系統還未連接到CoNET網絡！',
                 '您的郵箱提示您賬號已無可使用容量，請清理郵箱後再試'
+            ],
+            
+            CoNET_requestError: [
+                /* 0 */'CoNET無響應,正在重新建立CoNET通訊管道，請稍候！',
+                /* 1 */'無效操作！'
             ]
         },
 
         emailConform: {
             activeViewTitle:'驗證您的密鑰',
             emailTitle: '感謝您使用CoNET服務',
-            info1_1: '您的密鑰還未完成驗證，CoNET已向您的密鑰郵箱發送了一封加密郵件，請檢查您的【',
+            info1_1: '您的密鑰還未完成驗證，請點擊按鈕[發送驗證Email]，並檢查您的【',
             info1_2: '】郵箱。如果存在多封CoNET的郵件時，請選擇最後一封信件。請打開信件並複制郵件內容。如果您還未收到CoNET的郵件，請檢查您的密鑰郵箱是否準確，或者您可以刪除您現有的密鑰，重新生成新的密鑰。',
             info2: '複制內容從“-----BEGIN PGP MESSAGE----- （ 開始，一直到 ）----- END PGP MESSAGE-----” 結束的完整內容，粘貼到此輸入框中',
             emailDetail1: '尊敬的 ',
             emailDetail1_1: '',
-            reSendRequest:'再次發送驗證Email',
+            reSendRequest:'發送驗證Email',
             requestReturn: ['錯誤！您的請求被拒絕，這可能是您在短時間內多次請求所致，請稍後再試','CoNET系統已發送激活郵件！'],
             emailDetail2: '這是您的CoNET帳號激活密碼，請複制下列框內的全部內容:',
             bottom1_1:'此致',
@@ -2527,27 +2721,29 @@ const infoDefine = [
             formatError: [  '內容格式錯誤，請複制從“-----BEGIN PGP MESSAGE----- （開始，一直到）-----END PGP MESSAGE-----” 結束的完整內容，粘貼在此輸入框中。',
                             '提供的內容不能被解密，請確認這是在您收到的最後一封從CoNET發送過來的激活信。如果還是沒法完成激活，請刪除您的密鑰重新生成和設定。',
                             '和CoNET網絡連接發生錯誤，請退出重新嘗試！',
-                            '無效激活碼！ CoNET已重新發送新的激活Email，並斷開與您的連接。請退出CoNET重新啟動CoNET後，檢查您的郵箱重做激活。',
+                            '無效激活碼！如果存在多封CoNET的郵件時，請選擇最後一封信件。',
                             '您的CoNET看上去有問題, 請刪除您的密鑰，重新設置您的CoNET！',
-                            'CoNET網絡系統故障，請稍後再試。 ',
+                            'CoNET網絡系統無應答故障，可能暫時下線中，請稍後再試。 ',
                             '您當天的數據通訊量達到上限，請等待明天再試或升級用戶類型',
                             '用來通訊的Email設定有錯誤，請檢查IMAP設定後重試，或CoNET網絡不支持此Email類型',
                             '您所選區域不能夠連結，請稍候再試',
                             '您的IMAP郵箱發信發生錯誤。請退出CoNET重試。如果持續發生此故障，您的IMAP帳號有可能被鎖住，需要登陸您的IMAP郵箱網站解鎖操作。',
-                            'CoNET程序發生錯誤，請退出後重新啟動CoNET。',
-                            '嗯，高手過招身手非凡啊！'
+                            '頁面會話已過期，請刷新頁面以繼續，或退出後重新啟動CoNET。',
+                            'CoNET平台故障，請重新啟動CoNET。'
         
                         ],
             activeing: '正在通訊中'
         },
 
         QTGateRegion: {
-            title: '高級訂製代理伺服器區域',
+            title: '高品質訂製代理伺服器區域',
             available: '服務中',
             speedTest: '代理伺服器速度測試',
+            CoGateRegionStoped:'所訂製的代理伺服器已經被停止，如需使用請再次訂製.',
             unavailable: '準備中',
             proxyDomain: '域名解釋全程使用CoNET代理伺服器端',
             setupCardTitle: '使用連接技術:',
+            paidUse:'本區域只對收費用戶開放',
             MultipleGateway: '同時併發使用代理數:',
             connectQTGate:'正在獲得代理伺服器區域信息...',
             dataTransfer: '數據通訊:',
@@ -2556,43 +2752,52 @@ const infoDefine = [
             proxyDataCache_detail: ['本地緩存','不緩存'],
             dataViaGateway: '全部互聯網數據通過CoNET代理伺服器',
             cacheDatePlaceholder: '緩存失效時間',
-            requestPortNumber: 'Q梯代理通訊連接埠',
+            requestPortNumber: '代理伺服器通訊連接埠',
             clearCache: '立即清除所有緩存',
             GlobalIp: '本機互聯網IP地址:',
             option: '高級設置',
+            WebRTCleak:'阻止WebRTC漏洞',
+            WebRTCleakInfo: '本設置後，瀏覽器的即時會話，端對點通訊等將不再工作。',
             pingError:'代理服務區域速度檢測錯誤發生，請退出CoNET，以管理員身份再次打開CoNET後，再執行速度檢測！',
             QTGateRegionERROR:['發送連接請求Email到CoNET系統發生送信錯誤， 請檢查您的IMAP賬號的設定。 ',
                               ''],
             sendConnectRequestMail: ['客戶端未連結到CoNET網絡，已向CoNET重新發出聯網請求Email。這需要額外的時間，請耐心等待。',
                                      '當長時間未連結CoNET網絡，您的連接會被中斷。'],
             
-            GlobalIpInfo:'注意：當您按下【CoNET連結】時您會把您的本機互聯網IP提供給CoNET網絡，如果您不願意，請選擇【@OPN】技術來使用CoNET服務！沒有顯示【@OPN】選項是@OPN連結技術只支持iCloud郵箱。',
+            GlobalIpInfo:'注意：當您按下【CoNET連結】時您會把您的本機互聯網IP提供給CoNET網絡，如果您不願意，請選擇【@OPN】技術來使用CoNET服務！沒有顯示【@OPN】選項是@OPN連結技術，只在洛杉磯區域，並只支持使用iCloud郵箱。',
             localPort: '本地代理伺服器連接埠:',
             cacheDatePlaceDate: [{ name:'1小时', id: 1 }, { name:'12小时', id: 12 },{ name:'1日', id: 24 }, { name:'15日', id: 360 }, { name:'1月', id: 720 }, { name:'6月', id: 4320 }, { name:'永遠', id: -1 }],
             atQTGateDetail: [
-                '世界首创的CoNET无IP互联网通讯技术，全程使用強加密Email通訊，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私，超強防火牆穿透能力。缺点是有延遲，网络通讯响应受您所使用的email服务供应商的伺服器影响，不適合遊戲視頻會話等通訊。目前該技術只支持iCloud郵箱。',
-                'CoNET獨創HTTP明碼強加密混淆流量代理技術，能夠隱藏變換您的IP地址高速通訊，隐身和保护隐私，抗干擾超強防火牆穿透能力。缺點是需要使用您的IP來直接連結代理伺服器。如果您只是需要自由訪問互聯網，則推薦使用本技術。',
-                '域名解釋使用CoNET代理伺服器端，可以防止域名伺服器緩存污染，本選擇不可修改。',
-                '互聯網數據全程使用CoNET代理，可以匿名上網隱藏您的互聯網形踪。',
-                '只有當本地網絡不能夠到達您希望訪問的目標時，才使用CoNET代為您連結目標伺服器，本選項可以節省您的CoNET流量。',
-                '通過本地緩存瀏覽紀錄，當您再次訪問目標伺服器時可以增加訪問速度，減少網絡流量，緩存瀏覽記錄只針對非加密技術的HTTP瀏覽有效。CoNET使用強加密技術緩存瀏覽紀錄，確保您的隱私不被洩漏',
-                '不保存緩存信息。',
-                '設置緩存有效時間，您可以及時更新伺服器數據，單位為小時。',
-                '本地Proxy服务器，其他手机电脑和IPad等可通過连结此端口來使用CoNET服务。請設定為3001至65535之間的數字',
-                '通過設置PATH鏈接路徑可以簡單給您的Proxy伺服器增加安全性，拒絕沒有提供PATH的訪問者使用您的Proxy伺服器。',
-                '同時捆綁使用代理線路數，可以有效降低大流量集中在一個代理服務線路上，容易造成網絡監控者註意的風險。',
-                '指定同Q梯代理進行通訊使用的連接埠，通過此設置可以規避您所在網段被通訊屏蔽的連接埠。'
+        /*0*/   '世界首创的CoNET无IP互联网通讯技术，全程使用強加密Email通訊，客户端和代理服务器彼此不用知道IP地址，具有超强隐身和保护隐私，超強防火牆穿透能力。缺点是有延遲，网络通讯响应受您所使用的email服务供应商的伺服器影响，不適合遊戲視頻會話等通訊。目前該技術只支持iCloud郵箱。',
+        /*1*/   'CoNET獨創HTTP明碼強加密混淆流量代理技術，能夠隱藏變換您的IP地址高速通訊，隐身和保护隐私，抗干擾超強防火牆穿透能力。缺點是需要使用您的IP來直接連結代理伺服器。如果您只是需要自由訪問互聯網，則推薦使用本技術。',
+        /*2*/   '域名解釋使用CoNET代理伺服器端，可以防止域名伺服器緩存污染，本選擇不可修改。',
+        /*3*/   '互聯網數據全程使用CoNET代理，可以匿名上網隱藏您的互聯網形踪。',
+        /*4*/   '只有當本地網絡不能夠到達您希望訪問的目標時，才使用CoNET代為您連結目標伺服器，本選項可以加速網速，但無隱私。',
+        /*5*/   '通過本地緩存瀏覽紀錄，當您再次訪問目標伺服器時可以增加訪問速度，減少網絡流量，緩存瀏覽記錄只針對非加密技術的HTTP瀏覽有效。CoNET使用強加密技術緩存瀏覽紀錄，確保您的隱私不被洩漏',
+        /*6*/   '不保存緩存信息。',
+        /*7*/   '設置緩存有效時間，您可以及時更新伺服器數據，單位為小時。',
+        /*8*/   '本地Proxy服务器，其他手机电脑和IPad等可通過连结此端口來使用CoNET服务。請設定為3001至65535之間的數字',
+        /*9*/   '通過設置PATH鏈接路徑可以簡單給您的Proxy伺服器增加安全性，拒絕沒有提供PATH的訪問者使用您的Proxy伺服器。',
+        /*10*/  '同時使用多條代理線路數，可以有效降低大流量集中在一個代理服務線路，降低被網絡監控者發現的風險。此選項僅供收費會員使用。',
+        /*11*/  '指定同Q梯代理進行通訊使用的連接埠，通過此設置可以規避您所在網段被通訊屏蔽的連接埠。',
+        /*12*/  'Web实时通讯(WebRTC)是客戶端的瀏覽器之間，通過IP地址直接高速通訊技術，有時被惡用洩漏您的真實IP地址。'
             ]
         },
 
         QTGateGateway: {
             title: 'CoNET服務使用詳細',
-            
+            promo: '促銷活動',
             processing: '正在嘗試连接CoNET網絡...',
-            error: ['錯誤：您的賬號下已經有一個正在使用CoNET代理伺服器的連接，請先把它斷開後再嘗試連接。', '錯誤：您的賬號已經無可使用流量，如果您需要繼續使用CoNET代理伺服器，請升級您的賬戶類型。如果是免費用戶已經使用當天100M流量，請等待到明天繼續使用，如您是免費用戶已經用完當月1G流量，請等待到下月繼續使用。',
-                    '錯誤：數據錯誤，請退出並重新啟動CoNET！','非常抱歉，您請求的代理區域無資源，請選擇其他區域或稍後再試','對不起，您所請求連接的區域不支持這樣的連接技術，請換其他連接方法或選擇其他區域連接'],
+            error: [
+                '錯誤：您的賬號下已經有一個正在使用CoNET代理伺服器的連接，請先把它斷開後再嘗試連接。', 
+                '錯誤：您的賬號已經無可使用流量，如果您需要繼續使用CoNET代理伺服器，請升級您的賬戶類型。如果是免費用戶已經使用當天100M流量，請等待到明天繼續使用，如您是免費用戶已經用完當月1G流量，請等待到下月繼續使用。',
+                '錯誤：數據錯誤，請退出並重新啟動CoNET！','非常抱歉，您請求的代理區域無資源，請選擇其他區域或稍後再試',
+                '對不起，您所請求連接的區域不支持這樣的連接技術，請換其他連接方法或選擇其他區域連接',
+                '@OPN链接技术不支持公用iCloud邮箱，请撤換通訊用IMAP郵箱，換您自有的iCloud邮箱。'
+            ],
             connected:'已連接。',
             upgrade:'升級賬號',
+            accountManager:'賬號管理',
             userType:['免費用戶','付費用戶'],
             datatransferToday:'日流量限額：',
             datatransferMonth:'月流量限額：',
@@ -2600,12 +2805,12 @@ const infoDefine = [
             monthDatatransfer: '本月可使用流量',
             gatewayInfo: ['代理伺服器IP地址：','代理伺服器連接端口：'],
             userInfoButton: '使用指南',
-            stopGatewayButton:'切斷連接',
-            disconnecting: '正在切斷中'
+            stopGatewayButton:'停止所定制伺服器',
+            disconnecting: '正在銷毀中...'
         },
         
         qtGateView: {
-            title: 'CoNET連接',
+            title: '發送訂製請求',
             QTGateConnectResultWaiting: '已向CoNET網絡發送連接請求Email。由於是首次連接CoNET網絡，系統需要幾分鐘時間來完成與您的對接，請耐心等待。',
             mainImapAccount: 'CoNET網絡通訊用郵箱',
             QTGateDisconnectInfo: 'CoNET網絡已斷開。請選擇CoNET網絡通訊用IMAP帳號',
@@ -2626,8 +2831,331 @@ const infoDefine = [
 	}
 ]
 
-const linkClick = ( url: string ) => {
-    const { shell } = require ( 'electron' )
-    event.preventDefault ()
-    shell.openExternal ( url )
+const linkClick = function ( url: string ) {
+    return window.open ( url, '_blank')
 }
+
+const socketIo = io ({ reconnectionAttempts: 5, timeout: 500, autoConnect: true })
+const QTGateRegionsSetup: IQTGateRegionsSetup[] = [
+    {
+        title: '@OPN'
+    },
+    {
+        title: 'iOPN'
+    }
+]
+const _QTGateRegions: QTGateRegions[] = [
+    {
+        icon: 'india',
+        content: ['班加罗尔','バンガロール','Bangalore','班加羅爾'],
+        meta: ['亚洲・印度','アジア・インド','India. Asia.','亞洲・印度'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'Asia.Bangalore',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+
+    },{
+        icon: 'singapore',
+        content: ['新加坡','シンガポール','Singapore','新加坡'],
+        meta: ['亚洲・新加坡','アジア・シンガポール','Singapore. Asia.','亞洲・新加坡'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'singapore',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    },{
+        icon: 'japan',
+        content: ['东京','東京','Tokyo','東京'],
+        meta: ['亚洲・日本','アジア・日本','Japan. Asia.','亞洲・日本'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'tokyo',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    },{
+        icon: 'france',
+        content: ['巴黎','パリ','Paris','巴黎'],
+        meta: ['欧洲・法国','ヨーロッパ・フランス','France. Europe.','歐洲・法國'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'paris',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(true)
+    }
+    /*
+    ,{
+        icon: 'netherlands',
+        content: ['阿姆斯特丹1','アムステルダム1','Amsterdam1','阿姆斯特丹1'],
+        meta: ['欧洲・荷兰','ヨーロッパ・オランダ','Netherlands. Europe.','歐洲・荷蘭'],
+        description: ['','','',''],
+        canVoe: ko.observable(true),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'amsterdam1',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2)
+    }
+    */
+    ,{
+        icon: 'netherlands',
+        content: ['阿姆斯特丹','アムステルダム','Amsterdam','阿姆斯特丹'],
+        meta: ['欧洲・荷兰','ヨーロッパ・オランダ','Netherlands. Europe.','歐洲・荷蘭'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'amsterdam',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    },{
+        icon: 'germany',
+        content: ['法兰克福','フランクフルト','Frankfurt','法蘭克福'],
+        meta: ['欧洲・德国','ヨーロッパ・ドイツ','Germany. Europe.','歐洲・德國'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion:'frankfurt',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+
+    },{
+        icon: 'united kingdom',
+        content: ['爱尔兰','アイルランド','Ireland','愛爾蘭'],
+        meta: ['欧洲・英国','ヨーロッパ・英国','United Kingdom. Europe.','歐洲・英國'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'Ireland',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    },{
+        icon: 'united kingdom',
+        content: ['伦敦','ロンドン','London','倫敦'],
+        meta: ['欧洲・英国','ヨーロッパ・英国','United Kingdom. Europe.','歐洲・英國'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'London',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    },{
+        icon: 'australia',
+        content: ['悉尼','シドニー','Sydney','悉尼'],
+        meta: ['澳洲・澳大利亚','オーストラリア','Australia.','澳洲・澳大利亚'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'Sydney',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    },{
+        icon: 'united states',
+        content: ['纽约','ニューヨーク','New York City','紐約'],
+        meta: ['北美洲东海岸・美国','北アメリカ東海岸・アメリカ','USA. North American Eastern.','北美洲東海岸・美國'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'new-york-city',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+
+    },{
+        icon: 'canada',
+        content: ['多伦多','トロント','Toronto','多倫多'],
+        meta: ['北美洲东海岸・加拿大','北アメリカ東海岸・カナダ','Canada. North American Eastern.','北美洲東海岸・加拿大'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'toronto',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    },{
+        icon: 'united states',
+        content: ['旧金山','サンフランシスコ','San Francisco','舊金山'],
+        meta: ['北美洲西海岸・美国・旧金山','北アメリカ西海岸・アメリカ','USA. North American Western.','北美洲西海岸・美國'],
+        description: ['','','',''],
+        canVoe: ko.observable(true),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'francisco',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    },{
+        icon: 'hong kong',
+        content: ['香港','香港','Hong Kong','香港'],
+        meta: ['亚洲・中国','アジア・中国','China. Asia.','亞洲・中國'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'HK',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    },{
+        icon: 'china',
+        content: ['上海市','上海市','Shanghai','上海市'],
+        meta: ['亚洲・中国','アジア・中国','China. Asia.','亞洲・中國'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'shanghai',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    },{
+        icon: 'china',
+        content: ['北京市','北京市','Beijing','北京市'],
+        meta: ['亚洲・中国','アジア・中国','China. Asia.','亞洲・中國'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'beijing',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    },{
+        icon: 'china',
+        content: ['无锡市','無錫市','Wuxi','無錫市'],
+        meta: ['亚洲・中国江苏省','アジア・中国江蘇省','Jiangsu China. Asia.','亞洲・中國江蘇省'],
+        description: ['','','',''],
+        canVoe: ko.observable(false),
+        canVoH: ko.observable(true),
+        available: ko.observable(false),
+        selected: ko.observable ( false ),
+        showExtraContent: ko.observable ( false ),
+        QTGateRegionsSetup: QTGateRegionsSetup,
+        qtRegion: 'Wuxi',
+        error: ko.observable(-1),
+        showRegionConnectProcessBar: ko.observable ( false ),
+        showConnectedArea: ko.observable ( false ),
+        ping: ko.observable ( -2 ),
+        downloadSpeed: ko.observable (-2),
+        freeUser: ko.observable(false)
+    }
+]

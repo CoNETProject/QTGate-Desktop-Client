@@ -1,0 +1,568 @@
+
+
+body {
+	background: rgba(101,226,245,1);
+	background: -moz-linear-gradient(left, rgba(101,226,245,1) 0%, rgba(125,175,250,1) 100%);
+	background: -webkit-gradient(left top, right top, color-stop(0%, rgba(101,226,245,1)), color-stop(100%, rgba(125,175,250,1)));
+	background: -webkit-linear-gradient(left, rgba(101,226,245,1) 0%, rgba(125,175,250,1) 100%);
+	background: -o-linear-gradient(left, rgba(101,226,245,1) 0%, rgba(125,175,250,1) 100%);
+	background: -ms-linear-gradient(left, rgba(101,226,245,1) 0%, rgba(125,175,250,1) 100%);
+	background: linear-gradient(to right, rgba(101,226,245,1) 0%, rgba(125,175,250,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#65e2f5', endColorstr='#7daffa', GradientType=1 );
+	height: unset!important;
+}
+.welcome-bg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 9;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	
+	-ms-flex-pack: center;
+		justify-content: center;
+
+	-ms-flex-align: center;
+			align-items: center;
+  }
+
+.fade-up {
+	opacity: 0;
+	-webkit-animation: fade-up 1s forwards cubic-bezier(0.2, 2, 0.4, 1);
+			animation: fade-up 1s forwards cubic-bezier(0.2, 2, 0.4, 1);
+}
+  
+.languageText {
+	width: 100%;
+	-webkit-transition: opacity 0.4s ease-in-out;
+	-moz-transition: opacity 0.4s ease-in-out;
+	-ms-transition: opacity 0.4s ease-in-out;
+	-o-transition: opacity 0.4s ease-in-out;
+	transition: opacity 0.4s ease-in-out;
+	opacity: 0.6;
+}
+#languageArea {
+	z-index: 100;
+	width: 160px;
+	top: 15px;
+	left: 20px;
+	position: fixed;
+}
+.languageItem {
+	cursor: pointer;
+	color: white!important;
+}
+.languageText:hover {
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+	opacity: 1;
+}
+.welcome {
+	width: 100%;
+	height: 100%;
+	margin-bottom: 10em;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	
+		-ms-flex-pack: center;
+			justify-content: center;
+	
+		-ms-flex-align: center;
+			align-items: center;
+	
+		-ms-flex-direction: column;
+			flex-direction: column;
+}
+.welcome h1.fade-up {
+	font-weight: 300;
+	font-size: 40px;
+	-webkit-animation-delay: .25s;
+			animation-delay: .25s;
+}
+.welcome h2.fade-up {
+	font-weight: 400;
+	color: rgba(255, 255, 255, 0.5);
+	-webkit-animation-delay: .5s;
+			animation-delay: .5s;
+}
+#agreement{
+	background-color: #d3d9db;
+	width: 100%;
+	position: absolute;
+	transition: opacity 0.4s ease-in;
+	color: rgba(0, 0, 0, 0.6);
+	top: 0px;
+}
+#agreement .firstNodeContent {
+	margin: 0px auto;
+	margin-top: 5em;
+	max-width: 50em;
+
+}
+.detailSegment {
+	margin: 3em;
+}
+.agreementButtom {
+	margin: 3em;
+}
+.CoContent {
+    width: 100%;
+    position: relative;
+    transition: opacity 0.4s ease-in;
+}
+.loginCards {
+	margin: 0px auto!important;
+    margin-top: 5em!important;
+    max-width: 50em;
+}
+.CoGateCards {
+	margin: 0px auto!important;
+    margin-top: 1em!important;
+    max-width: 45em;
+}
+.background-clolr-white {
+    background-color: transparent!important;
+}
+.displayNono {
+	display: none;
+}
+
+.iconButton {
+	cursor: pointer;
+	-webkit-transition: opacity 0.2s ease-in-out;
+	-moz-transition: opacity 0.2s ease-in-out;
+	-ms-transition: opacity 0.2s ease-in-out;
+	-o-transition: opacity 0.2s ease-in-out;
+	transition: opacity 0.2s ease-in-out;
+	opacity: 0.6!important;
+}
+
+.iconButton:hover {
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+	opacity: 1!important;
+}
+
+.CoNET_info {
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+	opacity: 0.7;
+	
+	padding-right: 1em;
+}
+.green {
+	 color: green!important;
+}
+.white {
+	color: white;
+}
+.red {
+	color: brown;
+}
+.yellow {
+	color: yellow;
+}
+.grey {
+	color: gray!important;
+}
+.QTGateGatewayCardHeader.active {
+	color: yellowgreen!important;
+ }
+ .QTGateGatewayCardHeader {
+	color: rgba(255,0,0,0.2)!important;
+ 
+ }
+ .plans {
+	margin: 20px auto;
+	width: 48em;
+	zoom: 1;
+  }
+  .plans:before, .plans:after {
+	content: '';
+	display: table;
+  }
+  .plans:after {
+	clear: both;
+  }
+  .plan {
+		float: left;
+		width: 16em;
+		margin: 10px 0;
+		padding: 20px;
+		text-align: center;
+		background: #fafafa;
+		background-clip: padding-box;
+		border: solid #453b5d;
+		border-width: 2px 0 2px 2px;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .plan:first-child {
+		border-top-left-radius: 7px;
+		border-bottom-left-radius: 7px;
+  }
+  
+  .plan:last-child {
+		border-width: 2px;
+		border-top-right-radius: 7px;
+		border-bottom-right-radius: 7px;
+  }
+  
+  .plan-title {
+		position: relative;
+		margin: -20px -10px 20px;
+		padding: 20px;
+		line-height: 1;
+		font-size: 16px;
+		font-weight: bold;
+		color: #595f6b;
+		border-bottom: 1px dashed #d2d2d2;
+  }
+  
+  .plan-title:before {
+		content: '';
+		position: absolute;
+		bottom: -1px;
+		left: 0;
+		right: 0;
+		height: 1px;
+		background-size: 3px 1px;
+		background-image: -webkit-linear-gradient(left, white, white 33%, #d2d2d2 34%, #d2d2d2);
+		background-image: -moz-linear-gradient(left, white, white 33%, #d2d2d2 34%, #d2d2d2);
+		background-image: -o-linear-gradient(left, white, white 33%, #d2d2d2 34%, #d2d2d2);
+		background-image: linear-gradient(to right, white, white 33%, #d2d2d2 34%, #d2d2d2);
+  }
+  
+  .plan-price {
+		margin: 0 auto 20px;
+		width: 90px;
+		height: 90px;
+		line-height: 90px;
+		font-size: 19px;
+		font-weight: bold;
+		color: white;
+		background: #595f6b;
+		border-radius: 45px;
+  }
+  
+  .plan-price > span {
+		font-size: 12px;
+		font-weight: normal;
+		color: rgba(255, 255, 255, 0.9);
+  }
+  
+  .plan-features {
+		margin-bottom: 20px;
+		line-height: 2;
+		font-size: 12px;
+		color: #999;
+		text-align: center;
+  }
+.plan-tall {
+		margin: 0;
+		background-color: white;
+		border-width: 2px;
+		border-radius: 7px;
+}
+  
+.plan-tall > .plan-title {
+		font-size: 18px;
+}
+  
+.plan-tall > .plan-price {
+		width: 100px;
+		height: 100px;
+		line-height: 100px;
+		font-size: 21px;
+		border-radius: 50px;
+}
+  
+.plan-tall > .plan-features {
+	font-size: 13px;
+}
+  
+.plan-tall > .plan-button {
+		padding: 0 16px;
+		line-height: 32px;
+}
+  
+.plan-tall + .plan {
+		border-left: 0;
+}
+  
+.plan-features > li > strong {
+		font-weight: bold;
+		color: #888;
+		padding-right: 1em;
+}
+ul.plan-features {
+		list-style-type: none;
+		padding: 0px;
+}
+	
+.AppCardTop {
+		max-width: 11em!important;
+}
+
+.AppCardImageArea {
+  background: white!important;
+}
+.AppCardImage {
+    max-width: 6em!important;
+}
+.AppListHeader {
+	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
+.hideCardImage {
+  opacity: 0.2
+}
+.usDollar {
+	font-weight: lighter;
+	font-style: italic;
+	padding-left: 0.5em;
+	font-size: smaller;
+}
+.amount {
+	font-size: large;
+	font-weight: bold;
+	color: darkslategray;
+}
+.unavailable {
+	background-color: rgba(0,0,0,.03)!important;
+	opacity: 0.4
+ }
+
+@media only screen and ( max-width: 1144px ) {
+	.TimelinesView {
+	 background-color: white;
+	 padding: 0em;
+	 padding-top: 4em;
+	}
+	#QTGateStartScreen {
+	 display: block;
+   }
+	#QTGateStartScreen-Device {
+	  display: none;
+	}
+	#TimelinesView {
+	 max-width:100%;
+	 margin: 0px auto;
+	}
+	.itemContent {
+	 max-width: 90%;
+	}
+ }
+ @media only screen and (min-width: 992px) {
+   
+ }
+ 
+ @media screen and ( max-width: 801px ) {
+   .TimelinesView {
+	background-color: white;
+	padding: 0em;
+	padding-top: 4em;
+   }
+   #QTGateStartScreen-Device {
+	 display: block;
+   }
+   #QTGateStartScreen {
+	 display: none;
+   }
+   #TimelinesView {
+	max-width:100%;
+	margin: 0px auto;
+   }
+   .itemContent {
+	max-width: 90%;
+   }
+ }
+ 
+ @media screen and ( min-width: 800px ) {
+   #QTGateStartScreen {
+	 display: block;
+   }
+   #QTGateStartScreen-Device {
+	 display: none;
+   }
+   .TimelinesView {
+	 background-color: #e6ecf0;
+	 padding: 4em;
+   }
+   #TimelinesView {
+	 max-width:590px;
+	 margin: 0px auto;
+   }
+   .itemContent {
+	 max-width:530px;
+   }
+ }
+ .flapLeft, .flapeRight {
+   position: relative;
+   cursor: pointer;
+ }
+ 
+ .flapLeft i:hover, .flapeRight i:hover {
+   background: rgba(255,255,255,0.4);
+ }
+ .flapLeft i, .flapeRight i {
+   color:grey;
+   position: absolute;
+   margin-top: -1em;
+ }
+ .tweetTrashButton {
+	cursor: pointer;
+	 color: grey;
+ }
+ .tweetTrashButton:hover {
+   color: red;
+ }
+ .tweetPhotoButton{
+	 background: transparent!important;
+	 color: rgba(0, 0, 0, 0.2);
+	 cursor: pointer;
+	 right: 0.5em;
+	 margin-top: 2.5em;
+ }
+ .tweetPhotoButton:hover {
+   color: rgba(0, 0, 0, 0.6);
+ 
+ }
+ .newTweetCloseButton{
+   color: rgba(0, 0, 0, 0.2)!important;
+   cursor: pointer;
+   position: absolute;
+   top: 0.3em;
+   right: 0.3em;
+ }
+ .newTweetCloseButton:hover {
+ color: rgba(0, 0, 0, 0.6)!important;
+ 
+ }
+ .approveButtons {
+   position: absolute;
+ }
+ .ui.modal {
+   top: 15em;
+   width: 600px;
+ }
+ #QTGateStartScreen{
+   height: 100%;
+ }
+ #QTGateStartScreen .VideoBox{
+   display: block;
+   width: 600px;
+ }
+ #QTGateStartScreen .VideoBox .iframe {
+   width: 550px;
+   height: 310px;
+   overflow: hidden;
+   border-radius: 25px;
+ }
+ #QTGateStartScreen-Drive{
+   height: 100%;
+ }
+ #QTGateStartScreen-Drive .VideoBox{
+   display: block;
+ 
+ }
+ #QTGateStartScreen-Drive .VideoBox .iframe {
+   overflow: hidden;
+   border-radius: 25px;
+ }
+ .AppCardTop {
+	max-width: 11em!important;
+ }
+ .AppCardImageArea {
+   background: white!important;
+ }
+ .AppCardImage {
+	 max-width: 6em!important;
+ }
+ .templateImapAccount {
+	color: blue;
+ }
+ .closeIcon {
+	position: absolute;
+    top: 1em;
+    right: 1em;
+ }
+
+ .localIP {
+	position: relative;
+	left: 19em;
+	top: 7.8em;
+	color: blue;
+  
+  }
+  
+  .localIPPort {
+	position: relative;
+	left: 3.9em;
+	top: 8.8em;
+	color: blue;
+  
+  }
+  .localNetwork {
+	position: relative;
+	left: 3.9em;
+	top: 8.8em;
+	color: blue;
+  }
+
+
+.WindowsUseInfoLocalServerIp {
+	position: relative;
+	left: 10.4em;
+	top: 12.5em;
+	color: blue;
+  }
+  .WindowsUseInfoPort{
+	position: relative;
+	left: -1.9em;
+	top: 16.5em;
+	color: blue;
+  }
+  .firefoxUseLocalIp{
+	position: relative;
+	left: 4.5em;
+	top: 32.2em;
+	color: blue;
+  }
+  .firefoxUseLocalPort{
+	position: relative;
+	left: -10.6em;
+	top: 33.3em;
+	color: blue;
+  }
+  
+  
+  .iOSUseInfoLocalServerIp{
+	position: relative;
+	left: 2em;
+	top: 12.6em;
+	color: blue;
+  }
+  .iOSUseInfoPort{
+	position: relative;
+	left: -13.1em;
+	top: 13.7em;
+	color: blue;
+  }
+  .androidUseInfoLocalServerIp{
+	position: relative;
+	left: 6em;
+	top: 7.7em;
+	color: blue;
+  }
+  .androidUseInfoPort{
+	position: relative;
+	left: -9.1em;
+	top: 8.8em;;
+	color: blue;
+  }
+  
