@@ -323,6 +323,7 @@ interface Titter_status {
     lang: string
 
 }
+
 interface Twitter_verify_credentials {
     id: number
     id_str: string
