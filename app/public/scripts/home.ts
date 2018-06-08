@@ -28,6 +28,7 @@ const InitKeyPair = function () {
 	}
 	return keyPair
 }
+const url = 'https://api.github.com/repos/QTGate/QTGate-Desktop-Client/releases/latest'
 
 socketIo.emit11 = function ( eventName: string, ...args ) {
     
@@ -270,6 +271,7 @@ module view_layout {
         public AppList = ko.observable ( false )
         public CoGateRegionStoped = ko.observable ( false )
         public imapData: IinputData = null
+        public newVersion = ko.observable ( '' )
         
         public systemError () {
             this.modalContent ( infoDefine[ this.languageIndex() ].emailConform.formatError [ 10 ] )
@@ -350,7 +352,7 @@ module view_layout {
             }
             this.localServerConfig ( config )
             this.afterInitConfig ()
-           
+            
         }
 
         private clearImapData () {
@@ -379,12 +381,23 @@ module view_layout {
             })
             
             socketIo.on ( 'init', function ( err, config: install_config ) {
-                
+                $.getJSON ( url )
+                .done ( function ( json ) {
+                    if ( ! json ) {
+                        return
+                    }
+                    const localVersion = 'v'+config.version
+                    if ( json.tag_name <= localVersion ) {
+                        return
+                    }
+                    self.newVersion ( json.tag_name )
+                    
+                })
                 return self.initConfig ( config )
             })
 
             socketIo.on ( 'CoNET_offline', function () {
-                self.modalContent ( infoDefine[ this.languageIndex() ].emailConform.formatError [ 5 ] )
+                self.modalContent ( infoDefine [ self.languageIndex() ].emailConform.formatError [ 5 ] )
                 $( '#CoNETError').modal ('setting', 'closable', false ).modal ( 'show' )
                 return self.CoNETLocalServerError ( true )
             })
@@ -400,6 +413,7 @@ module view_layout {
     
         constructor () {
             this.socketListen ()
+            
         }
         
         //          change language

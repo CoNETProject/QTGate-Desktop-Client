@@ -1379,6 +1379,18 @@ export default class localServer {
             res.render( 'home', { title: 'CoNET for Twitter', proxyErr: true })
 		})
 
+		this.expressServer.get ( '/doingUpdate', ( req, res ) => {
+			res.json()
+			
+			const { ver } = req.query
+			saveLog ( `/doingUpdate res.query = [${ ver }]`)
+			this.config.newVersion = ver
+			this.config.newVerReady = true
+			return Tool.saveConfig ( this.config, err => {
+				
+			})
+		})
+
 		this.expressServer.get ( '/Wrt', ( req, res ) => {
 			let globalIp = ''
 			if ( this.connectCommand && this.connectCommand.length ) {

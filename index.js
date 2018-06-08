@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const DEBUG = true;
+const DEBUG = false;
 const port = 3000;
 const Fs = require("fs");
 const path_1 = require("path");
@@ -296,15 +296,18 @@ const appReady = () => {
         setTimeout(() => {
             shell.openExternal(`http://127.0.0.1:${port}`);
         }, 2000);
-        setTimeout(() => {
-            const checkUpload = new BrowserWindow({ show: DEBUG });
-            DEBUG ? checkUpload.webContents.openDevTools() : null;
-            checkUpload.loadURL(url_1.format({
-                pathname: path_1.join(__dirname, 'app/update.html'),
+        /*
+        setTimeout (() => {
+            const checkUpload = new BrowserWindow ({ show: DEBUG })
+            checkUpload.rendererSidePort = port
+            DEBUG ? checkUpload.webContents.openDevTools() : null
+            checkUpload.loadURL ( format ({
+                pathname: join ( __dirname, 'app/update.html'),
                 protocol: 'file:',
                 slashes: true
-            }));
-        }, 500);
+            }))
+        }, 500 )
+        */
     }
     else {
         createWindow();

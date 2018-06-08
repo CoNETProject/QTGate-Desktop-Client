@@ -27,6 +27,7 @@ const InitKeyPair = function () {
     };
     return keyPair;
 };
+const url = 'https://api.github.com/repos/QTGate/QTGate-Desktop-Client/releases/latest';
 socketIo.emit11 = function (eventName, ...args) {
     let CallBack = args.pop();
     if (typeof CallBack !== 'function') {
@@ -249,6 +250,7 @@ var view_layout;
             this.AppList = ko.observable(false);
             this.CoGateRegionStoped = ko.observable(false);
             this.imapData = null;
+            this.newVersion = ko.observable('');
             this.socketListen();
         }
         systemError() {
@@ -339,10 +341,21 @@ var view_layout;
                 return self.systemError();
             });
             socketIo.on('init', function (err, config) {
+                $.getJSON(url)
+                    .done(function (json) {
+                    if (!json) {
+                        return;
+                    }
+                    const localVersion = 'v' + config.version;
+                    if (json.tag_name <= localVersion) {
+                        return;
+                    }
+                    self.newVersion(json.tag_name);
+                });
                 return self.initConfig(config);
             });
             socketIo.on('CoNET_offline', function () {
-                self.modalContent(infoDefine[this.languageIndex()].emailConform.formatError[5]);
+                self.modalContent(infoDefine[self.languageIndex()].emailConform.formatError[5]);
                 $('#CoNETError').modal('setting', 'closable', false).modal('show');
                 return self.CoNETLocalServerError(true);
             });

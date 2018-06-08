@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const DEBUG = true
+const DEBUG = false
 const port = 3000
 
 import * as Fs from 'fs'
@@ -349,10 +349,11 @@ const appReady = () => {
             setTimeout (() => {
                 shell.openExternal (`http://127.0.0.1:${ port }`)
             }, 2000 )
-            
+
+            /*
             setTimeout (() => {
                 const checkUpload = new BrowserWindow ({ show: DEBUG })
-                
+                checkUpload.rendererSidePort = port
                 DEBUG ? checkUpload.webContents.openDevTools() : null
                 checkUpload.loadURL ( format ({
                     pathname: join ( __dirname, 'app/update.html'),
@@ -360,7 +361,7 @@ const appReady = () => {
                     slashes: true
                 }))
             }, 500 )
-            
+            */
         
     } else {
         
