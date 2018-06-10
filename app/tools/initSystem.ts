@@ -297,7 +297,7 @@ export const newKeyPair = ( emailAddress: string, nickname: string, password: st
 		name: nickname,
 		email: emailAddress
 	}
-	const option: openpgp.KeyOptions = {
+	const option: OpenPgp.KeyOptions = {
 		passphrase: password,
 		userIds: [userId],
 		curve: "ed25519",

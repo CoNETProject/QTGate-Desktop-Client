@@ -106,7 +106,7 @@ export default class extends Imap.imapPeer {
 		console.log (`exit1 cancel already Exit [${ err }]`)
 	}
 
-	constructor ( public imapData: IinputData, private sockerServer: SocketIo.Server, private openKeyOption, public doNetSendConnectMail: boolean,
+	constructor ( public imapData: IinputData, private sockerServer: SocketIO.Server, private openKeyOption, public doNetSendConnectMail: boolean,
 		private cmdResponse: ( cmd: QTGateAPIRequestCommand ) => void, public _exit: ( err ) => void ) {
 		super ( imapData, imapData.clientFolder, imapData.serverFolder, ( encryptText: string, CallBack ) => {
 			

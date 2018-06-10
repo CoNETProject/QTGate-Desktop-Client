@@ -474,7 +474,7 @@ export default class localServer {
 		socket.on ( 'getAvaliableRegion', CallBack1 => {
 
 			CallBack1 ()
-
+			console.log (`on getAvaliableRegion`)
 			if ( this.connectCommand && this.connectCommand.length ) {
 				console.log (`getAvaliableRegion have this.connectCommand `)
 				//socket.emit ('getAvaliableRegion', this.regionV1, this.dataTransfer, this.config )
@@ -503,25 +503,12 @@ export default class localServer {
 				}
 				this.dataTransfer = res.dataTransfer
 				
-				saveLog ( `getAvaliableRegion got return Args [2] [${ JSON.stringify ( res.Args[2] )}]`)
+				console.log (`dataTransfer `, Util.inspect ( this.dataTransfer, false, 2, true ))
 				socket.emit ( 'getAvaliableRegion', res.Args[2], res.dataTransfer, this.config )
 				
 				//		Have gateway connect!
 				//this.saveConfig ()
 				
-				if ( res.Args[ 1 ]) {
-					saveLog (`getAvaliableRegion got return Args [1] [${ JSON.stringify ( res.Args[1] )}]`)
-					/*
-					if ( ! this.proxyServer || ! this.connectCommand ) {
-						const arg: IConnectCommand[] = this.connectCommand = res.Args[1]
-						arg.forEach ( n => {
-							n.localServerIp = Encrypto.getLocalInterface ()[0]
-						})
-						this.makeOpnConnect ( arg )
-					}
-					*/
-					return socket.emit ( 'QTGateGatewayConnectRequest', -1, res.Args[ 1 ] )
-				}
 				
 				this.regionV1 = res.Args[2]
 			})
@@ -1131,7 +1118,7 @@ export default class localServer {
 		this.localConnected.set ( client, { socket: socket, login: false, listenAfterPasswd: false } )
 
 		socket.once ( 'disconnect', reason => {
-			saveLog ( `socketServerConnected ${ client } on disconnect`)
+			//saveLog ( `socketServerConnected ${ client } on disconnect`)
 			return this.localConnected.delete ( client )
 		})
 
@@ -1387,7 +1374,7 @@ export default class localServer {
 			this.config.newVersion = ver
 			this.config.newVerReady = true
 			return Tool.saveConfig ( this.config, err => {
-				
+
 			})
 		})
 

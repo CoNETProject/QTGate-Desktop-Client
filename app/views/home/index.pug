@@ -657,7 +657,8 @@ block jumbotron1
 				.content
 					span( data-bind="text: username" )
 					.sub.header
-						span( data-bind="text: infoDefine[ $root.languageIndex() ].QTGateGateway.userType[ freeAccount ? 0 : 1 ] ")
+						span( data-bind="text: infoDefine[ $root.languageIndex() ].QTGateGateway.userType[ freeAccount() ? 0 : 1 ] " style = "padding-right: 0.5em;")
+						span( data-bind = "visible: !freeAccount(), text: currentPlan.showName[ $root.languageIndex()]" style="color: coral;font-weight: bolder;")
 							
 			<!-- ko if: !planUpgrade() && ! promoButton() && !doingPayment() -->
 			.plans( data-bind="foreach: planArray " )
@@ -700,7 +701,7 @@ block jumbotron1
 				<!-- /ko -->
 
 				p( data-bind="visible: detailArea" style="margin-top: 1em;")
-					button.ui.teal.basic.button( data-bind=" click: function () { showPayment ( monthlyPay, false )}, css: { hideCardImage: isAnnual }, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.cantUpgradeMonthly }")
+					button.ui.teal.basic.button( data-bind=" click: function () { isAnnual() ? null : showPayment ( monthlyPay, false )}, css: { hideCardImage: isAnnual }, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.cantUpgradeMonthly }")
 						span( data-bind = "html: infoDefine[ $root.languageIndex() ].account.monthlyAutoPay( monthlyPay )")
 					button.ui.primary.basic.button( data-bind = "click: () => { return showPayment ( annually, true )}" )
 						<!-- ko if: currentPromo -->
@@ -718,20 +719,7 @@ block jumbotron1
 							span.amount( data-bind = "text: payment" )
 							span( data-bind="text: '(' + infoDefine[ $root.languageIndex() ].account.canadaCard + ')'" style="font-size: smaller;color:gray;padding-left: 1em;")
 						
-						<!-- ko if: showCurrentPlanBalance -->
-						.row( style="font-size: small;padding-top: 0.5em;padding-bottom: 0px;color: gray;font-weight: lighter;")
-							span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.planPrice")
-							span.usDollar us$
-							span.amount( data-bind=" text: getAmount ( selectPlanPrice())" style="color:grey")
-							span( style = "padding-left: 0.5em;padding-right: 0.5em;") -
-							span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.oldPlanBalance")
-							span.usDollar us$
-							span.amount( data-bind=" text: getAmount ( showCurrentPlanBalance())" style="color:grey")
-							span( style = "padding-left: 0.5em;padding-right: 0.5em;") =
-							span( data-bind= " text: infoDefine[ $root.languageIndex() ].account.needPay" )
-							span.usDollar us$
-							span.amount( data-bind = "text: getAmount ( selectPlanPrice() - showCurrentPlanBalance())" style="color:grey")
-						<!-- /ko -->
+						
 						.row( style = "padding: 0px;padding-top: 1em;")
 							
 							.ui.animated.fade.basic.violet.button.showStripeErrorIconConnect( data-bind = "visible: !doingPayment(), click: openStripeCard, css: { violet: !showStripeError(), negative: showStripeError()}, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.paymentProblem }")

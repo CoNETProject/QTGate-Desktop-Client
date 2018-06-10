@@ -1,6 +1,6 @@
 declare const Cleave
 declare const StripeCheckout
-const Stripe_publicKey = 'pk_test_eVOSOJHeYmAznyxbZ4durBXh'
+const Stripe_publicKey = 'pk_test_uV27MTvcPM147KFo3HazbunU'
 
 class coGateRegion {
 	public QTConnectData = ko.observable ( null )
@@ -460,6 +460,7 @@ class CoGateClass {
 interface PlanArray {
 	name: string
 }
+
 const planArray = [
     {
 		name:'free',
@@ -553,13 +554,21 @@ const planArray = [
 
 
 class planUpgrade {
+
+	public annually: string
+	public annuallyMonth: string 
+	public totalAmount: KnockoutComputed< string >
+	public currentPromoIndex: number
+
+
+
 	public currentPromo: KnockoutObservable < CoPromo > = ko.observable (null) 
 	private plan = planArray[ this.planNumber ]
 	public showNote = ko.observable ( false )
 	public detailArea = ko.observable ( true )
 	public _promo = this.dataTransfer.promo[0]
 	public _promoFor = this._promo.promoFor
-	
+	public currentPlan = ko.observable ( planArray [ planArray.findIndex ( function (n){ return n.name === this.dataTransfer.productionPackage})] )
 	
 
 	//public annually = this.promo ? Math.round ( this.promoPrice * this.plan.annually * 100 )/100 : this.plan.annually
@@ -583,15 +592,14 @@ class planUpgrade {
 	public showSuccessPayment = ko.observable ( false )
 	public cardExpirationYearFolder_Error = ko.observable ( false )
 	public cancel_Amount = ko.observable (0)
-	public totalAmount
-	public currentPromoIndex: number
-	public paymentError = ko.observable ( false )
-	
-	public annually: string
-	public annuallyMonth: string 
 	public planExpirationYear = ko.observable ('')
 	public planExpirationMonth = ko.observable ('')
 	public planExpirationDay = ko.observable ('')
+	
+	public paymentError = ko.observable ( false )
+
+	
+	
 
 	private clearPaymentError () {
 		this.cardNumberFolder_Error ( false )
@@ -826,8 +834,9 @@ class CoGateAccount {
 	public username = this.dataTransfer.account
 	public productionPackage = this.dataTransfer.productionPackage
 	public promo = this.dataTransfer.promo[0]
-	public currentPlan = findCurrentPlan ( this.productionPackage )
+	public currentPlan = planArray[findCurrentPlan ( this.productionPackage )]
 	public freeAccount = ko.observable ( /^free$/i.test(this.dataTransfer.productionPackage ))
+	public userPlan = ko.observable ( this.dataTransfer.productionPackage.toUpperCase() )
 	public planArray = ko.observableArray ( planArray )
 	public planUpgrade: KnockoutObservable < planUpgrade > = ko.observable ( null )
 	public promoButton = ko.observable ( false )
@@ -906,9 +915,10 @@ class CoGateAccount {
 	}
 	
 	constructor ( private dataTransfer: iTransferData, public exit: () => void ) {
-
-		this.planArray()[ this.currentPlan === 0 ? 1 : this.currentPlan ].tail ( true )
-		for ( let i = this.currentPlan + 1; i < planArray.length; i ++ ) {
+		const plan = findCurrentPlan ( this.productionPackage )
+		
+		this.planArray()[ plan === 0 ? 1 : plan ].tail ( true )
+		for ( let i = plan + 1; i < planArray.length; i ++ ) {
 			this.planArray()[i].showButton ( true )
 		}
 	}

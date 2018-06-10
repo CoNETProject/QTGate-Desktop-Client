@@ -94,26 +94,11 @@ class ImapServerSwitchStream extends Stream.Transform {
 
     constructor ( public imapServer: qtGateImap, private exitWithDeleteBox: boolean, public debug: boolean ) {
         super ()
-        /*
-        if ( eachMail ) {
-            this.imapServer.on ( 'nextNewMail', () => {
-                this.reNewCount ++
-                console.log ( `**** imapServer on nextNewMail!` )
-                this.nextRead = true
-                if ( this.runningCommand !== 'idle' )
-                    return
-                if ( this.imapServer.idleSupport ) {
-                    return this.idleStop ()
-                }
-    
-            })
-        }
-        */
     }
 
     public idleStop () {
         if ( ! this.imapServer.idleSupport || this.runningCommand !== 'idle' || this.waitingDoingIdleStop ) { 
-            return saveLog ( `[${ this.imapServer.imapSerialID }]idleStop() skep! ! this.imapServer.idleSupport || this.runningCommand !== 'idle' = [ true ]`)
+            return //saveLog ( `[${ this.imapServer.imapSerialID }]idleStop() skep! ! this.imapServer.idleSupport || this.runningCommand !== 'idle' = [ true ]`)
         }
         this.waitingDoingIdleStop = true
         clearTimeout ( this.idleNextStop )
@@ -392,7 +377,7 @@ class ImapServerSwitchStream extends Stream.Transform {
     public checkLogout ( CallBack ) {
 
         if ( !this.isWaitLogout ) {
-            console.log (`[${ this.imapServer.imapSerialID }] checkLogout have not waiting logout`)
+            //console.log (`[${ this.imapServer.imapSerialID }] checkLogout have not waiting logout`)
             return CallBack ()
         }
         const _callBack = () => {
@@ -696,7 +681,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         this.appendWaitResponsrTimeOut = setTimeout (() => {
             console.log (`IMAP append TIMEOUT stop IMAP this.imapServer.socket.end ()`)
             return this.imapServer.socket.end ()
-            this.imapServer.emit ('end')
+            this.imapServer.emit ( 'end' )
         }, time )
         //console.log (`*************************************  append time = [${ time }] `)
         if ( this.imapServer.literalPlus ) {
@@ -1006,60 +991,26 @@ export class qtGateImap extends Event.EventEmitter {
     private connectTimeOut = null
 
     private connect () {
-
- 
-        const handleEvent = () => {
-            //  socket event 
-                this.socket.once ( 'error', err => {
-                    console.log ( `imap socket on ERROR [${ err }]` )
-                    this.destroyAll ( err )
-                })
-
-            //-
-
-            //  imapStream event
-
-                this.imapStream.once ( 'ready', () => {
-                    console.log ( `this.imapStream.once ready! [${ this.listenFolder }][${ this.writeFolder }]`)
-                    this.emit ( 'ready' )
-                })
-            //-
-        }
-
-        const onConnect = () => {
+        const _connect = () => {
             clearTimeout ( this.connectTimeOut )
-            handleEvent ()
-            this.socket.pipe ( this.imapStream ).pipe ( this.socket )
-            
+            this.socket .pipe ( this.imapStream ).pipe ( this.socket  )
         }
-        
-        
+
         if ( ! this.IMapConnect.imapSsl ) {
-            this.socket = Net.createConnection ({ port: this.port, host: this.IMapConnect.imapServer }, onConnect )
+            this.socket = Net.createConnection ({ port: this.port, host: this.IMapConnect.imapServer }, _connect )
         } else {
-
-            const jj = Tls.connect ({ rejectUnauthorized: ! this.IMapConnect.imapIgnoreCertificate, host: this.IMapConnect.imapServer, port: this.port }, () => {
-
-                
-                this.socket = jj
-                clearTimeout ( this.connectTimeOut )
-                jj.pipe ( this.imapStream ).pipe ( jj )
-            })
-            jj.once ( 'error', err => {
-                
-                //console.log (`jj.once ( 'error' ) listenFolder[${ this.listenFolder }] writeFolder [${ this.writeFolder }]`)
-                this.destroyAll ( err )
-            })
-            jj.once ( 'end', () => {
-                
-                this.destroyAll ( null )
-            })
-            
+            this.socket  = Tls.connect ({ rejectUnauthorized: ! this.IMapConnect.imapIgnoreCertificate, host: this.IMapConnect.imapServer, port: this.port }, _connect )
         }
-
+        this.socket.once ( 'error', err => {
+            this.destroyAll ( err )
+        })
+        this.socket.once ( 'end', () => {
+            this.destroyAll ( null )
+        })
+        
     
         this.connectTimeOut = setTimeout (() => {
-            
+            console.log (`qtGateImap on connect socket tiemout! this.imapStream.end`)
             if ( this.socket ) {
 
                 if ( this.socket.destroy )
@@ -1068,6 +1019,8 @@ export class qtGateImap extends Event.EventEmitter {
             }
             this.imapStream.end ()
         }, socketTimeOut )
+
+
     }
 
     constructor ( public IMapConnect: imapConnect, public listenFolder: string, public deleteBoxWhenEnd: boolean, public writeFolder: string, private debug: boolean, public newMail: ( mail ) => void ) {
@@ -1567,7 +1520,7 @@ export class imapPeer extends Event.EventEmitter {
             }
             
             if ( uu.pong && uu.pong.length ) {
-                saveLog ( `===> new PONG come!`, true )
+                //saveLog ( `===> new PONG come!`, true )
                 if ( !this.pingUuid ) {
                     return saveLog ( `GOT in the past PONG [${ uu.pong }]!`, true )
                 }
@@ -1644,11 +1597,11 @@ export class imapPeer extends Event.EventEmitter {
         return Async.waterfall ([
             next => this.enCrypto ( mail, next ),
             ( data, next ) => {
-                saveLog (`encryptAndAppendWImap1 doing this.wImap.append1 typeof next = [${ typeof next }]`)
+                //saveLog (`encryptAndAppendWImap1 doing this.wImap.append1 typeof next = [${ typeof next }]`)
                 return this.wImap.append1 ( Buffer.from ( data ).toString ('base64'), next )
             }
         ], err => {
-            console.log (`encryptAndAppendWImap1 Async.waterfall success`, err )
+            //console.log (`encryptAndAppendWImap1 Async.waterfall success`, err )
             this.wImap.canAppend = true
             return CallBack ( err )
         })
@@ -1659,7 +1612,7 @@ export class imapPeer extends Event.EventEmitter {
         clearTimeout ( this.waitingReplyTimeOut )
         clearTimeout ( this.needPingTimeOut )
         this.needPing = false
-        saveLog ( `Make Time Out for a Ping`, true )
+        //saveLog ( `Make Time Out for a Ping`, true )
         return this.waitingReplyTimeOut = setTimeout (() => {
             saveLog ( `ON setTimeOutOfPing this.emit ( 'pingTimeOut' ) `, true )
             
@@ -1674,7 +1627,7 @@ export class imapPeer extends Event.EventEmitter {
     
     public Ping () {
         this.pingUuid = Uuid.v4 ()
-        saveLog ( `Ping! ${ this.pingUuid }`, true )
+        //saveLog ( `Ping! ${ this.pingUuid }`, true )
         this.pingCount ++
         return this.encryptAndAppendWImap1 ( JSON.stringify ({ ping: this.pingUuid }), err => {
             if ( err ) {
@@ -1705,7 +1658,7 @@ export class imapPeer extends Event.EventEmitter {
     private sendAllMail () {
 
         if ( ! this.sendMailPool.length || ! this.peerReady ) {
-            return saveLog ( `sendAllMail do nothing! sendMailPool.length [${ this.sendMailPool.length }] peerReady [${ this.peerReady }]`)
+            return //saveLog ( `sendAllMail do nothing! sendMailPool.length [${ this.sendMailPool.length }] peerReady [${ this.peerReady }]`)
         }
 
         const uu = this.sendMailPool.pop ()
@@ -1728,7 +1681,7 @@ export class imapPeer extends Event.EventEmitter {
             return console.log ( `newWriteImap this.wImap.imapStream.writable = [${ this.wImap.imapStream.writable }] this.makeWImap [${ this.makeWImap  }]`)
         }
         this.makeWImap = true
-        saveLog ( `====== > newWriteImap`, true )
+        //saveLog ( `====== > newWriteImap`, true )
         this.wImap = new qtGateImapwrite ( this.imapData, this.writeBox )
 
         this.wImap.once ( 'end', err => {
@@ -1782,7 +1735,7 @@ export class imapPeer extends Event.EventEmitter {
 
         this.rImap.once ( 'ready', () => {
             this.makeRImap = false
-            saveLog ( `this.rImap.once on ready `)
+            //saveLog ( `this.rImap.once on ready `)
 
         })
 
@@ -1980,619 +1933,6 @@ const saveLogForstreamImap = ( log: any ) => {
 const debugOutStream = ( text: string, isIn: boolean ) => {
     const log = `【${ new Date().toISOString()}】${ isIn ? '<=' : '=>'} 【${ text }】`
     saveLogForstreamImap ( log )
-}
-
-class streamImap1 extends Stream.Transform {
-    public pipeWriteFile = false
-    
-    public writeStream: Stream.Writable = null
-    public _callback = false
-    public commandProcess ( text: string, cmdArray: string[], next, callback ) {}
-    private _login = false
-    private needCheckHeader = true
-    private _bufHeader = ''
-    private Tag = ''
-    private cmd = ''
-    private first = true
-    private doCommandCallback: ( err?: Error, data?: any ) => void = null
-    private _buffer = Buffer.allocUnsafe (0)
-    private tagcount = 0
-    private serverSupportTag = ''
-    private idleSupport = false
-    private condStoreSupport = false
-    private literalPlus = false
-    private fetchAddCom = ''
-    private fetching = 0
-    private socket = null
-    private reConnecting = false
-    private port: number = typeof this.IMapConnect.imapPortNumber === 'object' ? this.IMapConnect.imapPortNumber[0]: this.IMapConnect.imapPortNumber
-    private connectTimeOut: NodeJS.Timer = null
-
-    private resetConnect ( socket ) {
-        if ( this.reConnecting ) {
-            return
-        }
-        this.reConnecting = true
-        if ( socket ) {
-            if ( typeof socket.pipe === 'function' ) {
-                socket.unpipe ()
-            }
-            if ( socket.removeAllListeners && typeof socket.removeAllListeners === 'function' )  {
-                socket.removeAllListeners ()
-            }
-            if ( typeof socket.end === 'function' ) {
-                socket.end()
-            }
-        }
-        
-        socket = null
-        this.reConnecting = true
-        return this.doConnect ()
-    }
-
-    private doConnect () {
-
-        saveLogForstreamImap (`start streamImap `)
-        const handleEvent = () => {
-            //  socket event 
-                this.socket.once ( 'error', err => {
-                    saveLogForstreamImap ( `streamImap IMAP server socket on ERROR [${ err.message }]` )
-                    this.destroyAll ()
-                })
-        }
-
-        const onConnect = () => {
-            saveLogForstreamImap (`streamImap onConnect!`)
-            clearTimeout ( this.connectTimeOut )
-            handleEvent ()
-            this.socket.pipe ( this ).pipe ( this.socket )
-            
-        }
-
-        this.once ( 'error', err => {
-            saveLogForstreamImap (`this.once ( 'error' ) err = [${ err.message }]`)
-            return this.destroyAll ()
-        })
-
-        if ( ! this.IMapConnect.imapSsl ) {
-            this.socket = Net.createConnection ({ port: this.port, host: this.IMapConnect.imapServer }, onConnect )
-        } else {
-            //      for Uncaught Error: socket hang up
-            //      https://stackoverflow.com/questions/40228074/nodejs-tlssocket-onhangup
-            //  
-            const catchUncaughtException = err => {
-                saveLogForstreamImap ( `********* streamImap got process uncaught Exception [${ err.message }]`)
-                this.destroyAll ()
-            }
-
-            process.once ( 'uncaughtException', catchUncaughtException )
-
-            const jj = Tls.connect ({ rejectUnauthorized: ! this.IMapConnect.imapIgnoreCertificate, host: this.IMapConnect.imapServer, port: this.port }, () => {
-                saveLogForstreamImap (`streamImap Tls.connect success!`)
-                process.removeListener ( 'uncaughtException', catchUncaughtException )
-
-                
-                
-                this.socket = jj
-                clearTimeout ( this.connectTimeOut )
-                this.socket.pipe ( this ).pipe ( this.socket )
-            })
-            jj.once ( 'error', err => {
-                saveLogForstreamImap (`Tls.connect once ( 'error' ) listenFolder[${ this.folderName }]`)
-                return this.resetConnect ( jj )
-            })
-
-            jj.setTimeout( 10000 )
-            
-            jj.once ( 'timeout', () => {
-                
-                saveLogForstreamImap ( `Tls.connect once ( 'timeout' ) listenFolder[${ this.folderName }]`)
-                return this.resetConnect ( jj )
-                
-            })
-
-            jj.once ( 'end', () => {
-                if ( this.reConnecting ) {
-                    return saveLogForstreamImap (`jj.once ( 'end', ) & this.reConnecting = true!`)
-                    
-                }
-                saveLogForstreamImap ( `jj.once end destroyAll ()`)
-                return this.destroyAll ()
-            })
-        }
-
-    
-        this.connectTimeOut = setTimeout (() => {
-            return this.destroyAll ()
-        }, socketTimeOut )
-    }
-
-    constructor ( private IMapConnect: imapConnect, private folderName: string, private writeFileName: string,  ) { 
-        super ()
-        this.doConnect ()
-    }
-
-    private doCapability ( capability ) {
-        this.serverSupportTag = capability
-        this.idleSupport = /IDLE/i.test ( capability )
-        this.condStoreSupport = /CONDSTORE/i.test ( capability )
-        this.literalPlus = /LITERAL\+/i.test ( capability )
-        const ii = /X\-GM\-EXT\-1/i.test ( capability )
-        const ii1 = /CONDSTORE/i.test ( capability )
-        return this.fetchAddCom = `(${ ii ? 'X-GM-THRID X-GM-MSGID X-GM-LABELS ': '' }${ ii1 ? 'MODSEQ ' : ''}BODY[])`
-    }
-
-    public TagCount1 () {
-        if ( ++ this.tagcount < MAX_INT )
-            return this.tagcount
-        return this.tagcount = 0
-    }
-
-    private deleteBox ( CallBack ) {
-        this.doCommandCallback = CallBack
-        this.commandProcess = ( text1: string, cmdArray: string[], next, _callback ) => {
-            return _callback ()
-        }
-        this.cmd = `DELETE "${ this.folderName }"`
-        this.Tag = `A${ this.TagCount1() }`
-        this.cmd = `${ this.Tag } ${ this.cmd }`
-        debug ? debugOutStream ( this.cmd, false ) : null
-        if ( this.writable ) {
-            return this.push ( this.cmd + '\r\n' )
-        }
-            
-        return this.logout ()
-    }
-
-    public serverCommandError ( err: Error, CallBack ) {
-        this.emit ( 'error', err )
-        if ( CallBack && typeof CallBack === 'function' ) {
-            CallBack ( err )
-        }
-    }
-
-    public seachUnseen ( CallBack ) {
-        let newSwitchRet = null
-        let moreNew = false
-        this.doCommandCallback = err => {
-            if ( err )
-                return CallBack ( err )
-            return CallBack ( null, newSwitchRet, moreNew )
-        }
-        this.commandProcess = ( text: string, cmdArray: string[], next, _callback ) => {
-            switch ( cmdArray[0] ) {
-                case '*': {
-                    if ( /^SEARCH$/i.test ( cmdArray [1] ) ) {
-                        const uu1 = cmdArray[2] && cmdArray[2].length > 0 ? parseInt ( cmdArray[2] ) : 0
-                        if ( cmdArray.length > 2 && uu1 ) {
-                            if ( ! cmdArray [ cmdArray.length - 1 ].length )
-                                cmdArray.pop ()
-                            
-                            const uu = cmdArray.slice ( 2 ).join ( ',' )
-                            if ( /\,/.test ( uu [ uu.length - 1 ]) )
-                                uu.substr ( 0, uu.length - 1 )
-                            
-                            newSwitchRet =  uu
-                            moreNew = cmdArray.length > 3
-                        }
-                    } 
-                }
-                default:
-                return _callback ()
-            }
-        }
-
-        this.Tag = `A${ this.TagCount1() }`
-        this.cmd = `${ this.Tag } UID SEARCH UNSEEN`
-        debug ? debugOutStream ( this.cmd, false ) : null
-        if ( this.writable ) {
-            return this.push ( this.cmd + '\r\n')
-        }
-        return this.logout ()
-    }
-
-    private capability () {
-
-        this.doCommandCallback = err => {
-            if ( err ) {
-                return this.logout ()
-            }
-            return this.doNewMail ()
-        }
-
-        this.commandProcess = ( text: string, cmdArray: string[], next, callback ) => {
-            switch ( cmdArray[0] ) {
-                case '*': {                                  /////       *
-                    //          check imap server is login ok
-                    if ( /^CAPABILITY$/i.test ( cmdArray [1] ) && cmdArray.length > 2 ) {
-                        const kkk = cmdArray.slice (2).join (' ')
-                        this.doCapability ( kkk )
-                    }
-                    return callback ()
-                }
-                default:
-                return callback ()
-            }
-        }
-
-        this.Tag = `A${ this.TagCount1() }`
-        this.cmd = `${ this.Tag } CAPABILITY`
-        debug ? debugOutStream ( this.cmd, false ) : null
-
-        if ( this.writable ) {
-            return this.push ( this.cmd + '\r\n')
-        }
-            
-        return this.logout ()
-    }
-
-    private login ( text: string, cmdArray: string[], next, _callback ) {
-
-        this.doCommandCallback = ( err: Error ) => {
-            
-            if ( err ) {
-                return this.emit ( 'error', err )
-            }
-            return this.capability ()
-            
-        }
-
-        this.commandProcess = (  text: string, cmdArray: string[], next, callback ) => {
-            switch ( cmdArray[0] ) {
-                case '+':
-                case '*': {
-                    return callback ()
-                }
-                default:
-                return callback ()
-            }
-        }
-        
-        switch ( cmdArray[0] ) {
-            
-            case '*': {                                  /////       *
-                //          check imap server is login ok
-                if ( /^ok$/i.test ( cmdArray [1]) && this.first ) {
-                    this.first = false
-                    this.Tag = `A${ this.TagCount1() }`
-                    this.cmd = `${ this.Tag } LOGIN "${ this.IMapConnect.imapUserName }" "${ this.IMapConnect.imapUserPassword }"`
-                    debug ? debugOutStream ( this.cmd, false ) : null
-                    this._callback = this._login = true
-                    if ( this.writable ) {
-                        return next ( null, this.cmd + '\r\n' )
-                    }
-                        
-                    return this.logout ()
-                }
-                //
-                return _callback ()
-            }
-
-            default: {
-                return this.serverCommandError ( new Error ( `login switch default ERROR!` ), _callback )
-            }
-            
-        }
-
-    }
-
-    private openBox ( CallBack ) {
-        let newSwitchRet = false
-
-        this.doCommandCallback = ( err ) => {
-            if ( err ) {
-                return CallBack ( err )
-            }
-            CallBack ( null, newSwitchRet )
-        }
-
-        this.commandProcess = ( text: string, cmdArray: string[], next, _callback ) => {
-            switch ( cmdArray[0] ) {
-                case '*': {
-                    if ( /^EXISTS$/i.test ( cmdArray [2])) {
-                        if ( parseInt ( cmdArray[1])) {
-                            newSwitchRet = true
-                        }
-                    }
-                    return _callback ()
-                }
-                default:
-                return _callback ()
-            }
-        }
-
-        const conText = this.condStoreSupport ? ' (CONDSTORE)' : ''
-       
-        this.Tag = `A${ this.TagCount1() }`
-        this.cmd = `${ this.Tag } SELECT "${ this.folderName }"${ conText }`
-        debug ? debugOutStream ( this.cmd, false ) : null
-        if ( this.writable ) {
-            return this.push ( this.cmd + '\r\n')
-        }
-            
-        return this.logout ()
-    }
-
-
-    private logout () {
-        return this._logout (() => {
-            return this.destroyAll ()
-        })
-    }
-
-    private _logout ( CallBack ) {
-        if ( /LOGOUT$/.test( this.cmd )) {
-            if ( CallBack && typeof CallBack === 'function') {
-                return CallBack ()
-            }
-            return
-        }
-        this.doCommandCallback = CallBack
-        this.commandProcess = ( text: string, cmdArray: string[], next, _callback ) => {
-            return _callback ()
-        }
-        
-        this.Tag = `A${ this.TagCount1() }`
-        this.cmd = `${ this.Tag } LOGOUT`
-        debug ? debugOutStream ( this.cmd, false ) : null
-        if ( this.writable ) {
-            return this.push ( this.cmd + '\r\n')
-        }
-        if ( CallBack && typeof CallBack === 'function') {
-            return CallBack ()
-        }
-        CallBack ()
-    }
-
-    private streamCheckEnd () {
-        let _buf = this._buffer.slice ( 0, this.fetching )
-
-        if ( this.needCheckHeader ) {
-            this._bufHeader += _buf.toString()
-            const con = this._bufHeader.split ( '\r\n\r\n' )
-            if ( con.length < 2 ) {
-                return this._buffer = Buffer.allocUnsafe (0)
-            }
-            this.needCheckHeader = false
-            _buf = Buffer.from ( con[1] )
-
-        }
-        this.push ( _buf )
-        //this.push ( Buffer.from ( _buf.toString(), 'base64' ))
-
-        this._buffer = this._buffer.slice ( this.fetching )
-        this.fetching -= this._bufHeader.length || _buf.length
-        this._bufHeader = ''
-        saveLogForstreamImap ( `fetch fetching [${ this.fetching }]`)
-        if ( ! this.fetching ) {
-            saveLogForstreamImap ( `streamCheckEnd on this.fetching === 0 doing end process!`)
-            saveLogForstreamImap (`${ this._buffer.toString()}`)
-            this.pipeWriteFile = false
-            this.unpipe ( this.writeStream )
-        }
-
-    }
-
-    private createFatchFile () {
-        saveLogForstreamImap ( `doing createFatchFile [${ this.writeFileName }] this.fetching = [${ this.fetching }]`)
-        this.pipeWriteFile = true
-        this.writeStream = Fs.createWriteStream ( this.writeFileName, { encoding:'utf8'/* 'binary' */})
-        
-        return this.pipe ( this.writeStream )
-    }
-
-    public fetch ( fetchNum, CallBack ) {
-        saveLogForstreamImap ( `doing streamImap fetch`)
-        this.doCommandCallback = err => {
-            return CallBack ( err )
-        }
-
-        this.commandProcess = ( text1: string, cmdArray: string[], next, _callback ) => {
-            switch ( cmdArray[0] ) {
-                case '*': {
-                    if ( /^FETCH$/i.test ( cmdArray [ 2 ] ) && /BODY\[\]/i.test ( cmdArray [ cmdArray.length - 2 ])) {
-                        const last = cmdArray[ cmdArray.length - 1 ]
-                        if ( /\{\d+\}/.test ( last )) {
-                            this.fetching = parseInt ( last.substr ( 1, last.length - 2 ))
-                            this.createFatchFile()
-                        }
-                    }
-                }
-                default: {
-                    return _callback ()
-                }
-            }
-        }
-        console.log (`class streamImap doing UID FETCH`)
-        this.cmd = `UID FETCH ${ fetchNum } ${ this.fetchAddCom }`
-        this.Tag = `A${ this.TagCount1() }`
-        this.cmd = `${ this.Tag } ${ this.cmd }`
-        debug ? debugOutStream ( this.cmd, false ) : null
-        if ( this.writable ) {
-            return this.push ( this.cmd + '\r\n' )
-        }
-        return this.logout ()
-    }
-
-    public expunge ( CallBack ) {
-
-        let newSwitchRet = false
-        this.doCommandCallback = err => {
-            
-            return CallBack ( err, newSwitchRet )
-        }
-        this.commandProcess = ( text: string, cmdArray: string[], next , _callback ) => {
-            switch ( cmdArray[0] ) {
-                case '*': {
-                    if ( /^EXPUNGE$/i.test ( cmdArray [2])) {
-                        if ( parseInt ( cmdArray[1])) {
-                            
-                        }
-                    }
-                    return _callback ()
-                }
-                default:
-                return _callback ()
-            }
-        }
-        
-        this.Tag = `A${ this.TagCount1() }`
-        this.cmd = `${ this.Tag } EXPUNGE`
-        debug ? debugOutStream ( this.cmd, false ) : null
-        if ( this.writable ) {
-            return this.push ( this.cmd + '\r\n')
-        }
-            
-        return this.logout ()
-    }
-
-    public flagsDeleted ( num: string, CallBack ) {
-        this.doCommandCallback = err => {
-            return CallBack ( err )
-        }
-        this.commandProcess = ( text1: string, cmdArray: string[], next, _callback ) => {
-            return _callback ()
-        }
-        this.cmd = `UID STORE ${ num } FLAGS.SILENT (\\Deleted)`
-        this.Tag = `A${ this.TagCount1() }`
-        this.cmd = `${ this.Tag } ${ this.cmd }`
-        debug ? debugOutStream ( this.cmd, false ) : null
-        if ( this.writable ) {
-            return this.push ( this.cmd + '\r\n' )
-        }
-            
-        return this.logout ()
-    }
-
-    public doNewMail () {
-        saveLogForstreamImap ( `streamImap [${ this.folderName }] doNewMail!`)
-        let newMailIds = ''
-        return Async.waterfall ([
-            next => this.openBox ( next ),
-            ( newmail, next ) => this.seachUnseen ( next ),
-            ( _newMailIds, next ) => {
-                newMailIds = _newMailIds
-                this.fetch ( newMailIds, next )
-            },
-            next => this.flagsDeleted ( newMailIds, next ),
-            next => this.expunge ( next ),
-            next => this.deleteBox ( next )
-        ], ( err: Error ) => {
-            if ( err ) {
-                saveLogForstreamImap ( `streamImap [${ this.folderName }] doNewMail ERROR! [${ err.message }]`)
-                return this.logout ()
-            }
-        })
-            
-        
-        
-    }
-
-    public _transform ( chunk: Buffer, encoding, next ) {
-        
-        this._callback = false
-        this._buffer = Buffer.concat ([ this._buffer, chunk ])
-
-        const doLine = () => {
-            const __CallBack = () => {
-                
-                let index = -1
-                if ( ! this._buffer.length || ( index = this._buffer.indexOf ('\r\n')) < 0 ) {
-                    if ( ! this._callback ) {
-                        this._callback = true
-                        return next()
-                    }
-                    return
-                }
-                if ( index === 0 ) {
-                    this._buffer = this._buffer.slice ( 2 )
-                    return __CallBack ()
-                }
-                const _buf = this._buffer.slice ( 0, index )
-                if ( _buf.length ) {
-                    return this.preProcessCommane ( _buf.toString (), next, () => {
-                        this._buffer = this._buffer.slice ( index + 2 )
-                        return doLine ()
-                    })
-                }
-                if (! this._callback ) {
-                    this._callback = true
-                    return next()
-                }
-                return
-            }
-            
-            if ( this.pipeWriteFile ) {
-                this.streamCheckEnd ()
-                if ( ! this._buffer.length ) {
-                    if ( ! this._callback ) {
-                        this._callback = true
-                        return next()
-                    }
-                    return
-                }
-                
-            }
-            return __CallBack ()
-            
-        }
-        saveLogForstreamImap ( `_transform chunk.length = [${ chunk.length }]` )
-        return doLine ()
-    }
-
-    public preProcessCommane ( commandLine: string, _next, callback ) {
-
-        const cmdArray = commandLine.split (' ')
-        debug ? debugOutStream ( `${ this.folderName } ${ commandLine }`, true ) : null
-
-        if ( this._login ) {
-            switch ( commandLine[0] ) {
-
-                case '+':                                    /////       +
-                case '*': {                                  /////       *
-                    return this.commandProcess ( commandLine, cmdArray, _next, callback )
-                }
-
-                case 'I':           //  IDLE
-                case 'D':           //  NODE
-                case 'N':           //  NOOP
-                case 'A': {                                  /////       A
-
-                    if ( this.Tag !== cmdArray[0] ) {
-                        return this.serverCommandError ( new Error ( `this.Tag[${ this.Tag }] !== cmdArray[0] [${ cmdArray[0] }]\ncommandLine[${ commandLine }]` ), callback )
-                    }
-                    if ( /^ok$/i.test ( cmdArray[1] )) {
-                       
-                        this.doCommandCallback ( null, commandLine )
-                        return callback ()
-                    }
-                    const errs = cmdArray.slice (2).join(' ')
-                    this.doCommandCallback ( new Error (errs ))
-                    return callback ()
-
-                }
-                default:{
-                    return this.serverCommandError ( new Error (`_commandPreProcess got switch default error! commandLine = [${ commandLine }]` ), callback )
-                }
-                    
-            }
-        }
-        return this.login ( commandLine, cmdArray, _next, callback )
-    }
-
-    private destroyAll () {
-        if ( this.socket ) {
-            if ( typeof this.socket.end === 'function' ) {
-                this.socket.end ()
-            }
-            if ( typeof this.socket.removeAllListeners === 'function' ) {
-                this.socket.removeAllListeners ()
-            }
-            this.socket = null
-        }
-        return this.emit ('end')
-    }
-
 }
 
 export const imapGetMediaFilesFromString = ( IMapConnect: imapConnect, files: string, folder: string, CallBack ) => {

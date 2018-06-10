@@ -74,8 +74,9 @@ if (handleSquirrelEvent()) {
 }
 const makeSingleInstance = () => {
     //  For Mac App Store build
-    if (process.mas)
+    if (process.platform === 'darwin') {
         return false;
+    }
     return app.makeSingleInstance(() => {
         createWindow();
     });

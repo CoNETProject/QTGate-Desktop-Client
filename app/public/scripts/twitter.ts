@@ -44,7 +44,7 @@ socketIo.emit11 = function ( eventName: string, ...args ) {
 
     const localTimeOut = setTimeout ( function () {
         let uu = eventName
-        twitter_view.systemError()
+        //twitter_view.systemError()
     }, 10000 )
 
     const _CallBack = function ( err ) {
