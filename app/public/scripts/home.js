@@ -441,9 +441,9 @@ var view_layout;
                         return self.imapSetupClassExit(imapData);
                     }));
                 }
-                self.showCoGate(showCoGate);
+                //self.showCoGate ( showCoGate )
                 if (showCoGate) {
-                    return self.CoGateClick();
+                    return self.homeClick();
                 }
                 self.AppList(true);
                 $('.dimmable').dimmer({ on: 'hover' });

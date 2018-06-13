@@ -224,6 +224,8 @@ interface iTransferData {
     expire: string
     isAnnual: boolean
     paidID: string[]
+    totalMonth: number
+    paidAmount: number
     automatically: boolean
     promo: CoPromo[]
 }
@@ -640,3 +642,15 @@ declare namespace SocketIOClient {
     }
 }
 
+interface DateConstructor {
+    isLeapYear: ( year: number ) => boolean
+    getDaysInMonth: (year: number, month: number ) => number
+    
+    
+}
+
+interface Date {
+    isLeapYear: ()=> boolean
+    getDaysInMonth: () => number
+    addMonths: ( n: number ) => Date
+}

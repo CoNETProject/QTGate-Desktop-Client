@@ -17,6 +17,32 @@ const uuID = function () {
     return uuid_generate().replace( /-/g,'')
 }
 
+Date.isLeapYear = function (year) { 
+    return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0)); 
+};
+
+Date.getDaysInMonth = function (year, month) {
+    return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+};
+
+Date.prototype.isLeapYear = function () { 
+    return Date.isLeapYear(this.getFullYear()); 
+};
+
+
+Date.prototype.getDaysInMonth = function () { 
+    return Date.getDaysInMonth(this.getFullYear(), this.getMonth());
+};
+
+Date.prototype.addMonths = function (value) {
+    var n = this.getDate();
+    this.setDate(1);
+    this.setMonth(this.getMonth() + value);
+    this.setDate(Math.min(n, this.getDaysInMonth()));
+    return this;
+};
+
+
 
 const isElectronRender = typeof process === 'object'
 
@@ -150,22 +176,7 @@ const getPlanPrice = function ( plan: string, isAnnualPlan: boolean ) {
 		case 'p2': {
 			return isAnnualPlan ? 58.00: 6.88
 		}
-		//		1TB/month
-		case 'p3': {
-			return isAnnualPlan ? 167.00: 19.88
-		}
-		//		2TB/month
-		case 'p4': {
-			return isAnnualPlan ? 335.00: 39.88
-		}
-		//		4TB/month
-		case 'p5': {
-			return isAnnualPlan ? 670.00: 79.88
-		}
-		//		ERROR
-		default: {
-			return parseInt ('none')
-		}
+		
 
 	}
 }
@@ -193,6 +204,19 @@ const getRemainingMonth = function ( expire: string ) {
     const _expire = new Date ( expire )
     const _nextExpirDate = nextExpirDate ( expire )
     return _expire.getFullYear () === _nextExpirDate.getFullYear () ? _expire.getMonth() - _nextExpirDate.getMonth() : ( 12 - _nextExpirDate.getMonth() + _expire.getMonth() )
+}
+
+const getPassedMonth = function ( start: string ) {
+    const startDate = new Date ( start )
+    const now = new Date ()
+    const passwdYear = now.getFullYear() - startDate.getFullYear ()
+    const nowMonth = now.getMonth ()
+    const startMonth = startDate.getMonth ()
+    const startDay = startDate.getDate()
+    const nowDay = now.getDate ()
+    let ret = startMonth >= nowMonth ? 12 - startMonth + nowMonth + ( passwdYear - 1 ) * 12 : passwdYear * 12 + nowMonth - startMonth - 1
+    ret += startDay >= nowDay ? 0 : 1
+    return ret
 }
 
 const getAmount = function ( amount ) {
@@ -224,7 +248,7 @@ const getExpire = function ( startDate: string, isAnnual: boolean ) {
 
 function getExpireWithMonths ( month: number ) {
     let date = new Date()
-    return new Date ( date.setMonth ( date.getMonth() + month ))
+    return date.addMonths( month )
 }
 
 const getCurrentPlanUpgradelBalance = function ( expiration: string, planName: string, isAnnual: boolean ) {
@@ -281,12 +305,15 @@ const infoDefine = [
             },
             currentPlan:'当前订阅: ',
             cardPaymentErrorMessage:[
-                '输入的信用卡号有误，或支付系统不支持您的信用卡！',
-                '输入的信用卡期限有误！',
-                '输入的信用卡安全码有误！',
-                '输入的信用卡持有人邮编有误！',
-                '支付失败，支付无法完成请稍后再试',
-                '支付数据存在错误','您的付款被发卡行所拒绝'
+        /* 0 */ '输入的信用卡号有误，或支付系统不支持您的信用卡！',
+        /* 1 */ '输入的信用卡期限有误！',
+        /* 2 */ '输入的信用卡安全码有误！',
+        /* 3 */ '输入的信用卡持有人邮编有误！',
+        /* 4 */ '支付失败，支付无法完成请稍后再试',
+        /* 5 */ '支付数据存在错误',
+        /* 6 */ '您的付款被发卡行所拒绝',
+        /* 7 */ '发生错误，请稍后再试',       
+            
             ],
             planPrice: '订阅原价：',
             cancelPlanButton:'中止当前订阅',
@@ -315,7 +342,7 @@ const infoDefine = [
             multiOpn:'OPN并发多代理技术',
             continue:'下一步',
             paymentSuccessTitile: '謝謝您',
-            paymentSuccess:'您的订阅已经完成，数据流量限制已经被更新。祝您网络冲浪愉快。',
+            paymentSuccess:'您的订阅已经完成，祝您网络冲浪愉快。',
             qtgateTeam: 'CoNET开发团队敬上',
             monthlyAutoPay: function ( monthCost: number ) { return `<span>每月自动扣款</span><span class="usDollar">@ us$</span><span class="amount">${ monthCost }</span>/月<span>` },
             annualPay: function ( annual_monthlyCost: string ) { return `<span>年付款每月只需</span><span class="usDollar">@ us$</span><span class="amount" >${ annual_monthlyCost }</span>/月<span>`},
@@ -335,8 +362,8 @@ const infoDefine = [
             multiRegion:['单一代理区域并发代理','多代理区域混合并发代理','多代理区域混合并发代理','多代理区域混合并发代理'],
             downGradeMessage:'您正在操作降级您的订阅，如果操作成功您将从下月您的订阅之日起，实行新的订阅，如果您是。',
             cancelPlanMessage:'CoNET的订阅是以月为基本的单位。您的月订阅将在下月您的订阅起始日前被终止，您可以继续使用您的本月订阅计划，您将自动回到免费用户。如果您是每月自动扣款，则下月将不再扣款。如果您是年度订阅计划，您的退款将按普通每月订阅费，扣除您已经使用的月份后计算的差额，将自动返还您所支付的信用卡账号，如果您是使用促销码，或您是测试用户，您的终止订阅将不能被接受。',
-            cancelPlanMessage1: function ( planName: string, isAnnual: boolean, expire: string ) {
-                return `<span>您的订阅计划是${ isAnnual ? `年度订阅，退还金额将按照您已付年订阅费 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span> - 该订阅原价 <span class="usDollar">us$</span><span class="amount">${ getPlanPrice( planName, false )}</span><span> X 已使用月数(包括本月) </span><span class="amount">${ 12 - getRemainingMonth ( expire )}</span> = 应该退还的金额 <span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span><span>，将在7个工作日内，退还到您原来支付的信用卡账户。</span>`: `月订阅，您的订阅将下次更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>时不再被自动扣款和更新。</span>`}`
+            cancelPlanMessage1: function ( isAnnual: boolean, amount: number, monthlyPay: number, expire: string, passedMonth: number, totalMonth: number ) {
+                return `<span>您的订阅计划是${ isAnnual ? `年度订阅，退还金额将按照您已付年订阅费 </span><span class="usDollar">us$</span><span class="amount">${ amount }</span> - 该订阅原价 <span class="usDollar">us$</span><span class="amount">${ monthlyPay }</span><span> X 已使用月数(包括本月) </span><span class="amount">${ passedMonth }</span> = 应该退还的金额 <span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? amount - passedMonth * monthlyPay : 0 }</span><span>，将在7个工作日内，退还到您原来支付的信用卡账户。</span>`: `月订阅，您的订阅将下次更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>时不再被自动扣款和更新。</span>`}`
             }
         },
 
@@ -926,7 +953,7 @@ const infoDefine = [
         }, 
 
         account:{
-            paymentSuccessTitile: '有難うございました。',
+            paymentSuccessTitile: 'ありがとうございました。',
             stripePayment: 'オンライン支払い',
             promoButton: 'プロモーション入力',
             qtgatePayment:'CoNET経由でのお支払い',
@@ -938,11 +965,16 @@ const infoDefine = [
             },
             paymentSuccess:'あなたのプランをアップグレードしました。これからもよろしくお願い申し上げます。',
             qtgateTeam: 'CoNETチーム全員より',
-            cardPaymentErrorMessage:['ご入力したカード番号に間違いがあるか、又支払いシステムはこのタイプのカードがサポートしておりません！','ご入力したカードの期限に間違いがあります！',
-                'ご入力したカードのセキュリティコードに間違いがあります！','ご入力したカード所有者の郵便番号に間違いがあります！',
-                '原因不明けど、支払いが失敗しました。後ほどもう一度してみてください。',
-                'お支払いデータに間違いがあります。',
-                'お支払いは銀行から拒否されました。'],
+            cardPaymentErrorMessage:[
+        /* 0 */ 'ご入力したカード番号に間違いがあるか、又支払いシステムはこのタイプのカードがサポートしておりません！',
+        /* 1 */ 'ご入力したカードの期限に間違いがあります！',
+        /* 2 */ 'ご入力したカードのセキュリティコードに間違いがあります！',
+        /* 3 */ 'ご入力したカード所有者の郵便番号に間違いがあります！',
+        /* 4 */ '原因不明けど、支払いが失敗しました。後ほどもう一度してみてください。',
+        /* 5 */ 'お支払いデータに間違いがあります。',
+        /* 6 */ 'お支払いは銀行から拒否されました。',
+        /* 7 */ 'エラーが発生しました、後ほどもう一度してみてください。', 
+            ],
             title: 'アカウト管理',
             segmentTitle:　'アカウトタ: ',
             cancelPlanButton:'キャンセルプラン',
@@ -988,8 +1020,8 @@ const infoDefine = [
             serverShareData1:'並列ゲットウェイ技術を使う際に、同時使う数が独占数を超える場合には、独占リソースを他人と割合にチェアする場合もあります。',
             maxmultigateway: ['最大二つ並列ゲットウェイ','最大四つ並列ゲットウェイ*','最大四つ並列ゲットウェイ'],
             cancelPlanMessage:'CoNETプランは月毎に計算し、来月のあなたの最初加入した日まで、今のプランのままご利用ですます。キャンセルした日から自動的にCoNETの無料ユーザーになります。おアカウトは(月)払いの場合は、来月の自動払いは中止となります。年払いの場合は、ご使った分に月普通料金と計算し控除してから、お支払いを使ったクレジットカードに戻ります。販促コードまたはテストユーザーにはキャンセルすることができません。',
-            cancelPlanMessage1: function ( planName: string, isAnnual: boolean, expire: string ) {
-                return `<span>あなたのプランは${ isAnnual ? `一年契約です。キャンセルをした場合は、ご利用して頂いた月に普通料金と請求を計算されます。お返し金額は，お支払って頂いたプラン年契約料金 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span><span> - そのプランの普通月料金 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice( planName, false )}</span><span> X ご利用して頂いた月(本月も含めて)：</span><span class="amount">${ 12 - getRemainingMonth ( expire )}</span><span> = 戻る金額 </span><span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span><span>とまります。７日内お支払って頂いたクレジットカードへ返金とします。</span>`: `月プランです。キャンセルにすると次の更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>に自動更新はしませんです。</span>`}`
+            cancelPlanMessage1: function ( isAnnual: boolean, amount: number, monthlyPay: number, expire: string, passedMonth: number, totalMonth: number ) {
+                return `<span>あなたのプランは${ isAnnual ? `一年契約です。キャンセルをした場合は、ご利用して頂いた月に普通料金と請求を計算されます。お返し金額は，お支払って頂いたプラン年契約料金 </span><span class="usDollar">us$</span><span class="amount">${ amount }</span><span> - そのプランの普通月料金 </span><span class="usDollar">us$</span><span class="amount">${ monthlyPay }</span><span> X ご利用して頂いた月(本月も含めて)：</span><span class="amount">${ passedMonth }</span><span> = 戻る金額 </span><span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? amount - passedMonth * monthlyPay : 0 }</span><span>とまります。７日内お支払って頂いたクレジットカードへ返金とします。</span>`: `月プランです。キャンセルにすると次の更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>に自動更新はしませんです。</span>`}`
             }
         },
 
@@ -1583,9 +1615,16 @@ const infoDefine = [
             },
             currentPlanExpire: ['Plan expires on: ','Renews at','monthly reset day '],
             currentAnnualPlan: ['Monthly plan','Annual plan'],
-            cardPaymentErrorMessage:['Error: card number or have an unsupported card type.','Error: expiration!','Error: Card Security Code','Error: Card owner postcode',
-                    'Error: payment failed. Please try again late.',
-                    'Error: Payment data format error!','Error: Payment failed from bank.'],
+            cardPaymentErrorMessage:[
+        /* 0 */ 'Error: card number or have an unsupported card type.',
+        /* 1 */ 'Error: expiration!',
+        /* 2 */ 'Error: Card Security Code',
+        /* 3 */ 'Error: Card owner postcode',
+        /* 4 */ 'Error: payment failed. Please try again late.',
+        /* 5 */ 'Error: Payment data format error!',
+        /* 6 */ 'Error: Payment failed from bank.',
+        /* 7 */ 'Error: Please try again late.'
+            ],
             title: 'Manage account',
             segmentTitle:'Account: ',
             needPay: 'The balance: ',
@@ -1628,8 +1667,8 @@ const infoDefine = [
             aboutCancel: '*About Subscription cancellation',
             cancelPlanMessage: '<span>You may cancel your CoNET subscription at any time from within the this app. You will continue to have access to the CoNET services through the end of your paid period until all remaining subscription time in your account is used up. Please refer to the </span><a class="ui olive tiny label">Terms of Service</a> for cancellation and refund policy. Restrictions may apply to free plans and promotional accounts.',
             serverShareData1:'Your dedicated server will be share ratio when you connected over your dedicated count via use Multi-gateway technology.',
-            cancelPlanMessage1: function ( planName: string, isAnnual: boolean, expire: string ) {
-                return `<span>Your are on ${ isAnnual ? `annual payment plan</span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span><span>. ${ getRemainingMonth ( expire )} month${ getRemainingMonth ( expire ) > 1 ? 's': '' } are available on your account. Your refund amount will be </span><span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span>.`: `monthly, it will not be renew at </span><span class="amount">${ nextExpirDate ( expire ).toLocaleDateString() }</span><span> if you cancel this plan.</span>`}`
+            cancelPlanMessage1: function ( isAnnual: boolean, amount: number, monthlyPay: number, expire: string, passedMonth: number, totalMonth: number ) {
+                return `<span>Your are on ${ isAnnual ? `annual payment plan</span><span class="usDollar">us$</span><span class="amount">${ amount }</span><span>. ${ passedMonth } month${ totalMonth - passedMonth > 1 ? 's': '' } are available on your account. Your refund amount will be </span><span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? amount - passedMonth * monthlyPay : 0 }</span>.`: `monthly, it will not be renew at </span><span class="amount">${ nextExpirDate ( expire ).toLocaleDateString() }</span><span> if you cancel this plan.</span>`}`
             }
         },
 
@@ -2267,8 +2306,16 @@ const infoDefine = [
                 return `中止訂閱成功。您可以一直使用您的原訂閱到${ new Date (PlanExpire).toLocaleDateString() }為止。以後您將會自動成為CoNET免費用戶，可以繼續使用CoNET的各項免費功能。 ${ isAnnual ? `退款金額us$${ returnAmount }會在5個工作日內退還到您的支付卡。 `: '下月起CoNET系統不再自動扣款。 '} 祝您網絡衝浪愉快。`
             },
             currentAnnualPlan: ['月度訂閱','年度訂閱'],
-            cardPaymentErrorMessage:['輸入的信用卡號有誤！','輸入的信用卡期限有誤！','輸入的信用卡安全碼有誤！','輸入的信用卡持有人郵編有誤！','支付失敗，支付無法完成請稍後再試',
-                '支付數據存在錯誤','您的付款被銀行所拒絕'],
+            cardPaymentErrorMessage:[
+        /* 0 */ '輸入的信用卡號有誤！',
+        /* 1 */ '輸入的信用卡期限有誤！',
+        /* 2 */ '輸入的信用卡安全碼有誤！',
+        /* 3 */ '輸入的信用卡持有人郵編有誤！',
+        /* 4 */ '支付失敗，支付無法完成請稍後再試',
+        /* 5 */ '支付數據存在錯誤',
+        /* 6 */ '您的付款被銀行所拒絕',
+        /* 7 */ '發生錯誤，請稍後再試',
+            ],
             cantUpgradeMonthly: '年度計劃不可降級為月度計劃。請先終止您當前訂閱的年度計劃，再重新申請此月度訂閱',
             segmentTitle:'賬戶Email: ',
             currentPlan:'當前訂閱: ',
@@ -2284,7 +2331,7 @@ const infoDefine = [
             upgradeTitle:'升級',
             planExpirDate: function ( year: string, month: string, day: string ) { return `${ year } 年${ month }月${ day }日`},
             accountOptionButton: '賬戶選項',
-            paymentSuccess:'您的訂閱已經完成，數據流量限制已經被更新。祝您網絡衝浪愉快。',
+            paymentSuccess:'您的訂閱已經完成,祝您網絡衝浪愉快。',
             qtgateTeam: 'CoNET開發團隊敬上',
             paymentProcessing:'正在通訊中...',
             DowngradeTitle:'降級賬戶選項',
@@ -2312,8 +2359,8 @@ const infoDefine = [
             internetShareData:['共享高速帶寬','獨享高速帶寬*','獨享雙線高速帶寬*','獨享四線高速帶寬'],
             serverShareData1:'OPN併發多代理技術，同時使用數大於獨占數時，會相應分享您所獨占的資源',
             cancelPlanMessage:'可隨時終止您的訂閱，CoNET的訂閱是以月為基本的單位。您的月訂閱將在下月您的訂閱起始日前被終止，您可以繼續使用您的本月訂閱計劃，您將自動回到免費用戶。如果您是每月自動扣款，則下月將不再扣款。如果您是年度訂閱計劃，您的退款將按普通每月訂閱費，扣除您已經使用的月份後計算的差額，將自動返還您所支付的信用卡賬號，如果您是使用促銷碼，或您是測試用戶，您的終止訂閱將不能被接受。 ',
-            cancelPlanMessage1: function ( planName: string, isAnnual: boolean, expire: string ) {
-                return `<span>您的訂閱計劃是${ isAnnual ? `年度訂閱，退還金額將按照您已付年訂閱費</span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice ( planName, true )}</span><span> - 該訂閱原價 </span><span class="usDollar">us$</span><span class="amount">${ getPlanPrice( planName, false )}</span><span> X 已使用月數(包括本月) </span><span class="amount">${ 12 - getRemainingMonth ( expire )}</span><span> = 餘額 </span><span class="usDollar">us$</span><span class="amount">${ getCurrentPlanCancelBalance ( expire, planName )}</span><span>，將在7個工作日內，退還到您用來支付的信用卡帳戶。</span>`: `月訂閱，您的訂閱將下次更新日</span><span class="amount">${ nextExpirDate (expire).toLocaleDateString() }</span><span>時不再被自動扣款和更新。</span>`}`
+            cancelPlanMessage1: function ( isAnnual: boolean, amount: number, monthlyPay: number, expire: string, passedMonth: number, totalMonth: number ) {
+                return `<span>您的訂閱計劃是${ isAnnual ? `年度訂閱，退還金額將按照您已付年訂閱費</span><span class="usDollar">us$</span><span class="amount">${ amount }</span><span> - 該訂閱原價 </span><span class="usDollar">us$</span><span class="amount">${ monthlyPay }</span><span> X 已使用月數(包括本月) </span><span class="amount">${ passedMonth }</span><span> = 餘額 </span><span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? amount - passedMonth * monthlyPay : 0 }</span><span>，將在7個工作日內，退還到您用來支付的信用卡帳戶。</span>`: `月訂閱，您的訂閱將下次更新日</span><span class="amount">${ nextExpirDate (expire).toLocaleDateString() }</span><span>時不再被自動扣款和更新。</span>`}`
             }
         
         },

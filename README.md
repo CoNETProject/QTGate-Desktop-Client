@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/QTGate/QTGate-Desktop-Client.svg?branch=master)](https://travis-ci.org/QTGate/QTGate-Desktop-Client)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/QTGate/Lobby)
 [![Known Vulnerabilities](https://snyk.io/test/github/qtgate/qtgate-desktop-client/badge.svg)](https://snyk.io/test/github/qtgate/qtgate-desktop-client)
+[![TeleBot Group](https://img.shields.io/badge/telebot-community%20group-blue.svg)](https://t.me/joinchat/IpX64hGK_95XDTXit42vOg)
 
 ## Download ダウンロード 下載
 
@@ -93,7 +94,7 @@
 
 - **Co for Google** - 免費免翻牆匿名Google檢索客戶端
 
-## [Help video ヘルプビデオ　幫助視頻](https://github.com/QTGate/QTGate-Desktop-Client/wiki)
+## [Help video. ヘルプビデオ.　幫助視頻](https://github.com/QTGate/QTGate-Desktop-Client/wiki)
 [![How to anonymous access twitter with CoNET for Twitter client use email protocol without VPN. And how to download Twitter's video stream to local.](/resources/twitterSetup.png?raw=true)](http://www.youtube.com/watch?v=In15vUhQyIY)
 
 [![How to setup CoNET.](/resources/setup.png?raw=true)](http://www.youtube.com/watch?v=wUOOuAkawJw)

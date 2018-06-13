@@ -512,10 +512,10 @@ module view_layout {
                     }))
                 }
                 
-                self.showCoGate ( showCoGate )
+                //self.showCoGate ( showCoGate )
                 
                 if ( showCoGate ) {
-                    return self.CoGateClick ()
+                    return self.homeClick ()
                 }
 
                 self.AppList ( true )

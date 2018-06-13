@@ -448,8 +448,16 @@ class CoGateClass {
 		this.showCards ( false )
 		let uu = null
 		const self = this
-		return this.CoGateAccount ( uu = new CoGateAccount ( self.QTTransferData (), function () {
+		return this.CoGateAccount ( uu = new CoGateAccount ( self.QTTransferData (), function ( payment: iTransferData ) {
 			self.showCards ( true )
+			if ( payment ) {
+				const uuuu = self.QTTransferData()
+				uuuu.totalMonth = payment.totalMonth
+				uuuu.productionPackage = payment.productionPackage
+				uuuu.expire = payment.expire
+				uuuu.paidAmount = payment.paidAmount
+				self.QTTransferData ( uuuu )
+			}
 			return self.CoGateAccount ( uu = null )
 		}))
 		
@@ -568,7 +576,7 @@ class planUpgrade {
 	public detailArea = ko.observable ( true )
 	public _promo = this.dataTransfer.promo[0]
 	public _promoFor = this._promo.promoFor
-	public currentPlan = ko.observable ( planArray [ planArray.findIndex ( function (n){ return n.name === this.dataTransfer.productionPackage})] )
+	public currentPlan = ko.observable ( null )
 	
 
 	//public annually = this.promo ? Math.round ( this.promoPrice * this.plan.annually * 100 )/100 : this.plan.annually
@@ -592,15 +600,13 @@ class planUpgrade {
 	public showSuccessPayment = ko.observable ( false )
 	public cardExpirationYearFolder_Error = ko.observable ( false )
 	public cancel_Amount = ko.observable (0)
-	public planExpirationYear = ko.observable ('')
-	public planExpirationMonth = ko.observable ('')
-	public planExpirationDay = ko.observable ('')
-	
+	public newPlanExpirationYear = ko.observable ('')
+	public newPlanExpirationMonth = ko.observable ('')
+	public newPlanExpirationDay = ko.observable ('')
+	public samePlan = ko.observable ( false )
 	public paymentError = ko.observable ( false )
-
-	
-	
-
+	public oldPlanUpgrade = ko.observable ( null )
+	public paymentData = null
 	private clearPaymentError () {
 		this.cardNumberFolder_Error ( false )
 		this.cvcNumber_Error ( false )
@@ -610,25 +616,6 @@ class planUpgrade {
 		return this.paymentCardFailed ( false )
 
 	}
-	/*
-	public get annually () {
-		if ( !this.promo || !this.promo.length ) {
-			return this.plan.annually
-		}
-		const index = this.promo.findIndex ( function ( n ) {
-			return n.promoFor === this.plan.name
-		})
-		if ( index < 0 ) {
-			return this.plan.annually
-		}
-		const promo = this.promo [ index ]
-		return  Math.round (( parseInt ( this.plan.annually ) * promo.pricePromo * 100 ) / 100 )
-	}
-
-	public get annuallyMonth () {
-
-	}
-	*/
 
 
 	constructor ( public planNumber: number, public isAnnual: boolean, private dataTransfer: iTransferData, private exit: ( payment ? ) => void ) {
@@ -643,11 +630,24 @@ class planUpgrade {
 		this.annually = this.currentPromo() ?  ( Math.round (parseInt ( this.plan.annually * 100 ) * this.currentPromo().pricePromo) / 100 ).toString() : this.plan.annually
 		const month = this.currentPromo() ? 12 * this.currentPromo().datePromo : 12
 		this.annuallyMonth = ( Math.round ( parseInt ( this.annually * 100 ) / month ) / 100 ).toString ()
-		
+
+		this.currentPlan ( planArray [ planArray.findIndex ( function ( n ) { 
+			return n.name === self.dataTransfer.productionPackage
+		})])
 
 		if ( planNumber === 2 ) {
 			this.showNote ( true )
+			if ( this.currentPlan().name === 'p1' ) {
+				const oldPlanUpgrade = {
+					oldPlanBalanceMonths: getRemainingMonth ( dataTransfer.expire ),
+					oldPlanMonthlyCost: dataTransfer.paidAmount * 100 / dataTransfer.totalMonth
+					
+				}
+			}
+			
 		}
+		this.samePlan ( this.currentPlan().name === planNumber )
+
 
 		this.showCurrentPlanBalance = ko.computed (function (){
 			if ( /free/i.test (dataTransfer.productionPackage )) {
@@ -671,10 +671,14 @@ class planUpgrade {
 			if ( err || typeof res.error === 'number' && res.error > -1 ) {
 				return self.paymentError ( true )
 			}
+			self.paymentData = data
 			self.showSuccessPayment ( true )
-
 			
 		})
+	}
+
+	public SuccessPaymentClose () {
+		this.exit ( this.paymentData )
 	}
 
 
@@ -683,11 +687,20 @@ class planUpgrade {
 		this.payment ( payment )
 		this.paymentAnnually ( annually )
 		const currentPro = this.currentPromo().datePromo || 1
-		const month = annually ? 12 * currentPro : 1
+		let month = annually ? 12 * currentPro : 1
+		if ( this.currentPlan().name !== 'free' ) {
+			
+		}
 		const expir = getExpireWithMonths ( month )
-		this.planExpirationYear ( expir.getFullYear ().toString())
-		this.planExpirationMonth ( expir.getMonth ().toString())
-		this.planExpirationDay ( expir.getDate ().toString())
+		this.newPlanExpirationYear ( expir.getFullYear ().toString())
+		const _month = expir.getMonth () + 1
+		if ( _month < 10 ) {
+			this.newPlanExpirationMonth ( '0' + _month.toString() )
+		} else {
+			this.newPlanExpirationMonth ( _month.toString() )
+		}
+		
+		this.newPlanExpirationDay ( expir.getDate ().toString())
 
 	}
 
@@ -824,6 +837,68 @@ class planUpgrade {
 	
 }
 
+class cancelPlan {
+	public passedMonth = getPassedMonth ( this.startDay )
+	public passedCost = this.passedMonth * this.normailMonthPrice
+	public balance = this.amount - this.passedCost
+	public cancelProcess = ko.observable ( false )
+	private doingProcessBarTime = null
+	public showError = ko.observable ( false )
+	
+	constructor ( public planName: string, public totalMonth, public amount, private startDay: string, public expir: string, public isAnnual , 
+		private normailMonthPrice: string, private exit: ( payment ) => void ) {
+			const self = this
+
+		}
+	private paymentCallBackFromQTGate ( err, data: QTGateAPIRequestCommand ) {
+		this.cancelProcess ( false )
+		
+		if ( data && data.error === -1 ) {
+			
+			if ( data.command === 'cancelPlan' && data.Args[1]) {
+				const cancel_Amount = data.Args[1]
+			}
+			
+			const dataTrans: iTransferData = data.Args[0]
+			return this.exit ( dataTrans )
+			
+		}
+		this.showError ( true )
+	}
+
+	public close () {
+		this.exit( null )
+	}
+
+	private showWaitPaymentFinished () {
+		const self = this
+		
+		$('.paymentProcess').progress ('reset')
+		let percent = 0
+		const doingProcessBar = function () {
+			clearTimeout ( self.doingProcessBarTime )
+			self.doingProcessBarTime = setTimeout ( function () {
+				$('.paymentProcess').progress ({
+					percent: ++ percent
+				})
+				if ( percent < 100 )
+					return doingProcessBar ()
+			}, 1000 )
+		}
+		return doingProcessBar ()
+	}
+
+	public doCancel () {
+		const self = this
+		this.cancelProcess ( true )
+		this.showWaitPaymentFinished ()
+		socketIo.once ( 'cancelPlan', function ( err, payment ) {
+			return self.paymentCallBackFromQTGate ( err, payment )
+		})
+		socketIo.emit11 ( 'cancelPlan' )
+	}
+}
+
 const findCurrentPlan = function ( planName: string ) {
 	return planArray.findIndex ( function ( n ) {
 		return n.name === planName
@@ -834,8 +909,8 @@ class CoGateAccount {
 	public username = this.dataTransfer.account
 	public productionPackage = this.dataTransfer.productionPackage
 	public promo = this.dataTransfer.promo[0]
-	public currentPlan = planArray[findCurrentPlan ( this.productionPackage )]
-	public freeAccount = ko.observable ( /^free$/i.test(this.dataTransfer.productionPackage ))
+	public currentPlan = planArray[ findCurrentPlan ( this.productionPackage )]
+	public freeAccount = ko.observable ( /^free$/i.test( this.dataTransfer.productionPackage ))
 	public userPlan = ko.observable ( this.dataTransfer.productionPackage.toUpperCase() )
 	public planArray = ko.observableArray ( planArray )
 	public planUpgrade: KnockoutObservable < planUpgrade > = ko.observable ( null )
@@ -856,7 +931,17 @@ class CoGateAccount {
 	public cardNumberFolder_Error = ko.observable ( false )
 	public cardPayment_Error = ko.observable ( false )
 	public postcode_Error = ko.observable ( false )
-	public cancel_Amount = ko.observable ( 0 )
+	public paymentAnnually = ko.observable ( this.dataTransfer.isAnnual )
+	public automatically = ko.observable ( this.dataTransfer.automatically )
+	public cancelPlanData: KnockoutObservable < cancelPlan > = ko.observable ( null )
+	
+
+	public currentPlanExpirationYear = ko.observable ('')
+	public currentPlanExpirationMonth = ko.observable ('')
+	public currentPlanExpirationDay = ko.observable ('')
+
+	public doingCancelProcess = ko.observable ( false )
+
 
 	private stopShowWaitPaymentFinished () {
 		this.doingPayment ( false  )
@@ -872,15 +957,8 @@ class CoGateAccount {
 		}
 		if ( data.error === -1 ) {
 			this.paymentSelect ( false )
-			data.command === 'cancelPlan' ? this.showCancelSuccess ( true ) : this.showSuccessPayment ( true )
-			if ( data.command === 'cancelPlan' && data.Args[1]) {
-				this.cancel_Amount ( data.Args[1])
-			}
-			
+			this.showSuccessPayment ( true )
 			const dataTrans: iTransferData = data.Args[0]
-
-			
-			
 			return this.UserPermentShapeDetail ( false )
 		}
 		
@@ -914,13 +992,23 @@ class CoGateAccount {
 		return this.paymentCardFailed ( true )
 	}
 	
-	constructor ( private dataTransfer: iTransferData, public exit: () => void ) {
+	constructor ( private dataTransfer: iTransferData, public exit: ( payment ) => void ) {
 		const plan = findCurrentPlan ( this.productionPackage )
 		
-		this.planArray()[ plan === 0 ? 1 : plan ].tail ( true )
-		for ( let i = plan + 1; i < planArray.length; i ++ ) {
+		
+		let plus1 = 1
+		if ( !this.dataTransfer.automatically && this.currentPlan.name !== 'free') {
+			plus1 = 0
+		}
+		this.planArray()[ 1 + plus1 ].tail ( true )
+		for ( let i = plan + plus1; i < planArray.length; i ++ ) {
 			this.planArray()[i].showButton ( true )
 		}
+		const date = new Date ( dataTransfer.expire )
+		this.currentPlanExpirationYear ( date.getFullYear().toString() )
+		this.currentPlanExpirationMonth ( date.getMonth () + 1 < 9 ? '0'+ (date.getMonth () + 1).toString() : (date.getMonth () + 1).toString() )
+		
+		this.currentPlanExpirationDay ( date.getDate ().toString())
 	}
 
 	public selectPlan1 ( n: number ) {
@@ -928,6 +1016,7 @@ class CoGateAccount {
 		const self = this
 		this.planUpgrade ( uu = new planUpgrade ( n, this.dataTransfer.isAnnual, this.dataTransfer, function ( payment ) {
 			self.planUpgrade ( uu = null )
+			self.exit ( payment )
 		}))
 
 	}
@@ -989,6 +1078,18 @@ class CoGateAccount {
 			}, 1000 )
 		}
 		return doingProcessBar ()
+	}
+
+	public cancelPlan () {
+		const dataTransfer = this.dataTransfer
+		let uu = null
+		const self = this
+		this.doingPayment ( true )
+		this.cancelPlanData ( uu = new cancelPlan ( dataTransfer.productionPackage, dataTransfer.totalMonth, dataTransfer.paidAmount, dataTransfer.startDate, dataTransfer.expire, dataTransfer.isAnnual, this.currentPlan.monthlyPay, 
+			function exit ( payment ) {
+				self.cancelPlanData ( uu = null )
+				self.exit ( payment )
+			}))
 	}
 
 	

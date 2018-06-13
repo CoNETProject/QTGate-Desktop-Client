@@ -42,30 +42,10 @@ export default class extends Imap.imapPeer {
 	public connectStage = -1
 	public alreadyExit = false
 	private ignorePingTimeout = false
-	private timeOutWhenSendConnectRequestMail: NodeJS.Timer = null
 
 	private sendFeedback () {
 		return
 	}
-
-	private makeTimeOutEvent () {
-		const self = this
-		
-		clearTimeout ( this.timeOutWhenSendConnectRequestMail )
-		this.ignorePingTimeout = true
-		return this.timeOutWhenSendConnectRequestMail = setTimeout (() => {
-			this.ignorePingTimeout = false
-			if ( this.peerReady ) {
-				
-				return saveLog ( `timeOutWhenSendConnectRequestMail peerReady already true!`, true )
-			}
-
-			saveLog ( `makeTimeOutEvent destroy connect!`, true )
-			return self.destroy (0)
-		}, timeOutWhenSendConnectRequestMail )
-
-	}
-
 
 	private checkConnect ( CallBack ) {
 		if ( this.wImap && this.wImap.imapStream && this.wImap.imapStream.writable &&
@@ -121,8 +101,6 @@ export default class extends Imap.imapPeer {
 
 		this.newMail = ( ret: QTGateAPIRequestCommand ) => {
 			//		have not requestSerial that may from system infomation
-			
-			clearTimeout ( this.timeOutWhenSendConnectRequestMail )
 			if ( ! ret.requestSerial ) {
 				return this.cmdResponse ( ret )
 			}
@@ -144,8 +122,7 @@ export default class extends Imap.imapPeer {
 		})
 
 		this.on ( 'ready', () => {
-			clearTimeout ( this.timeOutWhenSendConnectRequestMail )
-			
+			this.ignorePingTimeout = false
 			this.CoNETConnectReady = true
 			saveLog ( 'Connected CoNET!', true )
 			this.connectStage = 4
@@ -157,10 +134,13 @@ export default class extends Imap.imapPeer {
 		this.on ( 'pingTimeOut', () => {
 			
 			if ( this.ignorePingTimeout ) {
-				return saveLog (`coNETConnect on pingTimeOut this.ignorePingTimeout = true, do nothing!`, true )
+				return saveLog ( `coNETConnect on pingTimeOut this.ignorePingTimeout = true, do nothing!`, true )
 			}
 			return this.destroy ()
 		})
+		
+		this.ignorePingTimeout = doNetSendConnectMail
+		
 		
 		this.sockerServer.emit ( 'tryConnectCoNETStage', null, this.connectStage = 0 )
 

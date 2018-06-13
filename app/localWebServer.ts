@@ -442,8 +442,7 @@ export default class localServer {
 				const com: QTGateAPIRequestCommand = {
 					command: 'activePassword',
 					Args: [ pass ],
-					error: null,
-					requestSerial: Crypto.randomBytes(8).toString('hex')
+					error: null
 				}
 				console.log ( Util.inspect ( com ))
 				
@@ -488,8 +487,7 @@ export default class localServer {
 			const com: QTGateAPIRequestCommand = {
 				command: 'getAvaliableRegion',
 				Args: [],
-				error: null,
-				requestSerial: Crypto.randomBytes(8).toString('hex')
+				error: null
 			}
 
 			console.log (`socket.on ( 'getAvaliableRegion') no this.connectCommand`)
@@ -594,8 +592,7 @@ export default class localServer {
 			const com: QTGateAPIRequestCommand = {
 				command: 'cardToken',
 				error: null,
-				Args: [ payment ],
-				requestSerial: Crypto.randomBytes(8).toString ('hex')
+				Args: [ payment ]
 			}
 			CallBack1 ()
 			console.log ( `socket.on cardToken send to QTGate!`, Util.inspect ( com, false, 2, true ))
@@ -617,6 +614,19 @@ export default class localServer {
 			})
 			
 		})
+
+		socket.on ( 'cancelPlan', ( CallBack1 ) => {
+			CallBack1 ()
+			const com: QTGateAPIRequestCommand = {
+				command: 'cancelPlan',
+				error: null,
+				Args: []
+			}
+			return this.sendRequest ( socket, com, ( err: number, res: QTGateAPIRequestCommand ) => {
+				socket.emit ( 'cancelPlan', err, res )
+			})
+		})
+
 	}
 
 	private doingCheckImap ( socket: SocketIO.Socket ) {

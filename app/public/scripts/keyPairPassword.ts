@@ -45,7 +45,7 @@ class keyPairPassword {
 		this.passwordChecking ( true )
 		return socketIo.emit11 ( 'checkPemPassword', this.systemSetup_systemPassword(), function ( err?: boolean, _imapData?: imapData ) {
 			self.passwordChecking ( false )
-			if ( err ) {
+			if ( err || typeof _imapData === 'boolean' && _imapData ) {
 				return self.showPasswordError()
 			}
 			return self.exit( _imapData )

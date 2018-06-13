@@ -56,9 +56,8 @@ block jumbotron1
 		.ui.cards.loginCards
 			<!-- ko if: keyPair  -->
 			<!-- ko with: keyPair -->
-			<!-- ko if: $root.showKeyPair -->
+			<!-- ko if: $root.showKeyPair() -->
 			.card.centered.raised( style = " width: 100%;" )
-				
 				.content
 					.header
 						i.icon.privacy.teal
@@ -167,10 +166,10 @@ block jumbotron1
 									i.icon.outline.mail
 									input( data-bind = " value : emailAddress, css:{ 'activating element inline': emailAddressShowError() }, attr: { tabindex: 1, placeholder: infoDefine [ $root.languageIndex() ].home_index_view.imapEmailAddress, 'data-content' : emailAddressShowError() ? infoDefine[ $root.languageIndex() ].error_message.EmailAddress[ EmailAddressErrorType() ]: null }" type = "text")
 							.field.required
-								.passwdInput.ui.input( data-bind = " css: { 'left icon': !password().length, 'action': password().length }")
-									i.icon.privacy( data-bind = " visible: !password().length ")
+								.passwdInput.ui.input( data-bind = " css: { 'left icon': !password() || !password().length, 'action': password() && password().length }")
+									i.icon.privacy( data-bind = " visible: !password() || !password().length ")
 									input( data-bind = " textInput: password, attr: { placeholder: infoDefine [ $root.languageIndex() ].imapInformation.emailServerPassword, tabindex: 2 }" type = "password" )
-									button.ui.icon.button.positive( data-bind = " visible: password().length, click: imapAccountGoCheckClick" )
+									button.ui.icon.button.positive( data-bind = " visible: password() && password().length, click: imapAccountGoCheckClick" )
 										i.icon.angle.right
 			<!-- /ko -->
 			//-	if: showForm
@@ -658,8 +657,12 @@ block jumbotron1
 					span( data-bind="text: username" )
 					.sub.header
 						span( data-bind="text: infoDefine[ $root.languageIndex() ].QTGateGateway.userType[ freeAccount() ? 0 : 1 ] " style = "padding-right: 0.5em;")
-						span( data-bind = "visible: !freeAccount(), text: currentPlan.showName[ $root.languageIndex()]" style="color: coral;font-weight: bolder;")
-							
+						span( data-bind = "visible: !freeAccount()")
+							span( data-bind = "text: currentPlan.showName[ $root.languageIndex()]" style="color: coral;font-weight: bolder;")
+							span( data-bind = "text: infoDefine [ $root.languageIndex() ].account.currentPlanExpire[ paymentAnnually() || !automatically() ? 0: 1]" style="margin-left: 1em;")
+							span( data-bind="text: infoDefine [ $root.languageIndex() ].account.planExpirDate( currentPlanExpirationYear(), currentPlanExpirationMonth(), currentPlanExpirationDay())" style="color: coral;font-weight: bolder;")
+							a.ui.orange.label( data-bind = "visible: !doingPayment() && automatically (), click: cancelPlan, text: infoDefine [ $root.languageIndex() ].account.cancelPlanButton" href="#")
+
 			<!-- ko if: !planUpgrade() && ! promoButton() && !doingPayment() -->
 			.plans( data-bind="foreach: planArray " )
 				.plan( data-bind="css: { 'plan-tall': tail }")
@@ -671,11 +674,21 @@ block jumbotron1
 							span( data-bind="text: detail[$root.languageIndex()]")
 					button.ui.primary.button( data-bind=" click: function () { $parents[0].selectPlan1( $index ()); }, visible: showButton , text: infoDefine [ $root.languageIndex() ].account.upgradeTitle ")
 			<!-- /ko -->
+
+
+
+
 			<!-- ko if: planUpgrade -->
 			<!-- ko with: planUpgrade -->
 			.ui.segment( style="color: grey;")
 				a( data-bind="visible: ! doingPayment(), click: closeClick" href="#")
 					i.icon.close.grey.closeIcon()
+				
+				<!-- ko with: oldPlanUpgrade -->
+
+
+				<!-- /ko -->
+
 				<!-- ko with: plan -->
 				h3.ui.header.blue
 					span( data-bind=" text:  infoDefine [ $root.languageIndex() ].account.upgradeTitle" style="color: darkolivegreen;")
@@ -684,7 +697,7 @@ block jumbotron1
 						span( style="font-size: medium;margin-left: 1em;")
 							a.CancelMessage( href="#" data-bind="click: function(){ $parents[0].showCancel ( !$parents[0].showCancel ()) }, text: infoDefine[ $root.languageIndex() ].account.aboutCancel" style="font-size: smaller;color: firebrick;" )
 				.ui.segment( data-bind="visible: $parents[0].showCancel(), html: infoDefine[ $root.languageIndex() ].account.cancelPlanMessage")
-					//-p( data-bind="text:  infoDefine [ $root.languageIndex() ].account.planExpiration + infoDefine [ $root.languageIndex() ].account.planExpirDate($parents[0].planExpirationYear, $parents[0].planExpirationMonth, $parents[0].planExpirationDay)")
+					
 				.detailArea( data-bind="visible: $parents[0].detailArea() ")
 					span us$
 					span( data-bind="text: monthlyPay " style="font-size: x-large;font-weight: bold;")
@@ -701,18 +714,28 @@ block jumbotron1
 				<!-- /ko -->
 
 				p( data-bind="visible: detailArea" style="margin-top: 1em;")
-					button.ui.teal.basic.button( data-bind=" click: function () { isAnnual() ? null : showPayment ( monthlyPay, false )}, css: { hideCardImage: isAnnual }, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.cantUpgradeMonthly }")
+					button.ui.teal.basic.button( data-bind=" click: function () { return showPayment ( monthlyPay, false )}, css: { hideCardImage: isAnnual }, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.cantUpgradeMonthly }")
 						span( data-bind = "html: infoDefine[ $root.languageIndex() ].account.monthlyAutoPay( monthlyPay )")
-					button.ui.primary.basic.button( data-bind = "click: () => { return showPayment ( annually, true )}" )
+					button.ui.primary.basic.button( data-bind = "click: function () { return showPayment ( annually, true )}" )
 						<!-- ko if: currentPromo -->
 						span( data-bind="text: infoDefine[ $root.languageIndex() ].QTGateGateway.promo" style="color: #f2711c;padding-right: 0.5em;")
 						<!-- /ko -->
 						span( data-bind = "html: infoDefine[ $root.languageIndex() ].account.annualPay( annuallyMonth )")
 				.paymentArea( data-bind="visible: !detailArea() ")
 					.ui.grid( style="padding: 1em;padding-top: 0em;")
+						
 						.row(style="color: maroon;font-size: medium;")
 							span( data-bind="text: infoDefine [ $root.languageIndex() ].account.currentPlanExpire[ paymentAnnually() ? 0: 1] " )
-							span( data-bind="text: infoDefine [ $root.languageIndex() ].account.planExpirDate( planExpirationYear(), planExpirationMonth(), planExpirationDay())" style="margin-left: 1em;")
+							span( data-bind="text: infoDefine [ $root.languageIndex() ].account.planExpirDate( newPlanExpirationYear(), newPlanExpirationMonth(), newPlanExpirationDay())" style="margin-left: 1em;")
+						
+						<!-- ko if: samePlan -->
+						<!-- ko if: isAnnual -->
+						.row
+							span( data-bind="text: ")
+						<!-- /ko -->
+
+
+						<!-- /ko -->
 						.row( style="padding-bottom: 0px;")
 							span( data-bind = "text: infoDefine[ $root.languageIndex() ].account.payAmountTitile" style = "font-size: large;font-weight: bold;")
 							span.usDollar us$
@@ -742,10 +765,10 @@ block jumbotron1
 				<!-- /ko -->
 				<!-- ko if: showSuccessPayment -->
 				.ui.olive.message
-					i.close.icon( data-bind = "click: function () => { showSuccessPayment(false); $(this).closest ('.message').transition('fade')}")
-					.header( data-bind="text: infoDefine[ languageIndex() ].account.paymentSuccessTitile ")
-					p( data-bind="text:infoDefine[ languageIndex() ].account.paymentSuccess")
-					p( data-bind="text:infoDefine[ languageIndex() ].account.qtgateTeam")
+					i.close.icon( data-bind = "click: function () { SuccessPaymentClose ()}")
+					.header( data-bind=" text: infoDefine[ $root.languageIndex() ].account.paymentSuccessTitile ")
+					p( data-bind="text: infoDefine[ $root.languageIndex() ].account.paymentSuccess")
+					p( data-bind="text: infoDefine[ $root.languageIndex() ].account.qtgateTeam")
 				<!-- /ko -->
 
 			<!-- /ko -->
@@ -766,6 +789,35 @@ block jumbotron1
 								.or
 								button.ui.button.positive( data-bind="text: infoDefine[ $root.languageIndex() ].account.continue, click: promoApplication " type="submit")
 			<!-- /ko -->
+
+			<!-- ko if: cancelPlanData -->
+			<!-- ko with: cancelPlanData -->
+			.ui.segment.orange( style = " color: grey;")
+				<!-- ko if: !cancelProcess() && ! showError () -->
+				.infomation
+					p( data-bind ="html: infoDefine[ $root.languageIndex() ].account.cancelPlanMessage1 ( isAnnual, amount, normailMonthPrice, expir, passedMonth, totalMonth ) " )
+					.ui.buttons
+						.ui.button( data-bind="click: close, text: infoDefine[ $root.languageIndex() ].twitter.close ")
+						.or
+						.ui.blue.button( data-bind="click: function() {return doCancel ();}, text: infoDefine[ $root.languageIndex() ].account.cancelPlanButton ")
+				<!-- /ko -->
+
+				<!-- ko if: !cancelProcess() && showError -->
+				.errorInfomation
+					p( data-bind=" text: infoDefine[ $root.languageIndex() ].account.cardPaymentErrorMessage[7] ")
+					.ui.button( data-bind="click: close, text: infoDefine[ $root.languageIndex() ].twitter.close ")
+				<!-- /ko -->
+
+				<!-- ko with: cancelProcess -->
+				.cancelprocess
+					p( data-bind="text: infoDefine[ $root.languageIndex() ].account.paymentProcessing ")
+				.ui.orange.bottom.attached.progress.paymentProcess
+					.bar
+				<!-- /ko -->
+
+			<!-- /ko -->
+			<!-- /ko -->
+
 		<!-- /ko -->
 		<!-- /ko -->
 
