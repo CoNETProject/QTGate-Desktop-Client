@@ -17,7 +17,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const DEBUG = false;
 const port = 3000;
-const Fs = require("fs");
 const path_1 = require("path");
 const url_1 = require("url");
 const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater, desktopCapturer, shell } = require('electron');
@@ -86,78 +85,10 @@ if (makeSingleInstance()) {
 }
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion();
-var lang;
-(function (lang) {
-    lang[lang["zh"] = 0] = "zh";
-    lang[lang["ja"] = 1] = "ja";
-    lang[lang["en"] = 2] = "en";
-    lang[lang["tw"] = 3] = "tw";
-})(lang || (lang = {}));
-let isSingleInstanceCheck = true;
 let localServer1 = null;
 let tray = null;
 let mainWindow = null;
 let doReady = false;
-const hideWindowDownload = (downloadUrl, saveFilePath, Callback) => {
-    let _err = null;
-    if (!downloadUrl) {
-        return Callback(new Error('no url'));
-    }
-    Fs.access(saveFilePath, err => {
-        if (!err) {
-            return Callback();
-        }
-        let win = new BrowserWindow({ show: DEBUG });
-        DEBUG ? win.webContents.openDevTools() : null;
-        //win.maximize ()
-        //win.setIgnoreMouseEvents ( true )
-        let startTime = 0;
-        let downloadBytes = 0;
-        win.webContents.session.once('will-download', (event, item, webContents) => {
-            item.setSavePath(saveFilePath);
-            //startTime = new Date ().getTime ()
-            console.log(`start download file from [${downloadUrl}]\r\n saveTo [${saveFilePath}]`);
-            /*
-            const DEBUG = true
-                item.on ( 'updated', ( event, state ) => {
-                    if ( state === 'interrupted') {
-                        if ( DEBUG )
-                            console.log ( 'hideWindowDownload: Download is interrupted but can be resumed' + item.getURL() )
-                        return
-                    }
-    
-                    if ( item.isPaused ()) {
-                        if ( DEBUG )
-                            console.log ( 'hideWindowDownload: Download is interrupted but can be resumed' + item.getURL())
-                        return
-                    }
-                    downloadBytes = item.getReceivedBytes()
-                    if ( DEBUG )
-                        console.log ( `${item.getFilename()} Received bytes: ${item.getReceivedBytes()}`)
-                    return
-                })
-            */
-            item.once('done', (event, state) => {
-                if (state === 'completed') {
-                    console.log(`download [${saveFilePath}] success!`);
-                    return win.close();
-                }
-                return Fs.unlink(saveFilePath, err => {
-                    _err = new Error(state);
-                    console.log(`Download failed: ${state}`);
-                    return win.close();
-                });
-            });
-        });
-        win.once('closed', () => {
-            win = null;
-            if (_err)
-                return Callback(_err);
-            return Callback();
-        });
-        return win.loadURL(downloadUrl);
-    });
-};
 const _doUpdate = (tag_name, _port) => {
     let url = null;
     if (process.platform === 'darwin') {
@@ -189,20 +120,6 @@ const _doUpdate = (tag_name, _port) => {
     autoUpdater.setFeedURL(url);
     autoUpdater.checkForUpdates();
 };
-const dirTitleErr = [
-    [
-        '文件夹创建错误',
-        'フォルダ作成エラー',
-        'Create folder error',
-        '文件夾創建錯誤'
-    ],
-    [
-        'QTGate在[__folder__]位置创建文件夹错误，QTGate安装不能够继续进行，请检查您的系统。',
-        'QTGateは[__folder__]にフォルダを作成エラー、QTGateはインストールができません。あなたのシステムをチェックしてください。',
-        'QTGate install got error when make a folder at [__folder__], please check your OS system and do QTGate install again.',
-        'QTGate在[__folder__]位置創建文件夾錯誤，QTGate安裝不能夠繼續進行，請檢查您的系統。'
-    ]
-];
 const createWindow = () => {
     shell.openExternal(`http://127.0.0.1:${port}`);
 };
@@ -255,11 +172,6 @@ const data11 = [
         ]
     }
 ];
-const showError = (title, detail, app) => {
-    dialog.showErrorBox(title, detail);
-    if (app)
-        return app.quit();
-};
 const getLocalLanguage = (lang) => {
     if (/^zh-TW|^zh-HK|^zh-SG/i.test(lang))
         return 3;
