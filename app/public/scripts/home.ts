@@ -256,7 +256,7 @@ module view_layout {
         public tLang = ko.observable ( initLanguageCookie ())
         public languageIndex = ko.observable ( lang [ this.tLang() ])
         public localServerConfig: KnockoutObservable < install_config > = ko.observable ()
-        public keyPair: KnockoutObservable < keypair > = ko.observable (InitKeyPair())
+        public keyPair: KnockoutObservable < keypair > = ko.observable ( InitKeyPair ())
         public hacked = ko.observable ( false )
         public imapSetup: KnockoutObservable < imapForm > = ko.observable ()
         public showIconBar = ko.observable ( false )
@@ -295,7 +295,9 @@ module view_layout {
                 if ( stage === 4 ) {
                     this.connectToCoNET ( false )
                     this.connectedCoNET ( true )
-                    
+                    if ( this.showCoGate ()) {
+                        this.homeClick ()
+                    }
                 }
                 
             }
@@ -511,10 +513,11 @@ module view_layout {
                         return self.imapSetupClassExit ( imapData )
                     }))
                 }
-                
+                this.connectedCoNET ( true )
                 //self.showCoGate ( showCoGate )
                 
                 if ( showCoGate ) {
+                    self.showCoGate ( true )
                     return self.homeClick ()
                 }
 
@@ -531,14 +534,7 @@ module view_layout {
         }
 
         public reFreshLocalServer () {
-            const self = this
-            socketIo.once ( 'connect', function () {
-                return location.reload()
-            })
-            socketIo.once ( 'connect_error', function () {
-                return self.refresh ()
-            })
-            socketIo.connect ()
+            location.reload()
 
         }
 

@@ -714,7 +714,7 @@ export default class localServer {
 				const file = Uuid.v4() + '.mp4'
 				const viode = Buffer.from ( data, 'base64' )
 				return Fs.writeFile ( Path.join ( Tool.QTGateVideo, file ), viode, err => {
-					m.QTDownload = `/videoTemp/${ file }`
+					m.QTDownload = `/tempfile/videoTemp/${ file }`
 					console.log (`save video file: [${ file }]`)
 					return CallBack ()
 				})

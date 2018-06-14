@@ -42,7 +42,7 @@ Date.prototype.addMonths = function (value) {
     return this;
 };
 
-
+const conetImapAccount = /^qtgate_test\d\d?@icloud.com$/i
 
 const isElectronRender = typeof process === 'object'
 
@@ -163,23 +163,105 @@ const monthTime = 30 * DayTime
 const yearTime = 12 * monthTime
 
 const getPlanPrice = function ( plan: string, isAnnualPlan: boolean ) {
-	switch ( plan ) {
-		//		1GB/month 100MB/day
-		case 'free': {
-			return 0
-		}
-		//		50GB/month
-		case 'p1': {
-			return isAnnualPlan ? 34.56: 3.88
-		}
-		//		300GB/month
-		case 'p2': {
-			return isAnnualPlan ? 58.00: 6.88
-		}
-		
-
-	}
+	const _plan = planArray [ planArray.findIndex ( function ( n ) {
+        return n.name === plan
+    })]
+    if ( !_plan ) {
+        return null
+    }
+    return isAnnualPlan ? _plan.annually : _plan.monthlyPay
 }
+
+const planArray = [
+    {
+		name:'free',
+		showName: ['免费用户','無料ユーザー','FREE USER','免費用戶'],
+        monthlyPay: 0,
+		annually: 0,
+		annuallyMonth: 0,
+        next:'p1',
+        share: 0,
+		internet: 0,
+		tail: ko.observable ( false ),
+        multi_gateway:0,
+		showNote: false,
+		showButton: ko.observable ( false ),
+		features: [{
+			title: ['代理区域','エリア','Region','代理區域'],
+			detail: ['巴黎','パリ','Paris','巴黎'],
+		},{
+			title: ['服务器','サーバー','Server','伺服器'],
+			detail: ['共享','共有','Share','共享'],
+		},{
+			title: ['月流量限制','月データ制限','Bandwidth','月流量限制'],
+			detail: ['无限制','無制限','Unlimited','無限制'],
+		},{
+			title: ['多代理','マルチプロクシ','Multi-Gateway','多代理'],
+			detail: ['1','1','1','1'],
+		},{
+			title: ['客户端数','端末数','Devices','客戶端數'],
+			detail: ['无限制','無制限','Unlimited','無限制'],
+		}]
+
+    },{
+		name:'p1',
+		showName: ['普通用户','普通ユーザー','NORMAL USER','普通用戶'],
+        monthlyPay: 688,
+		annually: 5988,
+		annuallyMonth:499,
+        next:'p2',
+        share: 0,
+		internet: 0,
+		tail: ko.observable ( false ),
+        multi_gateway:0,
+		showNote: false,
+		showButton: ko.observable ( false ),
+		features: [{
+			title: ['代理区域','エリア','Region','代理區域'],
+			detail: ['全球16区域','グローバル16区域','16 regions worldwide ','全球16區域'],
+		},{
+			title: ['服务器','サーバー','Server','伺服器'],
+			detail: ['共享','共有','Share','共享'],
+		},{
+			title: ['月流量限制','月データ制限','Bandwidth','月流量限制'],
+			detail: ['无限制','無制限','Unlimited','無限制'],
+		},{
+			title: ['多代理','マルチプロクシ','Multi-Gateway','多代理'],
+			detail: ['2','2','2','2'],
+		},{
+			title: ['客户端数','端末数','Devices','客戶端數'],
+			detail: ['无限制','無制限','Unlimited','無限制'],
+		}]
+    },{
+		name:'p2',
+		showName: ['超级用户','スーパーユーザー','POWER USER','超級用戶'],
+        monthlyPay: 1988,
+		annually: 19999,
+		annuallyMonth: 1667,
+        share: 0,
+        internet: 0,
+        multi_gateway:0,
+		showNote: false,
+		tail: ko.observable ( false ),
+		showButton: ko.observable ( false ),
+		features: [{
+			title: ['代理区域','エリア','Region','代理區域'],
+			detail: ['全球16区域','グローバル16区域','16 regions worldwide ','全球16區域'],
+		},{
+			title: ['服务器','サーバー','Server','伺服器'],
+			detail: ['独占','独占','Dedicated','獨占'],
+		},{
+			title: ['月流量限制','月データ制限','Bandwidth','月流量限制'],
+			detail: ['无限制','無制限','Unlimited','無限制'],
+		},{
+			title: ['多代理','マルチプロクシ','Multi-Gateway','多代理'],
+			detail: ['4','4','4','4'],
+		},{
+			title: ['客户端数','端末数','Devices','客戶端數'],
+			detail: ['无限制','無制限','Unlimited','無限制'],
+		}]
+    }
+]
 
 const nextExpirDate = function ( expire: string ) {
     const now = new Date ()
@@ -300,6 +382,8 @@ const infoDefine = [
             paymentProblem1: '支付遇到问题',
             paymentProblem:'您的当前所在区域看上去银行网关被和谐，您可以使用CoNET网关支付来完成支付',
             QTGatePayRisk: '使用CoNET安全网关支付，如果您有安全疑虑，请使用Stript安全网关支付。',
+            willPayNextExpir:'自动扣款 ',
+            openAutomatically: '打开自动扣款',
             CancelSuccess: function ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) {
                 return `中止订阅成功。您可以一直使用您的原订阅到${ new Date( PlanExpire) .toLocaleDateString() }为止。以后您将会自动成为CoNET免费用户，可以继续使用CoNET的各项免费功能。${ isAnnual ? `退款金额us$${ returnAmount }会在5个工作日内退还到您的支付卡。`: '下月起CoNET系统不再自动扣款。'} 祝您网络冲浪愉快。`
             },
@@ -319,7 +403,10 @@ const infoDefine = [
             cancelPlanButton:'中止当前订阅',
             needPay: '应付金额：',
             
-            currentPlanExpire: ['订阅截止日期：','下次自动续订日'],
+            currentPlanExpire: [
+                '订阅截止日期：',
+                '下次自动续订日',
+            ],
             monthResetDay:'月数据重置日：',
             monthResetDayAfter:'',
             oldPlanBalance: '原计划剩余价值：',
@@ -363,7 +450,7 @@ const infoDefine = [
             downGradeMessage:'您正在操作降级您的订阅，如果操作成功您将从下月您的订阅之日起，实行新的订阅，如果您是。',
             cancelPlanMessage:'CoNET的订阅是以月为基本的单位。您的月订阅将在下月您的订阅起始日前被终止，您可以继续使用您的本月订阅计划，您将自动回到免费用户。如果您是每月自动扣款，则下月将不再扣款。如果您是年度订阅计划，您的退款将按普通每月订阅费，扣除您已经使用的月份后计算的差额，将自动返还您所支付的信用卡账号，如果您是使用促销码，或您是测试用户，您的终止订阅将不能被接受。',
             cancelPlanMessage1: function ( isAnnual: boolean, amount: number, monthlyPay: number, expire: string, passedMonth: number, totalMonth: number ) {
-                return `<span>您的订阅计划是${ isAnnual ? `年度订阅，退还金额将按照您已付年订阅费 </span><span class="usDollar">us$</span><span class="amount">${ amount }</span> - 该订阅原价 <span class="usDollar">us$</span><span class="amount">${ monthlyPay }</span><span> X 已使用月数(包括本月) </span><span class="amount">${ passedMonth }</span> = 应该退还的金额 <span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? amount - passedMonth * monthlyPay : 0 }</span><span>，将在7个工作日内，退还到您原来支付的信用卡账户。</span>`: `月订阅，您的订阅将下次更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>时不再被自动扣款和更新。</span>`}`
+                return `<span>您的订阅计划是${ isAnnual ? `年度订阅，退还金额将按照您已付年订阅费 </span><span class="usDollar">us$</span><span class="amount">${ amount / 100 }</span> - 该订阅原价 <span class="usDollar">us$</span><span class="amount">${ monthlyPay /100 }</span><span> X 已使用月数(包括本月) </span><span class="amount">${ passedMonth }</span> = 应该退还的金额 <span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? ( amount - passedMonth * monthlyPay ) /100 : 0 }</span><span>，将在7个工作日内，退还到您原来支付的信用卡账户。</span>`: `月订阅，您的订阅将下次更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>时不再被自动扣款和更新。</span>`}`
             }
         },
 
@@ -712,9 +799,10 @@ const infoDefine = [
         },
 
         useInfoMacOS: {
-            title:'<p>本地代理服务器已在后台运行。</p>您的其他电子设备，可通过设置本地Proxy伺服器，来使用CoNET连接到互联网',
+            title:'<p>本地代理服务器已在后台运行。</p>您的其他电子设备，可通过本地代理设置，来使用CoNET连接到互联网',
             title1:'MacOS 本地代理服务器设定',
             customProxy: '定制服务器生成完成：',
+            proxySetupHelp:'代理设定如需帮助，请点击以下您所使用的系统图案',
             webRTCinfo:'阻止WebRTC漏洞，请使用SOCKS代理设置，检查是否漏洞还在，请点击<a target="_blank" href="/Wrt">这里</a>',
             wrtTest: '以下为测试结果：',
             localIpAddress:'如果能看到这个IP地址，由于是本地局域网地址泄漏，无关紧要。',
@@ -959,6 +1047,8 @@ const infoDefine = [
             qtgatePayment:'CoNET経由でのお支払い',
             QTGatePayRisk: 'CoNETセキュリティ経由でお支払いです。遠慮の場合はStripeセキュリティでのお支払いをしてください。',
             paymentProblem1:'支払い支障がある',
+            willPayNextExpir:'引落とし日に ',
+            openAutomatically: '引落とし予約',
             paymentProblem:'あなた現在いる所在地ではバンク支払いがブラックされている模様です。CoNET経由でのお支払いをしてください。',
             CancelSuccess: function ( PlanExpire: string, isAnnual: boolean, returnAmount: number ) {
                 return `プランキャンセルしました。${ new Date (PlanExpire).toLocaleDateString() }まで、元プランのままCoNETサービスが使えます。そのあとはCoNETのフリーユーザーと戻ります。${ isAnnual? `元プラン残りus$ ${ returnAmount }は５日ウォキンデイ内お支払い使ったカードに戻ります`:`プラン代自動落しは中止されます`}。これからもよろしくお願い申し上げます。`
@@ -1021,7 +1111,7 @@ const infoDefine = [
             maxmultigateway: ['最大二つ並列ゲットウェイ','最大四つ並列ゲットウェイ*','最大四つ並列ゲットウェイ'],
             cancelPlanMessage:'CoNETプランは月毎に計算し、来月のあなたの最初加入した日まで、今のプランのままご利用ですます。キャンセルした日から自動的にCoNETの無料ユーザーになります。おアカウトは(月)払いの場合は、来月の自動払いは中止となります。年払いの場合は、ご使った分に月普通料金と計算し控除してから、お支払いを使ったクレジットカードに戻ります。販促コードまたはテストユーザーにはキャンセルすることができません。',
             cancelPlanMessage1: function ( isAnnual: boolean, amount: number, monthlyPay: number, expire: string, passedMonth: number, totalMonth: number ) {
-                return `<span>あなたのプランは${ isAnnual ? `一年契約です。キャンセルをした場合は、ご利用して頂いた月に普通料金と請求を計算されます。お返し金額は，お支払って頂いたプラン年契約料金 </span><span class="usDollar">us$</span><span class="amount">${ amount }</span><span> - そのプランの普通月料金 </span><span class="usDollar">us$</span><span class="amount">${ monthlyPay }</span><span> X ご利用して頂いた月(本月も含めて)：</span><span class="amount">${ passedMonth }</span><span> = 戻る金額 </span><span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? amount - passedMonth * monthlyPay : 0 }</span><span>とまります。７日内お支払って頂いたクレジットカードへ返金とします。</span>`: `月プランです。キャンセルにすると次の更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>に自動更新はしませんです。</span>`}`
+                return `<span>あなたのプランは${ isAnnual ? `一年契約です。キャンセルをした場合は、ご利用して頂いた月に普通料金と請求を計算されます。お返し金額は，お支払って頂いたプラン年契約料金 </span><span class="usDollar">us$</span><span class="amount">${ amount /100 }</span><span> - そのプランの普通月料金 </span><span class="usDollar">us$</span><span class="amount">${ monthlyPay /100 }</span><span> X ご利用して頂いた月(本月も含めて)：</span><span class="amount">${ passedMonth }</span><span> = 戻る金額 </span><span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? ( amount - passedMonth * monthlyPay ) / 100 : 0 }</span><span>とまります。７日内お支払って頂いたクレジットカードへ返金とします。</span>`: `月プランです。キャンセルにすると次の更新日</span><span class="amount">${ nextExpirDate( expire ).toLocaleDateString() }</span><span>に自動更新はしませんです。</span>`}`
             }
         },
 
@@ -1098,6 +1188,7 @@ const infoDefine = [
             title:'ローカルプロキシサーバはバックグランドで実行しています。他のデバイスはローカルプロキシに設定による、CoNET利用してインターネットへアクセスができます。',
             title1:'MacOS プロキシ設定',
             customProxy: 'サーバ作成しました',
+            proxySetupHelp:'ヘルプなら、以下のそれぞれのOSアイコンをクリックしてください。',
             webRTCinfo:'WebRTC漏れ対応はSOCKSプロキシ設定をしてください。WebRTC漏れをテストするしたい場合は<a href="/Wrt" target="_blank">ここ</a>をクリックしてください',
             wrtTest: 'テスト結果は以下です：',
             wrtTestAreaTitle: 'WebRTC漏れデーターエリア',
@@ -1603,6 +1694,8 @@ const infoDefine = [
             QTGatePayRisk: 'Your payment will be processed via CoNET’s secured payment portal. If concerned about privacy, Please use the Stripe payment portal.',
             paymentSuccessTitile: 'Thank you.',
             stripePayment: 'Bank gateway payment',
+            willPayNextExpir:`We'll charge your payment at renew day `,
+            openAutomatically: 'Auto-renew',
             paymentProblem1: 'Payment via CoNET',
             promoButton: 'Have Promo',
             paymentProblem:'Looks bank payment gateway was block in your area. You can payment via CoNET gateway.',
@@ -1668,7 +1761,7 @@ const infoDefine = [
             cancelPlanMessage: '<span>You may cancel your CoNET subscription at any time from within the this app. You will continue to have access to the CoNET services through the end of your paid period until all remaining subscription time in your account is used up. Please refer to the </span><a class="ui olive tiny label">Terms of Service</a> for cancellation and refund policy. Restrictions may apply to free plans and promotional accounts.',
             serverShareData1:'Your dedicated server will be share ratio when you connected over your dedicated count via use Multi-gateway technology.',
             cancelPlanMessage1: function ( isAnnual: boolean, amount: number, monthlyPay: number, expire: string, passedMonth: number, totalMonth: number ) {
-                return `<span>Your are on ${ isAnnual ? `annual payment plan</span><span class="usDollar">us$</span><span class="amount">${ amount }</span><span>. ${ passedMonth } month${ totalMonth - passedMonth > 1 ? 's': '' } are available on your account. Your refund amount will be </span><span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? amount - passedMonth * monthlyPay : 0 }</span>.`: `monthly, it will not be renew at </span><span class="amount">${ nextExpirDate ( expire ).toLocaleDateString() }</span><span> if you cancel this plan.</span>`}`
+                return `<span>Your are on ${ isAnnual ? `annual payment plan</span><span class="usDollar">us$</span><span class="amount">${ amount /100  }</span><span>. ${ passedMonth } month${ totalMonth - passedMonth > 1 ? 's': '' } are available on your account. Your refund amount will be </span><span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? ( amount - passedMonth * monthlyPay ) /100 : 0 }</span>.`: `monthly, it will not be renew at </span><span class="amount">${ nextExpirDate ( expire ).toLocaleDateString() }</span><span> if you cancel this plan.</span>`}`
             }
         },
 
@@ -1818,6 +1911,7 @@ const infoDefine = [
             webRTCinfo:'Stop WebRTC leak: Please use SOCKS proxy setup. Click <a href="/Wrt" target="_blank">here</a> to check WebRTC leak.',
             wrtTest: 'Test result: ',
             customProxy: 'Custom gateway server ready',
+            proxySetupHelp:'Need help? Please click the icon which is your OS.',
             wrtTestAreaTitle: 'WebRTC leak area',
             proxyServerPassword: 'SOCKS proxy setup:',
             localIpAddress:'This is intronet IP address, No leak.',
@@ -2292,6 +2386,8 @@ const infoDefine = [
             ]
         }, 
         account:{
+            willPayNextExpir:'自動扣款 ',
+            openAutomatically: '打開自動扣款',
             QTGatePayRisk:'使用CoNET安全網關支付，如果您有安全疑慮，請使用Stript安全網關支付。',
             paymentSuccessTitile: '謝謝您',
             networkShareTitle:'代理伺服器網絡',
@@ -2360,7 +2456,7 @@ const infoDefine = [
             serverShareData1:'OPN併發多代理技術，同時使用數大於獨占數時，會相應分享您所獨占的資源',
             cancelPlanMessage:'可隨時終止您的訂閱，CoNET的訂閱是以月為基本的單位。您的月訂閱將在下月您的訂閱起始日前被終止，您可以繼續使用您的本月訂閱計劃，您將自動回到免費用戶。如果您是每月自動扣款，則下月將不再扣款。如果您是年度訂閱計劃，您的退款將按普通每月訂閱費，扣除您已經使用的月份後計算的差額，將自動返還您所支付的信用卡賬號，如果您是使用促銷碼，或您是測試用戶，您的終止訂閱將不能被接受。 ',
             cancelPlanMessage1: function ( isAnnual: boolean, amount: number, monthlyPay: number, expire: string, passedMonth: number, totalMonth: number ) {
-                return `<span>您的訂閱計劃是${ isAnnual ? `年度訂閱，退還金額將按照您已付年訂閱費</span><span class="usDollar">us$</span><span class="amount">${ amount }</span><span> - 該訂閱原價 </span><span class="usDollar">us$</span><span class="amount">${ monthlyPay }</span><span> X 已使用月數(包括本月) </span><span class="amount">${ passedMonth }</span><span> = 餘額 </span><span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? amount - passedMonth * monthlyPay : 0 }</span><span>，將在7個工作日內，退還到您用來支付的信用卡帳戶。</span>`: `月訂閱，您的訂閱將下次更新日</span><span class="amount">${ nextExpirDate (expire).toLocaleDateString() }</span><span>時不再被自動扣款和更新。</span>`}`
+                return `<span>您的訂閱計劃是${ isAnnual ? `年度訂閱，退還金額將按照您已付年訂閱費</span><span class="usDollar">us$</span><span class="amount">${ amount /100  }</span><span> - 該訂閱原價 </span><span class="usDollar">us$</span><span class="amount">${ monthlyPay /100 }</span><span> X 已使用月數(包括本月) </span><span class="amount">${ passedMonth }</span><span> = 餘額 </span><span class="usDollar">us$</span><span class="amount">${ amount - passedMonth * monthlyPay > 0 ? ( amount - passedMonth * monthlyPay ) / 100 : 0 }</span><span>，將在7個工作日內，退還到您用來支付的信用卡帳戶。</span>`: `月訂閱，您的訂閱將下次更新日</span><span class="amount">${ nextExpirDate (expire).toLocaleDateString() }</span><span>時不再被自動扣款和更新。</span>`}`
             }
         
         },
@@ -2468,11 +2564,12 @@ const infoDefine = [
         },
 
         useInfoMacOS: {
-            title:'本地代理伺服器已在後台運行。您的其他電子設備，可通過設置本地Proxy伺服器，來使用CoNET連接到互聯網',
+            title:'本地代理伺服器已在後台運行。您的其他電子設備，可通過設置本地代理，來使用CoNET連接到互聯網',
             wrtTestAreaTitle: 'WebRTC漏洞数据泄漏区域',
             customProxy: '訂製伺服器完成',
             title1:'MacOS 本地代理伺服器設定',
             localIpAddress:'如果能看到這個IP地址，由於是本地局域網地址洩漏，無關緊要。',
+            proxySetupHelp:'如需幫助，請點擊下列您的OS系統所屬圖案',
             globalIpAddress:'如果顯示這個IP，您的瀏覽器洩漏了您真實的IP地址',
             webRTCinfo:'阻止WebRTC漏洞，請使用SOCKS代理設定，檢查是否漏洞還在，請點擊<a href="/Wrt" target="_blank">這裡</a>',
             wrtTest: '以下為測試結果：',

@@ -34,7 +34,7 @@ block jumbotron1
 					<!-- ko if: showConnectCoNETProcess -->
 					i.icon.notched.circle.loading.inverted( style = "margin: unset;")
 					<!-- /ko -->
-					<!-- ko if: connectedCoNET -->
+					<!-- ko if: connectedCoNET() && ! showConnectCoNETProcess ()-->
 					i.icon.wifi.inverted( style = "margin: unset;" )
 					<!-- /ko -->
 				<!-- /ko -->
@@ -374,6 +374,8 @@ block jumbotron1
 							span( data-bind="text:'http://' + localServerIp[0] + ':' + localServerPort + '/pac'" style="color: red;")
 						//-.sixteen.wide.column( style="padding-top: 5px!important;padding-bottom: 0px!important;color: grey")
 							span( data-bind="html: infoDefine[ $root.languageIndex() ].useInfoMacOS.webRTCinfo")
+						.sixteen.wide.column
+							span( data-bind = "text: infoDefine[ $root.languageIndex() ].useInfoMacOS.proxySetupHelp")
 						.one.wide.column
 							a( href="#" data-bind = " click: function () { $parents[0].showUserInfoMacOS ( 'android')}")
 								i.large.icon.green.android
@@ -667,7 +669,7 @@ block jumbotron1
 			.plans( data-bind="foreach: planArray " )
 				.plan( data-bind="css: { 'plan-tall': tail }")
 					.plan-title( data-bind="text: showName [ $root.languageIndex() ]")
-					.plan-price( data-bind="text: '$' + annuallyMonth ")
+					.plan-price( data-bind="text: '$' + annuallyMonth / 100 ")
 					ul.plan-features( data-bind="foreach: features")
 						li
 							strong( data-bind="text: title [$root.languageIndex()]")
@@ -700,7 +702,7 @@ block jumbotron1
 					
 				.detailArea( data-bind="visible: $parents[0].detailArea() ")
 					span us$
-					span( data-bind="text: monthlyPay " style="font-size: x-large;font-weight: bold;")
+					span( data-bind="text: monthlyPay / 100 " style="font-size: x-large;font-weight: bold;")
 					span /
 					span( data-bind="text: infoDefine [ $root.languageIndex() ].account.monthlyPay ")
 					.ui.labels( data-bind="foreach: features" style="padding-top: 0.5em;")
@@ -715,16 +717,16 @@ block jumbotron1
 
 				p( data-bind="visible: detailArea" style="margin-top: 1em;")
 					button.ui.teal.basic.button( data-bind=" click: function () { return showPayment ( monthlyPay, false )}, css: { hideCardImage: isAnnual }, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.cantUpgradeMonthly }")
-						span( data-bind = "html: infoDefine[ $root.languageIndex() ].account.monthlyAutoPay( monthlyPay )")
+						span( data-bind = "html: infoDefine[ $root.languageIndex() ].account.monthlyAutoPay( monthlyPay / 100 )")
 					button.ui.primary.basic.button( data-bind = "click: function () { return showPayment ( annually, true )}" )
 						<!-- ko if: currentPromo -->
 						span( data-bind="text: infoDefine[ $root.languageIndex() ].QTGateGateway.promo" style="color: #f2711c;padding-right: 0.5em;")
 						<!-- /ko -->
-						span( data-bind = "html: infoDefine[ $root.languageIndex() ].account.annualPay( annuallyMonth )")
+						span( data-bind = "html: infoDefine[ $root.languageIndex() ].account.annualPay( annuallyMonth / 100 )")
 				.paymentArea( data-bind="visible: !detailArea() ")
 					.ui.grid( style="padding: 1em;padding-top: 0em;")
 						
-						.row(style="color: maroon;font-size: medium;")
+						.row( style="color: maroon;font-size: medium;")
 							span( data-bind="text: infoDefine [ $root.languageIndex() ].account.currentPlanExpire[ paymentAnnually() ? 0: 1] " )
 							span( data-bind="text: infoDefine [ $root.languageIndex() ].account.planExpirDate( newPlanExpirationYear(), newPlanExpirationMonth(), newPlanExpirationDay())" style="margin-left: 1em;")
 						
@@ -733,26 +735,39 @@ block jumbotron1
 						.row
 							span( data-bind="text: ")
 						<!-- /ko -->
-
-
 						<!-- /ko -->
+						
 						.row( style="padding-bottom: 0px;")
+							<!-- ko if: isAutomaticallyAgain -->
+							span( data-bind="text: infoDefine[ $root.languageIndex() ].account.willPayNextExpir" style = "padding-right: 0.5em;")
+							<!-- /ko -->
 							span( data-bind = "text: infoDefine[ $root.languageIndex() ].account.payAmountTitile" style = "font-size: large;font-weight: bold;")
 							span.usDollar us$
-							span.amount( data-bind = "text: payment" )
+							span.amount( data-bind = "text: payment() " )
 							span( data-bind="text: '(' + infoDefine[ $root.languageIndex() ].account.canadaCard + ')'" style="font-size: smaller;color:gray;padding-left: 1em;")
 						
-						
+						<!-- ko if: CurrentPlanBalance() > -1 -->
+						.row( style="padding-bottom: 0px;")
+							span( data-bind="text: infoDefine[ $root.languageIndex() ].account.oldPlanBalance" style = "padding-right: 0.5em;")
+							span( style = "font-weight: lighter;font-style: italic;padding-left: 0.5em;font-size: smaller;") us$
+							span( data-bind = "text: CurrentPlanBalance()/100")
+						<!-- /ko -->
 						.row( style = "padding: 0px;padding-top: 1em;")
 							
 							.ui.animated.fade.basic.violet.button.showStripeErrorIconConnect( data-bind = "visible: !doingPayment(), click: openStripeCard, css: { violet: !showStripeError(), negative: showStripeError()}, attr: { 'data-content': infoDefine[ $root.languageIndex() ].account.paymentProblem }")
 								.visible.content
 									span
 										i.icon.credit.card.alternative
+									<!-- ko if: ! isAutomaticallyAgain() -->
 									span( style = "font-weight: lighter;font-style: italic;padding-left: 0.5em;font-size: smaller;") us$
 									span( data-bind = "text: totalAmount()")
 									span.showStripeErrorIcon( data-bind = "visible: showStripeError()")
 										i.icon.warning.sign.red
+									<!-- /ko -->
+									
+									<!-- ko if: isAutomaticallyAgain -->
+									span( data-bind="text: infoDefine[ $root.languageIndex() ].account.openAutomatically")
+									<!-- /ko -->
 								.hidden.content
 									img.showStripeErrorIcon( src="/images/Stripe.svg" style="margin-top: -0.6em;width: 60%;")
 				<!-- ko if: doingPayment -->
@@ -825,7 +840,9 @@ block jumbotron1
 		<!-- /ko -->
 	
 	//-		AppList 
-	section.AppList.CoContent.content( data-bind="visible: AppList() && !CoGate() ")
+	<!-- ko if:  AppList() && !CoGate() && keyPair() && keyPair().verified -->
+	section.AppList.CoContent.content
+		
 		.CoGateCards( style="max-width: 60em;")
 			h2.ui.header.AppListHeader( data-bind="text: infoDefine[ languageIndex() ].thirdParty.information" style="color: white;")
 			
@@ -851,7 +868,7 @@ block jumbotron1
 							i.comment.grey.icon.outline
 							span( data-bind="text: commentCount")
 				<!-- /ko -->
-
+	<!-- /ko -->
 	//-		Proxy Error
 	<!-- ko if: #{ proxyErr } && sectionWelcome -->
 	section.content

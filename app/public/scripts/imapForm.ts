@@ -162,8 +162,6 @@ const getImapSmtpHost = function ( _email: string ) {
 	
 }
 
-const conetImapAccount = /^qtgate_test\d\d?@icloud.com$/i
-
 class keyPairSign {
 	public signError = ko.observable ( false )
 	public conformButtom = ko.observable ( false )

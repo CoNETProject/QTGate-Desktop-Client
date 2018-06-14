@@ -92,7 +92,10 @@ class keyPairGenerateForm {
 			this.EmailAddressError ( true )
 			return initPopupArea ()
 		}
-			
+		if ( conetImapAccount.test ( email )) {
+			this.EmailAddressError ( true )
+			return initPopupArea ()
+		}
 		if ( checkEmail ( email ).length ) {
 
 			this.EmailAddressError ( true )
