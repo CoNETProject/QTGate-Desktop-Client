@@ -908,6 +908,8 @@ class CoGateAccount {
 		if ( this.currentPlan.name === 'free') {
 			plus1 = 0
 		}
+		this.planArray()[1].showButton (true )
+		this.planArray()[2].showButton (true )
 		
 		this.planArray()[ 1 + plus1 ].tail ( true )
 		if ( this.dataTransfer.productionPackage === 'p1') {
