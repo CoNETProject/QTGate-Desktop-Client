@@ -294,22 +294,28 @@ export default class localServer {
 				requestSerial: Crypto.randomBytes(8).toString( 'hex' )
 			}
 			
+			
+			
+			
 			return this.sendRequest ( socket, com, ( err: number, res: QTGateAPIRequestCommand ) => {
 				//		no error
 				if ( err ) {
+					socket.emit ( 'QTGateGatewayConnectRequest', err )
 					return console.log ( `on QTGateGatewayConnectRequest CoNETConnectCalss.request return error`, err )
 				}
 				if ( res.error < 0 ) {
 
 					const arg: IConnectCommand[] = this.connectCommand = res.Args
-					console.log ( JSON.stringify ( res.Args ))
-					this.makeOpnConnect ( arg )
 					
+					this.makeOpnConnect ( arg )
 					return socket.emit ( 'QTGateGatewayConnectRequest', null, this.connectCommand )
+					
 				}
+
+				return socket.emit ( 'QTGateGatewayConnectRequest', res.error )
 				
-				saveLog ( `connectRequest res.error [${ res.error }]`)
 			})
+			
 			
 		}
 

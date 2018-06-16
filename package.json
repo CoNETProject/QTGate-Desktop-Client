@@ -1,6 +1,6 @@
 {
   "name": "conet",
-  "version": "2.0.2",
+  "version": "2.0.8",
   "license": "MIT",
   "description": "CoNET platform",
   "scripts": {
@@ -69,7 +69,7 @@
     "jquery": "^3.3.1",
     "net-ping": "^1.2.3",
     "node-uuid": "^1.4.8",
-    "nodemailer": "^4.6.6",
+    "nodemailer": "^4.6.7",
     "openpgp": "^3.0.11",
     "portastic": "^1.0.1",
     "pug": "^2.0.3",

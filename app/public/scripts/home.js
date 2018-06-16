@@ -250,7 +250,7 @@ var view_layout;
             this.AppList = ko.observable(false);
             this.CoGateRegionStoped = ko.observable(false);
             this.imapData = null;
-            this.newVersion = ko.observable('');
+            this.newVersion = ko.observable(null);
             this.socketListen();
         }
         systemError() {
@@ -349,11 +349,11 @@ var view_layout;
                     if (!json) {
                         return;
                     }
-                    const localVersion = 'v' + config.version;
-                    if (json.tag_name <= localVersion) {
-                        return;
+                    const localVersion = config.version;
+                    json.tag_name = /^v/i.test(json.tag_name) ? json.tag_name.substr(1) : json.tag_name;
+                    if (cmpVersions(localVersion, json.tag_name) < 0) {
+                        self.newVersion(json.tag_name);
                     }
-                    self.newVersion(json.tag_name);
                 });
                 return self.initConfig(config);
             });

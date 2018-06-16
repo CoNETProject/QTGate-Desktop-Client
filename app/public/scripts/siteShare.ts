@@ -188,7 +188,7 @@ const planArray = [
 		showButton: ko.observable ( false ),
 		features: [{
 			title: ['代理区域','エリア','Region','代理區域'],
-			detail: ['巴黎','パリ','Paris','巴黎'],
+			detail: ['欧洲2区域','ヨーロッパ 2 エリア','2 regions in Europe','歐洲2區域'],
 		},{
 			title: ['服务器','サーバー','Server','伺服器'],
 			detail: ['共享','共有','Share','共享'],
@@ -567,7 +567,7 @@ const infoDefine = [
 
         linuxUpdate:{
             newVersionDownload: '点击这里下载并安装',
-            step1: '下载新版本',
+            step1: '请更新版本：',
             step2: '授权新版本CoNET为可执行文件',
             step2J1:'/images/linuxUpdate1_tw.jpg',
             step2J2:'/images/linuxUpdate2_tw.jpeg',
@@ -1365,7 +1365,7 @@ const infoDefine = [
 
         linuxUpdate:{
             newVersionDownload: 'クリックしてダウンロードとインストール',
-            step1:'ダウンロードニューバージョン',
+            step1:'最新バージョンにアップデート：',
             step2: 'CoNETを実行ファイルに許可与える。',
             step2J1:'/images/linuxUpdate1_jp.jpg',
             step2J2:'/images/linuxUpdate2_jp.jpg',
@@ -2060,7 +2060,7 @@ const infoDefine = [
 
         linuxUpdate:{
             newVersionDownload: 'click here to download and install!',
-            step1:'Download latest CoNET version.',
+            step1:'Update new CoNET: ',
             step2: 'Allow executing file as program',
             step2J1:'/images/linuxUpdate1.jpg',
             step2J2:'/images/linuxUpdate2.jpeg',
@@ -2700,7 +2700,7 @@ const infoDefine = [
 
         linuxUpdate: {
             newVersionDownload: '點擊這裡下載並安裝',
-            step1:'下載新版本',
+            step1:'請更新版本: ',
             step2: '授權新版本CoNET為可執行文件',
             step2J1:'/images/linuxUpdate1_tw.jpg',
             step2J2:'/images/linuxUpdate2_tw.jpeg',
@@ -2978,6 +2978,23 @@ const infoDefine = [
 const linkClick = function ( url: string ) {
     return window.open ( url, '_blank')
 }
+
+function cmpVersions ( a: string, b: string ) {
+    let diff
+    const regExStrip0 = /(\.0+)+$/
+    const segmentsA = a.replace( regExStrip0, '').split('.')
+    const segmentsB = b.replace( regExStrip0, '').split('.')
+    const l = Math.min ( segmentsA.length, segmentsB.length )
+
+    for ( let i = 0; i < l; i++ ) {
+        diff = parseInt ( segmentsA[i], 10 ) - parseInt ( segmentsB[i], 10 )
+        if ( diff ) {
+            return diff
+        }
+    }
+    return segmentsA.length - segmentsB.length;
+}
+
 
 const socketIo = io ({ reconnectionAttempts: 5, timeout: 500, autoConnect: true })
 const QTGateRegionsSetup: IQTGateRegionsSetup[] = [

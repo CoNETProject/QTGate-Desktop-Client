@@ -6,17 +6,17 @@
 
 ## Download ダウンロード 下載
 
-### [The latest 最新版 v2.0.2](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
+### [The latest 最新版 v2.0.8](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
 
-[windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.2/CoNET.Setup.2.0.2.ia32.exe)
+[windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.8/CoNET.Setup.2.0.8.ia32.exe)
 
-[windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.2/CoNET.Setup.2.0.2.exe)
+[windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.8/CoNET.Setup.2.0.8.exe)
 
-[MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.2/CoNET-2.0.2.dmg)
+[MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.8/CoNET-2.0.8.dmg)
 
-[Linux deb](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.2/CoNET_2.0.2_amd64.deb)
+[Linux deb](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.8/CoNET_2.0.8_amd64.deb)
 
-[Linux pacman](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.2/CoNET-2.0.2.pacman)
+[Linux pacman](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.8/CoNET-2.0.8.pacman)
 
 [WInXP or npm install](https://github.com/QTGate/QTGate-Desktop-Client/wiki/WInXP%E4%BB%A5%E5%8F%8ANPM%E7%92%B0%E5%A2%83%E4%B8%8B%E5%AE%89%E8%A3%9DCoNET)
 

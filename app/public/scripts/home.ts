@@ -271,7 +271,7 @@ module view_layout {
         public AppList = ko.observable ( false )
         public CoGateRegionStoped = ko.observable ( false )
         public imapData: IinputData = null
-        public newVersion = ko.observable ( '' )
+        public newVersion = ko.observable ( null )
         
         public systemError () {
             this.modalContent ( infoDefine[ this.languageIndex() ].emailConform.formatError [ 10 ] )
@@ -388,11 +388,13 @@ module view_layout {
                     if ( ! json ) {
                         return
                     }
-                    const localVersion = 'v'+config.version
-                    if ( json.tag_name <= localVersion ) {
-                        return
+                    const localVersion = config.version
+                    json.tag_name = /^v/i.test( json.tag_name ) ? json.tag_name.substr ( 1 ) : json.tag_name
+                    
+                    if ( cmpVersions ( localVersion, json.tag_name ) < 0 ) {
+                        self.newVersion ( json.tag_name )
                     }
-                    self.newVersion ( json.tag_name )
+                    
                     
                 })
                 return self.initConfig ( config )

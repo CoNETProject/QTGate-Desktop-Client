@@ -47,7 +47,7 @@ block jumbotron1
 				<!-- ko if: newVersion  -->
 				a( href = "https://github.com/QTGate/QTGate-Desktop-Client" target="_blank")
 					i.icon.setting.big.loading.red
-					span( data-bind="text: infoDefine[ $root.languageIndex() ].linuxUpdate.step1 " style="color: white;")
+					span( data-bind="text: infoDefine[ $root.languageIndex() ].linuxUpdate.step1 + newVersion ()"  style="color: white;")
 				<!-- /ko -->
 	<!-- /ko -->
 	
@@ -401,7 +401,7 @@ block jumbotron1
 			<!-- /ko -->
 
 
-			<!-- ko if: error() && error() > -1  -->
+			<!-- ko if: error() > -1  -->
 			.ui.segment.red.error
 				.ui.warning.message
 					i.close.icon( data-bind="click: function () { closeErrMessage() }")
