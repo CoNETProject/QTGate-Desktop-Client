@@ -8,6 +8,8 @@
 
 ### [The latest 最新版 v2.0.8](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
 
+[Android, 安卓](https://github.com/QTGate/CoNETPlatform-Android)
+
 [windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.8/CoNET.Setup.2.0.8.ia32.exe)
 
 [windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.8/CoNET.Setup.2.0.8.exe)

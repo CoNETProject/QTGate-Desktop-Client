@@ -444,6 +444,7 @@ module twitter_layout {
             if ( index > -1 ) {
                 this.currentTimelines.splice ( index, 1 )
             }
+            data.showUser = ko.observable ( false )
             data.QTGate_created_at = ko.computed( function () {
                 return getTimeFromCreate( data.created_at, self )
             })
@@ -490,6 +491,7 @@ module twitter_layout {
             data.favoritedLoader_ko = ko.observable ( false )
             this.currentTimelines.push ( data )
             $('.row.ui.shape').shape()
+            $('.ui.sidebar.twitterTimes').sidebar('toggle')
             return this.currentTimelines.sort ( function ( a, b ) {
                 return b.id - a.id
             })

@@ -273,8 +273,8 @@ block jumbotron1
 			<!-- /ko -->
 			//-	if: CoNETConnect
 	<!-- /ko -->
-	
-	section.CoContent.content( data-bind = " if: CoGate()" style = "margin-top: 4em;")
+	<!-- ko if: CoGate -->
+	section.CoContent.content( style = "margin-top: 4em;")
 		<!-- ko if: CoGateClass -->
 		<!-- ko with: CoGateClass -->
 		<!-- ko if: showCards && ! CoGateAccount() && !CoGateRegion() -->
@@ -838,7 +838,7 @@ block jumbotron1
 
 		<!-- /ko -->
 		<!-- /ko -->
-	
+	<!-- /ko -->
 	//-		AppList 
 	<!-- ko if:  AppList() && !CoGate() && keyPair() && keyPair().verified -->
 	section.AppList.CoContent.content

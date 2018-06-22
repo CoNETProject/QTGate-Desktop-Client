@@ -181,7 +181,6 @@ class keyPairSign {
 			} else {
 				self.conformButtom ( true )
 			}
-
 		})
 	}
 
@@ -189,7 +188,14 @@ class keyPairSign {
 		const self = this
 		this.conformTextError ( false )
 		this.activeing ( true )
-		return socketIo.emit11 ( 'checkActiveEmailSubmit', this.conformText(), function ( err, req: QTGateAPIRequestCommand ) {
+		
+		let text = this.conformText()
+		if ( / /.test ( text )) {
+			text = text.replace (/ PGP MESSAGE/g, '__PGP__MESSAGE').replace (/ /g, '\r\n').replace (/__/g, ' ')
+			text = text.replace (/ MESSAGE-----/,' MESSAGE-----\r\n')
+		}
+		
+		return socketIo.emit11 ( 'checkActiveEmailSubmit', text, function ( err, req: QTGateAPIRequestCommand ) {
 			self.activeing ( false )
 			if ( err !== null && err > -1 || req && req.error != null && req.error > -1 ) {
 				self.conformTextErrorNumber ( err !== null && err > -1 ? err :

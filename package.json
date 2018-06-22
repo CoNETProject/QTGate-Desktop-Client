@@ -1,6 +1,6 @@
 {
   "name": "conet",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "license": "MIT",
   "description": "CoNET platform",
   "scripts": {
@@ -73,8 +73,9 @@
     "openpgp": "^3.0.11",
     "portastic": "^1.0.1",
     "pug": "^2.0.3",
-    "raw-socket": "^1.6.2",
+    "raw-socket": "1.6.2",
     "socket.io": "^2.1.1",
-    "twitter-text": "^2.0.4"
+    "twitter-text": "^2.0.4",
+    "merge-descriptors": "1.0.1"
   }
 }

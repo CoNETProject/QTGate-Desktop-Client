@@ -109,9 +109,10 @@ body {
 	margin: 3em;
 }
 .CoContent {
-    width: 100%;
+    width: 95%;
     position: relative;
-    transition: opacity 0.4s ease-in;
+		transition: opacity 0.4s ease-in;
+		margin: auto;
 }
 .loginCards {
 	margin: 0px auto!important;
@@ -401,6 +402,10 @@ ul.plan-features {
 	 max-width:530px;
    }
  }
+
+
+
+
  .flapLeft, .flapeRight {
    position: relative;
    cursor: pointer;

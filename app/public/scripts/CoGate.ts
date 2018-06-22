@@ -358,7 +358,7 @@ class CoGateClass {
 			})
 		})
 
-		socketIo.on ( 'QTGateGatewayConnectRequest', function ( err, cmd: IConnectCommand[],  ) {
+		socketIo.on ( 'QTGateGatewayConnectRequest', function ( err, cmd: IConnectCommand,  ) {
 			
 			if ( ! self.CoGateRegion() ) {
 				let uuu: coGateRegion = null

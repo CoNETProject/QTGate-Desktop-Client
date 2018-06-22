@@ -418,6 +418,9 @@ interface twitter_post {
     truncated: boolean
     user: Twitter_verify_credentials
     tweetCountSummary: tweetCountSummary
+    showUser: KnockoutObservable < boolean >
+    CoNET_totalTwitter: number
+    CoNET_currentTwitter: number
 }
 
 

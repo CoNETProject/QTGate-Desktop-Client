@@ -826,7 +826,7 @@ export const testPing = ( hostIp: string, CallBack ) => {
 			
 			session.close ()
 			if ( err ) {
-				console.log (`session.pingHost ERROR, ${ err.message }`)
+				console.log ( `session.pingHost ERROR, ${ err.message }`)
 				return next ( err )
 			}
 			const ping = rcvd.getTime () - sent.getTime ()
