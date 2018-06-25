@@ -15,7 +15,6 @@ dist
 node_modules
 .gitignore
 yarn.lock
-*.js
 package-lock.json
 .npmignore
 _config.yml
