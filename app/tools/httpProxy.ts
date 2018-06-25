@@ -49,6 +49,7 @@ export default class httpProxy {
 		u +='}'
 
 		this.headers = JSON.parse ( u )
+		
 	}
 
 	get parts () {

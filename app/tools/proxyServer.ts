@@ -272,7 +272,7 @@ const httpProxy = ( clientSocket: Net.Socket, buffer: Buffer, useGatWay: boolean
 		if ( err ) {
 			
 			if ( useGatWay && _data && _data.length && clientSocket.writable ) {
-				const uuuu : VE_IPptpStream = {
+				const uuuu : VE_IPptpStream1 = {
 					uuid: Crypto.randomBytes (10).toString ('hex'),
 					host: hostName,
 					buffer: _data.toString ( 'base64' ),

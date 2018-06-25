@@ -433,8 +433,8 @@ module twitter_layout {
 
         private twitterPostReturn ( data: twitter_post ) {
 			const self = this
-            if ( ! data ) {
-                return alert ('no data ')
+            if ( typeof data === 'number' ) {
+                
             }
             if ( ++this.requestNewTimelinesCount === 20 ) {
                 this.bottomEventLoader( false )

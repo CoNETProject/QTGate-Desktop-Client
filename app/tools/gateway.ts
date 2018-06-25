@@ -121,7 +121,7 @@ export default class gateWay {
 
 	}
 
-	public requestGetWay ( id: string, uuuu: VE_IPptpStream, userAgent: string, socket: Net.Socket ) {
+	public requestGetWay ( id: string, uuuu: VE_IPptpStream1, userAgent: string, socket: Net.Socket ) {
 		
 		//			remote server was stoped
 		if ( this.RemoteServerDistroyed ) {

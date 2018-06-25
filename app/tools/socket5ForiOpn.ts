@@ -62,7 +62,7 @@ export class socks5 {
 		const CallBack = ( err?: Error, _data?: Buffer ) => {
 			if ( err ) {
 				if ( this.proxyServer.useGatWay && _data && _data.length && this.socket.writable && this.proxyServer.gateway ) {
-					const uuuu : VE_IPptpStream = {
+					const uuuu : VE_IPptpStream1 = {
 						uuid: Crypto.randomBytes (10).toString ('hex'),
 						host: this.host|| this.targetIpV4,
 						buffer: _data.toString ( 'base64' ),
@@ -244,7 +244,7 @@ export class sockt4 {
 		const CallBack = ( err?: Error, _data?: Buffer ) => {
 			if ( err ) {
 				if ( this.proxyServer.useGatWay && _data && _data.length && this.socket.writable && this.proxyServer.gateway ) {
-					const uuuu : VE_IPptpStream = {
+					const uuuu : VE_IPptpStream1 = {
 						uuid: Crypto.randomBytes (10).toString ('hex'),
 						host: this.host || this.targetIpV4 ,
 						buffer: _data.toString ( 'base64' ),

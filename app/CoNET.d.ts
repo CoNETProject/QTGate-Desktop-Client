@@ -332,7 +332,7 @@ interface dnsAddress {
 	connect: Date []
 }
 
-interface VE_IPptpStream {
+interface VE_IPptpStream1 {
     type?: string;
     buffer: string;
     host: string;
