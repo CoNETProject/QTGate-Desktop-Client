@@ -1,6 +1,6 @@
 {
   "name": "conet",
-  "version": "2.0.9",
+  "version": "2.0.3",
   "license": "MIT",
   "description": "CoNET platform",
   "scripts": {
