@@ -23,7 +23,7 @@
 [WInXP or npm install](https://github.com/QTGate/QTGate-Desktop-Client/wiki/WInXP%E4%BB%A5%E5%8F%8ANPM%E7%92%B0%E5%A2%83%E4%B8%8B%E5%AE%89%E8%A3%9DCoNET)
 
 ## Description
-![http protocol](/resources/12222.png?raw=true)
+![http protocol](/resources/CoPlatform3.png?raw=true)
 ### CoNET platform as product of [CoNET](https://github.com/QTGate/CoNET) provides a series of services that allows users to improve their security, privacy and freedom on the Internet
 - All other devices may use CoNET platform service via local website after launching CoNET platform.
 - CoNET platform provide a local DNS server that allowing its users to keep PRIVACY and ENCRYPTION.
