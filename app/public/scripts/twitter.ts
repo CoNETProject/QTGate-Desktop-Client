@@ -405,6 +405,7 @@ module twitter_layout {
         public newTwitterFieldError = ko.observable ()
         public addATwitterAccount = ko.observable ( false )         //      doing add a new account 
         private processBarTime: NodeJS.Timer = null
+        public unknowError = ko.observable ( false )
         public config: KnockoutObservable < install_config> = ko.observable ({
             firstRun: true,
             alreadyInit: false,
@@ -432,12 +433,21 @@ module twitter_layout {
         private bottomEventLoader = ko.observable ( false )
 
         private twitterPostReturn ( data: twitter_post ) {
-			const self = this
+            const self = this
+            this.showServerError ( false )
+
+            //      Error
             if ( typeof data === 'number' ) {
                 
-            }
-            if ( ++this.requestNewTimelinesCount === 20 ) {
-                this.bottomEventLoader( false )
+                switch ( data ) {
+                    case 1: {
+                        return this.getTimeLineAccountErrorCallBack ()
+                    }
+                    default : {
+                        return this.unknowError ( true )
+                    }
+                }
+                
             }
 
             const index = this.currentTimelines().findIndex( function ( n ) { return n.id_str === data.id_str })
@@ -510,23 +520,35 @@ module twitter_layout {
             })
 
             socketIo.on ( 'getTimelines', function ( data: twitter_post ) {
+
                 return self.twitterPostReturn ( data )
             })
+
+            socketIo.on ( 'getTimelinesEnd', function () {
+
+                return self.bottomEventLoader ( false )
+            })
+
+
 
             self.newTwitterField.push ( new twitterField( self ))
         }
 
         public getTimeLinesNext () {
+            this.showServerError ( false )
 			const self = this
             if ( this.bottomEventLoader ()) {
                 return
             }
             this.bottomEventLoader ( true )
             this.requestNewTimelinesCount = 0
-            const maxID = this.currentTimelines()[ this.currentTimelines().length - 1 ].id
-            return socketIo.emit11 ( 'getTimelinesNext', this.twitterData()[0], maxID, function ( err ) {
-                return self.getTimeLineCallBack ( err )
-            })
+            
+            if ( this.twitterData().length > 0 ) {
+                const maxID = this.currentTimelines()[ this.currentTimelines().length - 1 ].id
+                return socketIo.emit11 ( 'getTimelinesNext', this.twitterData()[0], maxID )
+            }
+            return socketIo.emit11 ( 'getTimelines', this.twitterData()[0] )
+            
         }
 
 		public selectItem = function ( that: any, site: () => number ) {
@@ -610,6 +632,7 @@ module twitter_layout {
             if ( !this.twitterData().length ) {
                 return
             }
+            this.showServerError ( false )
             this.showAccountMenu ( true )
             this.bottomEventLoader ( true )
             
@@ -617,7 +640,7 @@ module twitter_layout {
             
             setTimeout ( function () {
                 self.bottomEventLoader ( false )
-			}, 1000 * 120 )
+            }, 1000 * 60 * 3 )
 			
             this.showCurrentTimelines ( true )
             this.currentTimelines([])
@@ -626,20 +649,18 @@ module twitter_layout {
             
         }
 
-        public getTimeLineCallBack ( err: Error[] ) {
-            if ( err && err.length ) {
-                const _err = err[0]
-                if ( /Invalid/i.test( _err.message )) {
-                    this.showCurrentTwitterAppInfomation ()
-                    this.accessTokenError ( true )
-                    this.accessTokenSecretError ( true )
-                    this.apiKeyError ( true )
-                    this.apiSecretError ( true )
-                    this.showLoader ( false )
-                    this.showCurrentTimelines ( false )
-                    return this.showAccountError ( true )
-                }
-            }
+        public getTimeLineAccountErrorCallBack () {
+            
+            this.showCurrentTwitterAppInfomation ()
+            this.accessTokenError ( true )
+            this.accessTokenSecretError ( true )
+            this.apiKeyError ( true )
+            this.apiSecretError ( true )
+            this.showLoader ( false )
+            this.showCurrentTimelines ( false )
+            return this.showAccountError ( true )
+    
+            
         }
 
         public requestTwitterUser ( twitterAccount: TwitterAccount ) {
@@ -677,6 +698,7 @@ module twitter_layout {
             this.apiSecret ( account.consumer_key )
             this.accessToken ( account.access_token_key )
             this.accessTokenSecret ( account.access_token_secret )
+            this.twitterData.splice (0, 1)
             return this.showAddTwitterAccount ( true )
         }
 
@@ -740,7 +762,6 @@ module twitter_layout {
             this.requestNewTimelinesCount = 0
             this.showCurrentTimelines ( true )
             return socketIo.emit11 ( 'getTimelines', item )
-            
                  
         }
 

@@ -306,25 +306,28 @@ class CoGateClass {
 	}
 
 	private pingCheckReturn ( region: string, ping: number ) {
-		const index = this.QTGateRegions().findIndex ( function ( n ) { return n.qtRegion === region })
-			if ( index < 0 ) {
-				return
-			}
+		if ( !region ) {
 			
-                
-            const _reg = this.QTGateRegions()[ index ]
-            if ( !_reg.available ) {
-				return
-			}
-                
-            _reg.ping ( ping )
-            const fromIInputData = $(`#card-${ _reg.qtRegion.replace('.','-')}`)
-            const uu = ping
-            const _ping = Math.round((500 - ping)/100)
+		}
+		const index = this.QTGateRegions().findIndex ( function ( n ) { return n.qtRegion === region })
+		if ( index < 0 ) {
+			return
+		}
+		
+			
+		const _reg = this.QTGateRegions()[ index ]
+		if ( ! _reg.available ) {
+			return
+		}
+			
+		_reg.ping ( ping )
+		const fromIInputData = $(`#card-${ _reg.qtRegion.replace ( '.','-' )}`)
+		const uu = ping
+		const _ping = Math.round (( 500 - ping ) / 100 )
 
-            fromIInputData.rating ({
-                initialRating: _ping > 0 ? _ping : 0
-            }).rating ('disable')
+		fromIInputData.rating ({
+			initialRating: _ping > 0 ? _ping : 0
+		}).rating ('disable')
 	}
 
 	constructor ( private isUsedPublicImapAccount: boolean ) {
@@ -335,8 +338,11 @@ class CoGateClass {
 			return self.pingCheckReturn ( region, ping )
 		})
 
-		socketIo.on ('pingCheckSuccess', function () {
+		socketIo.on ('pingCheckSuccess', function ( err ) {
 			self.pingCheckLoading ( false )
+			if ( err ) {
+				return 
+			}
 			return self.QTGateRegions.sort ( function ( a, b ) {
 				const _a = a.ping()
 				const _b = b.ping()
@@ -354,6 +360,8 @@ class CoGateClass {
 				return -1
 			})
 		})
+
+		
 
 		socketIo.on ( 'QTGateGatewayConnectRequest', function ( err, cmd: IConnectCommand[],  ) {
 			

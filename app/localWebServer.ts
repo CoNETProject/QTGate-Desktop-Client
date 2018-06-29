@@ -133,6 +133,7 @@ export default class localServer {
 	private domainPool: Map < string, domainData > = new Map ()
 	private twitterDataInit = false
 	private twitterData: TwitterAccount[] = []
+	private currentTwitterAccount = -1
 	private doingCreateTweetData = false 
 
 	public CoNET_systemError () {
@@ -515,13 +516,12 @@ export default class localServer {
 		socket.on ( 'pingCheck', CallBack1 => {
 			CallBack1 ()
 			if ( process.platform === 'linux') {
-				return socket.emit ( 'pingCheck', null, -1 )
+				return socket.emit ( 'pingCheckSuccess', true )
 			}
 				
 			
-			saveLog (`socket.on ( 'pingCheck' )`)
 			if ( !this.regionV1 || this.pingChecking ) {
-				saveLog (`!this.regionV1 [${ !this.regionV1 }] || this.pingChecking [${ this.pingChecking }]`)
+				saveLog ( `!this.regionV1 [${ !this.regionV1 }] || this.pingChecking [${ this.pingChecking }]`)
 				return socket.emit ( 'pingCheck' )
 			}
 				
@@ -531,7 +531,7 @@ export default class localServer {
 				const session = netPing.createSession ()
 			} catch ( ex ) {
 				console.log ( `netPing.createSession err`, ex )
-				return socket.emit ( 'pingCheck', null, -1 )
+				return socket.emit ( 'pingCheckSuccess', true )
 			}
 			Async.eachSeries ( this.regionV1, ( n: regionV1, next ) => {
 				
@@ -548,7 +548,7 @@ export default class localServer {
 			
 		})
 
-		socket.on ('promoCode', ( promoCode, CallBack1 ) => {
+		socket.on ( 'promoCode', ( promoCode, CallBack1 ) => {
 			CallBack1 ()
 			const com: QTGateAPIRequestCommand = {
 				command: 'promoCode',
@@ -658,6 +658,39 @@ export default class localServer {
 		
 	}
 
+	private deleteCurrentAccount () {
+		if ( this.currentTwitterAccount < 0 ) {
+			return 
+		}
+		this.twitterData.splice ( this.currentTwitterAccount, 1 )
+		return Tool.saveEncryptoData ( Tool.twitterDataFileName, this.twitterData, this.config, this.savedPasswrod, err => {
+			if ( err ) {
+				return saveLog (`saveANEWTwitterData got error: ${ err.messgae }`)
+			}
+			
+		})
+	}
+
+	private setCurrentTwitterAccount ( account: TwitterAccount ) {
+		
+		this.currentTwitterAccount = this.twitterData.findIndex ( n => {
+			return n.access_token_secret === account.access_token_secret
+		})
+		
+	}
+
+	private TwitterError ( err, CallBack ) {
+		if ( typeof err === 'object') {
+			console.log (`TwitterError err = [${ Util.inspect ( err )}]`)
+			if ( err.message && /Invalid or expired token/i.test( err.message )) {
+				console.log ( `Twitter account error!`)
+				this.deleteCurrentAccount ()
+				return CallBack ( 1 )
+			}
+		}
+		return CallBack ( 2 )
+	}
+
 	private getTimelines ( socket: SocketIO.Socket, account: TwitterAccount, CallBack ) {
 		
 		const com: QTGateAPIRequestCommand = {
@@ -666,17 +699,15 @@ export default class localServer {
 			error: null,
 			requestSerial: Crypto.randomBytes(8).toString ('hex' )
 		}
-		let _return = 0
+		let count = 0
 		return this.sendRequest ( socket, com, ( err, res: QTGateAPIRequestCommand ) => {
-			_return ++
+			count ++
 			if ( err ) {
 				return CallBack ()
 			}
 
 			if ( res.error ) {
-				saveLog ( `this.localServer.QTClass.request ERROR typeof res.error = ${ typeof res.error }`)
-				
-				return CallBack ( res.error )
+				return this.TwitterError ( res.error, CallBack )
 			}
 			
 			if ( res.Args && res.Args.length > 0 ) {
@@ -684,9 +715,14 @@ export default class localServer {
 				try {
 					uu = JSON.parse ( Buffer.from ( res.Args [0], 'base64' ).toString ())
 				} catch ( ex ) {
+					this.TwitterError ( 2, CallBack )
 					return saveLog ( `getTimelines QTClass.request return JSON.parse Error! _return [${ ex } ]` )
 				}
-				
+				if ( count >= uu.CoNET_totalTwitter - 1 ) {
+					console.log (`socket.emit ( 'getTimelinesEnd' )`)
+					socket.emit ( 'getTimelinesEnd' )
+				}
+				console.log (`Total Tweets [${ uu.CoNET_totalTwitter }] current [${count }]`)
 				return CallBack ( null, uu )
 			}
 			
@@ -796,6 +832,9 @@ export default class localServer {
 			if ( err ) {
 				return CallBack ()
 			}
+			if ( res.error ) {
+				this.TwitterError ( res.error, CallBack )
+			}
 			
 			if ( res.Args && res.Args.length > 0 ) {
 
@@ -809,10 +848,7 @@ export default class localServer {
 				
 				return CallBack ( null, uu )
 			}
-			if ( res.error ) {
-				saveLog ( `this.localServer.QTClass.request ERROR typeof res.error = ${ typeof res.error  }` )
-				return CallBack ( res.error )
-			}
+			
 			
 		})
 	}
@@ -992,6 +1028,27 @@ export default class localServer {
 		return post ( null )
 	}
 
+	private tweetTimeCallBack ( socket: SocketIO.Socket, err, tweets: twitter_post ) {
+		
+		if ( err ) {
+			socket.emit ( 'getTimelines', err )
+			return saveLog ( `socket.on ( 'getTimelines' return [${ err.message }]`)
+			
+		}
+		
+		return this.createTweetData ( tweets, ( err, tweet: twitter_post ) => {
+			
+			
+			if ( err ) {
+				return console.log (`getTweetCount error`, err )
+			}
+			
+			return socket.emit ( 'getTimelines', tweet )
+			
+			
+		})
+	}
+
 	private listenAfterTwitterLogin ( socket: SocketIO.Socket ) {
 
 
@@ -1040,26 +1097,10 @@ export default class localServer {
 		socket.on ( 'getTimelines', ( item: TwitterAccount, CallBack1 ) => {
 			CallBack1()
 			delete item ['twitter_verify_credentials']
-			let getTimelinesCount = 0
+			this.setCurrentTwitterAccount ( item )
+			
 			return this.getTimelines ( socket, item, ( err, tweets: twitter_post ) => {
-				getTimelinesCount ++
-				if ( err ) {
-					socket.emit ( 'getTimelines', err )
-					return saveLog (`socket.on ( 'getTimelines' return [${ getTimelinesCount }] error, [${ err.message }]`)
-					
-				}
-				saveLog ( `doinging createTweetData for count [${ getTimelinesCount }]`)
-				return this.createTweetData ( tweets, ( err, tweet: twitter_post ) => {
-					saveLog (`createTweetData CallBack! [${ getTimelinesCount }]`)
-					
-						if ( err ) {
-							return console.log (`getTweetCount error`, err )
-						}
-						
-						return socket.emit ( 'getTimelines', tweet )
-					
-					
-				})
+				return this.tweetTimeCallBack ( socket, err, tweets )
 				
 			})
 		})
@@ -1081,16 +1122,7 @@ export default class localServer {
 		socket.on ( 'getTimelinesNext', ( item: TwitterAccount, maxID: number, CallBack1 ) => {
 			CallBack1 ()
 			return this.getTimelinesNext ( socket, item, maxID, ( err, tweets: twitter_post ) => {
-				if ( err ) {
-					return socket.emit ('getTimelinesNext', err )
-					
-				}
-
-				if ( tweets ) {
-					return this.createTweetData ( tweets, ( err, tweet ) => {
-						return socket.emit ( 'getTimelines', tweet )
-					})
-				}
+				return this.tweetTimeCallBack ( socket, err, tweets )
 				
 			})
 		})

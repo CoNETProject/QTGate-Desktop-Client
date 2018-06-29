@@ -113,6 +113,7 @@ class localServer {
         this.domainPool = new Map();
         this.twitterDataInit = false;
         this.twitterData = [];
+        this.currentTwitterAccount = -1;
         this.doingCreateTweetData = false;
         this.expressServer.set('views', Path.join(__dirname, 'views'));
         this.expressServer.set('view engine', 'pug');
@@ -487,9 +488,8 @@ class localServer {
         socket.on('pingCheck', CallBack1 => {
             CallBack1();
             if (process.platform === 'linux') {
-                return socket.emit('pingCheck', null, -1);
+                return socket.emit('pingCheckSuccess', true);
             }
-            saveLog(`socket.on ( 'pingCheck' )`);
             if (!this.regionV1 || this.pingChecking) {
                 saveLog(`!this.regionV1 [${!this.regionV1}] || this.pingChecking [${this.pingChecking}]`);
                 return socket.emit('pingCheck');
@@ -501,7 +501,7 @@ class localServer {
             }
             catch (ex) {
                 console.log(`netPing.createSession err`, ex);
-                return socket.emit('pingCheck', null, -1);
+                return socket.emit('pingCheckSuccess', true);
             }
             Async.eachSeries(this.regionV1, (n, next) => {
                 return Tool.testPing(n.testHostIp, (err, ping) => {
@@ -609,6 +609,33 @@ class localServer {
             });
         });
     }
+    deleteCurrentAccount() {
+        if (this.currentTwitterAccount < 0) {
+            return;
+        }
+        this.twitterData.splice(this.currentTwitterAccount, 1);
+        return Tool.saveEncryptoData(Tool.twitterDataFileName, this.twitterData, this.config, this.savedPasswrod, err => {
+            if (err) {
+                return saveLog(`saveANEWTwitterData got error: ${err.messgae}`);
+            }
+        });
+    }
+    setCurrentTwitterAccount(account) {
+        this.currentTwitterAccount = this.twitterData.findIndex(n => {
+            return n.access_token_secret === account.access_token_secret;
+        });
+    }
+    TwitterError(err, CallBack) {
+        if (typeof err === 'object') {
+            console.log(`TwitterError err = [${Util.inspect(err)}]`);
+            if (err.message && /Invalid or expired token/i.test(err.message)) {
+                console.log(`Twitter account error!`);
+                this.deleteCurrentAccount();
+                return CallBack(1);
+            }
+        }
+        return CallBack(2);
+    }
     getTimelines(socket, account, CallBack) {
         const com = {
             command: 'twitter_home_timeline',
@@ -616,15 +643,14 @@ class localServer {
             error: null,
             requestSerial: Crypto.randomBytes(8).toString('hex')
         };
-        let _return = 0;
+        let count = 0;
         return this.sendRequest(socket, com, (err, res) => {
-            _return++;
+            count++;
             if (err) {
                 return CallBack();
             }
             if (res.error) {
-                saveLog(`this.localServer.QTClass.request ERROR typeof res.error = ${typeof res.error}`);
-                return CallBack(res.error);
+                return this.TwitterError(res.error, CallBack);
             }
             if (res.Args && res.Args.length > 0) {
                 let uu = null;
@@ -632,8 +658,14 @@ class localServer {
                     uu = JSON.parse(Buffer.from(res.Args[0], 'base64').toString());
                 }
                 catch (ex) {
+                    this.TwitterError(2, CallBack);
                     return saveLog(`getTimelines QTClass.request return JSON.parse Error! _return [${ex} ]`);
                 }
+                if (count >= uu.CoNET_totalTwitter - 1) {
+                    console.log(`socket.emit ( 'getTimelinesEnd' )`);
+                    socket.emit('getTimelinesEnd');
+                }
+                console.log(`Total Tweets [${uu.CoNET_totalTwitter}] current [${count}]`);
                 return CallBack(null, uu);
             }
         });
@@ -729,6 +761,9 @@ class localServer {
             if (err) {
                 return CallBack();
             }
+            if (res.error) {
+                this.TwitterError(res.error, CallBack);
+            }
             if (res.Args && res.Args.length > 0) {
                 let uu = null;
                 try {
@@ -738,10 +773,6 @@ class localServer {
                     return saveLog(`getTimelines QTClass.request return JSON.parse Error!`);
                 }
                 return CallBack(null, uu);
-            }
-            if (res.error) {
-                saveLog(`this.localServer.QTClass.request ERROR typeof res.error = ${typeof res.error}`);
-                return CallBack(res.error);
             }
         });
     }
@@ -900,6 +931,18 @@ class localServer {
         }
         return post(null);
     }
+    tweetTimeCallBack(socket, err, tweets) {
+        if (err) {
+            socket.emit('getTimelines', err);
+            return saveLog(`socket.on ( 'getTimelines' return [${err.message}]`);
+        }
+        return this.createTweetData(tweets, (err, tweet) => {
+            if (err) {
+                return console.log(`getTweetCount error`, err);
+            }
+            return socket.emit('getTimelines', tweet);
+        });
+    }
     listenAfterTwitterLogin(socket) {
         socket.on('addTwitterAccount', (addTwitterAccount, CallBack1) => {
             CallBack1();
@@ -939,21 +982,9 @@ class localServer {
         socket.on('getTimelines', (item, CallBack1) => {
             CallBack1();
             delete item['twitter_verify_credentials'];
-            let getTimelinesCount = 0;
+            this.setCurrentTwitterAccount(item);
             return this.getTimelines(socket, item, (err, tweets) => {
-                getTimelinesCount++;
-                if (err) {
-                    socket.emit('getTimelines', err);
-                    return saveLog(`socket.on ( 'getTimelines' return [${getTimelinesCount}] error, [${err.message}]`);
-                }
-                saveLog(`doinging createTweetData for count [${getTimelinesCount}]`);
-                return this.createTweetData(tweets, (err, tweet) => {
-                    saveLog(`createTweetData CallBack! [${getTimelinesCount}]`);
-                    if (err) {
-                        return console.log(`getTweetCount error`, err);
-                    }
-                    return socket.emit('getTimelines', tweet);
-                });
+                return this.tweetTimeCallBack(socket, err, tweets);
             });
         });
         socket.on('mediaFileUpdata', (uploadId, data, part, CallBack1) => {
@@ -973,14 +1004,7 @@ class localServer {
         socket.on('getTimelinesNext', (item, maxID, CallBack1) => {
             CallBack1();
             return this.getTimelinesNext(socket, item, maxID, (err, tweets) => {
-                if (err) {
-                    return socket.emit('getTimelinesNext', err);
-                }
-                if (tweets) {
-                    return this.createTweetData(tweets, (err, tweet) => {
-                        return socket.emit('getTimelines', tweet);
-                    });
-                }
+                return this.tweetTimeCallBack(socket, err, tweets);
             });
         });
         socket.on('twitter_postNewTweet', (account, postData, CallBack1) => {

@@ -362,6 +362,7 @@ var twitter_layout;
             this.newTwitterFieldError = ko.observable();
             this.addATwitterAccount = ko.observable(false); //      doing add a new account 
             this.processBarTime = null;
+            this.unknowError = ko.observable(false);
             this.config = ko.observable({
                 firstRun: true,
                 alreadyInit: false,
@@ -418,14 +419,24 @@ var twitter_layout;
             socketIo.on('getTimelines', function (data) {
                 return self.twitterPostReturn(data);
             });
+            socketIo.on('getTimelinesEnd', function () {
+                return self.bottomEventLoader(false);
+            });
             self.newTwitterField.push(new twitterField(self));
         }
         twitterPostReturn(data) {
             const self = this;
+            this.showServerError(false);
+            //      Error
             if (typeof data === 'number') {
-            }
-            if (++this.requestNewTimelinesCount === 20) {
-                this.bottomEventLoader(false);
+                switch (data) {
+                    case 1: {
+                        return this.getTimeLineAccountErrorCallBack();
+                    }
+                    default: {
+                        return this.unknowError(true);
+                    }
+                }
             }
             const index = this.currentTimelines().findIndex(function (n) { return n.id_str === data.id_str; });
             if (index > -1) {
@@ -478,16 +489,18 @@ var twitter_layout;
             });
         }
         getTimeLinesNext() {
+            this.showServerError(false);
             const self = this;
             if (this.bottomEventLoader()) {
                 return;
             }
             this.bottomEventLoader(true);
             this.requestNewTimelinesCount = 0;
-            const maxID = this.currentTimelines()[this.currentTimelines().length - 1].id;
-            return socketIo.emit11('getTimelinesNext', this.twitterData()[0], maxID, function (err) {
-                return self.getTimeLineCallBack(err);
-            });
+            if (this.twitterData().length > 0) {
+                const maxID = this.currentTimelines()[this.currentTimelines().length - 1].id;
+                return socketIo.emit11('getTimelinesNext', this.twitterData()[0], maxID);
+            }
+            return socketIo.emit11('getTimelines', this.twitterData()[0]);
         }
         makeCurrentAccount(data) {
             this.currentTwitterAccount(data.twitter_verify_credentials);
@@ -536,30 +549,26 @@ var twitter_layout;
             if (!this.twitterData().length) {
                 return;
             }
+            this.showServerError(false);
             this.showAccountMenu(true);
             this.bottomEventLoader(true);
             this.requestNewTimelinesCount = 0;
             setTimeout(function () {
                 self.bottomEventLoader(false);
-            }, 1000 * 120);
+            }, 1000 * 60 * 3);
             this.showCurrentTimelines(true);
             this.currentTimelines([]);
             return socketIo.emit11('getTimelines', this.twitterData()[0]);
         }
-        getTimeLineCallBack(err) {
-            if (err && err.length) {
-                const _err = err[0];
-                if (/Invalid/i.test(_err.message)) {
-                    this.showCurrentTwitterAppInfomation();
-                    this.accessTokenError(true);
-                    this.accessTokenSecretError(true);
-                    this.apiKeyError(true);
-                    this.apiSecretError(true);
-                    this.showLoader(false);
-                    this.showCurrentTimelines(false);
-                    return this.showAccountError(true);
-                }
-            }
+        getTimeLineAccountErrorCallBack() {
+            this.showCurrentTwitterAppInfomation();
+            this.accessTokenError(true);
+            this.accessTokenSecretError(true);
+            this.apiKeyError(true);
+            this.apiSecretError(true);
+            this.showLoader(false);
+            this.showCurrentTimelines(false);
+            return this.showAccountError(true);
         }
         requestTwitterUser(twitterAccount) {
             this.makeCurrentAccount(twitterAccount);
@@ -593,6 +602,7 @@ var twitter_layout;
             this.apiSecret(account.consumer_key);
             this.accessToken(account.access_token_key);
             this.accessTokenSecret(account.access_token_secret);
+            this.twitterData.splice(0, 1);
             return this.showAddTwitterAccount(true);
         }
         addTwitterProgress() {

@@ -223,8 +223,11 @@ class CoGateClass {
         socketIo.on('pingCheck', function (region, ping) {
             return self.pingCheckReturn(region, ping);
         });
-        socketIo.on('pingCheckSuccess', function () {
+        socketIo.on('pingCheckSuccess', function (err) {
             self.pingCheckLoading(false);
+            if (err) {
+                return;
+            }
             return self.QTGateRegions.sort(function (a, b) {
                 const _a = a.ping();
                 const _b = b.ping();
@@ -317,6 +320,8 @@ class CoGateClass {
         socketIo.emit11('getAvaliableRegion');
     }
     pingCheckReturn(region, ping) {
+        if (!region) {
+        }
         const index = this.QTGateRegions().findIndex(function (n) { return n.qtRegion === region; });
         if (index < 0) {
             return;
