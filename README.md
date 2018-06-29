@@ -6,19 +6,19 @@
 
 ## Download ダウンロード 下載
 
-### [The latest 最新版 v2.0.9](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
+### [The latest 最新版 v2.0.10](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
 
 [Android, 安卓](https://github.com/QTGate/CoNETPlatform-Android)
 
-[windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.9/CoNET.Setup.2.0.9.ia32.exe)
+[windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.10/CoNET.Setup.2.0.10.ia32.exe)
 
-[windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.9/CoNET.Setup.2.0.9.exe)
+[windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.10/CoNET.Setup.2.0.10.exe)
 
-[MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.9/CoNET-2.0.9.dmg)
+[MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.10/CoNET-2.0.10.dmg)
 
-[Linux deb](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.9/CoNET_2.0.9_amd64.deb)
+[Linux deb](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.10/CoNET_2.0.10_amd64.deb)
 
-[Linux pacman](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.9/CoNET-2.0.9.pacman)
+[Linux pacman](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.10/CoNET-2.0.10.pacman)
 
 [WInXP or npm install](https://github.com/QTGate/QTGate-Desktop-Client/wiki/WInXP%E4%BB%A5%E5%8F%8ANPM%E7%92%B0%E5%A2%83%E4%B8%8B%E5%AE%89%E8%A3%9DCoNET)
 
