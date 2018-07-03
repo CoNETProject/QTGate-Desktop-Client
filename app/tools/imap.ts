@@ -618,7 +618,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         }
         clearTimeout ( this.idleResponsrTime )
         this.commandProcess = ( text: string, cmdArray: string[], next, _callback ) => {
-            console.log (`_logout doing this.commandProcess `)
+            //console.log (`_logout doing this.commandProcess `)
             this.isImapUserLoginSuccess = false
             return _callback ()
         }
@@ -1025,7 +1025,7 @@ export class qtGateImap extends Event.EventEmitter {
 
     constructor ( public IMapConnect: imapConnect, public listenFolder: string, public deleteBoxWhenEnd: boolean, public writeFolder: string, private debug: boolean, public newMail: ( mail ) => void ) {
         super ()
-        saveLog ( `new qtGateImap imapSerialID [${ this.imapSerialID }] listenFolder [${ this.listenFolder }] writeFolder [${ this.writeFolder }]`, true )
+        //saveLog ( `new qtGateImap imapSerialID [${ this.imapSerialID }] listenFolder [${ this.listenFolder }] writeFolder [${ this.writeFolder }]`, true )
         this.connect ()
         this.once ( `error`, err => {
             saveLog ( `[${ this.imapSerialID }] this.on error ${ err && err.message ? err.message : null }`)
@@ -1726,7 +1726,7 @@ export class imapPeer extends Event.EventEmitter {
             return saveLog (`newReadImap have rImap.imapStream.readable = true, stop!`, true )
         }
         this.makeRImap = true
-        saveLog ( `=====> newReadImap!`, true )
+        //saveLog ( `=====> newReadImap!`, true )
 
 
         this.rImap = new qtGateImapRead ( this.imapData, this.listenBox, false, email => {

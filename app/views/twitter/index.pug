@@ -75,7 +75,7 @@ block jumbotron1
                         .header( data-bind = " text: name " style="margin: 0px;")
                         .description
                             .data( data-bind = " text: '@' +screen_name " style="color:grey;margin-top: 0.2em;")
-                            .data( data-bind = " text: friends_count + ' ' + infoDefine [ $root.languageIndex()].twitter.following " )
+                            .data( data-bind = " text: friends_count + ' ' + infoDefine [ $root.languageIndex()].twitter.following[0] " )
                             .data( data-bind = " text: followers_count + ' ' + infoDefine [ $root.languageIndex()].twitter.followers ")
             <!-- /ko -->
     .pusher
@@ -140,57 +140,72 @@ block jumbotron1
         <!-- /ko -->
         <!-- ko if: showCurrentTimelines() -->
         .content.TimelinesView
+
+
+
             <!-- ko if: currentTimelines().length > 0 -->
-            #TimelinesView.ui.segments( data-bind = "foreach: currentTimelines " style="background-color:white;")
-                .ui.segment
-                    .ui.list
+            <!-- ko foreach: currentTimelines -->
+            #TimelinesView.ui.segments( style="background-color:white;")
+                .ui.segment.pushable( data-bind = "attr: { id: id_str }" )
+                    .ui.wide.sidebar.pushed
+                        .ui.items( style="padding: 1em;")
+                            .item( style="flex-direction: unset;")
+                                .ui.tiny.image
+                                    img( data-bind=" attr: { src: retweeted_status && retweeted_status.user ? retweeted_status.user.profile_image_url_https : ( user && user.profile_image_url_https ? user.profile_image_url_https : '')}")
+                                .content(style="padding-top: 0px;")
+                                    .header
+                                        span( data-bind = "text: retweeted_status ? retweeted_status.user.name : user.name ")
+                                        i.large.icons( data-bind = "visible: retweeted_status ? retweeted_status.user.verified : user.verified " style = "color: #1da1f2;margin-left: 0.1em;padding-top: 0.2em;")
+                                            i.icon.small.certificate
+                                            i.icon.tiny.checkmark( style = "color:white;margin-left: -2px;margin-top: -2px;")
+                                    .meta
+                                        span( data-bind = "text: '@' + ( retweeted_status ? retweeted_status.user.screen_name : user.screen_name) " style="color:grey; margin-left: 0.2em;font-weight: lighter;")
+                                    .description
+                                        span( data-bind="text: retweeted_status ? retweeted_status.user.description : user.description")
+                                    .extra
+                                        p
+                                            b( data-bind="text: infoDefine [ $root.languageIndex()].twitter.following[0] ")
+                                            span( style="padding: 0.3em;") :
+                                            b( data-bind="text: $root.getNumberFormat ( retweeted_status ? retweeted_status.user.friends_count : user.friends_count )" style="color: #1da1f2;font-size: large;")
+                                        p
+                                            b( data-bind="text: infoDefine [ $root.languageIndex()].twitter.followers ")
+                                            span( style="padding: 0.3em;") :
+                                            b( data-bind="text: $root.getNumberFormat ( retweeted_status ? retweeted_status.user.followers_count : user.followers_count )" style="color: #1da1f2;font-size: large;")
+                                        p
+                                            b( data-bind="text: infoDefine [ $root.languageIndex()].twitter.twitterBottonTitle[0] ")
+                                            span( style="padding: 0.3em;") :
+                                            b( data-bind="text: $root.getNumberFormat ( retweeted_status ? retweeted_status.user.statuses_count : user.statuses_count )" style="color: #1da1f2;font-size: large;")
+                                        
+                                        .ui.button.basic.twitter( data-bind="css: { 'twitter animated': retweeted_status ? retweeted_status.user.following: user.following, 'blue basic':  retweeted_status ? !retweeted_status.user.following: !user.following}")
+                                            span.visible.content( data-bind="text: infoDefine [ $root.languageIndex()].twitter.following[(retweeted_status ? retweeted_status.user.following: user.following) ? 0 : 2 ]")
+                                            <!-- ko if: retweeted_status ? retweeted_status.user.following: user.following -->
+                                            span.hidden.content( data-bind="text: infoDefine [ $root.languageIndex()].twitter.following[1]")
+                                            <!-- /ko -->
+                    .ui.list.pusher.context
                         .item( data-bind = "visible: user" style = "padding: 1em;")
                             .reTwitterArea( data-bind = "visible: retweeted_status " style=" color: grey;padding-left: 1.1em;padding-bottom: 0.5em;")
                                 i.icon.retweet
                                 span( data-bind = "text: user.name + ' ' + infoDefine [ $root.languageIndex()].twitter.retweeted")
-                            a.ui.avatar.image( href = "#" data-bind="click: function() { showUser( true )}" style="padding-right: 0px;min-width: 2em;")
+                            a( href = "#" data-bind = "attr: { class: id_str + ' ui avatar image' }" style="padding-right: 0px;min-width: 2em;")
                                 img( data-bind=" attr: { src: retweeted_status && retweeted_status.user ? retweeted_status.user.profile_image_url_https : ( user && user.profile_image_url_https ? user.profile_image_url_https : '')}")
                             
                             .content.itemContent(style="width: 100%;")
-                                a.header(style="padding-bottom: 0.3em;" href="#" data-bind="click: function() { showUser( true )}")
+                            
+                                a( style="padding-bottom: 0.3em;" href="#" data-bind = "attr: { class: id_str + ' header'}" )
                                     span( data-bind = "text: retweeted_status ? retweeted_status.user.name : user.name ")
                                     i.large.icons( data-bind = "visible: retweeted_status ? retweeted_status.user.verified : user.verified " style = "color: #1da1f2;margin-left: 0.1em;padding-top: 0.2em;")
                                         i.icon.small.certificate
                                         i.icon.tiny.checkmark( style = "color:white;margin-left: -2px;margin-top: -2px;")
                                     span( data-bind = "text: '@' + ( retweeted_status ? retweeted_status.user.screen_name : user.screen_name) " style="color:grey; margin-left: 0.2em;font-weight: lighter;")
                                     span.tweetTime( data-bind = "text: ' ' + ( retweeted_status ? retweeted_status.QTGate_created_at() : QTGate_created_at())" style="font-weight: lighter;color:grey;margin-left: 0.4em;")
+                                .ui.bottom( style="min-height: 100% !important; height: 100% !important")
                                     
-                                .description( style="min-width: 250px")
-                                    .ui.grid.one.column( style="margin: 0px")
-                                        .row( data-bind =" visible: !retweeted_status " style="padding: 0px;")
-                                            span( data-bind = " html: full_text_split_line " style="overflow: hidden;")
+                                        .description( style="min-width: 250px")
+                                            .ui.grid.one.column( style="margin: 0px")
+                                                .row( data-bind =" visible: !retweeted_status " style="padding: 0px;")
+                                                    span( data-bind = " html: full_text_split_line " style="overflow: hidden;")
 
-                                        .row.ui( data-bind = "css: { shape: extended_entities && extended_entities.media && extended_entities.media.length > 1 }, visible: extended_entities && !retweeted_status && !quoted_status, attr : { 'sharp-id' : extended_entities ? id_str : '' }, with: extended_entities " style="padding: 0px;" )
-                                            .ui.grid.one.column(style = "padding-left: 1em;")
-                                                .row( data-bind = " visible: media[0].additional_media_info && media[0].additional_media_info.title && media[0].additional_media_info.title.length ")
-                                                    p( data-bind= "text: media[0].additional_media_info && media[0].additional_media_info.title ? media[0].additional_media_info.title : ''")
-                                                .row( data-bind="visible: media[0].video_info ")
-                                                    video( data-bind = "attr: { src: media[0].video_info && media[0].video_info.QTDownload ? media[0].video_info.QTDownload: '' } " muted autoplay controls type="video/mp4" preload="none" style = "object-fit: cover;height: 100%;width: 100%;")
-                                                        
-                                                .row( data-bind="visible: !media[0].video_info")
-                                                    .sides( data-bind = " foreach: !media[0].video_info && media.length ? media : []" style = " width: 100%;")
-                                                        .side( data-bind="css: { active: $index() === 0 }")
-                                                            img.ui.image.rounded( data-bind = "attr: { src: media_url_https } ")
-                                        .row.ui.flapArea111( data-bind = "visible: !retweeted_status && extended_entities && extended_entities.media && extended_entities.media.length > 1" style="padding: 0px;")
-                                            .fluid.ui.twitter.button( data-bind = "click: function () { return $root.timelinesViewSharp( id_str);} " )
-                                                i.icon.twitter
-
-                                        //-      retweeted_status
-                                        .row( data-bind = "visible: retweeted_status, with: retweeted_status" style = "padding: 0px;" )
-                                            .ui.grid.one.column
-                                                .row( data-bind=" visible: entities && entities.user_mentions && entities.user_mentions.length" style="padding-top: 0.2em;padding-bottom: 0.2em;")
-                                                    span( data-bind = " text: infoDefine [ $root.languageIndex()].twitter.replying")
-                                                    <!-- ko foreach: entities && entities.user_mentions && entities.user_mentions.length ? entities.user_mentions : [] -->
-                                                        span( data-bind = " text: '@' + screen_name " style="margin-left: 0.3em;color: rgba(0,0,0,0.3);")
-                                                    <!-- /ko -->
-                                                .row( style = "padding: 0px;")
-                                                    span( data-bind = " html: full_text_split_line " style="overflow: hidden;" )
-                                                .row.ui( data-bind = "css: { shape: extended_entities && extended_entities.media && extended_entities.media.length > 1 }, visible: extended_entities, attr : { 'sharp-id' : extended_entities ? id_str : '' }, with: extended_entities " style="padding: 0px;" )
+                                                .row.ui( data-bind = "css: { shape: extended_entities && extended_entities.media && extended_entities.media.length > 1 }, visible: extended_entities && !retweeted_status && !quoted_status, attr : { 'sharp-id' : extended_entities ? id_str : '' }, with: extended_entities " style="padding: 0px;" )
                                                     .ui.grid.one.column(style = "padding-left: 1em;")
                                                         .row( data-bind = " visible: media[0].additional_media_info && media[0].additional_media_info.title && media[0].additional_media_info.title.length ")
                                                             p( data-bind= "text: media[0].additional_media_info && media[0].additional_media_info.title ? media[0].additional_media_info.title : ''")
@@ -201,28 +216,22 @@ block jumbotron1
                                                             .sides( data-bind = " foreach: !media[0].video_info && media.length ? media : []" style = " width: 100%;")
                                                                 .side( data-bind="css: { active: $index() === 0 }")
                                                                     img.ui.image.rounded( data-bind = "attr: { src: media_url_https } ")
-                                                .row.ui.flapArea111(data-bind="visible: extended_entities && extended_entities.media && extended_entities.media.length > 1" style="padding: 0px;")
+                                                .row.ui.flapArea111( data-bind = "visible: !retweeted_status && extended_entities && extended_entities.media && extended_entities.media.length > 1" style="padding: 0px;")
                                                     .fluid.ui.twitter.button( data-bind = "click: function () { return $root.timelinesViewSharp( id_str);} " )
                                                         i.icon.twitter
 
-                                                .row.ui.segment( data-bind = "visible: quoted_status, with: quoted_status" style = "overflow: hidden;padding: 0px;margin-top: 0.2em; padding-bottom: .5em;padding-top: .5em;")
-                                                    .ui.grid.one.column(style = "padding-left: 1em;")
-                                                        .row( style="padding: 0px; padding-right: 0.5em; padding-left: 0.5em;")
-                                                            span( data-bind = " text: user.name " style="color: black")
-                                                            i.large.icons( data-bind = "visible: user.verified " style = "color: #1da1f2; margin-left: 0.2em;")
-                                                                i.icon.small.certificate
-                                                                i.icon.tiny.checkmark( style = "color: white; margin-left: -2px; margin-top: -2px;")
-                                                            span( data-bind = "text: '@' + user.screen_name " style="color: grey; margin-left: 0.2em;font-weight: lighter;")
-                                                        .row( data-bind = " visible: entities && entities.user_mentions && entities.user_mentions.length " style="padding-top: 0.2em;padding-bottom: 0.2em; padding-right: 0.5em; padding-left: 0.5em;" )
-                                                            span( data-bind = "text: infoDefine [ $root.languageIndex()].twitter.replying ")
-                                                            
+                                                //-      retweeted_status
+                                                .row( data-bind = "visible: retweeted_status, with: retweeted_status" style = "padding: 0px;" )
+                                                    .ui.grid.one.column
+                                                        .row( data-bind=" visible: entities && entities.user_mentions && entities.user_mentions.length" style="padding-top: 0.2em;padding-bottom: 0.2em;")
+                                                            span( data-bind = " text: infoDefine [ $root.languageIndex()].twitter.replying")
                                                             <!-- ko foreach: entities && entities.user_mentions && entities.user_mentions.length ? entities.user_mentions : [] -->
                                                                 span( data-bind = " text: '@' + screen_name " style="margin-left: 0.3em;color: rgba(0,0,0,0.3);")
                                                             <!-- /ko -->
-                                                        .row( style="padding: 0px; padding-right: 0.5em; padding-left: 0.5em;" )
-                                                            span( data-bind = " html: full_text_split_line ")
+                                                        .row( style = "padding: 0px;")
+                                                            span( data-bind = " html: full_text_split_line " style="overflow: hidden;" )
                                                         .row.ui( data-bind = "css: { shape: extended_entities && extended_entities.media && extended_entities.media.length > 1 }, visible: extended_entities, attr : { 'sharp-id' : extended_entities ? id_str : '' }, with: extended_entities " style="padding: 0px;" )
-                                                            .ui.grid.one.column
+                                                            .ui.grid.one.column(style = "padding-left: 1em;")
                                                                 .row( data-bind = " visible: media[0].additional_media_info && media[0].additional_media_info.title && media[0].additional_media_info.title.length ")
                                                                     p( data-bind= "text: media[0].additional_media_info && media[0].additional_media_info.title ? media[0].additional_media_info.title : ''")
                                                                 .row( data-bind="visible: media[0].video_info ")
@@ -233,63 +242,97 @@ block jumbotron1
                                                                         .side( data-bind="css: { active: $index() === 0 }")
                                                                             img.ui.image.rounded( data-bind = "attr: { src: media_url_https } ")
                                                         .row.ui.flapArea111(data-bind="visible: extended_entities && extended_entities.media && extended_entities.media.length > 1" style="padding: 0px;")
-                                                            .fluid.ui.twitter.button( data-bind = "click: function () { return $root.timelinesViewSharp( id_str );} " )
+                                                            .fluid.ui.twitter.button( data-bind = "click: function () { return $root.timelinesViewSharp( id_str);} " )
                                                                 i.icon.twitter
 
-                                        //-   quoted_status
-                                        .row.ui.segment( data-bind = "visible: quoted_status, with: quoted_status" style="padding: 0px;padding-bottom: 1em;")
-                                            .ui.grid.one.column( style = "padding-top: 0.5em; padding-bottom: 0.5em;")
-                                                .row(style="padding: 0px; padding-right: 0.5em; padding-left: 0.5em; padding-top: 0.5em;")
-                                                    span( data-bind = " text: user.name " style="color: black")
-                                                        i.large.icons( data-bind = "visible: user.verified " style = "color: #1da1f2; margin-left: 0.2em;")
-                                                            i.icon.small.certificate
-                                                            i.icon.tiny.checkmark( style = "color: white; margin-left: -2px; margin-top: -2px;")
-                                                    span( data-bind = "text: '@' + user.screen_name " style="color: grey; margin-left: 0.2em;font-weight: lighter;")
-                                                .row( data-bind = " visible: entities && entities.user_mentions && entities.user_mentions.length" style="padding-top: 0.2em;padding-bottom: 0.2em; padding-right: 0.5em; padding-left: 0.5em;")
-                                                    span( data-bind = " text: infoDefine [ $root.languageIndex()].twitter.replying")
-                                                    <!-- ko foreach: entities && entities.user_mentions && entities.user_mentions.length ? entities.user_mentions : [] -->
-                                                        span( data-bind=" text: '@' + screen_name " style="margin-left: 0.3em;color: rgba(0,0,0,0.3);")
-                                                    <!-- /ko -->
-                                                .row( style = "padding: 0px; padding-bottom:0.5em; padding-right: 0.5em; padding-left: 0.5em;")
-                                                    span( data-bind = " html: full_text_split_line " style="overflow: hidden;" )
-                                                .row.ui( data-bind = "css: { shape: extended_entities && extended_entities.media && extended_entities.media.length > 1 }, visible: extended_entities, attr : { 'sharp-id' : extended_entities ? id_str : '' }, with: extended_entities " style="padding: 0px;" )
-                                                    .ui.grid.one.column(style = "padding-left: 1em;")
-                                                        .row( data-bind = " visible: media[0].additional_media_info && media[0].additional_media_info.title && media[0].additional_media_info.title.length ")
-                                                            p( data-bind= "text: media[0].additional_media_info && media[0].additional_media_info.title ? media[0].additional_media_info.title : ''")
-                                                        .row( data-bind="visible: media[0].video_info ")
-                                                            video( data-bind = "attr: { src: media[0].video_info && media[0].video_info.QTDownload ? media[0].video_info.QTDownload: '' } " muted autoplay controls type="video/mp4" preload="none" style = "object-fit: cover;height: 100%;width: 100%;")
-                                                                
-                                                        .row( data-bind="visible: !media[0].video_info")
-                                                            .sides( data-bind = " foreach: !media[0].video_info && media.length ? media : []" style = " width: 100%;")
-                                                                .side( data-bind="css: { active: $index() === 0 }")
-                                                                    img.ui.image.rounded( data-bind = "attr: { src: media_url_https } ")
-                                                .row.ui.flapArea111(data-bind="visible: extended_entities && extended_entities.media && extended_entities.media.length > 1" style="padding: 0px;padding: 0px; padding-right: 0.5em; padding-left: 0.5em;")
-                                                    .fluid.ui.twitter.button( data-bind = "click: function () { return $root.timelinesViewSharp( id_str);} " )
-                                                        i.icon.twitter
-        
-                                .ProfileTweet-actionList( style = "color:grey;padding-top: 0.5em;")
-                                    span.comment()
-                                        span
-                                            i.icon.large.comment.outline
-                                        span
-                                    span.retweeted( data-bind = "css: { reTwitter: retweeted }"  )
-                                        span( style = "margin-left: 3em;")
-                                            i.icon.large.retweet
-                                        span( data-bind = "visible: retweet_count > 0, text: retweet_count" )
-                                    span.favorite( data-bind = "visible: !favoritedLoader_ko(), css: { favorited: favorited_ko() }" )
-                                        span( style = "margin-left: 3em;")
-                                            i.icon.large.heart( data-bind=" css: { 'empty': !favorited_ko()}, click:  function () { return $root.favoriteClick( $data ); }" style="margin-top: 0.1em;" )
-                                        span( data-bind = "visible: favorite_count_ko() > 0, text: favorite_count_ko()" )
-                                    span.favoritedLoader( data-bind = "visible: favoritedLoader_ko()" style="margin-left: 3em;")
-                                        i.icon.notched.large.circle.loading( style = "color: rgba(0,0,0,0.1);")
-            <!-- /ko --> 
+                                                        .row.ui.segment( data-bind = "visible: quoted_status, with: quoted_status" style = "overflow: hidden;padding: 0px;margin-top: 0.2em; padding-bottom: .5em;padding-top: .5em;")
+                                                            .ui.grid.one.column(style = "padding-left: 1em;")
+                                                                .row( style="padding: 0px; padding-right: 0.5em; padding-left: 0.5em;")
+                                                                    span( data-bind = " text: user.name " style="color: black")
+                                                                    i.large.icons( data-bind = "visible: user.verified " style = "color: #1da1f2; margin-left: 0.2em;")
+                                                                        i.icon.small.certificate
+                                                                        i.icon.tiny.checkmark( style = "color: white; margin-left: -2px; margin-top: -2px;")
+                                                                    span( data-bind = "text: '@' + user.screen_name " style="color: grey; margin-left: 0.2em;font-weight: lighter;")
+                                                                .row( data-bind = " visible: entities && entities.user_mentions && entities.user_mentions.length " style="padding-top: 0.2em;padding-bottom: 0.2em; padding-right: 0.5em; padding-left: 0.5em;" )
+                                                                    span( data-bind = "text: infoDefine [ $root.languageIndex()].twitter.replying ")
+                                                                    
+                                                                    <!-- ko foreach: entities && entities.user_mentions && entities.user_mentions.length ? entities.user_mentions : [] -->
+                                                                        span( data-bind = " text: '@' + screen_name " style="margin-left: 0.3em;color: rgba(0,0,0,0.3);")
+                                                                    <!-- /ko -->
+                                                                .row( style="padding: 0px; padding-right: 0.5em; padding-left: 0.5em;" )
+                                                                    span( data-bind = " html: full_text_split_line ")
+                                                                .row.ui( data-bind = "css: { shape: extended_entities && extended_entities.media && extended_entities.media.length > 1 }, visible: extended_entities, attr : { 'sharp-id' : extended_entities ? id_str : '' }, with: extended_entities " style="padding: 0px;" )
+                                                                    .ui.grid.one.column
+                                                                        .row( data-bind = " visible: media[0].additional_media_info && media[0].additional_media_info.title && media[0].additional_media_info.title.length ")
+                                                                            p( data-bind= "text: media[0].additional_media_info && media[0].additional_media_info.title ? media[0].additional_media_info.title : ''")
+                                                                        .row( data-bind="visible: media[0].video_info ")
+                                                                            video( data-bind = "attr: { src: media[0].video_info && media[0].video_info.QTDownload ? media[0].video_info.QTDownload: '' } " muted autoplay controls type="video/mp4" preload="none" style = "object-fit: cover;height: 100%;width: 100%;")
+                                                                                
+                                                                        .row( data-bind="visible: !media[0].video_info")
+                                                                            .sides( data-bind = " foreach: !media[0].video_info && media.length ? media : []" style = " width: 100%;")
+                                                                                .side( data-bind="css: { active: $index() === 0 }")
+                                                                                    img.ui.image.rounded( data-bind = "attr: { src: media_url_https } ")
+                                                                .row.ui.flapArea111(data-bind="visible: extended_entities && extended_entities.media && extended_entities.media.length > 1" style="padding: 0px;")
+                                                                    .fluid.ui.twitter.button( data-bind = "click: function () { return $root.timelinesViewSharp( id_str );} " )
+                                                                        i.icon.twitter
+
+                                                //-   quoted_status
+                                                .row.ui.segment( data-bind = "visible: quoted_status, with: quoted_status" style="padding: 0px;padding-bottom: 1em;")
+                                                    .ui.grid.one.column( style = "padding-top: 0.5em; padding-bottom: 0.5em;")
+                                                        .row(style="padding: 0px; padding-right: 0.5em; padding-left: 0.5em; padding-top: 0.5em;")
+                                                            span( data-bind = " text: user.name " style="color: black")
+                                                                i.large.icons( data-bind = "visible: user.verified " style = "color: #1da1f2; margin-left: 0.2em;")
+                                                                    i.icon.small.certificate
+                                                                    i.icon.tiny.checkmark( style = "color: white; margin-left: -2px; margin-top: -2px;")
+                                                            span( data-bind = "text: '@' + user.screen_name " style="color: grey; margin-left: 0.2em;font-weight: lighter;")
+                                                        .row( data-bind = " visible: entities && entities.user_mentions && entities.user_mentions.length" style="padding-top: 0.2em;padding-bottom: 0.2em; padding-right: 0.5em; padding-left: 0.5em;")
+                                                            span( data-bind = " text: infoDefine [ $root.languageIndex()].twitter.replying")
+                                                            <!-- ko foreach: entities && entities.user_mentions && entities.user_mentions.length ? entities.user_mentions : [] -->
+                                                                span( data-bind=" text: '@' + screen_name " style="margin-left: 0.3em;color: rgba(0,0,0,0.3);")
+                                                            <!-- /ko -->
+                                                        .row( style = "padding: 0px; padding-bottom:0.5em; padding-right: 0.5em; padding-left: 0.5em;")
+                                                            span( data-bind = " html: full_text_split_line " style="overflow: hidden;" )
+                                                        .row.ui( data-bind = "css: { shape: extended_entities && extended_entities.media && extended_entities.media.length > 1 }, visible: extended_entities, attr : { 'sharp-id' : extended_entities ? id_str : '' }, with: extended_entities " style="padding: 0px;" )
+                                                            .ui.grid.one.column(style = "padding-left: 1em;")
+                                                                .row( data-bind = " visible: media[0].additional_media_info && media[0].additional_media_info.title && media[0].additional_media_info.title.length ")
+                                                                    p( data-bind= "text: media[0].additional_media_info && media[0].additional_media_info.title ? media[0].additional_media_info.title : ''")
+                                                                .row( data-bind="visible: media[0].video_info ")
+                                                                    video( data-bind = "attr: { src: media[0].video_info && media[0].video_info.QTDownload ? media[0].video_info.QTDownload: '' } " muted autoplay controls type="video/mp4" preload="none" style = "object-fit: cover;height: 100%;width: 100%;")
+                                                                        
+                                                                .row( data-bind="visible: !media[0].video_info")
+                                                                    .sides( data-bind = " foreach: !media[0].video_info && media.length ? media : []" style = " width: 100%;")
+                                                                        .side( data-bind="css: { active: $index() === 0 }")
+                                                                            img.ui.image.rounded( data-bind = "attr: { src: media_url_https } ")
+                                                        .row.ui.flapArea111(data-bind="visible: extended_entities && extended_entities.media && extended_entities.media.length > 1" style="padding: 0px;padding: 0px; padding-right: 0.5em; padding-left: 0.5em;")
+                                                            .fluid.ui.twitter.button( data-bind = "click: function () { return $root.timelinesViewSharp( id_str);} " )
+                                                                i.icon.twitter
+                
+                                        .ProfileTweet-actionList( style = "color:grey;padding-top: 0.5em;")
+                                            span.comment()
+                                                span
+                                                    i.icon.large.comment.outline
+                                                span
+                                            span.retweeted( data-bind = "css: { reTwitter: retweeted }"  )
+                                                span( style = "margin-left: 3em;")
+                                                    i.icon.large.retweet
+                                                span( data-bind = "visible: retweet_count > 0, text: retweet_count" )
+                                            span.favorite( data-bind = "visible: !favoritedLoader_ko(), css: { favorited: favorited_ko() }" )
+                                                span( style = "margin-left: 3em;")
+                                                    i.icon.large.heart( data-bind=" css: { 'empty': !favorited_ko()}, click:  function () { return $root.favoriteClick( $data ); }" style="margin-top: 0.1em;" )
+                                                span( data-bind = "visible: favorite_count_ko() > 0, text: favorite_count_ko()" )
+                                            span.favoritedLoader( data-bind = "visible: favoritedLoader_ko()" style="margin-left: 3em;")
+                                                i.icon.notched.large.circle.loading( style = "color: rgba(0,0,0,0.1);")
+            <!-- /ko -->
+            <!-- /ko -->
             .ui.vertical.segment( data-bind="visible: !bottomEventLoader() > 0")
                 i.ui.centered.small.image.icon.pointing.down.massive( data-bind = " click: getTimeLinesNext " style = "cursor: pointer;width: 100%;color:#00aced")
         <!-- /ko -->
         .ui.info.message( data-bind = "visible: showLogin() && !showServerError() " style = "margin: 1em; margin-top: 4em;")
             i.close.icon
             .header( data-bind=" html: infoDefine [ languageIndex()].twitter.urlInfo ")
-            p( data-bind = " text: `http://${ config() && config().localIpAddress && config().localIpAddress.length ? config().localIpAddress[0]: '127.0.0.1' }:2000/Twitter` ")
+             
+            p( data-bind = " text: `http://${ config().localIpAddress ? config().localIpAddress[0]: '127.0.0.1'}:3000/Twitter` ")
+            
     
 
         

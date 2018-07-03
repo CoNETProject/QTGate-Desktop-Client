@@ -349,6 +349,8 @@ module twitter_layout {
 			})
         }
 
+        
+
         public textAreaClick () {
             this.twitter.newTwitterField().forEach ( function ( n ) {
                 n.showToolBar ( false )
@@ -428,11 +430,23 @@ module twitter_layout {
             lastConnectType: 1
         })
 
+        public getNumberFormat ( num: number ) {
+            if ( num < 1000 ) {
+                return num.toString ()
+            }
+            const u = Math.round ( num / 100 )
+            if ( u < 10000 ) {
+                return `${ u / 10 } K`
+            }
+            const v = Math.round ( num / 100000 )
+            return `${ v / 10 } M`
+        }
+
         private requestNewTimelinesCount = 0
         public QTGateConnect1 = ko.observable ('')
         private bottomEventLoader = ko.observable ( false )
 
-        private twitterPostReturn ( data: twitter_post ) {
+        private twitterPostReturn ( data: twitter_post, post: boolean ) {
             const self = this
             this.showServerError ( false )
 
@@ -501,10 +515,22 @@ module twitter_layout {
             data.favoritedLoader_ko = ko.observable ( false )
             this.currentTimelines.push ( data )
             $('.row.ui.shape').shape()
-            $('.ui.sidebar.twitterTimes').sidebar('toggle')
-            return this.currentTimelines.sort ( function ( a, b ) {
+            
+            this.currentTimelines.sort ( function ( a, b ) {
                 return b.id - a.id
             })
+            $(`#${ data.id_str } .ui.sidebar`).sidebar({
+                context: $(`#${ data.id_str }`)
+            
+            }).sidebar( 'attach events', `.${ data.id_str }`).sidebar ( 'setting', 'exclusive', false )
+            $(`.${ data.id_str }`).click ( function(e) {
+                e.preventDefault();
+            })
+
+            //      post data 
+            if ( post ) {
+                scrollToTop ()
+            }
         }
 
         constructor () {
@@ -519,9 +545,9 @@ module twitter_layout {
                 })
             })
 
-            socketIo.on ( 'getTimelines', function ( data: twitter_post ) {
+            socketIo.on ( 'getTimelines', function ( data: twitter_post, post: boolean ) {
 
-                return self.twitterPostReturn ( data )
+                return self.twitterPostReturn ( data, post )
             })
 
             socketIo.on ( 'getTimelinesEnd', function () {
@@ -868,14 +894,7 @@ module twitter_layout {
             
             this.newTwitterField ([ new twitterField ( this )])
 
-            return socketIo.emit11 ( 'twitter_postNewTweet', this.twitterData()[0], data, function ( err: Error, data ) {
-                if ( err ) {
-                    return alert ( err )
-                }
-                if ( data ) {
-                    return self.twitterPostReturn ( data )
-                }
-            })
+            return socketIo.emit11 ( 'twitter_postNewTweet', this.twitterData()[0], data )
 
         }
 

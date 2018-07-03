@@ -331,7 +331,7 @@ const infoDefine = [
         twitter: {
             newTwitterAccount: `请输入您的推特APP信息，如何获得和设置推特账号APP信息，请点击<a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/Create-Twitter-APP')">这里</a>`,
             addAccount: '添加推特账户',
-            following: '正在关注',
+            following: ['正在关注', '解除关注', '关注'],
             followers: '关注者',
             videoSizeOver: '视频超推特限制: 尺寸 < (1280x1024)，文件 < 300MB，总时间 < 140秒，请转换视频后再上传',
             second: '秒',
@@ -949,7 +949,7 @@ const infoDefine = [
         twitter: {
             newTwitterAccount: `TwitterのAPPインフォーメーションを入力してください。APPインフォーメーション作成する事がわからない場合は<a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/Create-Twitter-APP'">ここ</a>をクリックしてください。`,
             addAccount: 'Twitterアカウントを追加',
-            following: 'フォロー',
+            following: ['フォロー中', 'フォローを解除', 'フォロー'],
             followers: 'フォロワー',
             second: '秒',
             videoSizeOver: `ビデオがTwitter規格: 140秒、300MB、(1280x1024)を超えています`,
@@ -1574,7 +1574,7 @@ const infoDefine = [
         twitter: {
             newTwitterAccount: `Please input Twitter APP information. How to create Twitter APP please click <a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/Create-Twitter-APP'">hear</a> to got more information.`,
             addAccount: 'Add an Twitter account',
-            following: 'Following',
+            following: ['Following', 'Unfollow', 'Follow'],
             followers: 'Followers',
             second: 's',
             min: 'm',
@@ -2235,7 +2235,7 @@ const infoDefine = [
         twitter: {
             newTwitterAccount: `請輸入您的推特APP信息，如何獲得和設置推特賬號APP信息，請點擊<a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/Create-Twitter-APP'">這裡</a>獲得更多信息`,
             addAccount: '添加推特賬戶',
-            following: '正在關注',
+            following: ['正在關注', '解除關注', '關注'],
             followers: '關注者',
             second: '秒',
             min: '分',
@@ -2848,6 +2848,10 @@ function cmpVersions(a, b) {
         }
     }
     return segmentsA.length - segmentsB.length;
+}
+function scrollToTop() {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
 const socketIo = io({ reconnectionAttempts: 5, timeout: 500, autoConnect: true });
 const QTGateRegionsSetup = [

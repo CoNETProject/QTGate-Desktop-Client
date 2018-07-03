@@ -108,7 +108,21 @@ npm run [mac|win32|win|linux]
 
 [Multi Platform Build 如何編譯多平台APP可參照 マルチOSのビルドにつて](https://www.electron.build/multi-platform-build)
 
-## Notice 注意事項 
+### Funding
+Currently the project is paid for out of pocket, and we will do an ICO. Any funding received private investment will be put to the following:
+CoNET Development
+CoNET platform for Android, IOS.
+APPs: CoMsg, CoWallet, CoBox, CoMail etc...
+Legal
+Lawyers
+Ensure we meet regulatory needs
+Marketing & Sales
+Build C-serious Team and Advisory Board 
+Prepare all materials and Go campaign for ICO
+
+Should you wish to consider private investment email admin@conettech.ca
+
+## Notice 注意事項
 
 This bate version have not support UDP proxy
 
