@@ -110,15 +110,15 @@ npm run [mac|win32|win|linux]
 
 ### Funding
 Currently the project is paid for out of pocket, and we will do an ICO. Any funding received private investment will be put to the following:
-CoNET Development
-CoNET platform for Android, IOS.
-APPs: CoMsg, CoWallet, CoBox, CoMail etc...
-Legal
-Lawyers
-Ensure we meet regulatory needs
-Marketing & Sales
-Build C-serious Team and Advisory Board 
-Prepare all materials and Go campaign for ICO
+- CoNET Development.
+- CoNET platform for Android, IOS.
+- APPs: CoMsg, CoWallet, CoBox, CoMail etc...
+- Legal
+- Lawyers
+- Ensure we meet regulatory needs
+- Marketing & Sales
+- Build C-serious Team and Advisory Board 
+- Prepare all materials and Go campaign for ICO
 
 Should you wish to consider private investment email admin@conettech.ca
 
