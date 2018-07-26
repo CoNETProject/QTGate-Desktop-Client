@@ -209,6 +209,8 @@ block jumbotron1
 					<!-- /ko -->
 
 					<!-- ko if: ! showSendImapDataWarning() -->
+						//- if connetcError() > -1
+						//-	imapInformation.imapCheckError[ connetcError() ]
 						.ui.segment( data-bind = "css: { yellow: connectStage() < -1, red: connetcError() > -1 }" )
 							p( data-bind="visible: connetcError() > -1, text: infoDefine [ $root.languageIndex() ].imapInformation.imapCheckError[ connetcError() ]")
 							Button.ui.icon.button.orange( data-bind = " visible: connetcError() > -1, click: returnToImapSetup, text: infoDefine [ $root.languageIndex() ].imapInformation.title " )

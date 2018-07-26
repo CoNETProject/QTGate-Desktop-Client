@@ -407,6 +407,7 @@ module twitter_layout {
         public newTwitterFieldError = ko.observable ()
         public addATwitterAccount = ko.observable ( false )         //      doing add a new account 
         private processBarTime: NodeJS.Timer = null
+        public postWaitLine: KnockoutObservableArray< postWaitLine > = ko.observableArray ([])
         public unknowError = ko.observable ( false )
         public config: KnockoutObservable < install_config> = ko.observable ({
             firstRun: true,
@@ -870,31 +871,34 @@ module twitter_layout {
                 images: twiData.images (),
                 videoSize: twiData.videoSize,
                 videoFileName: twiData.videoFileName(),
-                media_data: []
+                media_data: [],
+                uuid: uuid_generate ()
+                
             }
             return TwitterData
         }
 
         public newTwitterClick () {
 			const self = this
-            const data = []
+            const data: twitter_postData [] = []
             this.shownewTwitterApprove ( false )
             $( '#newTwitterWindow' ).modal ( 'hide' )
-            $( '#newTwitterWindow' ).modal ( 'hide' )
+            
             this.newTwitterField().forEach ( function ( n ) {
                 const nn = self.newTwitterData ( n )
                 if ( !nn ) {
                     return self.newTwitterField ([ new twitterField ( this )])
                 }
                 data.push ( nn )
+                this.postWaitLine.push ( new postWaitLine ( nn.uuid ))
             })
             if ( !data.length ) {
                 return this.newTwitterField ([ new twitterField ( this )])
             }
             
             this.newTwitterField ([ new twitterField ( this )])
-
-            return socketIo.emit11 ( 'twitter_postNewTweet', this.twitterData()[0], data )
+            
+            //return socketIo.emit11 ( 'twitter_postNewTweet', this.twitterData()[0], data )
 
         }
 
@@ -904,6 +908,8 @@ module twitter_layout {
 
     }
 }
+
+
 
 const twitter_view = new twitter_layout.twitter ()
 ko.applyBindings ( twitter_view , document.getElementById ( 'body' ))

@@ -262,8 +262,9 @@ class CoNETConnect {
 		const self = this
 		this.showConnectCoNETProcess ( true )
 		let processBarCount = 0
-		if ( err !== null && err > -1 ) {
+		if ( typeof err === 'number' && err > -1 ) {
 			this.connectStage ( -1 )
+			this.ready ( err, false )
 			return this.connetcError ( err )
 		}
 		
@@ -297,7 +298,7 @@ class CoNETConnect {
 	}
 
 	public returnToImapSetup () {
-		return this.ready ( true )
+		return this.ready ( 0, true )
 	}
 
 	public imapConform () {

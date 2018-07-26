@@ -362,6 +362,7 @@ var twitter_layout;
             this.newTwitterFieldError = ko.observable();
             this.addATwitterAccount = ko.observable(false); //      doing add a new account 
             this.processBarTime = null;
+            this.postWaitLine = ko.observableArray([]);
             this.unknowError = ko.observable(false);
             this.config = ko.observable({
                 firstRun: true,
@@ -746,7 +747,8 @@ var twitter_layout;
                 images: twiData.images(),
                 videoSize: twiData.videoSize,
                 videoFileName: twiData.videoFileName(),
-                media_data: []
+                media_data: [],
+                uuid: uuid_generate()
             };
             return TwitterData;
         }
@@ -755,19 +757,19 @@ var twitter_layout;
             const data = [];
             this.shownewTwitterApprove(false);
             $('#newTwitterWindow').modal('hide');
-            $('#newTwitterWindow').modal('hide');
             this.newTwitterField().forEach(function (n) {
                 const nn = self.newTwitterData(n);
                 if (!nn) {
                     return self.newTwitterField([new twitterField(this)]);
                 }
                 data.push(nn);
+                this.postWaitLine.push(new postWaitLine(nn.uuid));
             });
             if (!data.length) {
                 return this.newTwitterField([new twitterField(this)]);
             }
             this.newTwitterField([new twitterField(this)]);
-            return socketIo.emit11('twitter_postNewTweet', this.twitterData()[0], data);
+            //return socketIo.emit11 ( 'twitter_postNewTweet', this.twitterData()[0], data )
         }
         timelinesViewSharp(id_str) {
             return $(`.shape[sharp-id='${id_str}']`).shape('flip over');

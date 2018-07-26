@@ -749,8 +749,8 @@ class ImapServerSwitchStream extends Stream.Transform {
             return this._logout(callback);
         };
         if (this.imapServer.listenFolder && this.runningCommand) {
-            console.trace();
-            saveLog(`logout_process [${this.imapServer.imapSerialID}] this.imapServer.listenFolder && this.runningCommand = [${this.runningCommand}]`);
+            //console.trace ()
+            //saveLog  (`logout_process [${ this.imapServer.imapSerialID }] this.imapServer.listenFolder && this.runningCommand = [${ this.runningCommand }]`)
             this.idleCallBack = doLogout;
             return this.idleStop();
         }
@@ -911,7 +911,7 @@ class qtGateImap extends Event.EventEmitter {
     }
 }
 exports.qtGateImap = qtGateImap;
-const appendFromFile = (imap, fileName, CallBack) => {
+const appendFromFile1 = (imap, fileName, CallBack) => {
     return Fs.stat(fileName, (err, stat) => {
         if (err) {
             saveLog(`[]appendFromFile s.stat got error! [${err.message}]`);
@@ -992,7 +992,7 @@ class qtGateImapwrite extends qtGateImap {
             });
         }
         this.canAppend = false;
-        return appendFromFile(this.imapStream, fileName, err => {
+        return appendFromFile1(this.imapStream, fileName, err => {
             this.canAppend = true;
             //saveLog ( `qtGateImapwrite appendFromFile CallBack err = [${ err && err.message ? err.message : null }]`)
             CallBack(err);
@@ -1437,7 +1437,7 @@ class imapPeer extends Event.EventEmitter {
         //saveLog ( `====== > newWriteImap`, true )
         this.wImap = new qtGateImapwrite(this.imapData, this.writeBox);
         this.wImap.once('end', err => {
-            saveLog(`this.wImap.once end ! [${err && err.message ? err.message : null}]!`, true);
+            console.log(`this.wImap.once end ! [${err && err.message ? err.message : null}]!`, true);
             //return this.destroy ( 1 )
         });
         this.wImap.once('error', err => {

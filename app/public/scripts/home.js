@@ -437,12 +437,18 @@ var view_layout;
             let uu = null;
             this.imapData = _imapData;
             return this.CoNETConnect(uu = new CoNETConnect(_imapData.imapUserName, this.keyPair().verified, _imapData.confirmRisk, this.keyPair().email, function ConnectReady(err, showCoGate) {
-                if (err) {
-                    self.CoNETConnect(uu = null);
-                    return self.imapSetup(uu = new imapForm(_imapData.account, null, function (imapData) {
-                        self.imapSetup(uu = null);
-                        return self.imapSetupClassExit(imapData);
-                    }));
+                if (typeof err === 'number' && err > -1) {
+                    let coGate = self.CoGateClass(null);
+                    coGate = null;
+                    self.CoGateClass();
+                    if (showCoGate) {
+                        self.CoNETConnect(uu = null);
+                        return self.imapSetup(uu = new imapForm(_imapData.account, null, function (imapData) {
+                            self.imapSetup(uu = null);
+                            return self.imapSetupClassExit(imapData);
+                        }));
+                    }
+                    return;
                 }
                 this.connectedCoNET(true);
                 //self.showCoGate ( showCoGate )

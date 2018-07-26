@@ -228,10 +228,10 @@ export default class localServer {
 
 		cmd.requestSerial = Crypto.randomBytes(8).toString('hex')
 
-		return this.CoNETConnectCalss.requestCoNET ( cmd, ( err: number, res: QTGateAPIRequestCommand ) => {
-			saveLog (`request response [${ cmd.command }]`)
+		return this.CoNETConnectCalss.requestCoNET ( cmd, ( err, res: QTGateAPIRequestCommand ) => {
+			saveLog ( `request response [${ cmd.command }]`)
 			if ( err ) {
-				this.socketServer.emit ('CoNET_offline')
+				CallBack ( err )
 				return saveLog ( `QTClass.request error! [${ err }]`)
 			}
 			return CallBack ( null, res )
@@ -490,8 +490,6 @@ export default class localServer {
 				Args: [],
 				error: null
 			}
-
-			console.log (`socket.on ( 'getAvaliableRegion') no this.connectCommand`)
 
 			return this.sendRequest ( socket, com, ( err: number, res: QTGateAPIRequestCommand ) => {
 				if ( err ) {
@@ -994,6 +992,7 @@ export default class localServer {
 	}
 
 	private postTweetViaQTGate ( socket, account: TwitterAccount, postData: twitter_postData, Callback ) {
+		
 		const post = err => {
 			if ( err ) {
 				saveLog ( `postTweetViaQTGate post got error: [${ err.message }] `)
@@ -1008,6 +1007,7 @@ export default class localServer {
 				error: null,
 				requestSerial: Crypto.randomBytes( 10 ).toString ( 'hex' )
 			}
+			console.log (`[twitter_post]\n${ Util.inspect ( postData )}`)
 			/*
 			Imap.imapGetMediaFilesFromString ( this.localServer.QTClass.imapData, postData.videoFileName, QTGateVideo, ( err1, data ) => {
 				if ( err1 ) {
@@ -1129,9 +1129,9 @@ export default class localServer {
 		socket.on ( 'twitter_postNewTweet', ( account: TwitterAccount, postData: twitter_postData[], CallBack1 ) => {
 			CallBack1 ()
 			if ( !account || !postData.length ) {
-				return console.log ('on twitter_postNewTweet but format error!')
+				return console.log ( 'on twitter_postNewTweet but format error!' )
 			}
-			
+			console.log ( Util.inspect ( postData, false, 4, true ))
 			
 			return this.postTweetViaQTGate ( socket, account, postData[0], ( err, res ) => {
 				if ( res.Args && res.Args.length > 0 ) {
@@ -1146,7 +1146,10 @@ export default class localServer {
 					uu.user.profile_image_url_https = this.twitterData[this.currentTwitterAccount].twitter_verify_credentials.profile_image_url_https
 					return socket.emit ( 'getTimelines', uu, true )
 				}
-				return socket.emit ( 'twitter_postNewTweet', err )
+				if ( err ) {
+					return socket.emit ( 'twitter_postNewTweet', err )
+				}
+				
 			})
 		})
 

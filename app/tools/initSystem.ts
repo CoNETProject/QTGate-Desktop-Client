@@ -499,8 +499,10 @@ export const myIpServer = ( CallBack ) => {
 			}
 		})
 	}, () => {
-		if ( !ret )
-			return CallBack ( new Error ('no data'))
+		if ( !ret ) {
+			return CallBack ( new Error ('no network'))
+		}
+			
 	})
 }
 

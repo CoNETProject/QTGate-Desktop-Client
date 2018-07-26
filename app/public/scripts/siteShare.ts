@@ -622,7 +622,7 @@ const infoDefine = [
             proxyPortError: '本地代理服务器的端口设定从3001-65535之间的数字，或端口号已被其他APP所占用。请尝试填入其他号码。',
             appPassword:'关于APP密码',
             imapCheckError: [
-                '不能连接到邮件服务器，有可能您没有互联网，或所在网络不支持邮件IMAP通讯，请检查您的网络',
+                '不能连接到邮件服务器，有可能您没有互联网，或所在网络不支持邮件IMAP通讯，请检查您的网络，或刷新页面重试一次。',
                 '邮件服务器提示用户名或密码错误，请仔细检查您的用户名和密码！ ',
                 '邮件服务器证书错误！您所在网络可能存在网络中间人攻击，请换网络环境后再尝试。 ',
                 '邮件服务器发送邮件错误，这通常是您使用的密码是普通密码所致，请换用APP密码后再次尝试',
@@ -732,18 +732,18 @@ const infoDefine = [
             requestReturn: ['错误！您的请求被拒绝，这可能是您在短时间内多次请求所致，请稍后再试','CoNET已发送激活邮件！'],
             reSendRequest:'发送验证Email',
             formatError: [
-                '内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。 ',
-                '提供的内容不能被解密，请确认这是在您收到的最后一封从CoNET发送过来的激活信。如果还是没法完成激活，请删除您的密钥重新生成和设定。 ',
-                '和CoNET连接发生错误，请退出重新尝试！ ',
-                '无效激活码！如果存在多封CoNET的邮件时，请选择最后一封信件。',
-                '您的CoNET看上去有问题, 请删除您的密钥，重新设置您的CoNET！ ',
-                '抱歉，CoNET系统无应答，可能暂时下线，请您稍后再试。',
-                '您当天的数据通讯量达到上限，请等待明天再试或升级用户类型',
-                '用来通讯的Email设定有错误，请检查IMAP设定后重试，或CoNET不支持此Email类型',
-                '您所选区域不能够连结，请稍候再试',
-                '您的IMAP邮箱发信发生错误。请退出CoNET重试。如果持续发生此故障，您的IMAP帐号有可能被锁住，需要登陆您的IMAP邮箱网站解锁操作。 ',
-                '页面会话已过期，请刷新页面以继续，或退出后重新启动CoNET。',
-                'CoNET平台故障，请重新启动CoNET。'
+        /** 0 **/   '内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。 ',
+        /** 1 **/   '提供的内容不能被解密，请确认这是在您收到的最后一封从CoNET发送过来的激活信。如果还是没法完成激活，请删除您的密钥重新生成和设定。 ',
+        /** 2 **/   '和CoNET连接发生错误，请退出重新尝试！ ',
+        /** 3 **/   '无效激活码！如果存在多封CoNET的邮件时，请选择最后一封信件。',
+        /** 4 **/   '您的CoNET看上去有问题, 请删除您的密钥，重新设置您的CoNET！ ',
+        /** 5 **/   '抱歉，CoNET系统无应答，可能暂时下线，请您稍后再试。',
+        /** 6 **/   '您当天的数据通讯量达到上限，请等待明天再试或升级用户类型',
+        /** 7 **/   '用来通讯的Email设定有错误，请检查IMAP设定后重试，或CoNET不支持此Email类型',
+        /** 8 **/   '您所选区域不能够连结，请稍候再试',
+        /** 9 **/   '您的IMAP邮箱发信发生错误。请退出CoNET重试。如果持续发生此故障，您的IMAP帐号有可能被锁住，需要登陆您的IMAP邮箱网站解锁操作。 ',
+        /** 10**/   '页面会话已过期，请刷新页面以继续，或退出后重新启动CoNET。',
+        /** 11**/   'CoNET平台故障，请重新启动CoNET。'
             ],
             activeing: '正在通讯中'
         },
@@ -1425,7 +1425,7 @@ const infoDefine = [
             proxyPortError: 'ポート番号は3001から65535までの数字です。又指定したポートは他のアプリが使っています。番号を直してみてください。',
             appPassword:'APPパスワードについて',
             imapCheckError: [
-                'Emailサーバーに接続ができませんでした。ネットワークがオフラインか、所在しているネットワークはメール通信プロトコルがサポートしておりません。ネット環境をチェンジしてもう一回してみてください。',
+                'Emailサーバーに接続ができませんでした。ネットワークがオフラインか、所在しているネットワークはメール通信プロトコルがサポートしておりません。ネット環境をチェンジし、ページを更新してからもう一回してみてください。',
                 'Emailサーバはログインエラーが提示しました。ユーザー名とパスワードを再チェックしてください。',
                 'Emailサーバーに提示したセキュリティ証明書は信頼できないものです。中間者攻撃があるネット環境にいるあもしれないです。ネット環境をチェンジしてもう一回してみてください。',
                 'メール送信の際にエラーが発生しました。そのようなエラーは多分パスワードをAPPパスワードではなく、普通のパースワードを使った模様です。APPパスワードをチェックしてもう一回してみてください。',
@@ -2117,7 +2117,7 @@ const infoDefine = [
             proxyPortError: 'Port number should be a number from 3001 to 65535. Or this port is being used by another process. Please try another port number.',
             appPassword:'About APP password.',
             imapCheckError: [
-                /* 0 */'Cannot connect to email server! Your network may offline or do not support IMAP protocol.',
+                /* 0 */'Cannot connect to email server! Your network may offline or do not support IMAP protocol. Please check your network and try again after reflash page.',
                 /* 1 */'Invalid login username or password! Please check username and password.',
                 /* 2 */'Certificate for this email server is not trusted. You may have Man-in-the-middle attack in your network. Try again when chenged network.',
                 /* 3 */'Sent mail error. It may happened when you use normail password. Check your mail APP password.',
@@ -2759,7 +2759,7 @@ const infoDefine = [
             proxyPortError: '連接埠應該是從3001-65535之間的數字，或此端口已被其他APP所占用，請嘗試填入其他號碼。',
             appPassword:'關於APP密碼',
             imapCheckError: [
-                '不能连接到郵件伺服器，有可能您沒有互聯網，或所在網絡不支持郵件IMAP通訊，請檢查您的網絡',
+                '不能连接到郵件伺服器，有可能您沒有互聯網，或所在網絡不支持郵件IMAP通訊，請檢查您的網絡，或刷新頁面重試一次',
                 '郵件伺服器提示用户名或密码错误，请仔细检查您的用户名和密码！',
                 '郵件伺服器證書錯誤！您所在網絡可能存在網絡中間人攻擊，請換網絡環境後再嘗試。',
                 '郵件伺服器發送郵件錯誤，這通常是您使用的密碼是普通密碼所致，請換用APP密碼後再次嘗試',

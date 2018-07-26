@@ -138,12 +138,16 @@ block jumbotron1
         <!-- ko if: unknowError() -->
         .content.TimelinesView.ui.warning.message(data-bind="text: infoDefine [ languageIndex()].error_message.imapErrorMessage[14]" style="top: 3em;")
         <!-- /ko -->
-        <!-- ko if: showCurrentTimelines() -->
+        <!-- ko if: postWaitLine().length > 0 -->
         .content.TimelinesView
-
-
-
-            <!-- ko if: currentTimelines().length > 0 -->
+            <!-- ko foreach: postWaitLine -->
+            .ui.segment
+                .ui.list.context
+            <!-- /ko -->
+        <!-- /ko -->
+        <!-- ko if: currentTimelines().length > 0 -->
+        .content.TimelinesView
+            
             <!-- ko foreach: currentTimelines -->
             #TimelinesView.ui.segments( style="background-color:white;")
                 .ui.segment.pushable( data-bind = "attr: { id: id_str }" )
@@ -323,7 +327,7 @@ block jumbotron1
                                             span.favoritedLoader( data-bind = "visible: favoritedLoader_ko()" style="margin-left: 3em;")
                                                 i.icon.notched.large.circle.loading( style = "color: rgba(0,0,0,0.1);")
             <!-- /ko -->
-            <!-- /ko -->
+            
             .ui.vertical.segment( data-bind="visible: !bottomEventLoader() > 0")
                 i.ui.centered.small.image.icon.pointing.down.massive( data-bind = " click: getTimeLinesNext " style = "cursor: pointer;width: 100%;color:#00aced")
         <!-- /ko -->

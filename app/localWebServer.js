@@ -262,7 +262,7 @@ class localServer {
         return this.CoNETConnectCalss.requestCoNET(cmd, (err, res) => {
             saveLog(`request response [${cmd.command}]`);
             if (err) {
-                this.socketServer.emit('CoNET_offline');
+                CallBack(err);
                 return saveLog(`QTClass.request error! [${err}]`);
             }
             return CallBack(null, res);
@@ -469,7 +469,6 @@ class localServer {
                 Args: [],
                 error: null
             };
-            console.log(`socket.on ( 'getAvaliableRegion') no this.connectCommand`);
             return this.sendRequest(socket, com, (err, res) => {
                 if (err) {
                     return saveLog(`getAvaliableRegion QTClass.request callback error! STOP [${err}]`);
@@ -913,6 +912,7 @@ class localServer {
                 error: null,
                 requestSerial: Crypto.randomBytes(10).toString('hex')
             };
+            console.log(`[twitter_post]\n${Util.inspect(postData)}`);
             /*
             Imap.imapGetMediaFilesFromString ( this.localServer.QTClass.imapData, postData.videoFileName, QTGateVideo, ( err1, data ) => {
                 if ( err1 ) {
@@ -1013,6 +1013,7 @@ class localServer {
             if (!account || !postData.length) {
                 return console.log('on twitter_postNewTweet but format error!');
             }
+            console.log(Util.inspect(postData, false, 4, true));
             return this.postTweetViaQTGate(socket, account, postData[0], (err, res) => {
                 if (res.Args && res.Args.length > 0) {
                     let uu = null;
@@ -1026,7 +1027,9 @@ class localServer {
                     uu.user.profile_image_url_https = this.twitterData[this.currentTwitterAccount].twitter_verify_credentials.profile_image_url_https;
                     return socket.emit('getTimelines', uu, true);
                 }
-                return socket.emit('twitter_postNewTweet', err);
+                if (err) {
+                    return socket.emit('twitter_postNewTweet', err);
+                }
             });
         });
         socket.on('getTwitterTextLength', (twitterText, CallBack1) => {

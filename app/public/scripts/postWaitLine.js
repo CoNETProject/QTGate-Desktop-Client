@@ -1,0 +1,4 @@
+class postWaitLine {
+    constructor(serial) {
+    }
+}

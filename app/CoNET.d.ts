@@ -476,11 +476,12 @@ interface twitter_mediaData {
 }
 
 interface twitter_postData {
-    text: string,
-    images: string[],
+    text: string
+    images: string[]
     media_data: twitter_mediaData[]
     videoSize: number
     videoFileName: string
+    uuid: string
 }
 
 

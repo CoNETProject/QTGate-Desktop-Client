@@ -106,6 +106,7 @@ class default_1 extends Imap.imapPeer {
     exit1(err) {
         if (!this.alreadyExit) {
             this.alreadyExit = true;
+            console.log(`CoNETConnect class exit1 doing this._exit()`);
             return this._exit(err);
         }
         console.log(`exit1 cancel already Exit [${err}]`);
@@ -138,8 +139,18 @@ class default_1 extends Imap.imapPeer {
             (data, next) => this.trySendToRemote(Buffer.from(data), next)
         ], (err) => {
             if (err) {
-                saveLog(`request got error [${err.message ? err.message : null}]`);
+                saveLog(`request got error [${err.message ? err.message : null}]`, true);
                 this.commandCallBackPool.delete(command.requestSerial);
+                if (typeof err.message === 'string') {
+                    switch (err.message) {
+                        case 'no network': {
+                            return this.sockerServer.emit('tryConnectCoNETStage', 0);
+                        }
+                        default: {
+                            return this.sockerServer.emit('tryConnectCoNETStage', 5);
+                        }
+                    }
+                }
                 return CallBack(err);
             }
             console.log(`request success!`);
@@ -147,7 +158,6 @@ class default_1 extends Imap.imapPeer {
     }
     tryConnect1() {
         this.connectStage = 1;
-        console.trace(`tryConnect1`);
         this.sockerServer.emit('tryConnectCoNETStage', null, this.connectStage = 1);
         return Tool.myIpServer((err, localIpAddress) => {
             if (err) {
@@ -155,7 +165,7 @@ class default_1 extends Imap.imapPeer {
                 this.connectStage = 0;
                 return this.sockerServer.emit('tryConnectCoNETStage', 0);
             }
-            saveLog(`tryConnect success Tool.myIpServer [${localIpAddress}]`, true);
+            console.log(`tryConnect success Tool.myIpServer [${localIpAddress}]`, true);
             if (this.doNetSendConnectMail) {
                 //	 wait long time to get response from CoNET
                 console.log(`this.doNetSendConnectMail = true`);
