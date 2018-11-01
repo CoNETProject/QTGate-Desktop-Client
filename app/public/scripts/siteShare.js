@@ -325,6 +325,19 @@ const getCurrentPlanUpgradelBalance = function (expiration, planName, isAnnual) 
 };
 const infoDefine = [
     {
+        youtube: {
+            startup: {
+                title: '欢迎使用Co油管',
+                detail: '在此您可以检索Youtube视频，下载并播放所选视频'
+            },
+            search: {
+                placeholder: '请输入检索关键字，或输入油管播放链接',
+                button_text: '检索',
+                error: [
+                    '您的检索无效，请重新输入。'
+                ]
+            }
+        },
         perment: {
             serverTitle: '服务器'
         },
@@ -943,6 +956,19 @@ const infoDefine = [
                 '正在获得CoNET信任签署中', '系统错误，请重启CoNET后再试，如果仍然存在，请尝试重新安装CoNET。', 'CoNET系统错误!']
         }
     }, {
+        youtube: {
+            startup: {
+                title: 'Co for Youtubeへようこそ',
+                detail: 'Youtubeビデオを検束し、ダウンロード又はプレーをします。'
+            },
+            search: {
+                placeholder: 'Youtubeを検束し、又はプレーUrlを入力',
+                button_text: '検束',
+                error: [
+                    '検束にエラーが発生しました、もう一回検束をしてみてください'
+                ]
+            }
+        },
         perment: {
             serverTitle: 'サーバー'
         },
@@ -1568,6 +1594,19 @@ const infoDefine = [
             okTitle: 'CoNETへ送信'
         },
     }, {
+        youtube: {
+            startup: {
+                title: 'Welcome to Co for Youtube',
+                detail: 'You may search YouTube video, channel, or playlist that matches the search parameters. And you may play the video at local.'
+            },
+            search: {
+                placeholder: 'Search Youtube, or enter a play url',
+                button_text: 'Search',
+                error: [
+                    'Search error! please search again.'
+                ]
+            }
+        },
         perment: {
             serverTitle: 'Server'
         },
@@ -2229,6 +2268,19 @@ const infoDefine = [
             okTitle: 'Send to CoNET'
         },
     }, {
+        youtube: {
+            startup: {
+                title: '歡迎使用Co for Youtube',
+                detail: '在此您可以檢索Youtube視頻，下載並播放所選視頻'
+            },
+            search: {
+                placeholder: '請輸入檢索關鍵字，或輸入Youtube的播放鏈接',
+                button_text: '檢索',
+                error: [
+                    '您的檢索無效，請再次檢索。'
+                ]
+            }
+        },
         perment: {
             serverTitle: '伺服器'
         },
@@ -2862,6 +2914,28 @@ const QTGateRegionsSetup = [
         title: 'iOPN'
     }
 ];
+socketIo.emit11 = function (eventName, ...args) {
+    let CallBack = args.pop();
+    if (typeof CallBack !== 'function') {
+        CallBack ? args.push(CallBack) : null;
+        CallBack = null;
+    }
+    const localTimeOut = setTimeout(function () {
+        let uu = eventName;
+        //twitter_view.systemError()
+    }, 10000);
+    const _CallBack = function (err) {
+        clearTimeout(localTimeOut);
+        if (CallBack) {
+            socketIo.once(eventName, function (...args) {
+                return CallBack(...args);
+            });
+        }
+    };
+    args.length
+        ? socketIo.emit(eventName, ...args, _CallBack)
+        : socketIo.emit(eventName, _CallBack);
+};
 const _QTGateRegions = [
     {
         icon: 'india',

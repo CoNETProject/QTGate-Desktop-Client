@@ -26,7 +26,7 @@ import * as Util from 'util'
 //	socks 5 headers
 
 const server_res = {
-	NO_AUTHENTICATION_REQUIRED: new Buffer ('0500', 'hex')
+	NO_AUTHENTICATION_REQUIRED: Buffer.from ('0500', 'hex')
 }
 
 const isSslFromBuffer = ( buffer ) => {

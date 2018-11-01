@@ -26,28 +26,6 @@ const splitLine = function (user, fullText, entities) {
     const ret = '<p style="margin-bottom: 0px;">' + uu.join('</p><p style="margin-bottom: 0px;">') + '</p>';
     return ret;
 };
-socketIo.emit11 = function (eventName, ...args) {
-    let CallBack = args.pop();
-    if (typeof CallBack !== 'function') {
-        CallBack ? args.push(CallBack) : null;
-        CallBack = null;
-    }
-    const localTimeOut = setTimeout(function () {
-        let uu = eventName;
-        //twitter_view.systemError()
-    }, 10000);
-    const _CallBack = function (err) {
-        clearTimeout(localTimeOut);
-        if (CallBack) {
-            socketIo.once(eventName, function (...args) {
-                return CallBack(...args);
-            });
-        }
-    };
-    args.length
-        ? socketIo.emit(eventName, ...args, _CallBack)
-        : socketIo.emit(eventName, _CallBack);
-};
 const monthToText = [
     'Jan',
     'Feb',

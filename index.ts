@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const DEBUG = false
+const DEBUG = true
 const port = 3000
 
 import { join } from  'path'

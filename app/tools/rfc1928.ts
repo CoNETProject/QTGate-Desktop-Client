@@ -40,7 +40,7 @@
               o  DST.PORT desired destination port in network octet
                  order
       */
-	 const connectRequest = new Buffer ( '050100', 'hex' )
+	 const connectRequest = Buffer.from ( '050100', 'hex' )
 	 export const CMD = {
 		 CONNECT: 0x1,
 		 BIND: 0x2,
@@ -75,12 +75,12 @@
 	 //		end stats
 	 //		reply Buffer
 		 
-		 const reply_NO_AUTHENTICATION_REQUIRED = new Buffer ( '0500', 'hex' )
-		 const reply_GSSAPI = new Buffer ( '0501', 'hex' )
-		 const reply_USERNAME_PASSWORD = new Buffer ( '0502', 'hex' )
-		 const reply_to_x7F_IANA_ASSIGNED = new Buffer ( '0503', 'hex' )
-		 const reply_to_xFE_RESERVED_FOR_PRIVATE_METHODS = new Buffer ( '0580', 'hex' )
-		 const reply_NO_ACCEPTABLE_METHODS = new Buffer ( '05ff', 'hex' )
+		 const reply_NO_AUTHENTICATION_REQUIRED = Buffer.from ( '0500', 'hex' )
+		 const reply_GSSAPI = Buffer.from ( '0501', 'hex' )
+		 const reply_USERNAME_PASSWORD = Buffer.from ( '0502', 'hex' )
+		 const reply_to_x7F_IANA_ASSIGNED = Buffer.from ( '0503', 'hex' )
+		 const reply_to_xFE_RESERVED_FOR_PRIVATE_METHODS = Buffer.from ( '0580', 'hex' )
+		 const reply_NO_ACCEPTABLE_METHODS = Buffer.from ( '05ff', 'hex' )
 	 //		end reply Buffer
 	 
 	 export class  Requests {

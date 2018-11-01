@@ -28,28 +28,6 @@ const InitKeyPair = function () {
     return keyPair;
 };
 const url = 'https://api.github.com/repos/QTGate/QTGate-Desktop-Client/releases/latest';
-socketIo.emit11 = function (eventName, ...args) {
-    let CallBack = args.pop();
-    if (typeof CallBack !== 'function') {
-        CallBack ? args.push(CallBack) : null;
-        CallBack = null;
-    }
-    const localTimeOut = setTimeout(function () {
-        let uu = eventName;
-        _view.systemError();
-    }, 10000);
-    const _CallBack = function (err) {
-        clearTimeout(localTimeOut);
-        if (CallBack) {
-            socketIo.once(eventName, function (...args) {
-                return CallBack(...args);
-            });
-        }
-    };
-    args.length
-        ? socketIo.emit(eventName, ...args, _CallBack)
-        : socketIo.emit(eventName, _CallBack);
-};
 const makeKeyPairData = function (view, keypair) {
     const length = keypair.publicKeyID.length;
     keypair.publicKeyID = keypair.publicKeyID.substr(length - 16);
@@ -200,11 +178,13 @@ const appList = [
         likeCount: ko.observable(0),
         liked: ko.observable(false),
         titleColor: '#00aced',
-        comeSoon: true,
+        comeSoon: false,
         css: 'width: 6em;height: 6em;display: block;',
         show: true,
         image: '/images/1024px-YouTube_Logo_2017.svg.png',
-        click: function (view) { return; },
+        click: function (view) {
+            return window.open('/youtube', '_blank');
+        },
     },
     {
         name: 'CoYoutube',

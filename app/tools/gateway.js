@@ -78,7 +78,7 @@ class gateWay {
         return this.multipleGateway[this.currentGatewayPoint];
     }
     hostLookup(hostName, userAgent, CallBack) {
-        const _data = new Buffer(JSON.stringify({ hostName: hostName }), 'utf8');
+        const _data = Buffer.from(JSON.stringify({ hostName: hostName }));
         const gateway = this.getCurrentGateway();
         const encrypt = new Compress.encryptStream(gateway.randomPassword, 3000, (str) => {
             return this.request(str, gateway);

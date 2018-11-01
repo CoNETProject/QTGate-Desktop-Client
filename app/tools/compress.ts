@@ -108,12 +108,12 @@ export const decrypt =  ( data: Buffer, masterkey, CallBack ) => {
 
 export const packetBuffer = ( bit0: number, _serial: number, id: string, buffer: Buffer ) => {
 	
-	const _buffer = new Buffer ( 6 )
+	const _buffer = Buffer.allocUnsafe ( 6 )
 	_buffer.fill ( 0 )
 	_buffer.writeUInt8 ( bit0, 0 )
 	_buffer.writeUInt32BE ( _serial, 1 )
 
-	const uuid = new Buffer ( id, 'utf8' )
+	const uuid = Buffer.from ( id )
 	_buffer.writeUInt8 ( id.length, 5 )
 	if ( buffer && buffer.length )
 		return Buffer.concat ([ _buffer, uuid, buffer ])

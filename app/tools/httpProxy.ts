@@ -65,7 +65,7 @@ export default class httpProxy {
 			if ( kk.length )
 				return kk
 		}
-		return new Buffer (0)
+		return Buffer.allocUnsafe (0)
 	}
 
 	get isHttps () {
@@ -120,7 +120,7 @@ export default class httpProxy {
 			if ( /^Proxy-Authorization: Basic /i.test( y )) {
 				const n = y.split ( ' ' )
 				if ( n.length === 3 ) {
-					return new Buffer ( n[2], 'base64' ).toString ( 'utf8' )
+					return Buffer.from ( n[2], 'base64' ).toString ( 'utf8' )
 				}
 				return
 			}
@@ -138,7 +138,7 @@ export default class httpProxy {
 		})
 		ss += '\r\n\r\n'
 		
-		return new Buffer ( ss , 'utf8' )
+		return Buffer.from ( ss , 'utf8' )
 	}
 
 	get Body () {

@@ -51,7 +51,7 @@ class httpProxy {
             if (kk.length)
                 return kk;
         }
-        return new Buffer(0);
+        return Buffer.allocUnsafe(0);
     }
     get isHttps() {
         return (this.isConnect && this.Url.port === '443');
@@ -93,7 +93,7 @@ class httpProxy {
             if (/^Proxy-Authorization: Basic /i.test(y)) {
                 const n = y.split(' ');
                 if (n.length === 3) {
-                    return new Buffer(n[2], 'base64').toString('utf8');
+                    return Buffer.from(n[2], 'base64').toString('utf8');
                 }
                 return;
             }
@@ -108,7 +108,7 @@ class httpProxy {
             ss += n.replace('keep-alive', 'close') + '\r\n';
         });
         ss += '\r\n\r\n';
-        return new Buffer(ss, 'utf8');
+        return Buffer.from(ss, 'utf8');
     }
     get Body() {
         const length = parseInt(this.headers['content-length']);

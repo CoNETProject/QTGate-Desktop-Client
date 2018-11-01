@@ -22,7 +22,7 @@ const proxyServer = require("./proxyServer");
 const Util = require("util");
 //	socks 5 headers
 const server_res = {
-    NO_AUTHENTICATION_REQUIRED: new Buffer('0500', 'hex')
+    NO_AUTHENTICATION_REQUIRED: Buffer.from('0500', 'hex')
 };
 const isSslFromBuffer = (buffer) => {
     const ret = /^\x16\x03|^\x80/.test(buffer);

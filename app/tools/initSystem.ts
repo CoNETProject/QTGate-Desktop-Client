@@ -187,16 +187,19 @@ export const getQTGateSign = ( user: OpenPgp.key.users ) => {
 	return Certification
 }
 
-export const getKeyPairInfo = ( publicKey: string, privateKey: string, password: string, CallBack: ( err?: Error, keyPair?: keypair ) => void ) => {
+export async function getKeyPairInfo ( publicKey: string, privateKey: string, password: string, CallBack: ( err?: Error, keyPair?: keypair ) => void ) {
+
 	if ( ! publicKey || ! privateKey ) {
-		return CallBack ( new Error ('no key'))
+		return CallBack ( new Error ('publicKey or privateKey empty!'))
 	}
-	const _privateKey = OpenPgp.key.readArmored ( privateKey )
-	const _publicKey = OpenPgp.key.readArmored ( publicKey )
+	const _privateKey = await OpenPgp.key.readArmored ( privateKey )
+	const _publicKey = await OpenPgp.key.readArmored ( publicKey )
 	if ( _privateKey.err || _publicKey.err ) {
-		
+		console.log (`_privateKey.err = [${ _privateKey.err }], _publicKey.err [${ _publicKey.err }]`)
+		console.log ( publicKey )
 		return CallBack ( new Error ('no key'))
 	}
+	console.log (`getKeyPairInfo success!\nprivateKey\npublicKey`)
 	const privateKey1 = _privateKey.keys[0]
 	const publicKey1 = _publicKey.keys
 	const user = publicKey1[0].users[0]
@@ -506,7 +509,7 @@ export const myIpServer = ( CallBack ) => {
 	})
 }
 
-const _smtpVerify = ( imapData: IinputData, CallBack: ( err?: Error ) => void ) => {
+const _smtpVerify = ( imapData: IinputData, CallBack: ( err?: Error, success?: any ) => void ) => {
 	const option = {
 		host:  Net.isIP ( imapData.smtpServer ) ? null : imapData.smtpServer,
 		hostname:  Net.isIP ( imapData.smtpServer ) ? imapData.smtpServer : null,
@@ -565,7 +568,7 @@ export const smtpVerify = ( imapData: IinputData, CallBack: ( err? ) => void ) =
 	}))
 	
 	return Async.each ( testArray, ( n, next ) => {
-		return _smtpVerify ( n, ( err: Error ) => {
+		return _smtpVerify ( n, ( err: Error, success ) => {
 
 			if ( err && err.message ) {
 				if ( /Invalid login|AUTH/i.test ( err.message )) {
@@ -573,6 +576,7 @@ export const smtpVerify = ( imapData: IinputData, CallBack: ( err? ) => void ) =
 				}
 				return next ()
 			}
+			console.log (success)
 			if ( ! _ret ) {
 				_ret = true
 				imapData.smtpPortNumber = n.smtpPortNumber
@@ -601,18 +605,13 @@ export const getPbkdf2 = ( config: install_config, passwrod: string, CallBack ) 
 	return Crypto.pbkdf2 ( passwrod, config.salt, config.iterations, config.keylen, config.digest, CallBack )
 }
 
-export const makeGpgKeyOption = ( config: install_config, passwrod: string, CallBack ) => {
+export async function makeGpgKeyOption ( config: install_config, passwrod: string, CallBack ) {
 	const option = {
-		privateKeys: OpenPgp.key.readArmored ( config.keypair.privateKey ).keys,
-		publicKeys: null
+		privateKeys: ( await OpenPgp.key.readArmored ( config.keypair.privateKey )).keys,
+		publicKeys: ( await OpenPgp.key.readArmored ( Fs.readFileSync ( CoNET_PublicKey, 'utf8'))).keys
 	}
-	return Async.waterfall ([
-		next => Fs.readFile ( CoNET_PublicKey, 'utf8', next ),
-		( data, next ) => {
-			option.publicKeys = OpenPgp.key.readArmored ( data ).keys
-			return getPbkdf2 ( config, passwrod, next )
-		}
-	], ( err, data: Buffer ) => {
+
+	return getPbkdf2 ( config, passwrod, ( err, data ) => {
 		if ( err ) {
 			return CallBack ( err )
 		}
@@ -625,16 +624,17 @@ export const makeGpgKeyOption = ( config: install_config, passwrod: string, Call
 	})
 }
 
-export const saveEncryptoData = ( fileName: string, data: any, config: install_config, password: string, CallBack ) => {
+export async function saveEncryptoData ( fileName: string, data: any, config: install_config, password: string, CallBack ) {
 		
 	if ( ! data ) {
 		return Fs.unlink ( fileName, CallBack )
 	}
 	const _data = JSON.stringify ( data )
 	const options = {
-		data: _data,
-		publicKeys: OpenPgp.key.readArmored ( config.keypair.publicKey ).keys,
-		privateKeys: OpenPgp.key.readArmored ( config.keypair.privateKey ).keys
+		message: OpenPgp.message.fromText ( _data ),
+		compression: OpenPgp.enums.compression.zip,
+		publicKeys: ( await OpenPgp.key.readArmored ( config.keypair.publicKey )).keys,
+		privateKeys: ( await OpenPgp.key.readArmored ( config.keypair.privateKey )).keys
 	}
 	return getPbkdf2 ( config, password, ( err, data: Buffer ) => {
 		if ( err ) {
@@ -651,14 +651,14 @@ export const saveEncryptoData = ( fileName: string, data: any, config: install_c
 
 }
 
-export const readEncryptoFile = ( filename: string, savedPasswrod, config: install_config, CallBack ) => {
+export async function readEncryptoFile ( filename: string, savedPasswrod, config: install_config, CallBack ) {
 	if ( ! savedPasswrod || ! savedPasswrod.length || ! config || ! config.keypair || ! config.keypair.createDate ) {
 		return CallBack ( new Error ('readImapData no password or keypair data error!'))
 	}
 	const options = {
 		message: null,
-		publicKeys: OpenPgp.key.readArmored ( config.keypair.publicKey ).keys,
-		privateKeys: OpenPgp.key.readArmored ( config.keypair.privateKey ).keys
+		publicKeys: ( await OpenPgp.key.readArmored ( config.keypair.publicKey )).keys,
+		privateKeys: ( await OpenPgp.key.readArmored ( config.keypair.privateKey )).keys
 	}
 	return Async.waterfall ([
 		next => Fs.access ( filename, next ),
@@ -688,13 +688,14 @@ export const readEncryptoFile = ( filename: string, savedPasswrod, config: insta
 		},
 		next => {
 			Fs.readFile ( filename, 'utf8', next )
-		}], ( err, data ) => {
+		}], async function ( err, data ) {
 			if ( err ) {
 				return CallBack ( err )
 			}
 			try {
-				options.message = OpenPgp.message.readArmored ( data.toString ())
+				options.message = await OpenPgp.message.readArmored ( data.toString ())
 			} catch ( ex ) {
+				console.log (`options.message error!\n${data.toString ()}`)
 				return CallBack ( ex )
 			}
 			
@@ -712,24 +713,26 @@ export const readEncryptoFile = ( filename: string, savedPasswrod, config: insta
 
 export const encryptMessage = ( openKeyOption, message: string, CallBack ) => {
 	const option = {
-		privateKeys: openKeyOption.privateKeys,
+		privateKeys: openKeyOption.privateKeys[0],
 		publicKeys: openKeyOption.publicKeys,
-		data: message
+		message: OpenPgp.message.fromText ( message ),
+		compression: OpenPgp.enums.compression.zip
 	}
-	//console.log (`encryptMessage `, message )
+	
 	return OpenPgp.encrypt ( option ).then ( ciphertext => {
+		console.log (ciphertext.data)
 		return CallBack ( null, ciphertext.data )
 	}).catch ( CallBack )
 }
 
-export const decryptoMessage = ( openKeyOption, message: string, CallBack ) => {
+export async function decryptoMessage ( openKeyOption, message: string, CallBack ) {
 	const option = {
 		privateKeys: openKeyOption.privateKeys,
 		publicKeys: openKeyOption.publicKeys,
 		message: null
 	}
 	try {
-		option.message = OpenPgp.message.readArmored ( message )
+		option.message = await OpenPgp.message.readArmored ( message )
 	} catch ( ex ) {
 		return CallBack ( ex )
 	}

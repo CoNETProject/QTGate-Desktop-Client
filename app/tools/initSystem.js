@@ -167,15 +167,18 @@ exports.getQTGateSign = (user) => {
     });
     return Certification;
 };
-exports.getKeyPairInfo = (publicKey, privateKey, password, CallBack) => {
+async function getKeyPairInfo(publicKey, privateKey, password, CallBack) {
     if (!publicKey || !privateKey) {
-        return CallBack(new Error('no key'));
+        return CallBack(new Error('publicKey or privateKey empty!'));
     }
-    const _privateKey = OpenPgp.key.readArmored(privateKey);
-    const _publicKey = OpenPgp.key.readArmored(publicKey);
+    const _privateKey = await OpenPgp.key.readArmored(privateKey);
+    const _publicKey = await OpenPgp.key.readArmored(publicKey);
     if (_privateKey.err || _publicKey.err) {
+        console.log(`_privateKey.err = [${_privateKey.err}], _publicKey.err [${_publicKey.err}]`);
+        console.log(publicKey);
         return CallBack(new Error('no key'));
     }
+    console.log(`getKeyPairInfo success!\nprivateKey\npublicKey`);
     const privateKey1 = _privateKey.keys[0];
     const publicKey1 = _publicKey.keys;
     const user = publicKey1[0].users[0];
@@ -197,7 +200,8 @@ exports.getKeyPairInfo = (publicKey, privateKey, password, CallBack) => {
     }).catch(() => {
         return CallBack(null, ret);
     });
-};
+}
+exports.getKeyPairInfo = getKeyPairInfo;
 exports.emitConfig = (config, passwordOK) => {
     if (!config) {
         return null;
@@ -248,7 +252,7 @@ exports.checkConfig = CallBack => {
         if (!config.keypair || !config.keypair.publicKey) {
             return CallBack(null, config);
         }
-        return exports.getKeyPairInfo(config.keypair.publicKey, config.keypair.privateKey, null, (err, key) => {
+        return getKeyPairInfo(config.keypair.publicKey, config.keypair.privateKey, null, (err, key) => {
             if (err) {
                 CallBack(err);
                 return console.log(`checkConfig getKeyPairInfo error`, err);
@@ -504,13 +508,14 @@ exports.smtpVerify = (imapData, CallBack) => {
         return ret;
     }));
     return Async.each(testArray, (n, next) => {
-        return _smtpVerify(n, (err) => {
+        return _smtpVerify(n, (err, success) => {
             if (err && err.message) {
                 if (/Invalid login|AUTH/i.test(err.message)) {
                     return next(err);
                 }
                 return next();
             }
+            console.log(success);
             if (!_ret) {
                 _ret = true;
                 imapData.smtpPortNumber = n.smtpPortNumber;
@@ -534,18 +539,12 @@ exports.smtpVerify = (imapData, CallBack) => {
 exports.getPbkdf2 = (config, passwrod, CallBack) => {
     return Crypto.pbkdf2(passwrod, config.salt, config.iterations, config.keylen, config.digest, CallBack);
 };
-exports.makeGpgKeyOption = (config, passwrod, CallBack) => {
+async function makeGpgKeyOption(config, passwrod, CallBack) {
     const option = {
-        privateKeys: OpenPgp.key.readArmored(config.keypair.privateKey).keys,
-        publicKeys: null
+        privateKeys: (await OpenPgp.key.readArmored(config.keypair.privateKey)).keys,
+        publicKeys: (await OpenPgp.key.readArmored(Fs.readFileSync(exports.CoNET_PublicKey, 'utf8'))).keys
     };
-    return Async.waterfall([
-        next => Fs.readFile(exports.CoNET_PublicKey, 'utf8', next),
-        (data, next) => {
-            option.publicKeys = OpenPgp.key.readArmored(data).keys;
-            return exports.getPbkdf2(config, passwrod, next);
-        }
-    ], (err, data) => {
+    return exports.getPbkdf2(config, passwrod, (err, data) => {
         if (err) {
             return CallBack(err);
         }
@@ -556,16 +555,18 @@ exports.makeGpgKeyOption = (config, passwrod, CallBack) => {
             return CallBack(new Error('password!'));
         }).catch(CallBack);
     });
-};
-exports.saveEncryptoData = (fileName, data, config, password, CallBack) => {
+}
+exports.makeGpgKeyOption = makeGpgKeyOption;
+async function saveEncryptoData(fileName, data, config, password, CallBack) {
     if (!data) {
         return Fs.unlink(fileName, CallBack);
     }
     const _data = JSON.stringify(data);
     const options = {
-        data: _data,
-        publicKeys: OpenPgp.key.readArmored(config.keypair.publicKey).keys,
-        privateKeys: OpenPgp.key.readArmored(config.keypair.privateKey).keys
+        message: OpenPgp.message.fromText(_data),
+        compression: OpenPgp.enums.compression.zip,
+        publicKeys: (await OpenPgp.key.readArmored(config.keypair.publicKey)).keys,
+        privateKeys: (await OpenPgp.key.readArmored(config.keypair.privateKey)).keys
     };
     return exports.getPbkdf2(config, password, (err, data) => {
         if (err) {
@@ -577,15 +578,16 @@ exports.saveEncryptoData = (fileName, data, config, password, CallBack) => {
             }).catch(CallBack);
         }).catch(CallBack);
     });
-};
-exports.readEncryptoFile = (filename, savedPasswrod, config, CallBack) => {
+}
+exports.saveEncryptoData = saveEncryptoData;
+async function readEncryptoFile(filename, savedPasswrod, config, CallBack) {
     if (!savedPasswrod || !savedPasswrod.length || !config || !config.keypair || !config.keypair.createDate) {
         return CallBack(new Error('readImapData no password or keypair data error!'));
     }
     const options = {
         message: null,
-        publicKeys: OpenPgp.key.readArmored(config.keypair.publicKey).keys,
-        privateKeys: OpenPgp.key.readArmored(config.keypair.privateKey).keys
+        publicKeys: (await OpenPgp.key.readArmored(config.keypair.publicKey)).keys,
+        privateKeys: (await OpenPgp.key.readArmored(config.keypair.privateKey)).keys
     };
     return Async.waterfall([
         next => Fs.access(filename, next),
@@ -614,14 +616,15 @@ exports.readEncryptoFile = (filename, savedPasswrod, config, CallBack) => {
         next => {
             Fs.readFile(filename, 'utf8', next);
         }
-    ], (err, data) => {
+    ], async function (err, data) {
         if (err) {
             return CallBack(err);
         }
         try {
-            options.message = OpenPgp.message.readArmored(data.toString());
+            options.message = await OpenPgp.message.readArmored(data.toString());
         }
         catch (ex) {
+            console.log(`options.message error!\n${data.toString()}`);
             return CallBack(ex);
         }
         return OpenPgp.decrypt(options).then(data => {
@@ -633,26 +636,28 @@ exports.readEncryptoFile = (filename, savedPasswrod, config, CallBack) => {
             return CallBack(ex);
         });
     });
-};
+}
+exports.readEncryptoFile = readEncryptoFile;
 exports.encryptMessage = (openKeyOption, message, CallBack) => {
     const option = {
-        privateKeys: openKeyOption.privateKeys,
+        privateKeys: openKeyOption.privateKeys[0],
         publicKeys: openKeyOption.publicKeys,
-        data: message
+        message: OpenPgp.message.fromText(message),
+        compression: OpenPgp.enums.compression.zip
     };
-    //console.log (`encryptMessage `, message )
     return OpenPgp.encrypt(option).then(ciphertext => {
+        console.log(ciphertext.data);
         return CallBack(null, ciphertext.data);
     }).catch(CallBack);
 };
-exports.decryptoMessage = (openKeyOption, message, CallBack) => {
+async function decryptoMessage(openKeyOption, message, CallBack) {
     const option = {
         privateKeys: openKeyOption.privateKeys,
         publicKeys: openKeyOption.publicKeys,
         message: null
     };
     try {
-        option.message = OpenPgp.message.readArmored(message);
+        option.message = await OpenPgp.message.readArmored(message);
     }
     catch (ex) {
         return CallBack(ex);
@@ -668,7 +673,8 @@ exports.decryptoMessage = (openKeyOption, message, CallBack) => {
         console.log(JSON.stringify(message));
         return CallBack(err);
     });
-};
+}
+exports.decryptoMessage = decryptoMessage;
 const testSmtpAndSendMail = (imapData, CallBack) => {
     let first = false;
     if (typeof imapData === 'object') {

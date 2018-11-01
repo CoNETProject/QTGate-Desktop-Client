@@ -33,6 +33,7 @@ import * as ProxyServer from './tools/proxyServer'
 import * as Jimp from 'jimp'
 import * as UploadFile from './tools/uploadFile'
 import * as Twitter_text from 'twitter-text'
+import Youtube from './tools/youtube'
 
 interface localConnect {
 	socket: SocketIO.Socket
@@ -59,8 +60,6 @@ const saveLog = ( err: {} | string ) => {
 const saveServerStartup = ( localIpaddress: string ) => {
 	const info = `\n*************************** CoNET Platform [ ${ Tool.packageFile.version } ] server start up *****************************\n` +
 			`Access url: http://${localIpaddress}:${ Tool.LocalServerPortNumber }\n`
-
-	console.log ( info )
 	saveLog ( info )
 }
 
@@ -68,7 +67,6 @@ const saveServerStartupError = ( err: {} ) => {
 	const info = `\n*************************** CoNET Platform [ ${ Tool.packageFile.version } ] server startup falied *****************************\n` +
 			`platform ${ process.platform }\n` +
 			`${ err['message'] }\n`
-	console.log ( info )
 	saveLog ( info )
 }
 
@@ -135,7 +133,7 @@ export default class localServer {
 	private twitterData: TwitterAccount[] = []
 	private currentTwitterAccount = -1
 	private doingCreateTweetData = false 
-
+	
 	public CoNET_systemError () {
 		return this.socketServer.emit ( 'CoNET_systemError' )
 	}
@@ -456,12 +454,14 @@ export default class localServer {
 					}
 					const key = Buffer.from ( data.Args[0], 'base64' ).toString ()
 					if ( key && key.length ) {
-						saveLog (`active key success!`)
+						saveLog (`active key success! \n[${ key }]`)
 						socket.emit  ('checkActiveEmailSubmit')
 						this.keyPair.publicKey = this.config.keypair.publicKey = key
 						this.keyPair.verified = this.config.keypair.verified = true 
 						return Tool.saveConfig ( this.config, err => {
-							
+							if ( err ) {
+								saveLog (`Tool.saveConfig return Error: [${ err.message }]`)
+							}
 						})
 						
 					}
@@ -1307,6 +1307,7 @@ export default class localServer {
 						this.localConnected.set ( client, kk )
 						this.listenAfterPassword ( socket )
 					}
+					console.log (retData)
 					return Tool.getKeyPairInfo ( retData.publicKey, retData.privateKey, preData.password, ( err, key ) => {
 						if ( err ) {
 							const info = `Tool.getKeyPairInfo Error [${ err.message ? err.message : 'null err message '}]`
@@ -1373,6 +1374,33 @@ export default class localServer {
             
 			
 		})
+
+		socket.on ( 'password_youtube', ( password: string, Callback1 ) => {
+			Callback1()
+            if ( !this.config.keypair || !this.config.keypair.publicKey ) {
+				console.log ( `password !this.config.keypair`)
+				return socket.emit ( 'password_youtube', true )
+			}
+
+			if ( !password || password.length < 5 ) {
+				console.log (`! password_youtube `)
+				return socket.emit ( 'password_youtube', true )
+			}
+
+			if ( this.savedPasswrod && this.savedPasswrod.length ) {
+				if ( this.savedPasswrod !== password ) {
+					console.log (`password_youtube savedPasswrod !== password `)
+					return socket.emit ( 'password_youtube', true )
+				}
+
+			}
+			new Youtube ( socket )
+            return socket.emit ( 'password_youtube', null, null )
+			
+            
+			
+		})
+
 	}
 
 	private stopGetwayConnect ( socket, sendToCoNET: boolean, region: string ) {
@@ -1417,14 +1445,24 @@ export default class localServer {
 		})
 
 		this.expressServer.get ( '/twitter', ( req, res ) => {
-			console.log ( `get twitter`)
+			if ( !this.config.keypair || !this.config.keypair.publicKey || !this.CoNETConnectCalss ) {
+
+				return res.render( 'home', { title: 'home', proxyErr: false  })
+				
+			}
+			
+			res.render( 'twitter', { title: 'Co_Twitter' })
+			
+		})
+
+		this.expressServer.get ( '/youtube', ( req, res ) => {
 			if ( !this.config.keypair || !this.config.keypair.publicKey || !this.CoNETConnectCalss ) {
 				
 				return res.render( 'home', { title: 'home', proxyErr: false  })
 				
 			}
 			
-			res.render( 'twitter', { title: 'CoNET for Twitter' })
+			res.render( 'Youtube', { title: 'Co_Youtube' })
 			
 		})
 

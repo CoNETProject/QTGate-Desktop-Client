@@ -171,11 +171,11 @@ export default class extends Imap.imapPeer {
 					}
 					this.commandCallBackPool.set ( command.requestSerial, poolData )
 				}
-					
+				
 				return Tool.encryptMessage ( this.openKeyOption, JSON.stringify ( command ), next )
 				
 			},
-			( data: string, next ) => this.trySendToRemote ( Buffer.from ( data ), next )
+			( data, next ) => this.trySendToRemote ( Buffer.from ( data ), next )
 				
 		], ( err: Error ) => {
 			if ( err ) {

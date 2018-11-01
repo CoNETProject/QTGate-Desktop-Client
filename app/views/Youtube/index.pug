@@ -1,0 +1,54 @@
+extends ../shared/youtubeLayout.pug
+block jumbotron
+	
+
+block jumbotron1
+	.language( style="z-index: 999;top: 0.7em;right: 1em;position: fixed;width: 2em;")
+		.ui.text.shape.languageText( data-bind = " click: selectItem " )
+			.sides
+				span.ui.header.side.en.languageItem.languageTextCoverColor
+					i.flag.united.kingdom.
+					//-span.languageItemSpan( data-bind = " text: menu[ 'en' ][0].showName " )
+				span.ui.header.side.tw.languageItem.languageTextCoverColor
+					i.flag.taiwan
+					//-span.languageItemSpan( data-bind = " text: menu[ 'tw' ][0].showName " )
+				span.ui.header.side.zh.languageItem.languageTextCoverColor
+					i.flag.china
+					//-span.languageItemSpan( data-bind = " text: menu[ 'zh' ][0].showName " )
+				span.ui.header.side.ja.languageItem.languageTextCoverColor
+					i.flag.japan
+					//-span.languageItemSpan( data-bind = " text: menu[ 'ja' ][0].showName " )
+	
+	.main_content( style = "padding: 4em;" )
+		.ui.large.header( data-bind="text: infoDefine [ languageIndex()].youtube.startup.title " style="color: white;")
+		p( data-bind="text: infoDefine [ languageIndex()].youtube.startup.detail" style="color: white;")
+		<!-- ko if: showSearchError -->
+		.ui.segment.red
+			p( data-bind="text: infoDefine [ languageIndex()].youtube.search.error[0]")
+		<!-- /ko -->
+
+		<!-- ko if: show_mainContect -->
+		form.ui.huge.form( data-bind="submit: search_form")
+			.field
+				.ui.search( data-bind="attr: { loading: searching }")
+					.ui.icon.input( style="width: 100%")
+						input.prompt( data-bind="textInput: search_form_input, hasFocus: inputFocus, attr: { placeholder: infoDefine [ languageIndex()].youtube.search.placeholder }" type="text")
+						i.icon.search
+					
+			<!-- ko if: showSearchButton -->
+			.field
+				button.ui.youtube.button( type="submit")
+					i.icon.youtube
+					span( data-bind="text: infoDefine [ languageIndex()].youtube.search.button_text")
+			<!-- /ko -->
+		<!-- /ko -->
+		<!-- ko if: !show_mainContect() -->
+		form.item.form( data-bind = "!showServerError(), submit: login ")
+			.ui.icon.input.field( data-bind = "css: { error: passwordError() }")
+				input( type="password" data-bind = "hasFocus: passwordInputFocus, textInput: password, attr : { placeholder: infoDefine [ languageIndex()].Home_keyPairInfo_view.password1 }")
+				i.icon.checkmark.link( data-bind = "click: login " )
+		<!-- /ko -->
+		
+		
+
+	

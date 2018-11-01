@@ -86,7 +86,7 @@ export default class gateWay {
 	public hostLookup ( hostName: string, userAgent: string, CallBack: ( err?: Error, hostIp?: domainData ) => void ) {
 
 
-		const _data = new Buffer ( JSON.stringify ({ hostName: hostName }), 'utf8' )
+		const _data = Buffer.from ( JSON.stringify ({ hostName: hostName }))
 		const gateway = this.getCurrentGateway ()
 		const encrypt = new Compress.encryptStream ( gateway.randomPassword, 3000, ( str: string ) => {
 			return this.request ( str, gateway )
