@@ -150,7 +150,7 @@ export default class localServer {
 		}
 
 		let sendMail = false
-		const exit = err => {
+		const _exitFunction = err => {
 			console.trace ( `tryConnectCoNET exit! err =`, err )
 			switch ( err ) {
 				///			connect conet had timeout
@@ -195,12 +195,12 @@ export default class localServer {
 					}
 					
 					socket.emit ( 'tryConnectCoNETStage', null, 3 )
-					return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, catchUnSerialCmd, exit )
+					return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, catchUnSerialCmd, _exitFunction )
 				})
 			
 			}
 			console.log ( `makeConnect without sendMail`)
-			return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, catchUnSerialCmd, exit )
+			return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, catchUnSerialCmd, _exitFunction )
 			
 		}
 		
@@ -1443,7 +1443,7 @@ export default class localServer {
 
             res.render( 'home', { title: 'home', proxyErr: false  })
 		})
-
+		
 		this.expressServer.get ( '/twitter', ( req, res ) => {
 			if ( !this.config.keypair || !this.config.keypair.publicKey || !this.CoNETConnectCalss ) {
 
@@ -1456,12 +1456,13 @@ export default class localServer {
 		})
 
 		this.expressServer.get ( '/youtube', ( req, res ) => {
+			/*
 			if ( !this.config.keypair || !this.config.keypair.publicKey || !this.CoNETConnectCalss ) {
 				
 				return res.render( 'home', { title: 'home', proxyErr: false  })
 				
 			}
-			
+			*/
 			res.render( 'Youtube', { title: 'Co_Youtube' })
 			
 		})

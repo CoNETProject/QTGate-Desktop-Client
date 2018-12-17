@@ -11,6 +11,7 @@ class default_1 {
         const url = new url_1.URLSearchParams();
         url.append('q', text);
         url.append('maxResults', '25');
+        url.append('type', 'video');
         url.append('eventType', 'completed');
         url.append('part', 'snippet');
         url.append('key', 'AIzaSyD-xrq7pEnjhli8H75VD1vJov4Tdo8IWTI');
@@ -29,14 +30,14 @@ class default_1 {
             catch (ex) {
                 return CallBack(ex);
             }
-            return CallBack(ret);
+            return CallBack(ret.items);
         });
     }
     socket_listing() {
         return this.socket.on('youtube_search', (text, CallBack1) => {
             console.log(`Youtu search come!`, text);
             CallBack1();
-            return this.socket.emit('youtube_search', 1);
+            //return this.socket.emit ( 'youtube_search', 1 )
             return this.youtubeSearch(text, (err, data) => {
                 if (err) {
                     console.log(`this.youtubeSearch return err!`);

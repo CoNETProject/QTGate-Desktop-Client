@@ -680,8 +680,8 @@ class ImapServerSwitchStream extends Stream.Transform {
         
         this.appendWaitResponsrTimeOut = setTimeout (() => {
             console.log (`IMAP append TIMEOUT stop IMAP this.imapServer.socket.end ()`)
-            return this.imapServer.socket.end ()
-            this.imapServer.emit ( 'end' )
+            this.imapServer.socket.end ()
+            return this.imapServer.emit ( 'end' )
         }, time )
         //console.log (`*************************************  append time = [${ time }] `)
         if ( this.imapServer.literalPlus ) {
@@ -1685,8 +1685,8 @@ export class imapPeer extends Event.EventEmitter {
         this.wImap = new qtGateImapwrite ( this.imapData, this.writeBox )
 
         this.wImap.once ( 'end', err => {
-            console.log ( `this.wImap.once end ! [${ err && err.message ? err.message : null }]!`, true )
-            //return this.destroy ( 1 )
+            console.log ( `this.wImap.once end ! [${ err && err.message ? err.message : null }]!` )
+            return this.destroy ( 1 )
             
         })
 
@@ -1760,9 +1760,11 @@ export class imapPeer extends Event.EventEmitter {
                 return this.newReadImap ()
             }
             if ( typeof this.exit === 'function') {
+                console.log (`this.rImap call exit() success!`)
                 this.exit ( err )
                 return this.exit = null
             }
+            console.log (`this.rImap.once end, but exit isn't function!`)
             
         })
     }

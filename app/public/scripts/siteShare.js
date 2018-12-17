@@ -619,10 +619,10 @@ const infoDefine = [
             localIpAddress: '本机',
             nextPage: '下一页',
             agree: '同意协议并继续',
-            emailAddress: '作为Q梯账号的Email地址',
+            emailAddress: '作为CoNET账号的Email地址',
             systemAdministratorEmail: 'RSA密钥生成',
             SystemAdministratorNickName: '昵称或组织名',
-            systemPassword: 'Q梯客户端密码设定',
+            systemPassword: 'CoNET客户端密码设定',
             creatKeyPair: '创建密钥对...',
             imapEmailAddress: '邮箱账户名',
             cancel: '放弃操作',
@@ -766,7 +766,7 @@ const infoDefine = [
                 /*8*/ '本地Proxy服务器，其他手机电脑和IPad等可通过连结此端口来使用CoNET服务。请设定为3001至65535之间的数字。',
                 /*9*/ '通过设置PATH链接路径可以简单给您的Proxy服务器增加安全性，拒绝没有提供PATH的访问者使用您的Proxy服务器。',
                 /*10*/ '同时使用多条代理线路数，可以有效降低大流量集中在一个代理服务线路，降低被网络监控者发现的风险。此选项仅供收费会员使用。',
-                /*11*/ '指定同Q梯代理进行通讯使用的端口号，通过此设置可以规避您所在网段被通讯屏蔽的端口。',
+                /*11*/ '指定同CoNET代理进行通讯使用的端口号，通过此设置可以规避您所在网段被通讯屏蔽的端口。',
                 /* 12*/ 'Web实时通讯(WebRTC)客户端浏览器之间通过IP地址直接高速通讯技术，有时被恶意泄漏您的真实IP地址。'
             ]
         },
@@ -2712,14 +2712,14 @@ const infoDefine = [
             nextPage: '下一頁',
             agree: '同意協議並繼續',
             imapEmailAddress: '郵箱帳戶名',
-            emailAddress: 'Q梯帳戶名稱(Email地址,必填)',
+            emailAddress: 'CoNET帳戶名稱(Email地址,必填)',
             stopCreateKeyPair: '停止生成密鑰對',
             creatKeyPair: '創建密鑰對..',
             keyPairCancel: '生成密鑰對被中止',
             keyPairGenerateError: '生成密鑰對發生系統錯誤，請重試！ ',
             keyPairGenerateSuccess: '完成生成密鑰對',
             cancel: '放棄操作',
-            systemPassword: 'Q梯客戶端密碼設置',
+            systemPassword: 'CoNET客戶端密碼設置',
             continueCreateKeyPair: '繼續生成',
             SystemAdministratorNickName: '帳戶暱稱(必填)',
             KeypairLength: '請選擇加密通訊用密鑰對長度：這個數字越大，通訊越難被破解，但會增加通訊量和運算時間。',
@@ -2837,7 +2837,7 @@ const infoDefine = [
                 /*8*/ '本地Proxy服务器，其他手机电脑和IPad等可通過连结此端口來使用CoNET服务。請設定為3001至65535之間的數字',
                 /*9*/ '通過設置PATH鏈接路徑可以簡單給您的Proxy伺服器增加安全性，拒絕沒有提供PATH的訪問者使用您的Proxy伺服器。',
                 /*10*/ '同時使用多條代理線路數，可以有效降低大流量集中在一個代理服務線路，降低被網絡監控者發現的風險。此選項僅供收費會員使用。',
-                /*11*/ '指定同Q梯代理進行通訊使用的連接埠，通過此設置可以規避您所在網段被通訊屏蔽的連接埠。',
+                /*11*/ '指定同CoNET代理進行通訊使用的連接埠，通過此設置可以規避您所在網段被通訊屏蔽的連接埠。',
                 /*12*/ 'Web实时通讯(WebRTC)是客戶端的瀏覽器之間，通過IP地址直接高速通訊技術，有時被惡用洩漏您的真實IP地址。'
             ]
         },
@@ -2921,7 +2921,7 @@ socketIo.emit11 = function (eventName, ...args) {
         CallBack = null;
     }
     const localTimeOut = setTimeout(function () {
-        let uu = eventName;
+        _view.refresh();
         //twitter_view.systemError()
     }, 10000);
     const _CallBack = function (err) {

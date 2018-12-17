@@ -93,7 +93,6 @@ body {
 	width: 100%;
 	position: absolute;
 	transition: opacity 0.4s ease-in;
-	color: rgba(0, 0, 0, 0.6);
 	top: 0px;
 }
 #agreement .firstNodeContent {
@@ -570,4 +569,23 @@ ul.plan-features {
 	top: 8.8em;;
 	color: blue;
   }
-  
+  .videoBackground{
+		position: absolute;
+  top: 50%; 
+  left: 50%;
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+  min-width: 100%; 
+  min-height: 100%; 
+  width: auto; 
+  height: auto;
+  z-index: -1000; 
+  overflow: hidden;
+	}
+	.startupView {
+		position: fixed; 
+		top: 0; 
+		width: 100%; 
+		height: 100%; 
+		z-index: -1;
+	}

@@ -882,8 +882,6 @@ module twitter_layout {
     }
 }
 
-
-
 const twitter_view = new twitter_layout.twitter ()
 ko.applyBindings ( twitter_view , document.getElementById ( 'body' ))
 const uu = '.' + twitter_view.tLang()

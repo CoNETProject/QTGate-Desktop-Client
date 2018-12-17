@@ -341,7 +341,7 @@ interface VE_IPptpStream1 {
     ATYP: number;
     uuid?: string;
     length?:number;
-    randomBuffer?: Buffer
+    randomBuffer?: any
     ssl: boolean
 }
 
@@ -622,7 +622,7 @@ interface install_config {
     newVerReady?: boolean
     keypair: keypair
     iterations: number
-    salt?: Buffer
+    salt?: any
     keylen?: number
     localIpAddress: string []
     digest?: string

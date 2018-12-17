@@ -79,6 +79,7 @@ const initPopupArea = function () {
 };
 const appList = [
     {
+        //                      1
         name: 'CoGate',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
@@ -92,6 +93,7 @@ const appList = [
         },
         image: '/images/CoGate.png'
     }, {
+        //                      2
         name: 'CoMsg',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
@@ -103,6 +105,7 @@ const appList = [
         image: '/images/CoMsg.png',
         click: function (view) { return; },
     }, {
+        //                      3
         name: 'CoBox',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
@@ -114,6 +117,7 @@ const appList = [
         image: '/images/CoBox.png',
         click: function (view) { return; },
     }, {
+        //                      4
         name: 'CoMail',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
@@ -126,6 +130,7 @@ const appList = [
         click: function (view) { return; },
     },
     {
+        //                      5
         name: 'coNews',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
@@ -138,6 +143,7 @@ const appList = [
         click: function (view) { return; },
     },
     {
+        //                      6
         name: 'CoCustom',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
@@ -149,6 +155,7 @@ const appList = [
         image: '/images/512x512.png',
         click: function (view) { return; },
     }, {
+        //                      7
         name: 'CoGoogle',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
@@ -160,6 +167,7 @@ const appList = [
         image: '/images/Google__G__Logo.svg',
         click: function (view) { return; },
     }, {
+        //                      8
         name: 'CoTweet',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
@@ -174,6 +182,7 @@ const appList = [
         }
     },
     {
+        //                      9
         name: 'CoYoutube',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
@@ -187,7 +196,7 @@ const appList = [
         },
     },
     {
-        name: 'CoYoutube',
+        name: 'CoWallet',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
         titleColor: '#00aced',
@@ -311,18 +320,36 @@ var view_layout;
         }
         socketListen() {
             let self = this;
+            /**
+             *      socket.io server shutdown
+             */
             socketIo.once('reconnect_failed', function (err) {
                 if (self.CoNETLocalServerError()) {
                     return;
                 }
                 return self.systemError();
             });
-            socketIo.on('reconnect_attempt', function () {
+            /**
+             *      test for reconnect_attempt
+             *
+            socketIo.on( 'reconnect_attempt', function () {
+
                 //return self.systemError()
             });
+            /**
+             *
+            */
+            /**
+             *      CoNET System Error
+             *
+             */
             socketIo.once('CoNET_systemError', function () {
                 return self.systemError();
             });
+            /**
+             *
+             *      return init data
+            */
             socketIo.on('init', function (err, config) {
                 $.getJSON(url)
                     .done(function (json) {
@@ -403,7 +430,9 @@ var view_layout;
                 return this.hacked(true);
             }
             const { remote } = require('electron');
-            return remote.app.quit();
+            if (remote && remote.app && typeof remote.app.quit === 'function') {
+                return remote.app.quit();
+            }
         }
         showKeyInfoClick() {
             this.showKeyPair(true);

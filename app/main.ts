@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+declare const process: any
 import LocalServer from './localWebServer'
 const test = /^true$/.test ( process.argv[2] ) ? true : false
 const _start = process.argv [3] || false

@@ -36,6 +36,7 @@ var youtube_layout;
             };
             const self = this;
             this.search_form_input.subscribe(function (_text) {
+                self.showSearchError(false);
                 if (!_text.length) {
                     return self.showSearchButton(false);
                 }

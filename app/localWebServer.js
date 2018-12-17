@@ -129,9 +129,13 @@ class localServer {
             res.render('twitter', { title: 'Co_Twitter' });
         });
         this.expressServer.get('/youtube', (req, res) => {
-            if (!this.config.keypair || !this.config.keypair.publicKey || !this.CoNETConnectCalss) {
-                return res.render('home', { title: 'home', proxyErr: false });
+            /*
+            if ( !this.config.keypair || !this.config.keypair.publicKey || !this.CoNETConnectCalss ) {
+                
+                return res.render( 'home', { title: 'home', proxyErr: false  })
+                
             }
+            */
             res.render('Youtube', { title: 'Co_Youtube' });
         });
         this.expressServer.get('/proxyErr', (req, res) => {
@@ -203,7 +207,7 @@ class localServer {
             }, 200);
         }
         let sendMail = false;
-        const exit = err => {
+        const _exitFunction = err => {
             console.trace(`tryConnectCoNET exit! err =`, err);
             switch (err) {
                 ///			connect conet had timeout
@@ -240,11 +244,11 @@ class localServer {
                         return socket.emit('tryConnectCoNETStage', imapErrorCallBack(err.message));
                     }
                     socket.emit('tryConnectCoNETStage', null, 3);
-                    return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, catchUnSerialCmd, exit);
+                    return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, catchUnSerialCmd, _exitFunction);
                 });
             }
             console.log(`makeConnect without sendMail`);
-            return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, catchUnSerialCmd, exit);
+            return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, catchUnSerialCmd, _exitFunction);
         };
         if (!this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit) {
             return makeConnect(false);

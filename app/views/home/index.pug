@@ -6,6 +6,9 @@ block jumbotron1
 				h1( data-bind = " text: infoDefine [ languageIndex() ].cover.firstTitle1, animate:{ animation: ['slideInUp','slideOutUp'], state: languageIndex() + 1, delay: 0 }" )
 				h1( data-bind = " text: infoDefine [ languageIndex() ].cover.firstTitle2, animate: { animation: ['slideInUp','slideOutUp'], state: languageIndex() + 1, delay: 70 }")
 				.ui.primary.basic.button( data-bind="click: openClick, text: infoDefine [ languageIndex() ].cover.start" style="margin-top: 2em;" )
+		.startupView( style="width:100%; height:100%")
+			video.videoBackground( preload="yes" autoplay loop )
+				source( src="/images/startup_background.mp4" type="video/mp4")
 	section#agreement.content( data-bind="if: sectionAgreement ")
 		.content.firstNodeContent
 			.ui.header( data-bind = " text: infoDefine[ languageIndex() ].firstNote.title " style = " margin-left: 30px; margin-right: 100px;")
@@ -96,7 +99,7 @@ block jumbotron1
 					form.ui.form( data-bind=" submit: keyPair_checkPemPasswordClick")
 						.field.required( data-bind = " css: { error: showPasswordErrorMessage(), disabled: passwordChecking()}")
 							p( data-bind = " text: infoDefine [ $root.languageIndex() ].Home_keyPairInfo_view.locked")
-							.ui.input( data-bind=" css: { action: systemSetup_systemPassword().length > 4 && ! passwordChecking(), 'left loading': passwordChecking()}" )
+							.ui.input.huge( data-bind=" css: { action: systemSetup_systemPassword().length > 4 && ! passwordChecking(), 'left loading': passwordChecking()}" )
 								i.search.icon.right( data-bind = " visible: passwordChecking()" style = " margin: 0 0 0 0!important; width: auto!important; height:auto!important;" )
 								input( data-bind = "attr: { placeholder: infoDefine[ $root.languageIndex() ].Home_keyPairInfo_view.password1, 'data-content': showPasswordErrorMessage () ? infoDefine[ $root.languageIndex() ].error_message.SystemPasswordError : null }, css: { 'activating element inline': showPasswordErrorMessage() }, textInput: systemSetup_systemPassword, hasFocus: inputFocus", type="password" value="" tabindex = "0" data-variation="very wide")
 								button.ui.icon.button.positive( data-bind = "visible: systemSetup_systemPassword().length > 4 && ! passwordChecking ()" type="submit" )
@@ -117,7 +120,7 @@ block jumbotron1
 					.ui.segment.teal( data-bind = "html: infoDefine [ $root.languageIndex() ].home_index_view.inputEmail" style = "color: rgba(200,150,30,0.9)")
 					form.ui.form( data-bind="submit: form_AdministratorEmail_submit")
 						.field.required( data-bind = "css: { error: EmailAddressError() }" )
-							.ui.input.focus.left.icon
+							.ui.input.focus.left.icon.huge
 								i.icon.spy
 								input( type = "email", z-index = "1", data-bind = "value : SystemAdministratorEmailAddress, attr: { placeholder: infoDefine [ $root.languageIndex() ].home_index_view.emailAddress, 'data-content' : EmailAddressError() ? infoDefine[ $root.languageIndex() ].error_message.EmailAddress[0] : null }, css: { 'activating element inline': EmailAddressError() }" )
 							.ui.info.message( data-bind = " visible: showInsideFireWallEmail()" )
@@ -125,15 +128,15 @@ block jumbotron1
 								span.errorInformationText( data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.accountEmailInfo ")
 							
 						.field.required( data-bind = " css: { error: NickNameError ()}")
-							.ui.input.focus.left.icon
+							.ui.input.focus.left.icon.huge
 								i.icon.student
 								input( type = "text", z-index = "2", data-bind = " value : SystemAdministratorNickName, attr: { 'data-content' : NickNameError() ? infoDefine[ $root.languageIndex() ].error_message.required : null , placeholder: infoDefine [ $root.languageIndex() ].home_index_view.SystemAdministratorNickName }, css: { 'activating element inline': NickNameError() }" )
 						.field.required( data-bind = " css: { error: passwordError ()}")
-							.ui.input.focus.left.icon
+							.ui.input.focus.left.icon.huge
 								i.icon.privacy
 								input( type = "password" z-index = "3" data-bind = " value: systemSetup_systemPassword, attr: { placeholder: infoDefine[ $root.languageIndex() ].Home_keyPairInfo_view.password, 'data-content' : passwordError() ? infoDefine[ $root.languageIndex() ].error_message.PasswordLengthError : null }, css: { 'activating element inline': passwordError() }" )
 						
-						button.ui.green.basic.button( type = "submit" data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.creatKeyPair, click: form_AdministratorEmail_submit ")
+						button.ui.green.basic.large.button( type = "submit" data-bind = " text: infoDefine [ $root.languageIndex() ].home_index_view.creatKeyPair, click: form_AdministratorEmail_submit ")
 			.card.centered.raised( data-bind = "if: showKeyPairPorcess, visible: showKeyPairPorcess" style = "width: 100%;padding: 2em;")
 				.detail
 					p( data-bind = " html: infoDefine [ $root.languageIndex() ].home_index_view.GenerateKeypair ")
@@ -162,11 +165,11 @@ block jumbotron1
 					form.ui.form.fluid
 						.two.fields
 							.field.required( data-bind = " css: { error: emailAddressShowError ()}")
-								.ui.left.icon.input
+								.ui.left.icon.input.huge
 									i.icon.outline.mail
 									input( data-bind = " value : emailAddress, css:{ 'activating element inline': emailAddressShowError() }, attr: { tabindex: 1, placeholder: infoDefine [ $root.languageIndex() ].home_index_view.imapEmailAddress, 'data-content' : emailAddressShowError() ? infoDefine[ $root.languageIndex() ].error_message.EmailAddress[ EmailAddressErrorType() ]: null }" type = "text")
 							.field.required
-								.passwdInput.ui.input( data-bind = " css: { 'left icon': !password() || !password().length, 'action': password() && password().length }")
+								.passwdInput.ui.input.huge( data-bind = " css: { 'left icon': !password() || !password().length, 'action': password() && password().length }")
 									i.icon.privacy( data-bind = " visible: !password() || !password().length ")
 									input( data-bind = " textInput: password, attr: { placeholder: infoDefine [ $root.languageIndex() ].imapInformation.emailServerPassword, tabindex: 2 }" type = "password" )
 									button.ui.icon.button.positive( data-bind = " visible: password() && password().length, click: imapAccountGoCheckClick" )
@@ -215,6 +218,7 @@ block jumbotron1
 							p( data-bind="visible: connetcError() > -1, text: infoDefine [ $root.languageIndex() ].imapInformation.imapCheckError[ connetcError() ]")
 							Button.ui.icon.button.orange( data-bind = " visible: connetcError() > -1, click: returnToImapSetup, text: infoDefine [ $root.languageIndex() ].imapInformation.title " )
 							p( data-bind= "visible: connectStage() > -1, text: infoDefine [ $root.languageIndex() ].imapInformation.imapCheckingStep[ connectStage() ]")
+							p( data-bind="visible: maynotConnectConet, text: ")
 							.keyPairProcessBar.ui.bottom.teal.attached.progress( data-bind="visible: connetcError() < 0" style="margin-bottom: 1em;" data-value="1" data-total="100")
 								.bar
 					<!-- /ko -->

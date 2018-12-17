@@ -136,6 +136,7 @@ export default class extends Imap.imapPeer {
 		this.on ( 'pingTimeOut', () => {
 			
 			if ( this.ignorePingTimeout ) {
+				
 				return saveLog ( `coNETConnect on pingTimeOut this.ignorePingTimeout = true, do nothing!`, true )
 			}
 			return this.destroy ()

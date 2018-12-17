@@ -15,6 +15,7 @@ module youtube_layout {
 		constructor () {
             const self = this
             this.search_form_input.subscribe ( function ( _text: string ) {
+                self.showSearchError ( false )
                 if ( !_text.length ) {
                     return self.showSearchButton ( false )
                 }
@@ -49,6 +50,7 @@ module youtube_layout {
             $('.languageText').shape ( 'flip ' + this.LocalLanguage )
             return $('.KnockoutAnimation').transition('jiggle')
         }
+        
         public search_form () {
             const self = this
             const search_text = this.search_form_input()

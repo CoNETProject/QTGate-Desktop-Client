@@ -15,7 +15,6 @@
  */
 
 import * as Fs from 'fs'
-import localServer from '../localWebServer'
 import * as Path from 'path'
 import * as Os from 'os'
 import * as Async from 'async'
