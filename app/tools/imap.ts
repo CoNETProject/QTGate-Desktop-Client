@@ -109,7 +109,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         if ( this.writable ) {
             this.idleResponsrTime = setTimeout(() => {
                 console.log(`【${ new Date().toISOString() }】[${ cc }]====================[ IDLE DONE time out ]`)
-                this.imapServer.destroyAll(null)
+                this.imapServer.destroyAll ( null )
             }, 30000 )
 
             return this.push ( this.cmd + '\r\n' )
@@ -1039,12 +1039,12 @@ export class qtGateImap extends Event.EventEmitter {
 
     public destroyAll ( err: Error ) {
         
-        this.imapStream.logout (() =>{
+        this.imapStream.logout (() => {
             
             this.imapEnd = true
 
             if ( this.socket && typeof this.socket.end === 'function' ) {
-                this.socket.end()
+                this.socket.end ()
             }
             this.emit ( 'end', err )
                 
@@ -1735,7 +1735,7 @@ export class imapPeer extends Event.EventEmitter {
 
         this.rImap.once ( 'ready', () => {
             this.makeRImap = false
-            //saveLog ( `this.rImap.once on ready `)
+            saveLog ( `this.rImap.once on ready `)
 
         })
 

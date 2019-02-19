@@ -318,7 +318,7 @@ export class getDecryptClientStreamFromHttp extends Stream.Transform {
 
 	public _transform ( chunk: Buffer, encode, cb ) {
 
-		this.text += chunk.toString ( 'utf8' )
+		this.text += chunk.toString ()
 
 		const line = this.text.split ( '\r\n\r\n' )
 

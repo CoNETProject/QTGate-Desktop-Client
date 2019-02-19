@@ -140,7 +140,7 @@ class keyPairGenerateForm {
 		})
 	}
 
-	constructor ( private exit: ( keyPair ) => void ) {
+	constructor ( private exit: ( keyPair, sessionHash: string ) => void ) {
 		const self = this
 		this.SystemAdministratorEmailAddress.subscribe ( function ( newValue ) {
 			return self.checkEmailAddress ( newValue )
@@ -183,13 +183,13 @@ class keyPairGenerateForm {
 		}
 
 		
-		socketIo.once ( 'newKeyPairCallBack', function ( keyPair ) {
+		socketIo.once ( 'newKeyPairCallBack', function ( keyPair, newKeyPairCallBack ) {
 			self.stopDoingProcessBar ()
 			self.keyPairGenerateFormMessage ( true )
 			if ( !keyPair ) {
 				return self.message_keyPairGenerateError ( true )
 			}
-			self.exit ( keyPair )
+			self.exit ( keyPair, newKeyPairCallBack )
 			return self.message_keyPairGenerateSuccess ( true )
 		})
 

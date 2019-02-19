@@ -162,13 +162,13 @@ class keyPairGenerateForm {
                     return doingProcessBar();
             }, timeSet);
         };
-        socketIo.once('newKeyPairCallBack', function (keyPair) {
+        socketIo.once('newKeyPairCallBack', function (keyPair, newKeyPairCallBack) {
             self.stopDoingProcessBar();
             self.keyPairGenerateFormMessage(true);
             if (!keyPair) {
                 return self.message_keyPairGenerateError(true);
             }
-            self.exit(keyPair);
+            self.exit(keyPair, newKeyPairCallBack);
             return self.message_keyPairGenerateSuccess(true);
         });
         socketIo.emit11('NewKeyPair', sendData);

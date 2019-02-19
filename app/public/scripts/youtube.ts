@@ -81,6 +81,7 @@ module youtube_layout {
         }
 	}
 }
+
 const youtube_view = new youtube_layout.youtube ()
 ko.applyBindings ( youtube_view , document.getElementById ( 'body' ))
 const youtube_uu = '.' + youtube_view.tLang()

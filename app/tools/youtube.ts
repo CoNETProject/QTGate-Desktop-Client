@@ -108,11 +108,9 @@ export default class {
 		return exec ( cmd,( err, stdout, stderr ) => {
 			
 			if ( err ) {
-				
 				return CallBack ( err )
 			}
-			console.log (`stdout\n${stdout}`)
-			console.log (`stdout\n${stderr}`)
+			
 			let ret: youtube_search_ListResponse = null
 			try {
 				ret = JSON.parse ( stdout )
@@ -120,7 +118,7 @@ export default class {
 			catch ( ex ) {
 				return CallBack ( ex )
 			}
-			return CallBack ( ret.items )
+			return CallBack ( null, ret.items )
 		})
 		
 	}
@@ -131,10 +129,10 @@ export default class {
 			//return this.socket.emit ( 'youtube_search', 1 )
 			return this.youtubeSearch ( text, ( err, data ) => {
 				if ( err ) {
-					console.log (`this.youtubeSearch return err!`)
+					console.log (`this.youtubeSearch return err!\n`, err )
 					return this.socket.emit ( 'youtube_search', 1 )
 				}
-				console.log (`success!`)
+				console.log (`success!\n`, data )
 				return this.socket.emit ( 'youtube_search', null, data )
 			})
 		})

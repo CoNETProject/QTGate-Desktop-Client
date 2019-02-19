@@ -21,8 +21,6 @@ class default_1 {
             if (err) {
                 return CallBack(err);
             }
-            console.log(`stdout\n${stdout}`);
-            console.log(`stdout\n${stderr}`);
             let ret = null;
             try {
                 ret = JSON.parse(stdout);
@@ -30,7 +28,7 @@ class default_1 {
             catch (ex) {
                 return CallBack(ex);
             }
-            return CallBack(ret.items);
+            return CallBack(null, ret.items);
         });
     }
     socket_listing() {
@@ -40,10 +38,10 @@ class default_1 {
             //return this.socket.emit ( 'youtube_search', 1 )
             return this.youtubeSearch(text, (err, data) => {
                 if (err) {
-                    console.log(`this.youtubeSearch return err!`);
+                    console.log(`this.youtubeSearch return err!\n`, err);
                     return this.socket.emit('youtube_search', 1);
                 }
-                console.log(`success!`);
+                console.log(`success!\n`, data);
                 return this.socket.emit('youtube_search', null, data);
             });
         });

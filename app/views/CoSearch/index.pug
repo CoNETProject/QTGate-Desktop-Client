@@ -1,0 +1,37 @@
+extends ../shared/CoSearchLayout.pug
+block jumbotron
+
+block jumbotron1
+    .language( style="z-index: 999;top: 0.7em;right: 1em;position: fixed;width: 2em;")
+        .ui.text.shape.languageText( data-bind = " click: selectItem " )
+            .sides
+                span.ui.header.side.en.languageItem.languageTextCoverColor
+                    i.flag.united.kingdom.
+                    //-span.languageItemSpan( data-bind = " text: menu[ 'en' ][0].showName " )
+                span.ui.header.side.tw.languageItem.languageTextCoverColor
+                    i.flag.taiwan
+                    //-span.languageItemSpan( data-bind = " text: menu[ 'tw' ][0].showName " )
+                span.ui.header.side.zh.languageItem.languageTextCoverColor
+                    i.flag.china
+                    //-span.languageItemSpan( data-bind = " text: menu[ 'zh' ][0].showName " )
+                span.ui.header.side.ja.languageItem.languageTextCoverColor
+                    i.flag.japan
+                    //-span.languageItemSpan( data-bind = " text: menu[ 'ja' ][0].showName " )
+    section#coSearchBackGround( data-bind = " css: { animationBlur: backGroundBlue }" )
+        include coSearchImage.html
+    section#coSearchForm
+        form.ui.form( data-bind=" submit: search_form" )
+            .ui.icon.input.huge( data-bind="css : { action: searchInputTextActionShow,  animationSearchInput: hasFocus}" style="width: 100%;" )
+                input( style="color:rgba(0,0,0,0.5)" type="text" placeholder="Search..." data-bind="attr:{ placeholder: infoDefine[ $root.languageIndex() ].coSearch.searchInputPlaceholder }, css : { backgroundTransparent: ! backGroundBlue ()}, textInput: searchInputText, hasFocus: hasFocus")
+                
+                <!-- ko if: !searchInputText().length -->
+                i.icon.search(style="color:rgba(0,0,0,0.4)")
+                <!-- /ko -->
+
+                <!-- ko if: searchInputText().length -->
+                
+                i.icon.close.link( data-bind="click: clearSearchText" style="color:rgba(0,0,0,0.4)")
+                <!-- /ko -->
+                <!-- ko if: searchInputTextActionShow -->
+                button.ui.inverted.basic.blue.button( data-bind=" text: infoDefine[ $root.languageIndex() ].coSearch.SearchText, click: search_form ")
+                <!-- /ko -->

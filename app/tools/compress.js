@@ -259,7 +259,7 @@ class getDecryptClientStreamFromHttp extends Stream.Transform {
         return null;
     }
     _transform(chunk, encode, cb) {
-        this.text += chunk.toString('utf8');
+        this.text += chunk.toString();
         const line = this.text.split('\r\n\r\n');
         while (this.first && line.length > 1 || !this.first && line.length) {
             if (this.first) {

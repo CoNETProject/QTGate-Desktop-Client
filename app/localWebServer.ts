@@ -132,14 +132,14 @@ export default class localServer {
 	private twitterDataInit = false
 	private twitterData: TwitterAccount[] = []
 	private currentTwitterAccount = -1
-	private doingCreateTweetData = false 
+	private sessionHashPool = []
 	
 	public CoNET_systemError () {
 		return this.socketServer.emit ( 'CoNET_systemError' )
 	}
 	
-	private tryConnectCoNET ( socket: SocketIO.Socket ) {
-
+	private tryConnectCoNET ( socket: SocketIO.Socket, sessionHash: string ) {
+		console.log (`doing tryConnectCoNET`)
 		//		have CoGate connect
 		if ( this.connectCommand && this.connectCommand.length ) {
 			socket.emit ( 'tryConnectCoNETStage', -1, 4, true )
@@ -151,14 +151,15 @@ export default class localServer {
 
 		let sendMail = false
 		const _exitFunction = err => {
-			console.trace ( `tryConnectCoNET exit! err =`, err )
+			//console.trace ( `tryConnectCoNET exit! err =`, err )
+			console.log (`sessionHashPool.length = [${ this.sessionHashPool.length }]`)
 			switch ( err ) {
 				///			connect conet had timeout
 				case 1: {
 					return socket.emit ( 'tryConnectCoNETStage', 0 )
 				}
 				case 2: {
-					return console.log (`CoNETConnectCalss exit with 2, stop remake CoNETConnectCalss!`)
+					return console.log ( `CoNETConnectCalss exit with 2, stop remake CoNETConnectCalss!`)
 				}
 				case 3: {
 					return makeConnect ( sendMail = false )
@@ -187,6 +188,7 @@ export default class localServer {
 				this.imapConnectData.sendToQTGate = true
 				Tool.saveEncryptoData ( Tool.imapDataFileName1, this.imapConnectData, this.config, this.savedPasswrod, () => {})
 				this.socketServer.emit ( 'tryConnectCoNETStage', null, 3 )
+				
 				return Tool.sendCoNETConnectRequestEmail ( this.imapConnectData, this.openPgpKeyOption, this.config.version, this.keyPair.publicKey, ( err: Error ) => {
 					if ( err ) {
 						console.log (`sendCoNETConnectRequestEmail callback error`, err )
@@ -195,6 +197,7 @@ export default class localServer {
 					}
 					
 					socket.emit ( 'tryConnectCoNETStage', null, 3 )
+
 					return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, catchUnSerialCmd, _exitFunction )
 				})
 			
@@ -212,14 +215,14 @@ export default class localServer {
 		
 	}
 
-	private sendRequest ( socket: SocketIO.Socket, cmd: QTGateAPIRequestCommand, CallBack ) {
+	private sendRequest ( socket: SocketIO.Socket, cmd: QTGateAPIRequestCommand, sessionHash: string, CallBack ) {
 		if ( !this.openPgpKeyOption) {
 			console.log ( `sendrequest keypair error! !this.config [${ !this.config }] !this.keyPair[${ !this.keyPair }]`)
 			return CallBack (1)
 		}
 		if ( !this.CoNETConnectCalss ) {
 			console.log (`sendrequest no CoNETConnectCalss`)
-			this.tryConnectCoNET ( socket )
+			this.tryConnectCoNET ( socket, sessionHash )
 			return CallBack ( 0 )
 		}
 		saveLog (`sendRequest send [${ cmd.command }]`)
@@ -271,7 +274,7 @@ export default class localServer {
 		
 	}
 
-	private requestConnectCoGate ( socket: SocketIO.Socket, cmd: IConnectCommand ) {
+	private requestConnectCoGate ( socket: SocketIO.Socket, sessionHash: string, cmd: IConnectCommand ) {
 		//const arg = [{"account":"peter1@conettech.ca","imapData":{"imapPortNumber":"993","smtpPortNumber":587,"imapServer":"imap-mail.outlook.com","imapIgnoreCertificate":false,"smtpIgnoreCertificate":false,"imapSsl":true,"smtpSsl":false,"imapUserName":"proxyviaemai@outlook.com","imapUserPassword":"ajuwrcylbrobvykn","account":"Peter1@CoNETTech.ca","smtpServer":"smtp-mail.outlook.com","smtpUserName":"proxyviaemai@outlook.com","smtpUserPassword":"ajuwrcylbrobvykn","email":"Peter1@CoNETTech.ca","imapTestResult":true,"language":"en","timeZoneOffset":420,"serverFolder":"1f4953ea-6ffe-4e58-bf46-fd7a52867a41","clientFolder":"7b6b9c13-2a30-4682-adcb-751b0643020f","randomPassword":"8a510536516b92d361f94fb624310b","clientIpAddress":"172.218.175.40","requestPortNumber":null},"gateWayIpAddress":"51.15.192.239","region":"paris","connectType":2,"localServerPort":"3001","AllDataToGateway":true,"error":-1,"fingerprint":"052568B9D9742E64C6C0A5D288C08CEAC728A0D9","localServerIp":"172.218.175.40","multipleGateway":[{"gateWayIpAddress":"51.15.192.239","gateWayPort":80,"dockerName":"scaleway-decdbb5e-bb23-4e15-8d46-544d245fcab3","password":"cb5ea121c8fa2a00e91535f921184ce8"}],"requestPortNumber":80,"requestMultipleGateway":1,"webWrt":true,"connectPeer":"ddkjksi32bjsaclbkvf","totalUserPower":2,"transferData":{"account":"peter1@conettech.ca","availableDayTransfer":102400000,"usedMonthlyOverTransfer":0,"productionPackage":"free","transferDayLimit":102400000,"transferMonthly":1024000000,"startDate":"2018-04-25T00:00:00.000Z","availableMonthlyTransfer":1024000000,"resetTime":"2018-06-02T17:17:24.288Z","usedDayTransfer":0,"timeZoneOffset":420,"usedMonthlyTransfer":0,"power":1,"isAnnual":false,"expire":"2018-05-24T00:00:00.000Z","customsID":"","paidID":[],"automatically":false},"requestContainerEachPower":2,"peerUuid":"703145fc-740c-43b6-b1c8-aca935602bd7","containerUUID":"4c6c0c5b-73f9-4fb9-9bcb-c7bc6d05fe8a","runningDocker":"scaleway-decdbb5e-bb23-4e15-8d46-544d245fcab3","dockerName":"scaleway-decdbb5e-bb23-4e15-8d46-544d245fcab3","gateWayPort":80,"randomPassword":"cb5ea121c8fa2a00e91535f921184ce8"}]
 		//this.connectCommand = arg
 		//socket.emit ( 'QTGateGatewayConnectRequest', null, this.connectCommand )
@@ -296,7 +299,7 @@ export default class localServer {
 			
 			
 			
-			return this.sendRequest ( socket, com, ( err: number, res: QTGateAPIRequestCommand ) => {
+			return this.sendRequest ( socket, com, sessionHash, ( err: number, res: QTGateAPIRequestCommand ) => {
 				//		no error
 				if ( err ) {
 					socket.emit ( 'QTGateGatewayConnectRequest', err )
@@ -339,15 +342,17 @@ export default class localServer {
 		
 	}
 
-	private listenAfterPassword ( socket: SocketIO.Socket ) {
-		
+	private listenAfterPassword ( socket: SocketIO.Socket, sessionHash: string ) {
+		console.log (`localServer listenAfterPassword for sessionHash [${ sessionHash }]`)
 		socket.on ( 'checkImap', ( emailAddress: string, password: string, timeZone, tLang, CallBack1 ) => {
 			CallBack1 ()
+			console.log (`localServer on checkImap!`)
 			return Tool.myIpServer (( err?, ip? ) => {
 				if ( err || !ip ) {
 					saveLog (`on checkImap Tool.myIpServer got error! [${ err.message ? err.message : null}]` )
 					return socket.emit ( 'smtpTest', 4 )
 				}
+
 				const imapServer = Tool.getImapSmtpHost( emailAddress )
 				this.imapConnectData = {
 					email: this.config.account,
@@ -391,10 +396,10 @@ export default class localServer {
 			if ( !this.imapConnectData.confirmRisk ) {
 				this.imapConnectData.confirmRisk = true
 				return Tool.saveEncryptoData (  Tool.imapDataFileName1,this.imapConnectData, this.config, this.savedPasswrod, err => {
-					return this.tryConnectCoNET ( socket )
+					return this.tryConnectCoNET ( socket, sessionHash )
 				})
 			}
-			return this.tryConnectCoNET ( socket )
+			return this.tryConnectCoNET ( socket, sessionHash )
 			
 		})
 
@@ -408,7 +413,7 @@ export default class localServer {
 				
 			}
 
-			return this.sendRequest ( socket, com, ( err: number, res: QTGateAPIRequestCommand ) => {
+			return this.sendRequest ( socket, com, sessionHash, ( err: number, res: QTGateAPIRequestCommand ) => {
 				console.log (`requestActivEmail sendrequest callback! `)
 				return socket.emit ( 'requestActivEmail', err, res )
 			})
@@ -445,7 +450,7 @@ export default class localServer {
 				}
 				console.log ( Util.inspect ( com ))
 				
-				return this.sendRequest ( socket, com, ( err, data: QTGateAPIRequestCommand ) => {
+				return this.sendRequest ( socket, com, sessionHash, ( err, data: QTGateAPIRequestCommand ) => {
 					if ( err ) {
 						return socket.emit  ('checkActiveEmailSubmit', err )
 					}
@@ -491,7 +496,7 @@ export default class localServer {
 				error: null
 			}
 
-			return this.sendRequest ( socket, com, ( err: number, res: QTGateAPIRequestCommand ) => {
+			return this.sendRequest ( socket, com, sessionHash, ( err: number, res: QTGateAPIRequestCommand ) => {
 				if ( err ) {
 					return saveLog ( `getAvaliableRegion QTClass.request callback error! STOP [${ err }]`)
 				}
@@ -554,7 +559,7 @@ export default class localServer {
 				Args: [ promoCode ]
 			}
 			saveLog (`on promoCode`)
-			return this.sendRequest ( socket, com, ( err: number, res: QTGateAPIRequestCommand ) => {
+			return this.sendRequest ( socket, com, sessionHash, ( err: number, res: QTGateAPIRequestCommand ) => {
 				saveLog ( `promoCode got callBack: [${ JSON.stringify ( res )}]`)
 				if ( err ) {
 					socket.emit ( 'promoCode', err )
@@ -578,12 +583,12 @@ export default class localServer {
 
 		socket.on ( 'QTGateGatewayConnectRequest', ( cmd: IConnectCommand, CallBack1 ) => {
 			CallBack1 ()
-			return this.requestConnectCoGate ( socket, cmd )
+			return this.requestConnectCoGate ( socket, sessionHash, cmd )
 		})
 
 		socket.on ( 'disconnectClick', CallBack1 => {
 			CallBack1 ()
-			return this.stopGetwayConnect ( socket, true, null )
+			return this.stopGetwayConnect ( socket, true, null, sessionHash )
 		})
 
 		socket.on ( 'cardToken', ( payment: iQTGatePayment, CallBack1 ) => {
@@ -595,7 +600,7 @@ export default class localServer {
 			CallBack1 ()
 			console.log ( `socket.on cardToken send to QTGate!`, Util.inspect ( com, false, 2, true ))
 			
-			return this.sendRequest ( socket, com, ( err: number, res: QTGateAPIRequestCommand ) => {
+			return this.sendRequest ( socket, com, sessionHash, ( err: number, res: QTGateAPIRequestCommand ) => {
 				saveLog ( `cardToken got callBack: [${ JSON.stringify ( res )}]`)
 				if ( err ) {
 					return saveLog ( `cardToken got QTClass.request  error!`)
@@ -620,7 +625,7 @@ export default class localServer {
 				error: null,
 				Args: []
 			}
-			return this.sendRequest ( socket, com, ( err: number, res: QTGateAPIRequestCommand ) => {
+			return this.sendRequest ( socket, com, sessionHash, ( err: number, res: QTGateAPIRequestCommand ) => {
 				socket.emit ( 'cancelPlan', err, res )
 			})
 		})
@@ -689,7 +694,7 @@ export default class localServer {
 		return CallBack ( 2 )
 	}
 
-	private getTimelines ( socket: SocketIO.Socket, account: TwitterAccount, CallBack ) {
+	private getTimelines ( socket: SocketIO.Socket, account: TwitterAccount, sessionHash: string, CallBack ) {
 		
 		const com: QTGateAPIRequestCommand = {
 			command: 'twitter_home_timeline',
@@ -698,7 +703,7 @@ export default class localServer {
 			requestSerial: Crypto.randomBytes(8).toString ('hex' )
 		}
 		let count = 0
-		return this.sendRequest ( socket, com, ( err, res: QTGateAPIRequestCommand ) => {
+		return this.sendRequest ( socket, com, sessionHash, ( err, res: QTGateAPIRequestCommand ) => {
 			count ++
 			if ( err ) {
 				return CallBack ()
@@ -816,7 +821,7 @@ export default class localServer {
 		return this.getQuote_status ( tweet, CallBack )
 	}
 
-	private getTimelinesNext ( socket, account: TwitterAccount, max_id: number, CallBack ) {
+	private getTimelinesNext ( socket, account: TwitterAccount, max_id: number, sessionHash: string,  CallBack ) {
 		delete account['twitter_verify_credentials']
 		const com: QTGateAPIRequestCommand = {
 			command: 'twitter_home_timelineNext',
@@ -825,7 +830,7 @@ export default class localServer {
 			requestSerial: Crypto.randomBytes(8).toString ('hex' )
 		}
 
-		return this.sendRequest ( socket, com, ( err, res: QTGateAPIRequestCommand ) => {
+		return this.sendRequest ( socket, com, sessionHash, ( err, res: QTGateAPIRequestCommand ) => {
 
 			if ( err ) {
 				return CallBack ()
@@ -852,15 +857,7 @@ export default class localServer {
 	}
 
 	private createTweetData ( tweet: twitter_post, CallBack ) {
-		/*
-		if ( this.doingCreateTweetData ) {
-			return this.tweetTimeLineDataPool.push ({
-				post: tweet,
-				CallBack: CallBack
-			})
-		}
-		this.doingCreateTweetData = true
-		*/
+		
 		if ( !tweet ) {
 			saveLog ( `createTweetData got Null tweet data `)
 			return CallBack ( new Error ('have no tweet data!'))
@@ -882,7 +879,6 @@ export default class localServer {
 		return Async.series ( action, ( err, data ) => {
 			
 			return this.createTweetData_next ( tweet, err, data, err1 => {
-				this.doingCreateTweetData = false
 				CallBack ( null, tweet )
 				/*
 				if ( this.tweetTimeLineDataPool.length ) {
@@ -991,7 +987,7 @@ export default class localServer {
 		})
 	}
 
-	private postTweetViaQTGate ( socket, account: TwitterAccount, postData: twitter_postData, Callback ) {
+	private postTweetViaQTGate ( socket, account: TwitterAccount, postData: twitter_postData, sessionHash: string, Callback ) {
 		
 		const post = err => {
 			if ( err ) {
@@ -1016,7 +1012,7 @@ export default class localServer {
 				saveLog ( `Imap.imapGetMediaFilesFromString success! [${ data }]`)
 			})
 			*/
-			return this.sendRequest ( socket, com, Callback )
+			return this.sendRequest ( socket, com, sessionHash, Callback )
 			
 		}
 		if ( postData.images && postData.images.length ) {
@@ -1048,7 +1044,7 @@ export default class localServer {
 		})
 	}
 
-	private listenAfterTwitterLogin ( socket: SocketIO.Socket ) {
+	private listenAfterTwitterLogin ( socket: SocketIO.Socket, sessionHash: string ) {
 
 
 		socket.on ( 'addTwitterAccount', ( addTwitterAccount: TwitterAccount, CallBack1 ) => {
@@ -1059,7 +1055,7 @@ export default class localServer {
 				Args: [ addTwitterAccount ],
 				error: null
 			}
-			return this.sendRequest ( socket, com, ( err, res: QTGateAPIRequestCommand ) => {
+			return this.sendRequest ( socket, com, sessionHash, ( err, res: QTGateAPIRequestCommand ) => {
 				if ( err ) {
 					return socket.emit ('addTwitterAccount' )
 					
@@ -1098,7 +1094,7 @@ export default class localServer {
 			delete item ['twitter_verify_credentials']
 			this.setCurrentTwitterAccount ( item )
 			
-			return this.getTimelines ( socket, item, ( err, tweets: twitter_post ) => {
+			return this.getTimelines ( socket, item, sessionHash, ( err, tweets: twitter_post ) => {
 				return this.tweetTimeCallBack ( socket, err, tweets, false )
 				
 			})
@@ -1120,7 +1116,7 @@ export default class localServer {
 
 		socket.on ( 'getTimelinesNext', ( item: TwitterAccount, maxID: number, CallBack1 ) => {
 			CallBack1 ()
-			return this.getTimelinesNext ( socket, item, maxID, ( err, tweets: twitter_post ) => {
+			return this.getTimelinesNext ( socket, item, maxID, sessionHash, ( err, tweets: twitter_post ) => {
 				return this.tweetTimeCallBack ( socket, err, tweets, false )
 				
 			})
@@ -1133,7 +1129,7 @@ export default class localServer {
 			}
 			console.log ( Util.inspect ( postData, false, 4, true ))
 			
-			return this.postTweetViaQTGate ( socket, account, postData[0], ( err, res ) => {
+			return this.postTweetViaQTGate ( socket, account, postData[0], sessionHash, ( err, res ) => {
 				if ( res.Args && res.Args.length > 0 ) {
 					let uu: twitter_post = null
 					try {
@@ -1170,13 +1166,22 @@ export default class localServer {
 
 	}
 
-	private socketServerConnected ( socket: SocketIO.Socket ) {
-		const client = `[${ socket.id }][ ${ socket.conn.remoteAddress }]`
-		this.localConnected.set ( client, { socket: socket, login: false, listenAfterPasswd: false } )
+	private passwordFail ( socket: SocketIO.Socket ) {
+		return socket.emit ( 'checkPemPassword', null, true )
+	}
 
+	private socketServerConnected ( socket: SocketIO.Socket ) {
+		const clientName = `[${ socket.id }][ ${ socket.conn.remoteAddress }]`
+		let sessionHash = ''
+		const clientObj: localConnect = {
+			listenAfterPasswd: false,
+			socket: socket,
+			login: false
+		}
+		
 		socket.once ( 'disconnect', reason => {
-			//saveLog ( `socketServerConnected ${ client } on disconnect`)
-			return this.localConnected.delete ( client )
+			saveLog ( `socketServerConnected ${ clientName } on disconnect ${ this.localConnected.size }`)
+			return this.localConnected.delete ( clientName )
 		})
 
 		socket.on ( 'init', Callback1 => {
@@ -1194,18 +1199,18 @@ export default class localServer {
 		socket.on ( 'checkPemPassword', ( password: string, CallBack1 ) => {
 			CallBack1 ()
 			if ( !this.config.keypair || !this.config.keypair.publicKey ) {
-				console.log (`checkPemPassword !this.config.keypair`)
-				return socket.emit ( 'checkPemPassword', null, true )
+				console.log ( `checkPemPassword !this.config.keypair` )
 				
+				return this.passwordFail ( socket )
 			}
 			if ( !password || password.length < 5 ) {
 				console.log (`! password `)
-				return socket.emit ( 'checkPemPassword', null, true )
+				return this.passwordFail ( socket )
 			}
 			if ( this.savedPasswrod && this.savedPasswrod.length ) {
 				if ( this.savedPasswrod !== password ) {
-					console.log (`savedPasswrod !== password `)
-					return socket.emit ( 'checkPemPassword', null, true )
+					console.log ( `savedPasswrod !== password `)
+					return this.passwordFail ( socket )
 				}
 
 			}
@@ -1214,31 +1219,42 @@ export default class localServer {
 				next => Tool.getPbkdf2 ( this.config, password, next ),
 				( Pbkdf2Password: Buffer, next ) => Tool.getKeyPairInfo ( this.config.keypair.publicKey, this.config.keypair.privateKey, Pbkdf2Password.toString('hex'), next ),
 				( key, next ) => {
+					//console.log ( `checkPemPassword Tool.getKeyPairInfo success!`)
 					if ( ! key.passwordOK ) {
-						const info = `[${ client }] on checkPemPassword had try password! [${ password }]`
-						
-						saveLog ( info )
-						return socket.emit ( 'checkPemPassword', null, true )
+						saveLog ( `[${ clientName }] on checkPemPassword had try password! [${ password }]` )
+						return this.passwordFail ( socket )
 					}
 					this.savedPasswrod = password
-					this.localConnected.set ( client, { socket: socket, login: true, listenAfterPasswd: true })
-					this.listenAfterPassword ( socket )
+					
 					this.keyPair = key
+					clientObj.listenAfterPasswd = clientObj.login= true
+					this.localConnected.set ( clientName, clientObj )
 					return Tool.makeGpgKeyOption ( this.config, this.savedPasswrod, next )
 				},
 				( option_KeyOption, next ) => {
-					
+					//console.log (`checkPemPassword Tool.makeGpgKeyOption success!`)
 					this.openPgpKeyOption = option_KeyOption
 					return Tool.readEncryptoFile ( Tool.imapDataFileName1, password, this.config, next )
 			}], ( err: Error, data: string ) => {
+				//console.log (`checkPemPassword Async.waterfall success!`)
 				if ( err ) {
-					socket.emit ( 'checkPemPassword' )
-					return saveLog (`Tool.makeGpgKeyOption return err [${ err && err.message ? err.message : null }]` )
+					if ( !(err.message && /no such file/i.test( err.message ))) {
+						socket.emit ( 'checkPemPassword' )
+						return saveLog ( `Tool.makeGpgKeyOption return err [${ err && err.message ? err.message : null }]` )
+					}
+					
 				}
 				
+				
+
+				this.sessionHashPool.push ( sessionHash = Crypto.randomBytes (10).toString ('hex'))
+				console.log (`this.sessionHashPool.push!\n${ this.sessionHashPool }\n${ this.sessionHashPool.length }`)
+				this.listenAfterPassword ( socket, sessionHash )
 				try {
 					this.imapConnectData = JSON.parse ( data )
-					return socket.emit ( 'checkPemPassword', null, this.imapConnectData )
+					this.localConnected.set ( clientName, clientObj )
+					
+					return socket.emit ( 'checkPemPassword', null, this.imapConnectData, sessionHash )
 				} catch ( ex ) {
 					return socket.emit ( 'checkPemPassword' )
 				}
@@ -1250,10 +1266,11 @@ export default class localServer {
 		socket.on ( 'deleteKeyPairNext', CallBack1 => {
 			
 			CallBack1 ()
-			const thisConnect = this.localConnected.get ( client )
+			console.log ( `on deleteKeyPairNext` )
+			const thisConnect = this.localConnected.get ( clientName )
 
 			if ( this.localConnected.size > 1 && ! thisConnect.login ) {
-				
+				console.log (`this.localConnected = [${ Util.inspect( this.localConnected, false, 2, true )}], thisConnect.login = [${ thisConnect.login }]`)
 				return this.socketServer.emit ( 'deleteKeyPairNoite' )
 			}
 			const info = `socket on deleteKeyPairNext, delete key pair now.`
@@ -1267,6 +1284,8 @@ export default class localServer {
 				this.CoNETConnectCalss.destroy ( 2 )
 				this.CoNETConnectCalss = null
 			}
+			sessionHash = ''
+			Tool.deleteImapFile ()
 			return this.socketServer.emit ( 'init', null, this.config )
 		})
 
@@ -1274,7 +1293,7 @@ export default class localServer {
 			CallBack1 ()
 			//		already have key pair
 			if ( this.config.keypair && this.config.keypair.createDate ) {
-				return saveLog (`[${ client }] on NewKeyPair but system already have keypair: ${ this.config.keypair.publicKeyID } stop and return keypair.`)
+				return saveLog (`[${ clientName }] on NewKeyPair but system already have keypair: ${ this.config.keypair.publicKeyID } stop and return keypair.`)
 			}
 
 			this.savedPasswrod = preData.password
@@ -1286,7 +1305,6 @@ export default class localServer {
 				
 				preData.password = Pbkdf2Password.toString ( 'hex' )
 
-				saveLog ( `NewKeyPair doing CreateKeyPairProcess`)
 				return Tool.newKeyPair( preData.email, preData.nikeName, preData.password, ( err, retData )=> {
 					if ( err ) {
 						console.log ( err )
@@ -1301,13 +1319,16 @@ export default class localServer {
 						console.log ( info )
 						return this.socketServer.emit ( 'newKeyPairCallBack' )
 					}
-					const kk = this.localConnected.get ( client )
-					if ( !kk.listenAfterPasswd ) {
-						kk.listenAfterPasswd = true
-						this.localConnected.set ( client, kk )
-						this.listenAfterPassword ( socket )
+					
+					if ( !clientObj.listenAfterPasswd ) {
+						clientObj.listenAfterPasswd = clientObj.login = true
+						
+						this.localConnected.set ( clientName, clientObj )
+						this.sessionHashPool.push ( sessionHash = Crypto.randomBytes (10).toString ('hex'))
+						console.log (`this.sessionHashPool.push!\n${ this.sessionHashPool }\n${ this.sessionHashPool.length }`)
+						this.listenAfterPassword ( socket, sessionHash )
 					}
-					console.log (retData)
+					
 					return Tool.getKeyPairInfo ( retData.publicKey, retData.privateKey, preData.password, ( err, key ) => {
 						if ( err ) {
 							const info = `Tool.getKeyPairInfo Error [${ err.message ? err.message : 'null err message '}]`
@@ -1321,7 +1342,8 @@ export default class localServer {
 							}
 							this.openPgpKeyOption = data
 							Tool.saveConfig ( this.config, saveLog )
-							return this.socketServer.emit ( 'newKeyPairCallBack', this.config.keypair )
+							
+							return this.socketServer.emit ( 'newKeyPairCallBack', this.config.keypair, sessionHash )
 						})
 						
 					})
@@ -1350,13 +1372,15 @@ export default class localServer {
 				}
 
 			}
-
+			this.sessionHashPool.push ( sessionHash = Crypto.randomBytes (10).toString ('hex'))
+			console.log (`this.sessionHashPool.push!\n${ this.sessionHashPool }\n${ this.sessionHashPool.length }`)
             
-			this.listenAfterTwitterLogin ( socket )
+			this.listenAfterTwitterLogin ( socket, sessionHash )
 
 			if ( this.twitterDataInit ) {
 				return socket.emit ( 'password', null, this.twitterData )
 			}
+
 			this.twitterDataInit = true
 			return Tool.readEncryptoFile ( Tool.twitterDataFileName, password, this.config, ( err, data ) => {
 				if ( data && data.length ) {
@@ -1403,7 +1427,7 @@ export default class localServer {
 
 	}
 
-	private stopGetwayConnect ( socket, sendToCoNET: boolean, region: string ) {
+	private stopGetwayConnect ( socket, sendToCoNET: boolean, region: string, sessionHash: string ) {
 		
 	
 		if ( this.connectCommand && this.connectCommand.length ) {
@@ -1422,7 +1446,7 @@ export default class localServer {
 				Args: null,
 				error: null
 			}
-			return this.sendRequest ( socket, com, ( err, retCmd: QTGateAPIRequestCommand ) => {
+			return this.sendRequest ( socket, com, sessionHash, ( err, retCmd: QTGateAPIRequestCommand ) => {
 				return socket.emit ('disconnectClick', region )
 			})
 		}
@@ -1438,6 +1462,7 @@ export default class localServer {
 		this.expressServer.use ( cookieParser ())
 		this.expressServer.use ( Express.static ( Tool.QTGateFolder ))
 		this.expressServer.use ( Express.static ( Path.join ( __dirname, 'public' )))
+		this.expressServer.use ( Express.static ( Path.join ( __dirname, 'html' )))
 
 		this.expressServer.get ( '/', ( req, res ) => {
 
@@ -1463,7 +1488,7 @@ export default class localServer {
 				
 			}
 			*/
-			res.render( 'Youtube', { title: 'Co_Youtube' })
+			return res.render ( 'Youtube', { title: 'Co_Youtube' })
 			
 		})
 
@@ -1504,6 +1529,17 @@ export default class localServer {
             res.render( 'home/Wrt', { title: 'Wrt', localIP: Tool.getLocalInterface (), globalIP: globalIp })
 		})
 
+		this.expressServer.get ( '/CoSearch', ( req: Express.Request, res ) => {
+			const sessionHash = req.query.sessionHash
+			
+			const _index = this.sessionHashPool.indexOf (sessionHash)
+			if ( !sessionHash || _index < 0 ) {
+				console.log (`sessionHashPool have not this [${ sessionHash }]!\n${ this.sessionHashPool }`)
+				return res.render( 'home', { title: 'home', proxyErr: false  })
+			}
+			return res.render ( 'CoSearch', { title: 'CoSearch', sessionHash: sessionHash })
+		})
+
 		this.socketServer.on ( 'connection', socker => {
 			return this.socketServerConnected ( socker )
 		})
@@ -1532,24 +1568,6 @@ export default class localServer {
 		
 	}
 
-	private catchUnSerialCmd ( cmd: QTGateAPIRequestCommand ) {
-		switch ( cmd.command ) {
-			//		
-			case 'containerStop': {
-				
-				return this.stopGetwayConnect ( this.socketServer, false, cmd.region )
-			}
-
-			default: {
-				if ( this.cmdResponse && typeof this.cmdResponse === 'function' ) {
-					return this.cmdResponse ( cmd )
-				}
-				saveLog (`catchUnSerialCmd unknow command: [${ cmd.command }]`)
-
-			}
-		}
-
-	}
 
 }
 

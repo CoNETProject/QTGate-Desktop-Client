@@ -1471,7 +1471,7 @@ class imapPeer extends Event.EventEmitter {
         });
         this.rImap.once('ready', () => {
             this.makeRImap = false;
-            //saveLog ( `this.rImap.once on ready `)
+            saveLog(`this.rImap.once on ready `);
         });
         this.rImap.once('error', err => {
             this.makeRImap = false;

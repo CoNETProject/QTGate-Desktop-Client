@@ -4,10 +4,12 @@ block jumbotron1
 		.welcome-bg
 			.welcome( style="color: white;")
 				h1( data-bind = " text: infoDefine [ languageIndex() ].cover.firstTitle1, animate:{ animation: ['slideInUp','slideOutUp'], state: languageIndex() + 1, delay: 0 }" )
-				h1( data-bind = " text: infoDefine [ languageIndex() ].cover.firstTitle2, animate: { animation: ['slideInUp','slideOutUp'], state: languageIndex() + 1, delay: 70 }")
-				.ui.primary.basic.button( data-bind="click: openClick, text: infoDefine [ languageIndex() ].cover.start" style="margin-top: 2em;" )
+				h1( style="padding-right:1em;padding-left:1em;" data-bind = " text: infoDefine [ languageIndex() ].cover.firstTitle2, animate: { animation: ['slideInUp','slideOutUp'], state: languageIndex() + 1, delay: 70 }")
+				//-.ui.primary.basic.big.button( data-bind="click: openClick, text: infoDefine [ languageIndex() ].cover.start" style="margin-top: 2em;" )
+				.button(style="position: relative;width: 4em;height: 4em;")
+					a.play-btn(data-bind="click: openClick" href="#")
 		.startupView( style="width:100%; height:100%")
-			video.videoBackground( preload="yes" autoplay loop )
+			video.videoBackground( preload="yes" playsinline autoplay muted loop )
 				source( src="/images/startup_background.mp4" type="video/mp4")
 	section#agreement.content( data-bind="if: sectionAgreement ")
 		.content.firstNodeContent
@@ -196,6 +198,7 @@ block jumbotron1
 			
 			<!-- ko if: CoNETConnect  -->
 			<!-- ko with: CoNETConnect -->
+			
 			<!-- ko if: showConnectCoNETProcess  -->
 			.card.centered.raised( style = " width: 100%;" )
 				.content
@@ -210,11 +213,19 @@ block jumbotron1
 							.or
 							.ui.negative.button( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.agree, click: imapConform ")
 					<!-- /ko -->
+					<!-- ko if: Loading() && ! showSendImapDataWarning() -->
+					.loaderCoNET
+						.loaderCoNET-div
+						.loaderCoNET-div
+						.loaderCoNET-div
+						.loaderCoNET-div
+					<!-- /ko -->
 
-					<!-- ko if: ! showSendImapDataWarning() -->
+					<!-- ko if: mayNotMakeImapConnect -->
+					
 						//- if connetcError() > -1
 						//-	imapInformation.imapCheckError[ connetcError() ]
-						.ui.segment( data-bind = "css: { yellow: connectStage() < -1, red: connetcError() > -1 }" )
+						//-.ui.segment( data-bind = "css: { yellow: connectStage() < -1, red: connetcError() > -1 }" )
 							p( data-bind="visible: connetcError() > -1, text: infoDefine [ $root.languageIndex() ].imapInformation.imapCheckError[ connetcError() ]")
 							Button.ui.icon.button.orange( data-bind = " visible: connetcError() > -1, click: returnToImapSetup, text: infoDefine [ $root.languageIndex() ].imapInformation.title " )
 							p( data-bind= "visible: connectStage() > -1, text: infoDefine [ $root.languageIndex() ].imapInformation.imapCheckingStep[ connectStage() ]")
@@ -890,3 +901,4 @@ block jumbotron1
 			p( data-bind = " text: modalContent ")
 		.actions
 			.ui.red.inverted.button( data-bind=" text: infoDefine [ languageIndex() ].linuxUpdate.refresh, click: reFreshLocalServer, visible:!hacked() ")
+

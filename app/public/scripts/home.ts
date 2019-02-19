@@ -34,7 +34,7 @@ const makeKeyPairData = function ( view: view_layout.view, keypair: keypair ) {
     const length = keypair.publicKeyID.length
     keypair.publicKeyID = keypair.publicKeyID.substr ( length - 16 )
         
-    let keyPairPasswordClass = new keyPairPassword ( function ( _imapData: IinputData ) {
+    let keyPairPasswordClass = new keyPairPassword ( function ( _imapData: IinputData, sessionHash: string ) {
         //      password OK
 
         keypair.keyPairPassword ( keyPairPasswordClass = null )
@@ -43,12 +43,12 @@ const makeKeyPairData = function ( view: view_layout.view, keypair: keypair ) {
         view.showIconBar ( true )
         view.showKeyPair ( false )
         if ( _imapData && _imapData.imapTestResult ) {
-            return view.imapSetupClassExit ( _imapData )
+            return view.imapSetupClassExit ( _imapData, sessionHash )
         }
         let uu = null
         return view.imapSetup ( uu = new imapForm ( keypair.email, _imapData, function ( imapData: IinputData ) {
             view.imapSetup ( uu = null )
-            view.imapSetupClassExit ( imapData )
+            view.imapSetupClassExit ( imapData, sessionHash )
         }))
         
     })
@@ -67,6 +67,8 @@ const makeKeyPairData = function ( view: view_layout.view, keypair: keypair ) {
         view.showIconBar ( false )
         view.connectedCoNET ( false )
         view.connectToCoNET ( false )
+        view.CoNETConnect (view.CoNETConnectClass = null)
+        view.imapSetup ( view.imapFormClass = null )
         return keypair.delete_btn_view ( false )
         
         
@@ -151,7 +153,7 @@ const appList = [
         titleColor: 'grey',
         comeSoon: true,
         css: 'width: 6em;height: 6em;display: block;',
-        show: true,
+        show: false,
         image: '/images/coNews.png',
         click: function ( view: view_layout.view ) { return },
     },
@@ -169,16 +171,19 @@ const appList = [
         click: function ( view: view_layout.view ) { return },
     },{
         //                      7
-        name: 'CoGoogle',
+        name: 'CoSearch',
         likeCount: ko.observable (0),
         liked: ko.observable (false),
         commentCount: ko.observable(0),
         titleColor: '#4885ed',
-        comeSoon: true,
+        comeSoon: false,
         css: 'width: 6em;height: 6em;display: block;',
         show: true,
-        image: '/images/Google__G__Logo.svg',
-        click: function ( view: view_layout.view ) { return },
+        image: '/images/CoSearchIcon.svg',
+        click: function ( view: view_layout.view ) {
+            
+            return window.open ( `/coSearch?sessionHash=${ view.sessionHash }`, '_blank' )
+        },
     },{
         //                      8
         name: 'CoTweet',
@@ -186,13 +191,13 @@ const appList = [
         liked: ko.observable (false),
         commentCount: ko.observable(0),
         titleColor: '#00aced',
-        comeSoon: false,
+        comeSoon: true,
         css: 'width: 6em;height: 6em;display: block;',
         show: true,
         image: '/images/Twitter_Logo_Blue.svg',
         click: function ( view: view_layout.view ) { 
-            
-            return window.open ('/twitter', '_blank')
+            return
+            //return window.open ('/twitter', '_blank')
         }
     },
     {
@@ -201,12 +206,13 @@ const appList = [
         likeCount: ko.observable (0),
         liked: ko.observable (false),
         titleColor: '#00aced',
-        comeSoon: false,
+        comeSoon: true,
         css: 'width: 6em;height: 6em;display: block;',
         show: true,
         image: '/images/1024px-YouTube_Logo_2017.svg.png',
         click: function ( view: view_layout.view ) {
-            return window.open ('/youtube', '_blank')
+            return 
+            //return window.open ('/youtube', '_blank')
         },
     },
     {
@@ -216,7 +222,7 @@ const appList = [
         titleColor: '#00aced',
         comeSoon: true,
         css: 'width: 6em;height: 6em;display: block;',
-        show: true,
+        show: false,
         image: '/images/wallet.png',
         click: function ( view: view_layout.view ) { return },
 
@@ -250,11 +256,14 @@ module view_layout {
         public CoGateClass: KnockoutObservable< CoGateClass > = ko.observable (null)
         public showCoGateButton = ko.observable ( false )
         public showCoGate = ko.observable (false)
+        public CoNETConnectClass: CoNETConnect = null
+        public imapFormClass: imapForm = null
         public CoNETConnect: KnockoutObservable < CoNETConnect > = ko.observable ( null )
         public AppList = ko.observable ( false )
         public CoGateRegionStoped = ko.observable ( false )
         public imapData: IinputData = null
         public newVersion = ko.observable ( null )
+        public sessionHash = ''
         
         public systemError () {
             this.modalContent ( infoDefine[ this.languageIndex() ].emailConform.formatError [ 10 ] )
@@ -311,7 +320,7 @@ module view_layout {
                 
                 this.clearImapData ()
                 config.keypair = null
-                let _keyPairGenerateForm =  new keyPairGenerateForm ( function ( _keyPair: keypair ) {
+                let _keyPairGenerateForm =  new keyPairGenerateForm ( function ( _keyPair: keypair, sessionHash: string ) {
                     /**
                      *      key pair ready
                      */
@@ -328,7 +337,7 @@ module view_layout {
                     let uu = null
                     self.imapSetup ( uu = new imapForm ( config.account, null, function ( imapData: IinputData ) {
                         self.imapSetup ( uu = null )
-                        return self.imapSetupClassExit ( imapData )
+                        return self.imapSetupClassExit ( imapData, sessionHash )
                     }))
                     return self.keyPairGenerateForm ( _keyPairGenerateForm = null )
 
@@ -459,6 +468,11 @@ module view_layout {
             return initPopupArea ()
             
         }
+
+        public deletedKeypairResetView () {
+            this.imapSetup (null)
+            
+        }
     
         public agreeClick () {
             
@@ -507,11 +521,11 @@ module view_layout {
             return this.CoGateClass ( uu = null )
         }
 
-        public imapSetupClassExit ( _imapData: IinputData ) {
+        public imapSetupClassExit ( _imapData: IinputData, sessionHash: string ) {
             const self = this
-            let uu = null
             this.imapData = _imapData
-            return this.CoNETConnect ( uu = new CoNETConnect ( _imapData.imapUserName, this.keyPair().verified, _imapData.confirmRisk, this.keyPair().email, 
+            this.sessionHash = sessionHash
+            return this.CoNETConnect ( this.CoNETConnectClass = new CoNETConnect ( _imapData.imapUserName, this.keyPair().verified, _imapData.confirmRisk, this.keyPair().email, 
             function ConnectReady ( err, showCoGate ) {
                 if ( typeof err ==='number' && err > -1 ) {
                     
@@ -519,10 +533,10 @@ module view_layout {
                     coGate = null
                     self.CoGateClass ()
                     if ( showCoGate ) {
-                        self.CoNETConnect ( uu = null )
-                        return self.imapSetup ( uu = new imapForm ( _imapData.account, null, function ( imapData: IinputData ) {
-                            self.imapSetup ( uu = null )
-                            return self.imapSetupClassExit ( imapData )
+                        self.CoNETConnect ( this.CoNETConnectClass = null )
+                        return self.imapSetup ( this.imapFormClass = new imapForm ( _imapData.account, null, function ( imapData: IinputData ) {
+                            self.imapSetup ( this.imapFormClass = null )
+                            return self.imapSetupClassExit ( imapData, sessionHash )
                         }))
                     }
                     return

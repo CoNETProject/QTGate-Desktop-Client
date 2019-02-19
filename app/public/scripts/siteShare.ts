@@ -347,6 +347,10 @@ const getCurrentPlanUpgradelBalance = function ( expiration: string, planName: s
 
 const infoDefine = [
 	{
+        coSearch: {
+            searchInputPlaceholder: '请输入检索关键字组合或网址',
+            SearchText:'搜索'
+        },
         youtube: {
             startup: {
                 title: '欢迎使用Co油管',
@@ -620,7 +624,7 @@ const infoDefine = [
             connectImap: '连接CoNET',
             cancelConnect: '终止CoNET连接',
             imapItemTitle: '通讯用邮箱详细信息',
-            
+            loaderText:['正','在','和','C','o','N','E','T','建','立','通','讯','管','道','...'],
             imapCheckingStep: [
                 /* 0 */'正在尝试连接email服务器',
                 /* 1 */'邮件服务器IMAP连接成功, 正在等待CoNET对接。',
@@ -848,7 +852,7 @@ const infoDefine = [
         thirdParty: {
             comesoon:'即将推出',
             information: 'CoNET平台',
-            app: ['Co定制代理','CoChat','Co云存储','Co邮件','Co新闻频道','CoNET定制业务','Co谷歌','Co推特', 'Co油管','Co加密货币钱包'],
+            app: ['Co定制代理','CoChat','Co云存储','Co邮件','Co新闻频道','CoNET定制业务','Co网站检索','Co推特', 'Co油管','Co加密货币钱包'],
             qtgateGateway: 'CoNET提供的高质量上网技术iOPN和@OPN，在CoNET全球16个区域，当场定制您专属的代理服务器，变换您的IP地址隐身无障碍的访问互联网',
             dimmer: [
                 '高质量量身定制代理服务器业务，让您隐身安全不受注意的网上冲浪。 ',
@@ -857,7 +861,7 @@ const infoDefine = [
                 '隐身匿名邮件客户端，可免翻墙访问Gmail',
                 '免翻墙隐身匿名访问世界头条新闻',
                 'QTG承接定制各类公众服务类及跨国企业私有APP业务',
-                '免翻墙匿名隐身谷歌检索客户端',
+                '免翻墙匿名隐身网页检索客户端',
                 '免翻墙匿名隐身推特客户端',
                 '免翻墙匿名隐身Youtube客户端，可下载视频',
                 '免翻墙匿名隐身加密货币钱包和交易所'
@@ -1011,6 +1015,10 @@ const infoDefine = [
         }
         
 	},{
+        coSearch: {
+            searchInputPlaceholder: 'サーチキーワードまたはウェーブアドレス',
+            SearchText:'検索'
+        },
         youtube: {
             startup: {
                 title: 'Co for Youtubeへようこそ',
@@ -1053,7 +1061,7 @@ const infoDefine = [
             comesoon:'まもなく登場します。',
             information: 'CoNETプラットフォーム',
             qtgateGateway:'CoNETご提供する高品質カスタムゲットウェイサービス、グローバルに１６区域とCoNET独自のiOPNと@OPN技術により、貴方のIPアドレスをカバーして、静かに無障害にインターネットの世界へ可能です。',
-            app:['CoGate', 'CoMsg', 'CoBox','CoMail','CoNews','Coカスタム','Co for','Co for','Co for','Coウォレット'],
+            app:['CoGate', 'CoMsg', 'CoBox','CoMail','CoNews','Coカスタム','Coウェーブ検索','Co for','Co for','Coウォレット'],
             
             dimmer: [
                 '高品質カスタムゲットウェイサービス、自由になるインターネットの世界へ',
@@ -1062,7 +1070,7 @@ const infoDefine = [
                 '匿名メール端末',
                 'グロバールニュースをチェック',
                 'CoNETに公衆及び私有ビジネスカスタム業務',
-                '匿名Googleサーチ端末',
+                '匿名ウェーブサーチ端末',
                 '匿名Tweet端末',
                 '匿名Youtube端末、ビデオダウンロードをサポート',
                 '匿名ブロックチェーンウォレットとエクスチェンジ'
@@ -1437,6 +1445,7 @@ const infoDefine = [
             connectImap: 'CoNETに接続にします',
             cancelConnect: 'CoNETとの接続を中止します',
             imapItemTitle: '通信用Email詳細設定',
+            loaderText:['C','o','N','E','T','へ','接','続','を','し','て','い','ま','す','...'],
             imapCheckingStep: [
                 /* 0 */'emailサーバへ接続しています。',
                 /* 1 */'emailサーバへIMAP接続しました、CoNETからレスポンスを待ちます。',
@@ -1676,6 +1685,10 @@ const infoDefine = [
         },
 
 	},{
+        coSearch: {
+            searchInputPlaceholder: 'Search or type a URL',
+            SearchText:'Search'
+        },
         youtube: {
             startup: {
                 title: 'Welcome to Co for Youtube',
@@ -1718,7 +1731,7 @@ const infoDefine = [
             information: 'CoNET Platform',
             comesoon:'Come soon.',
             qtgateGateway: 'CoGate gateway service. High speed, total privacy, ultra secure and easy to use. Your gateway to a secure and open internet.',
-            app:['CoGate', 'CoMsg', 'CoBox', 'CoMail', 'CoNews','Co Custom', 'Co for', 'Co for','Co for','CoWallet'],
+            app:['CoGate', 'CoMsg', 'CoBox', 'CoMail', 'CoNews','Co Custom', 'CoWebSearch', 'Co for','Co for','CoWallet'],
             
             dimmer: [
                 'Advanced private custom gateway service',
@@ -1727,7 +1740,7 @@ const infoDefine = [
                 'Privacy email client',
                 'Discover your world every day',
                 'Custom business solution for public or private APPs in CoNET',
-                'Privacy Google search client',
+                'Privacy website search client',
                 'Privacy Tweet client',
                 'Privacy Youtube client. May download Youtube video via 3rd-party webside.',
                 'Privacy blockchain wallet'
@@ -2142,6 +2155,7 @@ const infoDefine = [
             connectImap: 'Connect to CoNET',
             cancelConnect: 'Stop connecting to CoNET.',
             imapItemTitle: 'Email account details:',
+            loaderText:['C','o','n','n','e','c','t',' ','t','o',' ','C','o','N','E','T',' ','n','e','t','w','o','r','k','...'],
             imapCheckingStep: [
                 /* 0 */'Trying to connect to email server.',
                 /* 1 */'Connected to email server with IMAP. Waiting response from CoNET.',
@@ -2385,6 +2399,10 @@ const infoDefine = [
         },
 
 	},{
+        coSearch: {
+            searchInputPlaceholder: '請輸入檢索關鍵字組合或網址',
+            SearchText:'搜尋'
+        },
         youtube: {
             startup: {
                 title: '歡迎使用Co for Youtube',
@@ -2426,7 +2444,7 @@ const infoDefine = [
         thirdParty: {
             information: 'CoNET平台',
             comesoon:'即將登場',
-            app:['CoGate','CoChat','Co云存储','Co邮箱','Co新闻频道','CoNet業務訂製','Co谷歌','Co推特','Co for','Co加密貨幣錢包'],
+            app:['CoGate','CoChat','Co云存储','Co邮箱','Co新闻频道','CoNet業務訂製','Co網站檢索','Co推特','Co for','Co加密貨幣錢包'],
             qtgateGateway: 'CoNET提供的高質量上網技術iOPN和@OPN，在CoNET全球16個區域，當場定制您專屬的代理服務器，變換您的IP地址隱身無障礙的訪問互聯網',
             
             dimmer: [
@@ -2436,7 +2454,7 @@ const infoDefine = [
                 '隱身匿名邮件客户端，可免翻牆访问Gmail',
                 '免翻墙隱身匿名訪問世界頭條新闻',
                 'QTG承接定制各類公眾服務類及跨國企業私有APP業務',
-                '免翻牆匿名隱身谷歌檢索客戶端',
+                '免翻牆匿名隱身網頁檢索客戶端',
                 '免翻牆匿名隱身推特客戶端',
                 '免翻牆匿名隱身Youtube客戶端',
                 '免翻牆匿名隱身加密貨幣錢包和交易所'
@@ -2797,6 +2815,7 @@ const infoDefine = [
             connectImap: '連結CoNET網絡',
             cancelConnect: '終止CoNET網絡連接',
             imapItemTitle: '通訊用郵箱詳細信息',
+            loaderText:['正','在','和','C','o','N','E','T','建','立','通','訊','管','道','...'],
             imapCheckingStep: [
                 /* 0 */'正在尝试连接邮件伺服器',
                 /* 1 */'邮件伺服器IMAP連接成功，正在等待CoNET對接。',

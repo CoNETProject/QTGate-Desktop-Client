@@ -27,12 +27,12 @@ class keyPairPassword {
                 return this.showPasswordError();
             }
             this.passwordChecking(true);
-            return socketIo.emit11('checkPemPassword', this.systemSetup_systemPassword(), function (err, _imapData) {
+            return socketIo.emit11('checkPemPassword', this.systemSetup_systemPassword(), function (err, _imapData, sessionHash) {
                 self.passwordChecking(false);
                 if (err || typeof _imapData === 'boolean' && _imapData) {
                     return self.showPasswordError();
                 }
-                return self.exit(_imapData);
+                return self.exit(_imapData, sessionHash);
             });
         };
         const self = this;
