@@ -12,7 +12,9 @@
     "unix": "",
     "mac": "electron-builder",
     "pre": "electron-builder install-app-deps",
-    "release": "electron-builder --win && electron-builder --mac && electron-builder --linux"
+    "release": "electron-builder --win && electron-builder --mac && electron-builder --linux",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "engines": {
     "node": ">=50.9"
@@ -73,6 +75,8 @@
     "raw-socket": "1.6.4",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
-    "twitter-text": "3.0.0"
-  }
+    "twitter-text": "3.0.0",
+    "snyk": "^1.189.0"
+  },
+  "snyk": true
 }
