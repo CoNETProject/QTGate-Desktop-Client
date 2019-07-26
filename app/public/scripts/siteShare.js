@@ -1,3 +1,18 @@
+/*!
+ * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 const uuid_generate = function () {
     let lut = [];
     for (let i = 0; i < 256; i++) {
@@ -327,7 +342,13 @@ const infoDefine = [
     {
         coSearch: {
             searchInputPlaceholder: '请输入检索关键字组合或网址',
-            SearchText: '搜索'
+            SearchText: '搜索',
+            totalResults: ['大约有', '条记录'],
+            moreResults: '更多结果',
+            SearchesRelated: ['', '的相关搜索'],
+            label_HTML: 'HTML代码',
+            label_picture: '图片',
+            unSafe: ['安全浏览', '非安全浏览（非推荐）']
         },
         youtube: {
             startup: {
@@ -807,8 +828,8 @@ const infoDefine = [
         },
         thirdParty: {
             comesoon: '即将推出',
-            information: 'CoNET平台',
-            app: ['Co定制代理', 'CoChat', 'Co云存储', 'Co邮件', 'Co新闻频道', 'CoNET定制业务', 'Co网站检索', 'Co推特', 'Co油管', 'Co加密货币钱包'],
+            information: '您已进入CoNET网络',
+            app: ['Co定制代理', '酷茶', '酷存', 'Co邮件', 'Co新闻频道', '酷检索', 'Co推特', 'Co油管', '酷钱包', 'CoNET定制业务'],
             qtgateGateway: 'CoNET提供的高质量上网技术iOPN和@OPN，在CoNET全球16个区域，当场定制您专属的代理服务器，变换您的IP地址隐身无障碍的访问互联网',
             dimmer: [
                 '高质量量身定制代理服务器业务，让您隐身安全不受注意的网上冲浪。 ',
@@ -817,10 +838,10 @@ const infoDefine = [
                 '隐身匿名邮件客户端，可免翻墙访问Gmail',
                 '免翻墙隐身匿名访问世界头条新闻',
                 'QTG承接定制各类公众服务类及跨国企业私有APP业务',
-                '免翻墙匿名隐身网页检索客户端',
+                '免翻墙匿名隐身网页检索',
                 '免翻墙匿名隐身推特客户端',
                 '免翻墙匿名隐身Youtube客户端，可下载视频',
-                '免翻墙匿名隐身加密货币钱包和交易所'
+                'CoNET加密货币钱包和交易所'
             ]
         },
         useInfoAndroid: {
@@ -963,7 +984,13 @@ const infoDefine = [
     }, {
         coSearch: {
             searchInputPlaceholder: 'サーチキーワードまたはウェーブアドレス',
-            SearchText: '検索'
+            SearchText: '検索',
+            totalResults: ['約', '件'],
+            moreResults: '結果をさらに表示',
+            SearchesRelated: ['', 'に関連する検索キーワード'],
+            label_HTML: 'HTMLコード',
+            label_picture: 'イメージ',
+            unSafe: ['安全浏览', '非安全浏览（非推荐）']
         },
         youtube: {
             startup: {
@@ -1004,9 +1031,9 @@ const infoDefine = [
         },
         thirdParty: {
             comesoon: 'まもなく登場します。',
-            information: 'CoNETプラットフォーム',
+            information: 'CoNETネットワークへようこそ',
             qtgateGateway: 'CoNETご提供する高品質カスタムゲットウェイサービス、グローバルに１６区域とCoNET独自のiOPNと@OPN技術により、貴方のIPアドレスをカバーして、静かに無障害にインターネットの世界へ可能です。',
-            app: ['CoGate', 'CoMsg', 'CoBox', 'CoMail', 'CoNews', 'Coカスタム', 'Coウェーブ検索', 'Co for', 'Co for', 'Coウォレット'],
+            app: ['CoGate', 'CoChat', 'CoBox', 'CoMail', 'CoNews', 'Co検索', 'Co for', 'Co for', 'Coウォレット', 'Coカスタム'],
             dimmer: [
                 '高品質カスタムゲットウェイサービス、自由になるインターネットの世界へ',
                 'ツイートスタイルの匿名ソーシャルメディア',
@@ -1606,7 +1633,13 @@ const infoDefine = [
     }, {
         coSearch: {
             searchInputPlaceholder: 'Search or type a URL',
-            SearchText: 'Search'
+            SearchText: 'Search',
+            totalResults: ['About', 'results'],
+            moreResults: 'More Results',
+            SearchesRelated: ['Searches related to ', ''],
+            label_HTML: '</>',
+            label_picture: 'Picture',
+            unSafe: ['Safe viewer', 'Unsafe viewer']
         },
         youtube: {
             startup: {
@@ -1646,10 +1679,10 @@ const infoDefine = [
             accountError: 'Twitter return error: Invalid or expired token. error. Please check your account APP information and try again.'
         },
         thirdParty: {
-            information: 'CoNET Platform',
+            information: 'Welcome to CoNET.',
             comesoon: 'Come soon.',
             qtgateGateway: 'CoGate gateway service. High speed, total privacy, ultra secure and easy to use. Your gateway to a secure and open internet.',
-            app: ['CoGate', 'CoMsg', 'CoBox', 'CoMail', 'CoNews', 'Co Custom', 'CoWebSearch', 'Co for', 'Co for', 'CoWallet'],
+            app: ['CoGate', 'CoChat', 'CoBox', 'CoMail', 'CoNews', 'CoSearch', 'Co for', 'Co for', 'CoWallet', 'Co Custom'],
             dimmer: [
                 'Advanced private custom gateway service',
                 'Private and secure, decentralized social media',
@@ -1657,10 +1690,10 @@ const infoDefine = [
                 'Privacy email client',
                 'Discover your world every day',
                 'Custom business solution for public or private APPs in CoNET',
-                'Privacy website search client',
+                'Web search client',
                 'Privacy Tweet client',
                 'Privacy Youtube client. May download Youtube video via 3rd-party webside.',
-                'Privacy blockchain wallet'
+                'CoNET Cryptocurrency wallet'
             ]
         },
         account: {
@@ -2285,7 +2318,12 @@ const infoDefine = [
     }, {
         coSearch: {
             searchInputPlaceholder: '請輸入檢索關鍵字組合或網址',
-            SearchText: '搜尋'
+            SearchText: '搜尋',
+            totalResults: ['大約有', '條記錄'],
+            moreResults: '更多結果',
+            SearchesRelated: ['', '的相關搜尋'],
+            label_HTML: 'HTML代碼',
+            label_picture: '圖片'
         },
         youtube: {
             startup: {
@@ -2325,9 +2363,9 @@ const infoDefine = [
             accountError: '推特回送錯誤信息提示：您輸入的APP應用設定信息有誤。請檢查您的推特APP信息後再試。'
         },
         thirdParty: {
-            information: 'CoNET平台',
+            information: '您已進入CoNET網絡',
             comesoon: '即將登場',
-            app: ['CoGate', 'CoChat', 'Co云存储', 'Co邮箱', 'Co新闻频道', 'CoNet業務訂製', 'Co網站檢索', 'Co推特', 'Co for', 'Co加密貨幣錢包'],
+            app: ['CoGate', '酷茶', '酷存', 'Co邮箱', 'Co新闻频道', '酷檢索', '酷推特', 'Co for', '酷錢包', 'CoNet業務訂製'],
             qtgateGateway: 'CoNET提供的高質量上網技術iOPN和@OPN，在CoNET全球16個區域，當場定制您專屬的代理服務器，變換您的IP地址隱身無障礙的訪問互聯網',
             dimmer: [
                 '高質量量身定制代理伺服器業務，讓您隱身安全不受注意的網上沖浪。',
@@ -2336,10 +2374,10 @@ const infoDefine = [
                 '隱身匿名邮件客户端，可免翻牆访问Gmail',
                 '免翻墙隱身匿名訪問世界頭條新闻',
                 'QTG承接定制各類公眾服務類及跨國企業私有APP業務',
-                '免翻牆匿名隱身網頁檢索客戶端',
+                '免翻牆匿名隱身網頁檢索',
                 '免翻牆匿名隱身推特客戶端',
                 '免翻牆匿名隱身Youtube客戶端',
-                '免翻牆匿名隱身加密貨幣錢包和交易所'
+                'CoNET加密貨幣錢包'
             ]
         },
         account: {
@@ -2925,7 +2963,6 @@ function scrollToTop() {
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
 }
-const socketIo = io({ reconnectionAttempts: 5, timeout: 500, autoConnect: true });
 const QTGateRegionsSetup = [
     {
         title: '@OPN'
@@ -2934,28 +2971,6 @@ const QTGateRegionsSetup = [
         title: 'iOPN'
     }
 ];
-socketIo.emit11 = function (eventName, ...args) {
-    let CallBack = args.pop();
-    if (typeof CallBack !== 'function') {
-        CallBack ? args.push(CallBack) : null;
-        CallBack = null;
-    }
-    const localTimeOut = setTimeout(function () {
-        _view.refresh();
-        //twitter_view.systemError()
-    }, 10000);
-    const _CallBack = function (err) {
-        clearTimeout(localTimeOut);
-        if (CallBack) {
-            socketIo.once(eventName, function (...args) {
-                return CallBack(...args);
-            });
-        }
-    };
-    args.length
-        ? socketIo.emit(eventName, ...args, _CallBack)
-        : socketIo.emit(eventName, _CallBack);
-};
 const _QTGateRegions = [
     {
         icon: 'india',

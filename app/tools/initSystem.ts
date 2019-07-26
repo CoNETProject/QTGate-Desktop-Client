@@ -25,6 +25,7 @@ import * as Http from 'http'
 import * as Https from 'https'
 import * as Net from 'net'
 import * as Nodemailer from 'nodemailer'
+import * as Url from 'url'
 import { StringDecoder } from 'string_decoder'
 import { DH_CHECK_P_NOT_SAFE_PRIME } from 'constants';
 /**
@@ -46,8 +47,17 @@ const InitKeyPair = () => {
 	}
 	return keyPair
 }
+export const checkUrl = ( url ) => {
 
-export const QTGateFolder = Path.join (  !/^android$/i.test ( process.platform ) ? Os.homedir() : Path.join(__dirname,"../../../../.."), '.CoNET' )
+    const urlCheck = Url.parse ( url )
+
+    const ret = /^http:|^https:$/.test ( urlCheck.protocol ) && ! /^localhost|^127.0.0.1/.test ( urlCheck.hostname )
+    if ( ret ) {
+        return true
+    }
+    return false
+}
+export const QTGateFolder = Path.join (  !/^android$/i.test ( process.platform ) ? Os.homedir() : Path.join( __dirname, "../../../../.." ), '.CoNET' )
 export const QTGateLatest = Path.join ( QTGateFolder, 'latest' )
 export const QTGateTemp = Path.join ( QTGateFolder, 'tempfile' )
 export const QTGateVideo = Path.join ( QTGateTemp, 'videoTemp')
@@ -644,7 +654,7 @@ export async function saveEncryptoData ( fileName: string, data: any, config: in
 		publicKeys: publicKeys,
 		privateKeys: [ privateKeys ]
 	}
-	console.log (`saveEncryptoData Encrypto data with public key[${ Util.inspect (publicKeys[0].users[0].userId.userid, false, 2, true )}]`)
+	//console.log (`saveEncryptoData Encrypto data with public key[${ Util.inspect (publicKeys[0].users[0].userId.userid, false, 2, true )}]`)
 	return getPbkdf2 ( config, password, ( err, data: Buffer ) => {
 		if ( err ) {
 			return CallBack ( err )
@@ -734,10 +744,11 @@ export async function readEncryptoFile ( filename: string, savedPasswrod, config
 				return CallBack ( ex )
 			}
 			let _return = false
-			return OpenPgp.decrypt ( options11 ).then ( data => {
+			return OpenPgp.decrypt ( options11 ).then ( async data => {
 				
 				_return = true
-				if ( data.signatures && data.signatures[0] && data.signatures[0].valid ) {
+				await data.signatures[0].verified
+				if ( data.signatures[0].verified ) {
 					return CallBack ( null, data.data )
 				}
 				return CallBack ( new Error ( 'signatures error!' ))
@@ -771,22 +782,27 @@ export async function decryptoMessage ( openKeyOption, message: string, CallBack
 		publicKeys: openKeyOption.publicKeys,
 		message: null
 	}
-	try {
-		option.message = await OpenPgp.message.readArmored ( message )
-	} catch ( ex ) {
-		return CallBack ( ex )
-	}
 	
-	return OpenPgp.decrypt ( option ).then ( data => {
+	option.message = await OpenPgp.message.readArmored ( message )
+	
+	
+	return OpenPgp.decrypt ( option ).then ( async data => {
 		
-		if ( data.signatures && data.signatures.length && data.signatures.findIndex ( n => { return n.valid }) > -1 ) {
+		/**
+		 * 		verify signatures
+		 */
+		await data.signatures[0].verified
+		//console.log ( Util.inspect ( data, false, 3, true ))
+		if (  data.signatures[0].verified ) {
 			return CallBack ( null, data.data )
 			
 		}
-		console.log ( Util.inspect ( data ))
+
+		
 		return CallBack ( new Error ('signatures error!'))
-	}).catch ( err =>{
-		console.log ( err )
+	}).catch ( err => {
+
+		console.trace ( err )
 		console.log ( JSON.stringify ( message ))
 		return CallBack ( err )
 	})
@@ -859,36 +875,11 @@ export const sendCoNETConnectRequestEmail = ( imapData: IinputData, openKeyOptio
 
 const testPingTimes = 5
 
-export const testPing = ( hostIp: string, CallBack ) => {
-	let pingTime = 0
-	const test = new Array ( testPingTimes )
-	test.fill ( hostIp )
-	console.log ( `start testPing [${ hostIp }]`)
-	return Async.eachSeries ( test, ( n, next ) => {
-		const netPing = require ('net-ping')
-		const session = netPing.createSession ()
-		session.pingHost ( hostIp, ( err, target, sent, rcvd ) => {
-			
-			session.close ()
-			if ( err ) {
-				console.log ( `session.pingHost ERROR, ${ err.message }`)
-				return next ( err )
-			}
-			const ping = rcvd.getTime () - sent.getTime ()
-			pingTime += ping
-			return next ()
-		})
-	}, err => {
-		if ( err ) {
-			return CallBack ( new Error ('ping error'))
-		}
-
-		return CallBack ( null, Math.round ( pingTime / testPingTimes ))
-	})
-	
-}
-
 export const deleteImapFile = () => {
-	return Fs.unlinkSync ( imapDataFileName1 )
+	return Fs.unlink ( imapDataFileName1, err => {
+		if ( err ) {
+			console.log (`deleteImapFile get err`, err )
+		}
+	})
 }
 

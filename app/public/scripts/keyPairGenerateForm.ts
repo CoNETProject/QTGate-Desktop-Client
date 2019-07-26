@@ -148,9 +148,11 @@ class keyPairGenerateForm {
 		this.SystemAdministratorNickName.subscribe ( function ( newValue ) {
 			return self.checkNickname ( newValue )
 		})
+		/*
 		this.systemSetup_systemPassword.subscribe ( function ( newValue ) {
 			return self.checkPassword ( newValue )
 		})
+		*/
 	}
 	public form_AdministratorEmail_submit () {
 		const self = this

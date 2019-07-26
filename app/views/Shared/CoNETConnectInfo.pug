@@ -1,0 +1,13 @@
+#connectInformationMessage
+
+    <!-- ko if: connectInformationMessage -->
+    <!-- ko with: connectInformationMessage -->
+    //-button.ui.button( data-bind="click: showOfflineMessage") ttt
+    //-button.ui.button( data-bind="click: hideMessage") rrr
+    .offlineMessage( style="position: fixed; top: 0px;width: 100%; display: flex; justify-content: center;")
+        #offlineInfo.ui.negative.message( data-bind="visible: offlineInfo, css:{ negative: showNegative, green: showGreen }" style="max-width: 80%;")
+            <!-- ko if: messageArray() -->
+            p( data-bind="text: messageArray()[$root.languageIndex()]")
+            <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->

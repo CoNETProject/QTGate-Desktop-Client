@@ -274,7 +274,8 @@ interface IConnectCommand {
 }
 
 interface QTGateAPIRequestCommand {
-	command: string
+    command: string
+    subCom: string
     myIpServer?: QTGate_DnsAddress []
     account?: string
 	error: number
@@ -284,6 +285,7 @@ interface QTGateAPIRequestCommand {
     dataTransfer?: iTransferData
     requestTimes?: number
     region?: string
+    
 }
 
 interface QTGateCommand {
@@ -657,4 +659,11 @@ interface Date {
     isLeapYear: ()=> boolean
     getDaysInMonth: () => number
     addMonths: ( n: number ) => Date
+}
+
+interface coSearch_Object {
+    command: string
+    args: string[]
+    screenSize_x: number
+    screenSize_y: number
 }

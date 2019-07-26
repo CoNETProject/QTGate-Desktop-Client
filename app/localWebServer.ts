@@ -34,6 +34,12 @@ import * as Jimp from 'jimp'
 import * as UploadFile from './tools/uploadFile'
 import * as Twitter_text from 'twitter-text'
 import Youtube from './tools/youtube'
+import coSearceServer from './tools/coSearchServer'
+import * as JSZip from 'jszip'
+
+
+Express.static.mime.define({ 'multipart/related': ['mht'] })
+
 
 interface localConnect {
 	socket: SocketIO.Socket
@@ -114,6 +120,7 @@ export default class localServer {
 	private expressServer = Express()
 	private httpServer = HTTP.createServer ( this.expressServer )
 	private socketServer = SocketIo ( this.httpServer )
+	private socketServer_CoSearch = this.socketServer.of ('/CoSearch')
 	public config: install_config  = null
 	public keyPair: keypair = null
 	public savedPasswrod: string = ''
@@ -152,7 +159,7 @@ export default class localServer {
 		let sendMail = false
 		const _exitFunction = err => {
 			//console.trace ( `tryConnectCoNET exit! err =`, err )
-			console.log (`sessionHashPool.length = [${ this.sessionHashPool.length }]`)
+			//console.log (`sessionHashPool.length = [${ this.sessionHashPool.length }]`)
 			switch ( err ) {
 				///			connect conet had timeout
 				case 1: {
@@ -215,8 +222,8 @@ export default class localServer {
 		
 	}
 
-	private sendRequest ( socket: SocketIO.Socket, cmd: QTGateAPIRequestCommand, sessionHash: string, CallBack ) {
-		if ( !this.openPgpKeyOption) {
+	public sendRequest ( socket: SocketIO.Socket, cmd: QTGateAPIRequestCommand, sessionHash: string, CallBack ) {
+		if ( !this.openPgpKeyOption )  {
 			console.log ( `sendrequest keypair error! !this.config [${ !this.config }] !this.keyPair[${ !this.keyPair }]`)
 			return CallBack (1)
 		}
@@ -225,6 +232,7 @@ export default class localServer {
 			this.tryConnectCoNET ( socket, sessionHash )
 			return CallBack ( 0 )
 		}
+		
 		saveLog (`sendRequest send [${ cmd.command }]`)
 
 		cmd.requestSerial = Crypto.randomBytes(8).toString('hex')
@@ -343,7 +351,7 @@ export default class localServer {
 	}
 
 	private listenAfterPassword ( socket: SocketIO.Socket, sessionHash: string ) {
-		console.log (`localServer listenAfterPassword for sessionHash [${ sessionHash }]`)
+		//console.log (`localServer listenAfterPassword for sessionHash [${ sessionHash }]`)
 		socket.on ( 'checkImap', ( emailAddress: string, password: string, timeZone, tLang, CallBack1 ) => {
 			CallBack1 ()
 			console.log (`localServer on checkImap!`)
@@ -515,7 +523,7 @@ export default class localServer {
 				this.regionV1 = res.Args[2]
 			})
 		})
-
+		/*
 		socket.on ( 'pingCheck', CallBack1 => {
 			CallBack1 ()
 			if ( process.platform === 'linux') {
@@ -550,7 +558,7 @@ export default class localServer {
 			})
 			
 		})
-
+		*/
 		socket.on ( 'promoCode', ( promoCode, CallBack1 ) => {
 			CallBack1 ()
 			const com: QTGateAPIRequestCommand = {
@@ -744,6 +752,36 @@ export default class localServer {
 		}
 		//console.log ( files )
 		return Imap.imapGetMediaFile ( this.imapConnectData, files[0], CallBack )
+	}
+
+	public getHTMLCompleteZIP ( fileName: string, saveFolder: string, CallBack ) {
+
+		if ( !fileName || !fileName.length ) {
+			return CallBack ( new Error (`getHTMLComplete function Error: filename empty!`))
+		}
+
+		return this.getMedia ( fileName, ( err, data: Buffer ) => {
+			if ( err ) {
+				return CallBack ( err )
+			}
+			Fs.writeFileSync ( Path.join( saveFolder, fileName ), data )
+			
+			return JSZip.loadAsync ( Buffer.from ( data.toString(), 'base64'))
+				.then ( zip => {
+					let u = true
+					Async.each ( Object.keys ( zip.files ), ( _filename, next ) => {
+						zip.files [ _filename ].async ( 'nodebuffer' ).then ( content => {
+							
+							if ( content.length ) {
+								return Fs.writeFile ( Path.join ( saveFolder, _filename ), content, next  )
+							}
+
+							Fs.mkdir ( Path.join ( saveFolder, _filename ), { recursive : true }, next )
+							
+						})
+					}, CallBack )
+				})
+		})
 	}
 
 	private getVideo ( m: twitter_media_video_info, CallBack ) {
@@ -1299,12 +1337,12 @@ export default class localServer {
 			this.savedPasswrod = preData.password
 			return Tool.getPbkdf2 ( this.config, this.savedPasswrod, ( err, Pbkdf2Password: Buffer ) => {
 				if ( err ) {
-					saveLog (`NewKeyPair getPbkdf2 Error: [${ err.message }]`)
+					saveLog ( `NewKeyPair getPbkdf2 Error: [${ err.message }]`)
 					return this.CoNET_systemError ()
 				}
 				
 				preData.password = Pbkdf2Password.toString ( 'hex' )
-
+				console.log (`preData.password = [${ preData.password }]`)
 				return Tool.newKeyPair( preData.email, preData.nikeName, preData.password, ( err, retData )=> {
 					if ( err ) {
 						console.log ( err )
@@ -1463,6 +1501,7 @@ export default class localServer {
 		this.expressServer.use ( Express.static ( Tool.QTGateFolder ))
 		this.expressServer.use ( Express.static ( Path.join ( __dirname, 'public' )))
 		this.expressServer.use ( Express.static ( Path.join ( __dirname, 'html' )))
+		
 
 		this.expressServer.get ( '/', ( req, res ) => {
 
@@ -1537,12 +1576,18 @@ export default class localServer {
 				console.log (`sessionHashPool have not this [${ sessionHash }]!\n${ this.sessionHashPool }`)
 				return res.render( 'home', { title: 'home', proxyErr: false  })
 			}
+			this.socketServer_CoSearch.once ( 'connection', socket => {
+				return this.socketServer_CoSearchConnected ( socket, sessionHash )
+			})
+
 			return res.render ( 'CoSearch', { title: 'CoSearch', sessionHash: sessionHash })
 		})
 
 		this.socketServer.on ( 'connection', socker => {
 			return this.socketServerConnected ( socker )
 		})
+
+		
 
 		this.httpServer.once ( 'error', err => {
 			console.log (`httpServer error`, err )
@@ -1566,6 +1611,18 @@ export default class localServer {
 			}
 		})
 		
+	}
+
+	private socketServer_CoSearchConnected ( socket: SocketIO.Socket, sessionHash: string ) {
+		const clientName = `[${ socket.id }][ ${ socket.conn.remoteAddress }]`
+		//saveLog (`socketServer_CoSearchConnected make new coSearceServer for [${ clientName }]`)
+		let _coSearchServer = new coSearceServer ( sessionHash, socket, saveLog, clientName, this )
+		socket.once ( 'disconnect', reason => {
+			_coSearchServer = null
+			return saveLog ( `socketServer_CoSearchConnected destroy coSearceServer for [${ clientName }]`)
+		})
+		
+
 	}
 
 

@@ -514,7 +514,7 @@ class ImapServerSwitchStream extends Stream.Transform {
             return CallBack();
         }
         this.doCommandCallback = (err, info) => {
-            console.trace(`_logout doin doCommandCallback `, err, info, typeof CallBack);
+            //console.trace (`_logout doin doCommandCallback `, err, info, typeof CallBack )
             return CallBack();
         };
         timers_1.clearTimeout(this.idleResponsrTime);
@@ -564,7 +564,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         this.Tag = `A${this.imapServer.TagCount1()}`;
         this.cmd = `APPEND "${this.imapServer.writeFolder}" {${out.length}${this.imapServer.literalPlus ? '+' : ''}}`;
         this.cmd = `${this.Tag} ${this.cmd}`;
-        const time = out.length / 1000 + 2000;
+        const time = out.length / 1000 + 5000;
         this.debug ? debugOut(this.cmd, false, this.imapServer.imapSerialID) : null;
         if (!this.writable) {
             //console.log (`[${ this.imapServer.imapSerialID }] ImapServerSwitchStream append !this.writable doing imapServer.socket.end ()`)
@@ -863,6 +863,8 @@ class qtGateImap extends Event.EventEmitter {
     }
     connect() {
         const _connect = () => {
+            saveLog(`qtGateImap IMAP connect success!`);
+            this.socket.setKeepAlive(true);
             timers_1.clearTimeout(this.connectTimeOut);
             this.socket.pipe(this.imapStream).pipe(this.socket);
         };
@@ -1281,7 +1283,7 @@ class imapPeer extends Event.EventEmitter {
                 uu = JSON.parse(data);
             }
             catch (ex) {
-                return saveLog(`imapPeer mail deCrypto JSON.parse got ERROR [${ex.message}] data=[${Util.inspect(data)}]`, true);
+                return saveLog(`imapPeer mail deCrypto JSON.parse got ERROR [${ex.message}] data = [${Util.inspect(data)}]`, true);
             }
             if (uu.ping && uu.ping.length) {
                 saveLog(`GOT PING [${uu.ping}]`, true);
@@ -1305,7 +1307,7 @@ class imapPeer extends Event.EventEmitter {
                     return saveLog(`GOT in the past PONG [${uu.pong}]!`, true);
                 }
                 if (this.pingUuid !== uu.pong) {
-                    return saveLog(`GOT unknow PONG [${uu.pong}]!`, true);
+                    return saveLog(`GOT unknow PONG [${uu.pong}]! this.pingUuid = [${this.pingUuid}]`, true);
                 }
                 saveLog(`imapPeer connected Clear waitingReplyTimeOut!`, true);
                 this.pingUuid = null;
@@ -1351,7 +1353,7 @@ class imapPeer extends Event.EventEmitter {
         });
     }
     encryptAndAppendWImap1(mail, CallBack) {
-        if (!this.wImap || this.wImap.imapEnd || !this.wImap.imapStream.writable) {
+        if (!this.wImap) {
             const info = `encryptAndAppendWImap error: no wImap`;
             CallBack(new Error(info));
             this.newWriteImap();
@@ -1379,36 +1381,34 @@ class imapPeer extends Event.EventEmitter {
         timers_1.clearTimeout(this.waitingReplyTimeOut);
         timers_1.clearTimeout(this.needPingTimeOut);
         this.needPing = false;
-        //saveLog ( `Make Time Out for a Ping`, true )
+        saveLog(`Make Time Out for a Ping, ping ID = [${this.pingUuid}]`, true);
         return this.waitingReplyTimeOut = timers_1.setTimeout(() => {
             saveLog(`ON setTimeOutOfPing this.emit ( 'pingTimeOut' ) `, true);
-            if (this.pingCount < 3) {
-                console.log(`this.ping < 3 do ping again!`);
-                return this.Ping();
-            }
-            console.log(`this.ping > 3 do pingTimeOut`);
             return this.emit('pingTimeOut');
         }, pingPongTimeOut);
     }
     Ping() {
-        this.pingUuid = Uuid.v4();
+        if (this.pingUuid) {
+            return saveLog(`Ping already waiting other ping, STOP!`);
+        }
+        const pingUuid = Uuid.v4();
         //saveLog ( `Ping! ${ this.pingUuid }`, true )
-        this.pingCount++;
-        return this.encryptAndAppendWImap1(JSON.stringify({ ping: this.pingUuid }), err => {
+        return this.encryptAndAppendWImap1(JSON.stringify({ ping: pingUuid }), err => {
             if (err) {
                 if (err.message && /TRYCREATE/i.test(err.message)) {
-                    saveLog(`Outlook mail support emit [wFolder]`);
-                    timers_1.clearTimeout(this.waitingReplyTimeOut);
+                    saveLog(`Outlook mail support emit [wFolder] []`);
                     return this.emit('wFolder');
                 }
-                if (/no wImap/i.test(err.message)) {
+                if (/no wImap|/i.test(err.message)) {
                     return saveLog(`Doing ping got no imap err stop! [${err.message ? err.message : null}]`, true);
                 }
                 saveLog(`Doing ping got ERROR! try again [${err.message ? err.message : null}]`, true);
                 return timers_1.setTimeout(() => {
+                    saveLog(`setTimeout doing Ping!`);
                     return this.Ping();
-                }, 1000);
+                }, 3000);
             }
+            this.pingUuid = pingUuid;
             return this.setTimeOutOfPing();
         });
     }
@@ -1437,11 +1437,15 @@ class imapPeer extends Event.EventEmitter {
         //saveLog ( `====== > newWriteImap`, true )
         this.wImap = new qtGateImapwrite(this.imapData, this.writeBox);
         this.wImap.once('end', err => {
-            console.log(`this.wImap.once end ! [${err && err.message ? err.message : null}]!`);
-            return this.destroy(1);
+            return console.log(`wImap end ! [${err && err.message ? err.message : null}]!`);
         });
         this.wImap.once('error', err => {
-            return this.destroy(1);
+            if (this.wImap.socket && this.wImap.socket.end && typeof this.wImap.socket.end === 'function') {
+                this.wImap.socket.end();
+            }
+            this.wImap.removeAllListeners();
+            this.wImap = null;
+            saveLog(`imapPeer wImap END`);
         });
         this.wImap.once('ready', () => {
             saveLog(`wImap.once ( 'ready') doing this.makeWImap = false`, true);
@@ -1453,7 +1457,7 @@ class imapPeer extends Event.EventEmitter {
                 });
             };
             this.once(`wFolder`, () => {
-                this.wImap.destroyAll(null);
+                //this.wImap.destroyAll ( null )
                 return supportOutlook();
             });
             this.newReadImap();
@@ -1484,18 +1488,14 @@ class imapPeer extends Event.EventEmitter {
             }
         });
         this.rImap.once('end', err => {
-            console.log(`imapPeer rImap on END!`);
             this.rImap = null;
             this.makeRImap = false;
-            if (!this.doingDestroy && !err) {
-                return this.newReadImap();
-            }
             if (typeof this.exit === 'function') {
-                console.log(`this.rImap call exit() success!`);
+                saveLog(`imapPeer rImap on END!`);
                 this.exit(err);
                 return this.exit = null;
             }
-            console.log(`this.rImap.once end, but exit isn't function!`);
+            saveLog(`imapPeer rImap on END! but this.exit have not a function `);
         });
     }
     makeWriteFolder(CallBack) {
@@ -1516,7 +1516,6 @@ class imapPeer extends Event.EventEmitter {
         });
     }
     destroy(err) {
-        console.trace('destroy');
         timers_1.clearTimeout(this.waitingReplyTimeOut);
         if (this.doingDestroy) {
             console.log(`destroy but this.doingDestroy = ture`);

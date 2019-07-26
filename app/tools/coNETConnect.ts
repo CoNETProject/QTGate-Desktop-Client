@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as SocketIo from 'socket.io'
+
 import * as Imap from './imap'
-import * as OpenPgp from 'openpgp'
+
 import * as Tool from './initSystem'
 import * as Fs from 'fs'
 import * as Async from 'async'
@@ -34,7 +34,7 @@ const saveLog = ( err: {} | string, _console = false ) => {
 }
 const timeOutWhenSendConnectRequestMail = 1000 * 60
 const commandRequestTimeOutTime = 1000 * 10
-const requestTimeOut = 1000 * 10
+const requestTimeOut = 1000 * 60
 
 export default class extends Imap.imapPeer {
 	private commandCallBackPool: Map <string, requestPoolData > = new Map ()
@@ -82,7 +82,7 @@ export default class extends Imap.imapPeer {
 		
 		if ( !this.alreadyExit ) {
 			this.alreadyExit = true
-			console.log (`CoNETConnect class exit1 doing this._exit()`)
+			console.log (`CoNETConnect class exit1 doing this._exit() success!`)
 			return this._exit ( err )
 		}
 		console.log (`exit1 cancel already Exit [${ err }]`)
@@ -143,7 +143,6 @@ export default class extends Imap.imapPeer {
 		})
 		
 		this.ignorePingTimeout = doNetSendConnectMail
-		
 		
 		this.sockerServer.emit ( 'tryConnectCoNETStage', null, this.connectStage = 0 )
 

@@ -1,37 +1,135 @@
 extends ../shared/CoSearchLayout.pug
 block jumbotron
-
+    include ../shared/CoNETConnectInfo
 block jumbotron1
-    .language( style="z-index: 999;top: 0.7em;right: 1em;position: fixed;width: 2em;")
+    .language( style="z-index: 999;top: 1.3em;right: 1em;position: fixed;width: 2em;")
         .ui.text.shape.languageText( data-bind = " click: selectItem " )
             .sides
                 span.ui.header.side.en.languageItem.languageTextCoverColor
-                    i.flag.united.kingdom.
+                    i.flag.united.kingdom.large
                     //-span.languageItemSpan( data-bind = " text: menu[ 'en' ][0].showName " )
                 span.ui.header.side.tw.languageItem.languageTextCoverColor
-                    i.flag.taiwan
+                    i.flag.taiwan.large
                     //-span.languageItemSpan( data-bind = " text: menu[ 'tw' ][0].showName " )
                 span.ui.header.side.zh.languageItem.languageTextCoverColor
-                    i.flag.china
+                    i.flag.china.large
                     //-span.languageItemSpan( data-bind = " text: menu[ 'zh' ][0].showName " )
                 span.ui.header.side.ja.languageItem.languageTextCoverColor
-                    i.flag.japan
+                    i.flag.japan.large
                     //-span.languageItemSpan( data-bind = " text: menu[ 'ja' ][0].showName " )
-    section#coSearchBackGround( data-bind = " css: { animationBlur: backGroundBlue }" )
-        include coSearchImage.html
-    section#coSearchForm
-        form.ui.form( data-bind=" submit: search_form" )
-            .ui.icon.input.huge( data-bind="css : { action: searchInputTextActionShow,  animationSearchInput: hasFocus}" style="width: 100%;" )
-                input( style="color:rgba(0,0,0,0.5)" type="text" placeholder="Search..." data-bind="attr:{ placeholder: infoDefine[ $root.languageIndex() ].coSearch.searchInputPlaceholder }, css : { backgroundTransparent: ! backGroundBlue ()}, textInput: searchInputText, hasFocus: hasFocus")
-                
-                <!-- ko if: !searchInputText().length -->
-                i.icon.search(style="color:rgba(0,0,0,0.4)")
-                <!-- /ko -->
+    
+    <!-- ko if: showMain() -->
+    .main
+        
+        <!-- ko if: !searchItem() -->
+        #coSearchBackGround( data-bind = " css: { animationBlur: backGroundBlue }" )
+            include coSearchImage.html
+        form#coSearchForm.ui.form( data-bind="submit: search_form" )
+            .ui.search
+                .ui.icon.input.huge( data-bind = "css : { animationSearchInput: hasFocus, 'loading disabled': showInputLoading }" style = "width: 100%;border-radius: 500rem;" )
+                    input( style="color:rgba(0,0,0,0.5);border-radius: 500rem;" type="text" placeholder="Search..."
+                    data-bind = "attr:{ placeholder: infoDefine[ $root.languageIndex() ].coSearch.searchInputPlaceholder }, css : { backgroundTransparent: ! backGroundBlue ()}, textInput: searchInputText, hasFocus: hasFocus")
+                    
+                    <!-- ko if: searchInputText().length -->
+                    i.icon.search.link.circular( style="color: #4285f4!important;" data-bind="click: search_form ")
+                    <!-- /ko -->
 
-                <!-- ko if: searchInputText().length -->
+                    
+                    <!-- ko if: searchInputTextActionShow -->
+                    //-input.ui.inverted.basic.blue.button( type="submit" data-bind=" text: infoDefine[ $root.languageIndex() ].coSearch.SearchText")
+                    <!-- /ko -->
+        <!-- /ko -->
+        <!-- ko if: searchItem() -->
+        .listItems( style="margin:1em;" )
+            .ui.top.fixed.menu.borderless
+                .item( style="width: 90%;" )
+                    form.ui.form( data-bind = "submit: search_form" style = "width: 100%;" )
+                        .field
+                            .ui.search
+                                .ui.input.icon
+                                    input( style="color:rgba(0,0,0,0.5);border-radius: 500rem!important;" type="text" data-bind = "value: searchInputText, hasFocus: SearchInputNextHasFocus" )
+                                    i.icon.circular.search.link.icon( style="color: #4285f4!important;" )
+                        <!-- ko if: SearchInputNextHasFocus() -->
+                        .field
+                            .ui.grey.header( data-bind = "text: infoDefine[ $root.languageIndex() ].coSearch.SearchesRelated[0] + searchInputText() + infoDefine[ $root.languageIndex() ].coSearch.SearchesRelated[1]" 
+                                    style="margin-bottom: 1em;" )
+                            .related.ui.grid( style = "padding-bottom: 1em;" )
+                                <!-- ko foreach: searchItem().searchesRelated -->
+                                a.five.wide.column( href="#" data-bind = "text: text" style="padding-top: 0.2rem;padding-bottom: 0.2rem;")
+                                <!-- /ko -->
+                        <!-- /ko -->
+            .items( style="margin-top: 14em;" data-bind=" style: { 'margin-top': SearchInputNextHasFocus() ? '14em' : '6.5em' }" )
                 
-                i.icon.close.link( data-bind="click: clearSearchText" style="color:rgba(0,0,0,0.4)")
-                <!-- /ko -->
-                <!-- ko if: searchInputTextActionShow -->
-                button.ui.inverted.basic.blue.button( data-bind=" text: infoDefine[ $root.languageIndex() ].coSearch.SearchText, click: search_form ")
-                <!-- /ko -->
+                .AppList.CoContent.content
+                    
+                    .items.searchItems
+                        
+                        .totalResults.ui.grey.header
+                            .sub.header
+                                span.totalResults1( data-bind = " text: infoDefine[ $root.languageIndex() ].coSearch.totalResults[0]" )
+                                span.totalResults2( data-bind = " text: $root.searchItem().totalResults" style="margin: 0.5em;" )
+                                span.totalResults3( data-bind = " text: infoDefine[ $root.languageIndex() ].coSearch.totalResults[1]" )
+                        
+                        <!-- ko foreach: searchItemList -->
+                        .ui.header
+                            a( data-bind = "text: title, attr:{ href: url } "  style="font-weight: normal;" )
+                            .sub.header
+                                span
+                                    a( href="#" data-bind = " click: function() { $root.snapshotClick( $index() )}")
+                                        <!-- ko if: !showLoading() && ! snapshotReady()-->
+                                        i.icon.object.group.olive
+                                        <!-- /ko -->
+                                        <!-- ko if: showLoading -->
+                                        i.icon.notched.circle.loading.purple
+                                        <!-- /ko -->
+                                        <!-- ko if: snapshotReady -->
+                                        i.icon.file.image.outline.orange
+                                        <!-- /ko -->
+                                span( data-bind="text: urlShow, style: { color: snapshotReady() ? 'orange' : 'green' } " style="margin-top: 0.5em;margin-bottom: 0.5em;" )
+                                
+                            .sub.header( data-bind = "text: description" )
+                        .space
+                        <!-- /ko -->
+                        button.ui.large.button( data-bind = "css:{ loading: moreResultsButtomLoading },text: infoDefine[ $root.languageIndex() ].coSearch.moreResults, click: searchNext" style="margin-top: 1em;margin-bottom: 2em;" )
+        <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko if: !showMain() -->
+    .sub( data-bind = " with: showWebPage ")
+        .ui.top.fixed.menu.borderless
+            .item( style = "width: 90%;" )
+                form.ui.form( style = "width: 100%;" data-bind = "submit: function(){ $root.search_form() }" )
+                    h4( data-bind = "" )
+                    .field
+                        .ui.search
+                            .ui.input.icon( data-bind = "css : { 'loading disabled': $root.showInputLoading }" )
+                                input( style = "color: rgba ( 0,0,0,0.5 );border-radius: 500rem!important;" type = "text" data-bind = "value: $root.searchInputText, hasFocus: $root.hasFocus" )
+                                i.icon.circular.search.link.icon( style="color: #4285f4!important;" )
+                    <!-- ko if: $root.showSubViewToolBar() -->
+                    .field
+                        <!-- ko if: $root.searchItem () -->
+                        a.ui.red.label(  data-bind = "click: function(){ $root.showWebPage ( null );$root.showMain ( true )}" ) x
+                        <!-- /ko -->
+
+                        <!-- ko if: !$root.htmlIframe () -->
+                        a.ui.olive.label( data-bind = "click: function(){ $root.htmlIframe ( true )}, text: infoDefine[ $root.languageIndex() ].coSearch.label_HTML")
+
+                        <!-- /ko -->
+
+                        <!-- ko if: $root.htmlIframe () -->
+                        a.ui.teal.label( data-bind = "click: function(){ $root.htmlIframe ( false )}, text: infoDefine[ $root.languageIndex() ].coSearch.label_picture")
+                        
+                        <!-- /ko -->
+
+                        
+                        
+                        
+
+                    <!-- /ko -->
+        <!-- ko if: $root.htmlIframe () -->
+        iframe( data-bind = " style: { height: height, 'margin-top': $root.showSubViewToolBar() ? '9em' : '5.6em'  }, attr: { src: localUrl }, click: function () { $root.showSubViewToolBar( false )} "  style = "border: none;width: 100%;" sandbox = "allow-same-origin allow-scripts" )
+        <!-- /ko -->
+        <!-- ko if: !$root.htmlIframe () -->
+        img( data-bind = " style: { 'margin-top': $root.showSubViewToolBar() ? '9em' : '5.6em' }, attr: { src: png }, click: function() { $root.showSubViewToolBar(false)}" style = "border: none;width: 100%;")
+        <!-- /ko -->
+
+    <!-- /ko -->

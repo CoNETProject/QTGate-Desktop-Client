@@ -1,4 +1,4 @@
-# CoNET Platform
+# CoNET endpoint
 [![Build Status](https://travis-ci.org/QTGate/QTGate-Desktop-Client.svg?branch=master)](https://travis-ci.org/QTGate/QTGate-Desktop-Client)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/QTGate/Lobby)
 [![Known Vulnerabilities](https://snyk.io/test/github/qtgate/qtgate-desktop-client/badge.svg)](https://snyk.io/test/github/qtgate/qtgate-desktop-client)
@@ -22,35 +22,11 @@
 
 [WInXP or npm install](https://github.com/QTGate/QTGate-Desktop-Client/wiki/WInXP%E4%BB%A5%E5%8F%8ANPM%E7%92%B0%E5%A2%83%E4%B8%8B%E5%AE%89%E8%A3%9DCoNET)
 
-## Description
 ![http protocol](/resources/CoPlatform3.png?raw=true)
-### CoNET platform as product of [CoNET](https://github.com/QTGate/CoNET) provides a series of services that allows users to improve their security, privacy and freedom on the Internet
-- All other devices may use CoNET platform service via local website after launching CoNET platform.
-- CoNET platform provide a local DNS server that allowing its users to keep PRIVACY and ENCRYPTION.
-- **CoGate** Advanced private custom gateway service. It will startup a local proxy server that acts as an intermediary for requests from clients seeking resources from CoNET gateway server after connected CoNET gateway server. CoGate disguise the VPN traffic looks like IMAP or HTTP protocol, Ability to pass thru undetectable firewalls while providing secure and private access to the open internet, anywhere in the world.
-    1. **IP-Shifting** : IPs don’t stay the same, they automatically refresh every 2 hours. No one stays on a website all day. Make it look like users are surfing and further help bypass detection.
 
-    2. **Multi-gateway** : Using multiple gateways helps to further obfuscate traffic and decentralized bandwidth, by dispersing data over 2 or more IPs (up to 4). This helps evade detection by disguising user’s traffic to look like visiting multiple sites.
-
-    3. **Short connect** : Using iOPN looks like just normal web traffic, with short open/closed connections to target servers like regular web browsing. While a VPN tunnel looks like it’s always maintaining a connection, that makes it easy to detect.
-
-- **CoMsg** – A Twitter-Style social media use decentralized database ( blockchain ), End-to-End encrypted message, provide secure and anonymous.
-
-- **CoBox** – Private data storing allow user to store encrypted and shared files append draft message to email space. it may use multiple email space.
-
-- **CoMail** - Mail client on CoNET allows user keep their anonymous to access mailbox, send and receive OpenPGP encrypted email, it support IMAP and SMTP protocol.
-
-- **CoNewsChannels** - News Channels is APP for popular news paper include BBC, USA Today, NYTime...
-
-- **Co for Twitter** - Twitter client allowing user access Twitter keep anonymous, doing End-To-End encrypted Twitter message, user reach Twitter who may live in a area that restricted access to Twitter.
-
-- **Co for Google** - Google search client allowing user access Google search keep anonymous user reach Google search who may live in a area that restricted access to Google.
-
-## 詳細
-### CoNET プラットフォームは[CoNET](https://github.com/QTGate/CoNET)に接続して、匿名と安全とプライバシーなオンラインツールです。
-- インストールをしたの後ローカルウェブサイトが立ち上げます、他のデバイスはローカルウェブサイトによって、以下のサービスが使えます。
-
-- ローカルDNSサーバを無料で提供します。匿名と安全とプライバシーなネットワーク環境をサポートします。
+### CoNET Platform is cross-platform sorware, provids a suite of APP that developed for use on [CoNET](https://github.com/QTGate/CoNET).
+### CoNETプラットフォームは複数のAPPを提供して[CoNET](https://github.com/QTGate/CoNET)を使います。
+### CoNET平台集成了一系列應用來使用[CoNET](https://github.com/QTGate/CoNET)網絡
 
 - **CoGate**はカスタムゲットウェイサービスです。グローバルに十五エリアの内ゲットウェイサーバーを選んで、クネクションをしてから、ローカルプロクシサーバが立ち上がります、全てのデバイスはネットワークのプロクシサー設定にこのローカルプロクシサーバに設定したことで、独自の混乱させるプロトコル技術によって、知能化ファイアウォールを無視し、安全とプライバシーなインターネットへ可能です。
 
@@ -72,7 +48,7 @@
 - **Co for Google** - 知能化ファイアウォールを無視しVPNなし匿名でGoogleサーチへアクセスすることがですます。
 
 ## 項目詳細
-### CoNET平台集成了接入[CoNET](https://github.com/QTGate/CoNET)匿名網絡後的一系列應用程序
+
 
 ### 有很多用戶反映不能夠連結郵件服務器，CoNET是幫助解決互聯網審查的項目，其本身就是讓客戶在不使用任何翻牆工具的前提下，能夠做到對抗網絡審查和封鎖，請在安裝和使用CoNET的過程中，不需使用越獄OS和翻牆軟件
 

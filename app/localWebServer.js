@@ -34,6 +34,9 @@ const Jimp = require("jimp");
 const UploadFile = require("./tools/uploadFile");
 const Twitter_text = require("twitter-text");
 const youtube_1 = require("./tools/youtube");
+const coSearchServer_1 = require("./tools/coSearchServer");
+const JSZip = require("jszip");
+Express.static.mime.define({ 'multipart/related': ['mht'] });
 let logFileFlag = 'w';
 const conetImapAccount = /^qtgate_test\d\d?@icloud.com$/i;
 const tweetImageMaxWidth = 1024;
@@ -95,6 +98,7 @@ class localServer {
         this.expressServer = Express();
         this.httpServer = HTTP.createServer(this.expressServer);
         this.socketServer = SocketIo(this.httpServer);
+        this.socketServer_CoSearch = this.socketServer.of('/CoSearch');
         this.config = null;
         this.keyPair = null;
         this.savedPasswrod = '';
@@ -180,6 +184,9 @@ class localServer {
                 console.log(`sessionHashPool have not this [${sessionHash}]!\n${this.sessionHashPool}`);
                 return res.render('home', { title: 'home', proxyErr: false });
             }
+            this.socketServer_CoSearch.once('connection', socket => {
+                return this.socketServer_CoSearchConnected(socket, sessionHash);
+            });
             return res.render('CoSearch', { title: 'CoSearch', sessionHash: sessionHash });
         });
         this.socketServer.on('connection', socker => {
@@ -220,7 +227,7 @@ class localServer {
         let sendMail = false;
         const _exitFunction = err => {
             //console.trace ( `tryConnectCoNET exit! err =`, err )
-            console.log(`sessionHashPool.length = [${this.sessionHashPool.length}]`);
+            //console.log (`sessionHashPool.length = [${ this.sessionHashPool.length }]`)
             switch (err) {
                 ///			connect conet had timeout
                 case 1: {
@@ -365,7 +372,7 @@ class localServer {
         return request();
     }
     listenAfterPassword(socket, sessionHash) {
-        console.log(`localServer listenAfterPassword for sessionHash [${sessionHash}]`);
+        //console.log (`localServer listenAfterPassword for sessionHash [${ sessionHash }]`)
         socket.on('checkImap', (emailAddress, password, timeZone, tLang, CallBack1) => {
             CallBack1();
             console.log(`localServer on checkImap!`);
@@ -509,36 +516,42 @@ class localServer {
                 this.regionV1 = res.Args[2];
             });
         });
-        socket.on('pingCheck', CallBack1 => {
-            CallBack1();
-            if (process.platform === 'linux') {
-                return socket.emit('pingCheckSuccess', true);
+        /*
+        socket.on ( 'pingCheck', CallBack1 => {
+            CallBack1 ()
+            if ( process.platform === 'linux') {
+                return socket.emit ( 'pingCheckSuccess', true )
             }
-            if (!this.regionV1 || this.pingChecking) {
-                saveLog(`!this.regionV1 [${!this.regionV1}] || this.pingChecking [${this.pingChecking}]`);
-                return socket.emit('pingCheck');
+                
+            
+            if ( !this.regionV1 || this.pingChecking ) {
+                saveLog ( `!this.regionV1 [${ !this.regionV1 }] || this.pingChecking [${ this.pingChecking }]`)
+                return socket.emit ( 'pingCheck' )
             }
-            this.pingChecking = true;
+                
+            this.pingChecking = true
             try {
-                const netPing = require('net-ping');
-                const session = netPing.createSession();
+                const netPing = require ('net-ping')
+                const session = netPing.createSession ()
+            } catch ( ex ) {
+                console.log ( `netPing.createSession err`, ex )
+                return socket.emit ( 'pingCheckSuccess', true )
             }
-            catch (ex) {
-                console.log(`netPing.createSession err`, ex);
-                return socket.emit('pingCheckSuccess', true);
-            }
-            Async.eachSeries(this.regionV1, (n, next) => {
-                return Tool.testPing(n.testHostIp, (err, ping) => {
-                    saveLog(`testPing [${n.regionName}] return ping [${ping}]`);
-                    socket.emit('pingCheck', n.regionName, err ? 9999 : ping);
-                    return next();
-                });
+            Async.eachSeries ( this.regionV1, ( n: regionV1, next ) => {
+                
+                return Tool.testPing ( n.testHostIp, ( err, ping ) => {
+                    saveLog( `testPing [${ n.regionName }] return ping [${ ping }]`)
+                    socket.emit ( 'pingCheck', n.regionName, err? 9999: ping )
+                    return next ()
+                })
             }, () => {
-                saveLog(`pingCheck success!`);
-                this.pingChecking = false;
-                return socket.emit('pingCheckSuccess');
-            });
-        });
+                saveLog (`pingCheck success!`)
+                this.pingChecking = false
+                return socket.emit ( 'pingCheckSuccess' )
+            })
+            
+        })
+        */
         socket.on('promoCode', (promoCode, CallBack1) => {
             CallBack1();
             const com = {
@@ -705,6 +718,29 @@ class localServer {
         }
         //console.log ( files )
         return Imap.imapGetMediaFile(this.imapConnectData, files[0], CallBack);
+    }
+    getHTMLCompleteZIP(fileName, saveFolder, CallBack) {
+        if (!fileName || !fileName.length) {
+            return CallBack(new Error(`getHTMLComplete function Error: filename empty!`));
+        }
+        return this.getMedia(fileName, (err, data) => {
+            if (err) {
+                return CallBack(err);
+            }
+            Fs.writeFileSync(Path.join(saveFolder, fileName), data);
+            return JSZip.loadAsync(Buffer.from(data.toString(), 'base64'))
+                .then(zip => {
+                let u = true;
+                Async.each(Object.keys(zip.files), (_filename, next) => {
+                    zip.files[_filename].async('nodebuffer').then(content => {
+                        if (content.length) {
+                            return Fs.writeFile(Path.join(saveFolder, _filename), content, next);
+                        }
+                        Fs.mkdir(Path.join(saveFolder, _filename), { recursive: true }, next);
+                    });
+                }, CallBack);
+            });
+        });
     }
     getVideo(m, CallBack) {
         if (!m || !m.QTDownload) {
@@ -1179,6 +1215,7 @@ class localServer {
                     return this.CoNET_systemError();
                 }
                 preData.password = Pbkdf2Password.toString('hex');
+                console.log(`preData.password = [${preData.password}]`);
                 return Tool.newKeyPair(preData.email, preData.nikeName, preData.password, (err, retData) => {
                     if (err) {
                         console.log(err);
@@ -1292,6 +1329,15 @@ class localServer {
                 return socket.emit('disconnectClick', region);
             });
         }
+    }
+    socketServer_CoSearchConnected(socket, sessionHash) {
+        const clientName = `[${socket.id}][ ${socket.conn.remoteAddress}]`;
+        //saveLog (`socketServer_CoSearchConnected make new coSearceServer for [${ clientName }]`)
+        let _coSearchServer = new coSearchServer_1.default(sessionHash, socket, saveLog, clientName, this);
+        socket.once('disconnect', reason => {
+            _coSearchServer = null;
+            return saveLog(`socketServer_CoSearchConnected destroy coSearceServer for [${clientName}]`);
+        });
     }
 }
 exports.default = localServer;

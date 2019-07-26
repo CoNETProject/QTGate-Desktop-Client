@@ -26,6 +26,7 @@ const Http = require("http");
 const Https = require("https");
 const Net = require("net");
 const Nodemailer = require("nodemailer");
+const Url = require("url");
 /**
  * 		define
  */
@@ -42,6 +43,14 @@ const InitKeyPair = () => {
         publicKeyID: null
     };
     return keyPair;
+};
+exports.checkUrl = (url) => {
+    const urlCheck = Url.parse(url);
+    const ret = /^http:|^https:$/.test(urlCheck.protocol) && !/^localhost|^127.0.0.1/.test(urlCheck.hostname);
+    if (ret) {
+        return true;
+    }
+    return false;
 };
 exports.QTGateFolder = Path.join(!/^android$/i.test(process.platform) ? Os.homedir() : Path.join(__dirname, "../../../../.."), '.CoNET');
 exports.QTGateLatest = Path.join(exports.QTGateFolder, 'latest');
@@ -577,7 +586,7 @@ async function saveEncryptoData(fileName, data, config, password, CallBack) {
         publicKeys: publicKeys,
         privateKeys: [privateKeys]
     };
-    console.log(`saveEncryptoData Encrypto data with public key[${Util.inspect(publicKeys[0].users[0].userId.userid, false, 2, true)}]`);
+    //console.log (`saveEncryptoData Encrypto data with public key[${ Util.inspect (publicKeys[0].users[0].userId.userid, false, 2, true )}]`)
     return exports.getPbkdf2(config, password, (err, data) => {
         if (err) {
             return CallBack(err);
@@ -658,9 +667,10 @@ async function readEncryptoFile(filename, savedPasswrod, config, CallBack) {
             return CallBack(ex);
         }
         let _return = false;
-        return OpenPgp.decrypt(options11).then(data => {
+        return OpenPgp.decrypt(options11).then(async (data) => {
             _return = true;
-            if (data.signatures && data.signatures[0] && data.signatures[0].valid) {
+            await data.signatures[0].verified;
+            if (data.signatures[0].verified) {
                 return CallBack(null, data.data);
             }
             return CallBack(new Error('signatures error!'));
@@ -690,20 +700,19 @@ async function decryptoMessage(openKeyOption, message, CallBack) {
         publicKeys: openKeyOption.publicKeys,
         message: null
     };
-    try {
-        option.message = await OpenPgp.message.readArmored(message);
-    }
-    catch (ex) {
-        return CallBack(ex);
-    }
-    return OpenPgp.decrypt(option).then(data => {
-        if (data.signatures && data.signatures.length && data.signatures.findIndex(n => { return n.valid; }) > -1) {
+    option.message = await OpenPgp.message.readArmored(message);
+    return OpenPgp.decrypt(option).then(async (data) => {
+        /**
+         * 		verify signatures
+         */
+        await data.signatures[0].verified;
+        //console.log ( Util.inspect ( data, false, 3, true ))
+        if (data.signatures[0].verified) {
             return CallBack(null, data.data);
         }
-        console.log(Util.inspect(data));
         return CallBack(new Error('signatures error!'));
     }).catch(err => {
-        console.log(err);
+        console.trace(err);
         console.log(JSON.stringify(message));
         return CallBack(err);
     });
@@ -771,31 +780,10 @@ exports.sendCoNETConnectRequestEmail = (imapData, openKeyOption, ver, publicKey,
     ], CallBack);
 };
 const testPingTimes = 5;
-exports.testPing = (hostIp, CallBack) => {
-    let pingTime = 0;
-    const test = new Array(testPingTimes);
-    test.fill(hostIp);
-    console.log(`start testPing [${hostIp}]`);
-    return Async.eachSeries(test, (n, next) => {
-        const netPing = require('net-ping');
-        const session = netPing.createSession();
-        session.pingHost(hostIp, (err, target, sent, rcvd) => {
-            session.close();
-            if (err) {
-                console.log(`session.pingHost ERROR, ${err.message}`);
-                return next(err);
-            }
-            const ping = rcvd.getTime() - sent.getTime();
-            pingTime += ping;
-            return next();
-        });
-    }, err => {
-        if (err) {
-            return CallBack(new Error('ping error'));
-        }
-        return CallBack(null, Math.round(pingTime / testPingTimes));
-    });
-};
 exports.deleteImapFile = () => {
-    return Fs.unlinkSync(exports.imapDataFileName1);
+    return Fs.unlink(exports.imapDataFileName1, err => {
+        if (err) {
+            console.log(`deleteImapFile get err`, err);
+        }
+    });
 };

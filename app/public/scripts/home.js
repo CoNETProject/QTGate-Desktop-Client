@@ -13,6 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const socketIo = io({ reconnectionAttempts: 5, timeout: 500, autoConnect: true });
+socketIo.emit11 = function (eventName, ...args) {
+    let CallBack = args.pop();
+    if (typeof CallBack !== 'function') {
+        CallBack ? args.push(CallBack) : null;
+        CallBack = null;
+    }
+    const localTimeOut = setTimeout(function () {
+        _view.refresh();
+        //twitter_view.systemError()
+    }, 10000);
+    const _CallBack = function (err) {
+        clearTimeout(localTimeOut);
+        if (CallBack) {
+            socketIo.once(eventName, function (...args) {
+                return CallBack(...args);
+            });
+        }
+    };
+    args.length
+        ? socketIo.emit(eventName, ...args, _CallBack)
+        : socketIo.emit(eventName, _CallBack);
+};
 const InitKeyPair = function () {
     const keyPair = {
         publicKey: null,
@@ -89,14 +112,14 @@ const appList = [
         titleColor: '#0066cc',
         css: 'width: 6em;height: 6em;display: block;',
         comeSoon: false,
-        show: true,
+        show: false,
         click: function (view) {
             return view.CoGateClick();
         },
         image: '/images/CoGate.png'
     }, {
         //                      2
-        name: 'CoMsg',
+        name: 'CoChat',
         likeCount: ko.observable(0),
         liked: ko.observable(false),
         commentCount: ko.observable(0),
@@ -127,7 +150,7 @@ const appList = [
         titleColor: '#09b83e',
         comeSoon: true,
         css: 'width: 6em;height: 6em;display: block;',
-        show: true,
+        show: false,
         image: '/images/coMail.png',
         click: function (view) { return; },
     },
@@ -145,18 +168,6 @@ const appList = [
         click: function (view) { return; },
     },
     {
-        //                      6
-        name: 'CoCustom',
-        likeCount: ko.observable(0),
-        liked: ko.observable(false),
-        commentCount: ko.observable(0),
-        titleColor: '#09b83e',
-        comeSoon: false,
-        css: 'width: 6em;height: 6em;display: block;',
-        show: true,
-        image: '/images/512x512.png',
-        click: function (view) { return; },
-    }, {
         //                      7
         name: 'CoSearch',
         likeCount: ko.observable(0),
@@ -177,9 +188,9 @@ const appList = [
         liked: ko.observable(false),
         commentCount: ko.observable(0),
         titleColor: '#00aced',
-        comeSoon: true,
+        comeSoon: false,
         css: 'width: 6em;height: 6em;display: block;',
-        show: true,
+        show: false,
         image: '/images/Twitter_Logo_Blue.svg',
         click: function (view) {
             return;
@@ -194,7 +205,7 @@ const appList = [
         titleColor: '#00aced',
         comeSoon: true,
         css: 'width: 6em;height: 6em;display: block;',
-        show: true,
+        show: false,
         image: '/images/1024px-YouTube_Logo_2017.svg.png',
         click: function (view) {
             return;
@@ -208,8 +219,21 @@ const appList = [
         titleColor: '#00aced',
         comeSoon: true,
         css: 'width: 6em;height: 6em;display: block;',
-        show: false,
+        show: true,
         image: '/images/wallet.png',
+        click: function (view) { return; },
+    },
+    {
+        //                      6
+        name: 'CoCustom',
+        likeCount: ko.observable(0),
+        liked: ko.observable(false),
+        commentCount: ko.observable(0),
+        titleColor: '#09b83e',
+        comeSoon: false,
+        css: 'width: 6em;height: 6em;display: block;',
+        show: true,
+        image: '/images/512x512.png',
         click: function (view) { return; },
     }
 ];

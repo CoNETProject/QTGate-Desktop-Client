@@ -123,6 +123,11 @@ body {
     margin-top: 1em!important;
     max-width: 45em;
 }
+.searchItems {
+	margin: 0px auto!important;
+    margin-top: 1em!important;
+    max-width: 40em;
+}
 .background-clolr-white {
     background-color: transparent!important;
 }
@@ -777,7 +782,7 @@ ul.plan-features {
 
 #coSearchForm {
 	position: absolute;
-	margin-top: -25%;
+	margin-top: -30%;
 	width: 90%;
 	padding: 2em;
 }
@@ -792,4 +797,10 @@ ul.plan-features {
 }
 #coSearchForm input:-ms-input-placeholder {
 	color: rgba(0,0,0,0.3)
+}
+#itemList{
+	position: absolute;
+	margin-top: -25%;
+	width: 90%;
+	padding: 2em;
 }
