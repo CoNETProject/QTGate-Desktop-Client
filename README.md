@@ -1,8 +1,10 @@
 # CoNET Platform CoNETプラットフォーム CoNET平台
 
-### CoNET Platform is cross-platform sorware, provids a suite of APP that developed for use on [CoNET](https://github.com/QTGate/CoNET).
-### CoNETプラットフォームは複数のAPPを提供して[CoNET](https://github.com/QTGate/CoNET)を使います。
-### CoNET平台集成了一系列應用來使用[CoNET](https://github.com/QTGate/CoNET)網絡
+CoNET Platform is cross-platform sorware, provids a suite of APP that developed for use on [CoNET](https://github.com/QTGate/CoNET).
+
+CoNETプラットフォームは複数のAPPを提供して[CoNET](https://github.com/QTGate/CoNET)を使います。
+
+CoNET平台集成了一系列應用來使用[CoNET](https://github.com/QTGate/CoNET)網絡
 
 [![Build Status](https://travis-ci.org/QTGate/QTGate-Desktop-Client.svg?branch=master)](https://travis-ci.org/QTGate/QTGate-Desktop-Client)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/QTGate/Lobby)
