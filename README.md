@@ -31,19 +31,27 @@ CoNET平台集成了一系列應用來使用[CoNET](https://github.com/QTGate/Co
 
 [WInXP or npm install](https://github.com/QTGate/QTGate-Desktop-Client/wiki/WInXP%E4%BB%A5%E5%8F%8ANPM%E7%92%B0%E5%A2%83%E4%B8%8B%E5%AE%89%E8%A3%9DCoNET)
 
+## CoNET APPs
 
+### CoSearch
 
+![http protocol](/resources/coSearch.gif?raw=true)
 
-## [Help video. ヘルプビデオ.　幫助視頻](https://github.com/QTGate/QTGate-Desktop-Client/wiki)
+## [Help video/ヘルプビデオ/幫助視頻](https://github.com/QTGate/QTGate-Desktop-Client/wiki)
 
-## Build 編譯 ビルド
+## Build/ビルド/編譯
 
 npm run [mac|win32|win|linux]
 
-[Multi Platform Build 如何編譯多平台APP可參照 マルチOSのビルドにつて](https://www.electron.build/multi-platform-build)
+[Multi Platform Build/マルチOSのビルドにつて/如何編譯多平台APP可參照](https://www.electron.build/multi-platform-build)
 
 ## Notice 注意事項
 
+QTGate APP No longer provide
+
+QTGate　APPについて
+
+QTGate
 
 ## License 版權 
 
