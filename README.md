@@ -34,8 +34,10 @@ CoNET平台集成了一系列應用來使用[CoNET](https://github.com/QTGate/Co
 ## CoNET APPs
 
 ### CoSearch
-
+1）Web search/ウェブ検索/網頁檢索
 ![http protocol](/resources/coSearch.gif?raw=true)
+
+2）Get any web page screenshot/任意のWebページへスクリーンショット/抓取任意網站截圖
 
 ## [Help video/ヘルプビデオ/幫助視頻](https://github.com/QTGate/QTGate-Desktop-Client/wiki)
 
