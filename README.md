@@ -34,7 +34,7 @@ CoNET平台集成了一系列應用來使用[CoNET](https://github.com/QTGate/Co
 ## CoNET APPs
 
 ### CoSearch
-1）Web search/ウェブ検索/網頁檢索
+1）Web or Images search/ウェブまたは画像検索/網頁和圖片檢索
 ![http protocol](/resources/coSearch.gif?raw=true)
 
 2）Get any web page screenshot/任意のWebページへスクリーンショット/抓取任意網站截圖
@@ -48,12 +48,6 @@ npm run [mac|win32|win|linux]
 [Multi Platform Build/マルチOSのビルドにつて/如何編譯多平台APP可參照](https://www.electron.build/multi-platform-build)
 
 ## Notice 注意事項
-
-QTGate APP No longer provide
-
-QTGate　APPについて
-
-QTGate
 
 ## License 版權 
 
