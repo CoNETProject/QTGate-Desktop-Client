@@ -211,9 +211,14 @@ body {
 		border-top-left-radius: 7px;
 		border-bottom-left-radius: 7px;
   }
-  .shadowText {
-		text-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
-	}
+.shadowText {
+	text-shadow: 10px 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.shadowText1 {
+	text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+}
+
   .plan:last-child {
 		border-width: 2px;
 		border-top-right-radius: 7px;
@@ -754,7 +759,7 @@ ul.plan-features {
 
 @keyframes coSearchInputAnimation {
 	to { background: white ;}
-	to{box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);}
+	to { box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);}
 }
 
 .animationSearchInput {
@@ -783,7 +788,7 @@ ul.plan-features {
 #coSearchForm {
 	position: absolute;
 	margin-top: -30%;
-	width: 90%;
+	width: 100%;
 	padding: 2em;
 }
 #coSearchForm input::-webkit-input-placeholder {
@@ -803,4 +808,33 @@ ul.plan-features {
 	margin-top: -25%;
 	width: 90%;
 	padding: 2em;
+}
+
+#coTranslateForm {
+	position: absolute;
+	margin-top: -10%;
+	width: 90%;
+	padding: 2em;
+}
+.space {
+	margin: 1em;
+}
+
+.ui.input.error>input {
+	background-color: #fff6f6!important;
+	border-color: #e0b4b4!important;
+	color: #9f3a38!important;
+
+}
+.ui.input.error>input::-webkit-input-placeholder
+{
+	color:#e7bdbc!important;
+}
+.ui.input.error>input:focus::-moz-placeholder
+{
+	color:#da9796!important;
+}
+.ui.input.error>input:-ms-input-placeholder
+{
+	color:#e7bdbc!important
 }

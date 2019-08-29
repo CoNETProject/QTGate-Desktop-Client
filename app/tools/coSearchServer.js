@@ -20,6 +20,9 @@ const Util = require("util");
 const Fs = require("fs");
 const Path = require("path");
 const Tool = require("./initSystem");
+const uploadFile_1 = require("./uploadFile");
+const searchImageMaxWidth = 2048;
+const searchImageMaxHeight = 2048;
 const saveSnapshop = (src, sessionHash, _CallBack) => {
     const ret = {
         mHtml: `${sessionHash}.mht`,
@@ -68,7 +71,7 @@ class coSearchServer {
                     if (res && res.error === -1) {
                         return console.log(`Get process response !`);
                     }
-                    console.log(`getSnapshop get result ${res.Args} typeof res.Args = [${typeof res.Args}] `);
+                    console.log(`getSnapshop get result ${Util.inspect(res.Args, false, 3, true)} typeof res.Args = [${typeof res.Args}] `);
                     localServer.getHTMLCompleteZIP(res.Args[0], Tool.QTGateTemp, err => {
                         if (err) {
                             return console.log(`localServer.getHTMLCompleteZIP get ERROR`, err);
@@ -142,6 +145,15 @@ class coSearchServer {
                     const fileName = u.split('.')[0];
                     socket.emit('getSnapshop', null, null, { localUrl: `/tempfile/temp/${fileName}.html`, png: `/tempfile/temp/${fileName}.png`, height: height });
                 });
+            });
+        });
+        socket.on('searcImage', (rawImage, callback1) => {
+            callback1();
+            return uploadFile_1.getPictureBase64MaxSize_mediaData(rawImage, searchImageMaxWidth, searchImageMaxHeight, (err, data) => {
+                if (err) {
+                    return socket.emit('searcImage', 0);
+                }
+                console.log(data.length);
             });
         });
     }

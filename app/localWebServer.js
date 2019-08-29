@@ -30,7 +30,6 @@ const Imap = require("./tools/imap");
 const coNETConnect_1 = require("./tools/coNETConnect");
 const Crypto = require("crypto");
 const ProxyServer = require("./tools/proxyServer");
-const Jimp = require("jimp");
 const UploadFile = require("./tools/uploadFile");
 const Twitter_text = require("twitter-text");
 const youtube_1 = require("./tools/youtube");
@@ -39,8 +38,6 @@ const JSZip = require("jszip");
 Express.static.mime.define({ 'multipart/related': ['mht'] });
 let logFileFlag = 'w';
 const conetImapAccount = /^qtgate_test\d\d?@icloud.com$/i;
-const tweetImageMaxWidth = 1024;
-const tweetImageMaxHeight = 512;
 const saveLog = (err) => {
     if (!err) {
         return;
@@ -862,83 +859,6 @@ class localServer {
             });
         });
     }
-    getPictureBase64ToTwitter_mediaData(mediaData, CallBack) {
-        const media = mediaData.split(',');
-        const type = media[0].split(';')[0].split(':')[1];
-        const _media = Buffer.from(media[1], 'base64');
-        const ret = {
-            total_bytes: media[1].length,
-            media_type: type,
-            rawData: media[1],
-            media_id_string: null
-        };
-        const uploadDataPool = [];
-        //if ( mediaData.length > maxImageLength) {
-        const exportImage = (_type, img) => {
-            return img.getBuffer(_type, (err, _buf) => {
-                if (err) {
-                    return CallBack(err);
-                }
-                ret.rawData = _buf.toString('base64');
-                ret.total_bytes = _buf.length;
-                return CallBack(null, ret);
-            });
-        };
-        return Jimp.read(_media, (err, image) => {
-            if (err) {
-                return CallBack(err);
-            }
-            const uu = image.bitmap;
-            if (uu.height > uu.width) {
-                image.resize(Jimp.AUTO, tweetImageMaxHeight);
-            }
-            else {
-                image.resize(tweetImageMaxWidth, Jimp.AUTO);
-            }
-            if (/\/PNG/i.test(type)) {
-                return image.deflateStrategy(1, () => {
-                    return exportImage(type, image);
-                });
-            }
-            if (/\/(JPEG|JPG)/i.test(type)) {
-                return image.quality(100, () => {
-                    return exportImage(type, image);
-                });
-            }
-            //		BMP and all other to PNG
-            ret.media_type = 'image/png';
-            return image.deflateStrategy(4, () => {
-                return exportImage(ret.media_type, image);
-            });
-        });
-        //}
-        //return CallBack ( null, ret )
-    }
-    QT_PictureMediaUpload(data, CallBack) {
-        let imageIndex = 0;
-        return Async.eachSeries(data.images, (n, next) => {
-            return Async.waterfall([
-                _next => this.getPictureBase64ToTwitter_mediaData(n, _next),
-                (media, _next) => {
-                    media.media_id_string = Path.join(Tool.QTGateVideo, Uuid.v4());
-                    data.media_data.push(media);
-                    return Fs.writeFile(media.media_id_string, Buffer.from(media.rawData, 'base64'), 'binary', _next);
-                },
-                _next => {
-                    return UploadFile.sendFile3(data.media_data[data.media_data.length - 1].media_id_string, this.CoNETConnectCalss, (err, files) => {
-                        if (err) {
-                            saveLog(`QT_PictureMediaUpload UploadFile.sendFile error: [${err.message}]`);
-                            return _next(err);
-                        }
-                        const media = data.media_data[imageIndex++];
-                        media.media_id_string = files.join(',');
-                        delete media.rawData;
-                        return _next();
-                    });
-                }
-            ], next);
-        }, CallBack);
-    }
     QT_VideoMediaUpload(data, CallBack) {
         return UploadFile.sendFile3(Path.join(Tool.QTGateVideo, data.videoFileName), this.CoNETConnectCalss, (err, files) => {
             if (err) {
@@ -1309,26 +1229,6 @@ class localServer {
             new youtube_1.default(socket);
             return socket.emit('password_youtube', null, null);
         });
-    }
-    stopGetwayConnect(socket, sendToCoNET, region, sessionHash) {
-        if (this.connectCommand && this.connectCommand.length) {
-            region = this.connectCommand[0].region;
-            this.connectCommand = this.dataTransfer = null;
-        }
-        if (this.proxyServer && typeof this.proxyServer.exit === 'function') {
-            console.log(`this.proxyServer = null`);
-            this.proxyServer.exit();
-        }
-        if (sendToCoNET) {
-            const com = {
-                command: 'stopGetwayConnect',
-                Args: null,
-                error: null
-            };
-            return this.sendRequest(socket, com, sessionHash, (err, retCmd) => {
-                return socket.emit('disconnectClick', region);
-            });
-        }
     }
     socketServer_CoSearchConnected(socket, sessionHash) {
         const clientName = `[${socket.id}][ ${socket.conn.remoteAddress}]`;

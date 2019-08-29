@@ -371,7 +371,25 @@ const infoDefine = [
             SearchesRelated: ['','的相关搜索'],
             label_HTML: 'HTML代码',
             label_picture: '图片',
-            unSafe: ['安全浏览','非安全浏览（非推荐）']
+            imageSize: '图片尺寸：',
+            unSafe: ['安全浏览','非安全浏览（非推荐）'],
+            similarImages: '外观类似的图片',
+            errorMessage: [
+                '您的图片格式无法处理，请尝试选择其他图片',
+                '您的请求已达最大值，请稍后再试'
+            ],
+            coSearchConfigMenu: ['搜索设定','指定检索引擎'],
+            coSearchConfigIcon:['google',''],
+            coSearchEngineName: ['谷歌',''],
+            searchToolBarMenu: [
+                "网站", "新闻","图片","视频"
+            ],
+            timeUnit: {
+                hours: '小时前',
+                day: '天前',
+                mins: '分钟前'
+            }
+
 
         },
         youtube: {
@@ -1046,7 +1064,24 @@ const infoDefine = [
             SearchesRelated: ['','に関連する検索キーワード'],
             label_HTML: 'HTMLコード',
             label_picture: 'イメージ',
-            unSafe: ['安全浏览','非安全浏览（非推荐）']
+            imageSize: 'イメージサイズ:',
+            unSafe: ['安全浏览','非安全浏览（非推荐）'],
+            similarImages: '類似の画像',
+            errorMessage: [
+                '選択された画像は処理ができません、ほかの画像をしてください',
+                'レクエスト回数は制限にかかった、後ほど改めてお試しください'
+            ],
+            coSearchConfigMenu: ['検索の設定', '使用する検索エンジン'],
+            coSearchConfigIcon:[ 'google',''],
+            coSearchEngineName: [ 'Google',''],
+            searchToolBarMenu: [
+                "ウェイブ", "ニュース","画像","ビデオ"
+            ],
+            timeUnit: {
+                hours: '時間前',
+                day: '天前',
+                mins: '分前'
+            }
         },
         youtube: {
             startup: {
@@ -1721,8 +1756,25 @@ const infoDefine = [
             moreResults: 'More Results',
             SearchesRelated: [ 'Searches related to ','' ],
             label_HTML: '</>',
+            imageSize: 'Image size:',
             label_picture: 'Picture',
-            unSafe: ['Safe viewer','Unsafe viewer']
+            similarImages: 'Visually similar images',
+            unSafe: ['Safe viewer','Unsafe viewer'],
+            errorMessage: [
+                'This image have issue of format. Select other one please.',
+                'Request maximum error. Try again later.'
+            ],
+            coSearchConfigMenu: ['Search setup','Search engines'],
+            coSearchConfigIcon:[ 'google',''],
+            coSearchEngineName: [ 'Google',''],
+            searchToolBarMenu: [
+                "Webside", "News","Picture","Video"
+            ],
+            timeUnit: {
+                hours: 'hours ago',
+                day: 'days ago',
+                mins: 'minutes ago'
+            }
         },
         youtube: {
             startup: {
@@ -2441,7 +2493,35 @@ const infoDefine = [
             moreResults: '更多結果',
             SearchesRelated: ['','的相關搜尋'],
             label_HTML: 'HTML代碼',
-            label_picture:'圖片'
+            imageSize: '圖片尺寸',
+            label_picture:'圖片',
+            similarImages: '看起來相似的圖片',
+            errorMessage: [
+                '您的圖片格式無法處理，請嘗試選擇其他圖片',
+                '您的請求已達最大值，請稍後再試'
+            ],
+            coSearchConfigMenu: ['搜尋設定','搜尋引擎指定'],
+            coSearchEngineSelectArray: [
+                {
+                    name: 'google',
+                    icon: 'google',
+                    iconColor: '',
+                    textColor: '',
+                    showName: 'Google',
+                    image: null
+                }
+            ],
+            coSearchConfigIcon:['google','images/bing.svg',''],
+            coSearchEngineName: ['Google','',''],
+            searchToolBarMenu: [
+                "網頁", "新聞","圖片","視頻"
+            ],
+            timeUnit: {
+                hours: '小時前',
+                day: '天前',
+                mins: '分鐘前'
+            }
+
         },
         youtube: {
             startup: {

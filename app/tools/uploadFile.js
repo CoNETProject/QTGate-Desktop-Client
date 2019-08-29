@@ -23,6 +23,7 @@ const Imap = require("./imap");
 const Crypto = require("crypto");
 const Path = require("path");
 const Os = require("os");
+const Jimp = require("jimp");
 const QTGateFolder = Path.join(Os.homedir(), '.QTGate');
 const tempFiles = Path.join(QTGateFolder, 'tempfile');
 const QTGateVideo = Path.join(tempFiles, 'videoTemp');
@@ -223,6 +224,58 @@ exports.joinFiles = (files, CallBack) => {
         }
         return CallBack(null, outputFileName);
     });
+};
+exports.getPictureBase64MaxSize_mediaData = (mediaData, imageMaxWidth, imageMaxHeight, CallBack) => {
+    const media = mediaData.split(',');
+    const type = media[0].split(';')[0].split(':')[1];
+    const _media = Buffer.from(media[1], 'base64');
+    const ret = {
+        total_bytes: media[1].length,
+        media_type: type,
+        rawData: media[1],
+        media_id_string: null
+    };
+    const uploadDataPool = [];
+    //if ( mediaData.length > maxImageLength) {
+    const exportImage = (_type, img) => {
+        return img.getBuffer(_type, (err, _buf) => {
+            if (err) {
+                return CallBack(err);
+            }
+            ret.rawData = _buf.toString('base64');
+            ret.total_bytes = _buf.length;
+            return CallBack(null, ret);
+        });
+    };
+    return Jimp.read(_media, (err, image) => {
+        if (err) {
+            return CallBack(err);
+        }
+        const uu = image.bitmap;
+        if (uu.height > uu.width) {
+            image.resize(Jimp.AUTO, imageMaxHeight);
+        }
+        else {
+            image.resize(imageMaxWidth, Jimp.AUTO);
+        }
+        if (/\/PNG/i.test(type)) {
+            return image.deflateStrategy(1, () => {
+                return exportImage(type, image);
+            });
+        }
+        if (/\/(JPEG|JPG)/i.test(type)) {
+            return image.quality(100, () => {
+                return exportImage(type, image);
+            });
+        }
+        //		BMP and all other to PNG
+        ret.media_type = 'image/png';
+        return image.deflateStrategy(4, () => {
+            return exportImage(ret.media_type, image);
+        });
+    });
+    //}
+    //return CallBack ( null, ret )
 };
 /*
 sendFile3 ( Path.join ( QTGateVideo, '88d962e3-e07d-4229-8e64-ba55800fdbd0.mp4'), { domainName: null }, ( err, data ) => {

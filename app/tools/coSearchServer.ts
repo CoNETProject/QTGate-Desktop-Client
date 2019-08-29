@@ -19,7 +19,10 @@ import * as Util from 'util'
 import * as Fs from 'fs'
 import * as Path from 'path'
 import * as Tool from './initSystem'
+import { getPictureBase64MaxSize_mediaData }  from './uploadFile'
 
+const searchImageMaxWidth = 2048
+const searchImageMaxHeight = 2048
 
 const saveSnapshop = ( src, sessionHash, _CallBack ) => {
     const ret = {
@@ -72,7 +75,7 @@ export default class coSearchServer {
                     if ( res && res.error === -1  ) {
                         return console.log ( `Get process response !`)
                     }
-                    console.log (`getSnapshop get result ${ res.Args } typeof res.Args = [${ typeof res.Args }] `)
+                    console.log (`getSnapshop get result ${ Util.inspect (res.Args, false, 3, true ) } typeof res.Args = [${ typeof res.Args }] `)
     
                     localServer.getHTMLCompleteZIP ( res.Args[0], Tool.QTGateTemp, err => {
                         if ( err ) {
@@ -163,6 +166,22 @@ export default class coSearchServer {
                 })
                 
             })
+        })
+
+        socket.on ( 'searcImage', ( rawImage, callback1 ) => {
+
+
+            callback1 ()
+            
+
+            
+            return getPictureBase64MaxSize_mediaData ( rawImage, searchImageMaxWidth, searchImageMaxHeight, ( err, data ) => {
+                if ( err ) {
+                    return socket.emit ('searcImage', 0 )
+                }
+                console.log ( data.length )
+            })
+            
         })
 		
 		

@@ -1,19 +1,6 @@
-/*!
- * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-const language_item = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.language_item = [
     [
         ["阿尔巴尼亚语",],
         ["阿拉伯语",],
@@ -121,7 +108,7 @@ const language_item = [
         "中文(简体)"
     ]
 ];
-const imageSearchResult = {
+exports.imageSearchResult = {
     originImage: {
         size: '1964 × 1048',
         url: 'https://lh3.googleusercontent.com/2br48z5dFWXVQWr-4pfhIY2UbbN2tUzfD5fWA57gc_upbA50pp7ztFomdgUUIr1Q5Lxo=s159',
@@ -137,8 +124,7 @@ const imageSearchResult = {
             description: "It's not good enough to want it. You've got to know how to get it. Real estate titan, bestselling author, and TV star Donald J. Trump is the man to teach you the ...",
             urlShow: 'https://www.amazon.ca/Trump-Billionaire-Everything-Success-Estate/.../0345481402',
             beforeTime: { timeUnit: null, timeNumber: null, time: null },
-            imageInfo: { size: null, url: undefined, img: null },
-            newsBrand: null
+            imageInfo: { size: null, url: undefined, img: null }
         },
         {
             title: 'Think Like a Champion: An Informal Education in Business and Life by ...',
@@ -146,8 +132,7 @@ const imageSearchResult = {
             description: "Think Like a Champion book. Read 113 reviews from the world's largest community for readers. Over the years, Donald Trump has written many bestselling bo...",
             urlShow: 'https://www.goodreads.com/book/show/6400699-think-like-a-champion',
             beforeTime: { timeUnit: null, timeNumber: null, time: null },
-            imageInfo: { size: null, url: undefined, img: null },
-            newsBrand: null
+            imageInfo: { size: null, url: undefined, img: null }
         },
         {
             title: "Trump congratulates Boris Johnson, says he will be 'great' | AFP ...",
@@ -155,7 +140,6 @@ const imageSearchResult = {
             description: "US President Donald Trump congratulates Boris Johnson on his victory in the ... Trump congratulates Boris Johnson, says he will be 'great' | AFP ... Boris Johnson explains how to speak like Winston Churchill - Duration: 5:54.",
             urlShow: 'https://www.youtube.com/watch?v=ysL5latUd5s',
             beforeTime: { timeUnit: 'day', timeNumber: 7, time: null },
-            newsBrand: null,
             imageInfo: {
                 size: '1280 × 720 ',
                 url: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSnkzCoi4uxPBmsPo7MS5SOWVNHZ9wIkjG5bV-lVlruzMMac7at21Kp',
@@ -176,15 +160,13 @@ const imageSearchResult = {
                 size: '660 × 371 ',
                 url: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRgsyYzNF4uvsmH5ywBne76KvHfUwmccuVe2SXd6VG_mpdQ5muheDtBew',
                 img: 'data:image/jpg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIACIAPQMBIgACEQEDEQH/xAAaAAADAQEBAQAAAAAAAAAAAAAAAwQFAgcG/8QAMRAAAgEDAgUBBgUFAAAAAAAAAQIDBBEhABIFEzFBUSIGFDJCYZEVcYGhwSPC0eHw/8QAGAEAAwEBAAAAAAAAAAAAAAAAAAIEAQP/xAAdEQEBAAICAwEAAAAAAAAAAAABAAIREjITITED/9oADAMBAAIRAxEAPwDLFNNy2p6mkSSUtyi7KGUJc32IFy1s4wbN01DSU/uPDjVw122oMzbZS5wuwFRstYXPzHpfrrbo+GcyVpeI17VjbLmSn3slvhG22bixyDbx9FcQokjjnmhpuYEcCWJE5fMVnVRYtgEE9Rjxa2uK+tVYA7sURLJKk1VHCVQiJ0AsguuGGLCxLAdrW641VTUtJTVDoWVzFu5YhRWsxOB3xYbe36W0TcP4rCiKGGalYXkQ8xohcbd1x1sLeM/pp0bSiSKpndUgLs00DJytjBwb5xY3yTbSu5+ONzNw6CngSqEYniWS7RhwGlDZcAte+V74N+99RcQ4bxKWZpzsVYLssUSlVDE3AU4Bv16HI0qD2hpaqqmo1WpgkRW3WiQIRf5sXW32ubeNVPIvDgnvLLCEYM8irdbksvxZsPgyPoe+jWZ9sPHkSvcGp50svPhWPdJNGGIupvct0Jb6joPprX4FWRUK1C+8yxRTyGeLZDzPSxNh6fFu4BvfUlBXrPVzwvVrSEelnYmwX4iL+cg2AzfWfKtKZ5YlrFjELGMepUYgYyCQfP7jFtHp+xwC9Z9ofZ6BqyOTgq0lKdhjkpAeWpuSdygCwOTcd73vfVHs1wGjFLURcXhpK8ykBoJLSqFBuNwYEXvn7a35VJmwTYHICA3x512vb+pIPpYf41SYG90T+i48ZR4PwppI1HCKHlFt2z3RSNw6G+2wIxrr8KoERUSgpl2MTijHc3NvTrmaPh7V8T1E7Cr5LBItxsUvk2+//DTkjpdwsxBt2BFh9tYah3qmi9l+ARTloOAcMilOS6UMYx4vs1pLw6iVCi0FGEJuVEa2J89NcxpFuxMw6/P0/bTlWIHNQx/OX/eiKCs4LwaaeOer4LQTzJYJI1KsjL+R2kjSW4BwKokZ/wADoA/zM1At2/Upnv8AfT/aBmio4zDT1lQRMnppnIfr1J7jz/Gncm0jkUiXJzc2/t0EbSgrcTYxgaRzZFwrsB9Do0arxDRR5LybagiiaNJmjQyhSocqNwGMX1RABtOBo0alaomWHgaLDwNGjWTXzvtvI8VBSmN2QmpQek27Mf41c6rc+kfEe2jRrDszZdS//9k='
-            },
-            newsBrand: null
+            }
         },
         {
             title: 'Possibility of a historic Kim-Trump meeting at DMZ hangs in the air',
             url: 'https://www.msn.com/en-ph/video/news/possibility-of-a-historic-kim-trump-meeting-at-dmz-hangs-in-the-air/vp-AADDrXU',
             description: 'U.S. President Donald Trump has revealed that North Korea and the U.S. ... President Moon said a meeting like that would be great,... but either ...',
             urlShow: 'https://www.msn.com/en-ph/video/news/possibility-of-a...at.../vp-AADDrXU',
-            newsBrand: null,
             beforeTime: {
                 timeUnit: '',
                 timeNumber: null,
@@ -206,7 +188,6 @@ const imageSearchResult = {
                 timeNumber: null,
                 time: '2019-07-02T07:00:00.000Z'
             },
-            newsBrand: null,
             imageInfo: {
                 size: '320 × 240 ',
                 url: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT40O1ec6umLCr1x4_eU8ZlMRSztVbWKqi11w2mC1DEg1lXvrRC45T8',
@@ -223,7 +204,6 @@ const imageSearchResult = {
                 timeNumber: null,
                 time: '2019-07-10T07:00:00.000Z'
             },
-            newsBrand: null,
             imageInfo: {
                 size: '660 × 371 ',
                 url: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRgsyYzNF4uvsmH5ywBne76KvHfUwmccuVe2SXd6VG_mpdQ5muheDtBew',
@@ -237,7 +217,7 @@ const imageSearchResult = {
     ],
     nextPage: '/search?hl=en-CA&tbs=sbi:AMhZZis4XS7f-Ih6srSS-we_1OioaFz9JR1g_1jU-1hyLWuD3PhOZZhaqq08-hQ-XyBlE0X2sahuY4CMnA9I4Ws5ckcwBtpJ1QcXasHnYLsQ1Yp5Bv8xHlFOd4-Vov44JhrO1BpIZSBriprh6yypZJwdEzEieNH_1hc3joFB4SjA6-S2AbAOZtzJTAZHfUDXTVP-OFZ6rJDFQdVP26UJdfuiOaVFspJFrJ5BGB3CxBYj_1GP1mUSh25Eab5EPlc1xOEDnd4BHAyAmUbCjkUMHBBDWOjn8KJlNS0HdY5waTVC9AUb3TCDW3iM4y72P3vqxBstnkUYoZIBLfIu&ei=qeo_XenDDrKu0PEPq9egyA8&start=10&sa=N&ved=0ahUKEwipvJPTiNzjAhUyFzQIHasrCPkQ8NMDCLAB'
 };
-const imageSearchALlImage = {
+exports.imageSearchALlImage = {
     resultLength: 51,
     totalResults: null,
     nextPage: null,
@@ -645,7 +625,7 @@ const imageSearchALlImage = {
         }
     ]
 };
-const googleSearchReturn = {
+exports.googleSearchReturn = {
     resultLength: 9,
     totalResults: '2,190,000',
     Result: [
@@ -654,72 +634,63 @@ const googleSearchReturn = {
             url: 'https://zh.wikipedia.org/zh-hant/%E9%83%AD%E6%96%87%E8%B4%B5',
             description: '郭文貴（1970年5月10日－），山東聊城莘縣人，是流亡海外的中國商人，目前身居美國紐約曼哈頓。 郭文貴是山東省莘縣人，戶籍地為北京大興區。在其發布於2017年5 ...',
             urlShow: 'https://zh.wikipedia.org/zh-hant/郭文贵',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null
+            beforeTime: { timeNumber: NaN, timeUnit: null, time: null }
         },
         {
             title: '美國絕不讓六四在香港重演！郭文貴爆楊潔篪訪美碰壁- 自由財經',
             url: 'https://ec.ltn.com.tw/article/breakingnews/2885451',
             description: '郭文貴今日直播爆料，美方官員明確告知中共中央政治局委員楊潔篪（見圖），美國絕不會讓六四事件在香港重演。（法新社資料照） 〔財經頻道／綜合 ...',
             urlShow: 'https://ec.ltn.com.tw/article/breakingnews/2885451',
-            beforeTime: { timeNumber: 14, timeUnit: 'hours', time: null },
-            imageInfo: null
+            beforeTime: { timeNumber: 14, timeUnit: 'hours', time: null }
         },
         {
             title: '郭文貴：傳遞香港將戒嚴情報的中共內部戰友已經被抓- 自由財經',
             url: 'https://ec.ltn.com.tw/article/breakingnews/2883109',
             description: '郭文貴近日表示，先前向他傳遞香港將戒嚴情報的中共內部戰友已經被抓。（圖擷自郭媒體網站） 〔財經頻道／綜合報導〕中國反共富豪郭文貴1日曾 ...',
             urlShow: 'https://ec.ltn.com.tw/article/breakingnews/2883109',
-            beforeTime: { timeNumber: 3, timeUnit: 'day', time: null },
-            imageInfo: null
+            beforeTime: { timeNumber: 3, timeUnit: 'day', time: null }
         },
         {
             title: '郭文貴8/13/2019：香港危在旦夕；未來48小時很關鍵；中共最後的瘋狂 ...',
             url: 'https://www.youtube.com/watch?v=IC-1pndf3MM',
             description: '00:00:12 我們與香港在一起○香港危在旦夕；未來48小時很關鍵；中共最後的瘋狂； ○香港人民獲勝的4個條件：1、機場斷了；2、證交所斷了；3、所有 ...',
             urlShow: 'https://www.youtube.com/watch?v=IC-1pndf3MM',
-            beforeTime: { timeNumber: 2, timeUnit: 'day', time: null },
-            imageInfo: null
+            beforeTime: { timeNumber: 2, timeUnit: 'day', time: null }
         },
         {
             title: '#郭文貴hashtag on Twitter',
             url: 'https://twitter.com/hashtag/%E9%83%AD%E6%96%87%E8%B2%B4',
             description: 'See Tweets about #郭文貴on Twitter. See what people are saying and join the conversation.',
             urlShow: 'https://twitter.com/hashtag/郭文貴',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null
+            beforeTime: { timeNumber: NaN, timeUnit: null, time: null }
         },
         {
             title: '郭文貴- 萬維讀者網',
             url: 'http://news.creaders.net/china/t/big5/1290.html',
             description: '他是中共特務郭文貴爆張首晟不可能自殺 ... 中國流亡富商郭文貴近日爆料，張首晟. ... 路透美國之音去年4月直播中國流亡海外富商郭文貴的專訪時突然節目中斷， ...',
             urlShow: 'news.creaders.net/china/t/big5/1290.html',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null
+            beforeTime: { timeNumber: NaN, timeUnit: null, time: null }
         },
         {
             title: '郭文貴｜風傳媒',
             url: 'https://www.storm.mg/category/k86711',
             description: '中國加強網路社群監控，連「國外的」也要管！ 他爆料：風暴中心「在於此」！2018-11-21 16:29:58郭文貴遭重罰2700億！中國對付爆料流亡富商，大連法院對名下公司 ...',
             urlShow: 'https://www.storm.mg/category/k86711',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null
+            beforeTime: { timeNumber: NaN, timeUnit: null, time: null }
         },
         {
             title: '郭文貴| 立場新聞',
             url: 'https://thestandnews.com/tag/%E9%83%AD%E6%96%87%E8%B2%B4/',
             description: '流亡美國的中國富豪郭文貴近年經常針對中共領導層爆料。重慶市公安今日高調召開中外記者會， ... 《明鏡》負責人去年訪問郭文貴妻子即失蹤多月後網現「被分手」影片.',
             urlShow: 'https://thestandnews.com/tag/郭文貴/',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null
+            beforeTime: { timeNumber: NaN, timeUnit: null, time: null }
         },
         {
             title: '郭文貴_郭文貴最新新聞|資訊|視頻|圖片|消息-多維新聞網',
             url: 'http://tag.dwnews.com/big5/%E9%83%AD%E6%96%87%E8%B2%B4.html',
             description: '多維新聞網為您聚焦郭文貴最新新聞資訊，郭文貴圖片，郭文貴視頻等消息內容,近年來，逃亡美國的中國商人郭文貴一直在社交網絡上頻繁发聲，稱要揭露中國政府 ...',
             urlShow: 'tag.dwnews.com/big5/郭文貴.html',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null
+            beforeTime: { timeNumber: NaN, timeUnit: null, time: null }
         }
     ],
     searchesRelated: [
@@ -771,872 +742,3 @@ const googleSearchReturn = {
         news: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=nws&sa=X&ved=0ahUKEwjC9LW24YXkAhXZHjQIHaX_C5AQ_AUIESgB'
     }
 };
-const googleSearchNextReturn = {
-    resultLength: 10,
-    totalResults: '2',
-    Result: [
-        {
-            title: '郭文貴| 立場新聞',
-            url: 'https://thestandnews.com/tag/%E9%83%AD%E6%96%87%E8%B2%B4/',
-            description: '中國富豪郭文貴流亡美國，期間繼續針對中紀委書記王岐山等人「爆料」，成為中美外交問題的風眼。《華爾街日報》引述消息指，於澳門有賭場業務的... 郭文貴Twitter ...',
-            urlShow: 'https://thestandnews.com/tag/郭文貴/',
-            beforeTime: [Object],
-            imageInfo: null
-        },
-        {
-            title: '郭文貴_郭文貴最新新聞|資訊|視頻|圖片|消息-多維新聞網',
-            url: 'http://tag.dwnews.com/big5/%E9%83%AD%E6%96%87%E8%B2%B4.html',
-            description: '多維新聞網為您聚焦郭文貴最新新聞資訊，郭文貴圖片，郭文貴視頻等消息內容,近年來，逃亡美國的中國商人郭文貴一直在社交網絡上頻繁发聲，稱要揭露中國政府 ...',
-            urlShow: 'tag.dwnews.com/big5/郭文貴.html',
-            beforeTime: [Object],
-            imageInfo: null
-        },
-        {
-            title: '郭文貴Profiles | Facebook',
-            url: 'https://www.facebook.com/public/%E9%83%AD%E6%96%87%E8%B2%B4',
-            description: 'View the profiles of people named 郭文貴. Join Facebook to connect with 郭文貴and others you may know. Facebook gives people the power to share and ...',
-            urlShow: 'https://www.facebook.com/public/郭文貴',
-            beforeTime: [Object],
-            imageInfo: null
-        },
-        {
-            title: '郭文貴｜香港01',
-            url: 'https://www.hk01.com/tag/16991',
-            description: '全面"郭文貴"相關文章及報導，多角度呈現話題，立即進入，了解更多"郭文貴"的相關文章。',
-            urlShow: 'https://www.hk01.com/tag/16991',
-            beforeTime: [Object],
-            imageInfo: null
-        },
-        {
-            title: '郭文貴| 搜尋標籤| 聯合新聞網 - UDN.com',
-            url: 'https://udn.com/search/tagging/2/%E9%83%AD%E6%96%87%E8%B2%B4',
-            description: '搜尋｛郭文貴｝共找到18篇新聞。udn.com 提供即時新聞以及豐富的政治、社會、地方、兩岸、國際、財經、數位、運動、NBA、娛樂、生活、健康、旅遊新聞，以最即時、 ...',
-            urlShow: 'https://udn.com/search/tagging/2/郭文貴',
-            beforeTime: [Object],
-            imageInfo: null
-        },
-        {
-            title: '郭文貴爆：中共派7萬便衣臥底香港- Yahoo奇摩新聞',
-            url: 'https://tw.news.yahoo.com/%E9%83%AD%E6%96%87%E8%B2%B4%E7%88%86-%E4%B8%AD%E5%85%B1%E6%B4%BE7%E8%90%AC%E4%BE%BF%E8%A1%A3%E8%87%A5%E5%BA%95%E9%A6%99%E6%B8%AF-040030756.html',
-            description: '大陸中心／綜合報導香港反送中遊行！現在警民間衝突升高，更傳出香港即將實施戒嚴，讓情勢更加緊張。流亡的中國富商郭文貴對此在直播上爆料 ...',
-            urlShow: 'https://tw.news.yahoo.com/郭文貴爆-中共派7萬便衣臥...',
-            beforeTime: [Object],
-            imageInfo: null
-        },
-        {
-            title: '時事- 郭文貴- 法廣',
-            url: 'http://trad.cn.rfi.fr/tag/%E9%83%AD%E6%96%87%E8%B2%B4/',
-            description: '郭文貴-在trad.cn.rfi.fr 收聽瀏覽文章、音頻、視頻、信息圖表.',
-            urlShow: 'trad.cn.rfi.fr/tag/郭文貴/',
-            beforeTime: [Object],
-            imageInfo: null
-        },
-        {
-            title: '「一國兩制徹底死亡」 郭文貴驚爆：香港將戒嚴 - 鏡週刊Mirror Media',
-            url: 'https://www.mirrormedia.mg/story/20190802edi006/',
-            description: '中國流亡富豪郭文貴昨（1日）語出驚人表示，共產黨將於8月4日至6日之間，開始對香港執行戒嚴令，並大規模逮捕近期上街抗議的集結人士。',
-            urlShow: 'https://www.mirrormedia.mg/story/20190802edi006/',
-            beforeTime: [Object],
-            imageInfo: null
-        },
-        {
-            title: '博客來-作者-郭文貴',
-            url: 'https://search.books.com.tw/search/query/key/%E9%83%AD%E6%96%87%E8%B2%B4/cat/all/adv_author/1',
-            description: '博客來搜尋,作者,關鍵字:郭文貴,分類:全館,中國首貪王岐山.',
-            urlShow: 'https://search.books.com.tw/search/query/.../郭文貴/.../1',
-            beforeTime: [Object],
-            imageInfo: null
-        }
-    ],
-    searchesRelated: [
-        {
-            text: '郭文貴習近平',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E7%BF%92%E8%BF%91%E5%B9%B3&sa=X&ved=2ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChDVAigAegQIChAB'
-        },
-        {
-            text: '郭文貴twitter',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4twitter&sa=X&ved=2ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChDVAigBegQIChAC'
-        },
-        {
-            text: '郭文貴是誰',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E6%98%AF%E8%AA%B0&sa=X&ved=2ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChDVAigCegQIChAD'
-        },
-        {
-            text: '郭文貴youtube',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4youtube&sa=X&ved=2ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChDVAigDegQIChAE'
-        },
-        {
-            text: '郭文貴爆料',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E7%88%86%E6%96%99&sa=X&ved=2ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChDVAigEegQIChAF'
-        },
-        {
-            text: '郭文貴王岐山',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E7%8E%8B%E5%B2%90%E5%B1%B1&sa=X&ved=2ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChDVAigFegQIChAG'
-        },
-        {
-            text: '郭文貴香港',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E9%A6%99%E6%B8%AF&sa=X&ved=2ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChDVAigGegQIChAH'
-        },
-        {
-            text: '郭文貴最新消息',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E6%9C%80%E6%96%B0%E6%B6%88%E6%81%AF&sa=X&ved=2ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChDVAigHegQIChAI'
-        },
-        {
-            text: '郭文貴台灣',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E5%8F%B0%E7%81%A3&sa=X&ved=2ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChDVAigIegQIChAJ'
-        },
-        {
-            text: '郭文貴兒子',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E5%85%92%E5%AD%90&sa=X&ved=2ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChDVAigJegQIChAK'
-        }
-    ],
-    nextPage: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&ei=pUFYXeSbH9uq0PEP4vy-oAc&start=0&sa=N&ved=0ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChDx0wMIogE',
-    action: {
-        video: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=vid&sa=X&ved=0ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChD8BQgSKAI',
-        image: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=isch&sa=X&ved=0ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChD8BQgTKAM',
-        news: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=nws&sa=X&ved=0ahUKEwikgr_9vorkAhVbFTQIHWK-D3Q4ChD8BQgRKAE'
-    }
-};
-const googleNewsSearchResult = {
-    resultLength: 10,
-    totalResults: '134,000',
-    searchesRelated: null,
-    Result: [
-        {
-            title: '香港、中共高官慘了！郭文貴爆：美、歐政府將出手制裁',
-            url: 'https://news.ltn.com.tw/news/world/breakingnews/2895188',
-            newsBrand: '自由時報電子報',
-            imageInfo: {
-                size: null,
-                url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkLQXsF8Dpjgc5yZ-Q_SSbLjXR32qH9nYixp6UXxTqwfjUFqmFWSx-h5y-1sbsttLipvvoVR0',
-                img: 'data:image/jpg;base64,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'
-            },
-            description: '郭文貴稱，第一，美國對香港某些官員制裁這件事將很快就會發生，第二，美國將會停止或是取消「香港關係法」與「香港自貿區協議」，第三，美國與 ...',
-            urlShow: 'https://news.ltn.com.tw/news/world/breakingnews/2895188',
-            beforeTime: { timeNumber: 9, timeUnit: 'hours', time: null }
-        },
-        {
-            title: '郭文貴酸王岐山想搬進盤古大觀找「冰冰」練手指頭',
-            url: 'https://ec.ltn.com.tw/article/breakingnews/2891287',
-            newsBrand: '自由時報電子報',
-            imageInfo: {
-                size: null,
-                url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR55Mc-sT2MW_6sAhNDgpw8S4-4j--lovf2qflMCSEFzX_66FYjrDbKzweUwwMdbR-5Am_l1FY',
-                img: 'data:image/jpg;base64,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'
-            },
-            description: '郭文貴今早直播表示，他很訝異是金隅集團買下盤古大觀「龍首」，因為只要在北京大街上隨便問問計程車司機，都知道金隅集團是誰的，而金隅集團 ...',
-            urlShow: 'https://ec.ltn.com.tw/article/breakingnews/2891287',
-            beforeTime: {
-                timeNumber: null,
-                timeUnit: '',
-                time: '2019-08-21T07:00:00.000Z'
-            }
-        },
-        {
-            title: '郭文貴：傳遞香港將戒嚴情報的中共內部戰友已經被抓',
-            url: 'https://ec.ltn.com.tw/article/breakingnews/2883109',
-            newsBrand: '自由時報電子報',
-            imageInfo: {
-                size: null,
-                url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRan8zPpzlodosDkEDEmJpL2pBbtEWCNQbCVyzS41YyDuudu8O-8EI3g53vxsDe7blcVqd0yRhb',
-                img: 'data:image/jpg;base64,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'
-            },
-            description: '郭文貴日前曾表示，在他爆料香港將實施戒嚴後，中共一直在查到底是誰向他披露此消息，但一直找不到人。不過郭文貴美東時間11日在自家遊艇上 ...',
-            urlShow: 'https://ec.ltn.com.tw/article/breakingnews/2883109',
-            beforeTime: {
-                timeNumber: null,
-                timeUnit: '',
-                time: '2019-08-13T07:00:00.000Z'
-            }
-        },
-        {
-            title: '香港早已實質戒嚴！ 郭文貴爆：4日起至少7萬便衣入港',
-            url: 'https://news.ltn.com.tw/news/world/breakingnews/2880762',
-            newsBrand: '自由時報電子報',
-            imageInfo: {
-                size: null,
-                url: null,
-                img: 'data:image/jpeg;base64,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'
-            },
-            description: '郭文貴10日發布最新影片，他表示，他月初爆料4日香港會戒嚴一點也沒錯，還說據可靠情報顯示，4日當天中共派出至少有3萬人潛入香港，5日與6日 ...',
-            urlShow: 'https://news.ltn.com.tw/news/world/breakingnews/2880762',
-            beforeTime: {
-                timeNumber: null,
-                timeUnit: '',
-                time: '2019-08-10T07:00:00.000Z'
-            }
-        },
-        {
-            title: '郭文貴爆計畫22年的「香港大灣區計畫」秘密取消連繫匯率已成美國共識',
-            url: 'https://www.cmmedia.com.tw/home/articles/17095',
-            newsBrand: '信傳媒',
-            imageInfo: {
-                size: null,
-                url: null,
-                img: 'data:image/jpeg;base64,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'
-            },
-            description: '中國政府欲除之而後快的郭文貴19日大爆香港大灣區計畫的目的，同時也指出華盛頓親共派怕中共武力鎮壓，紛紛表態切割。（圖片來源/ 翻攝自郭 ...',
-            urlShow: 'https://www.cmmedia.com.tw/home/articles/17095',
-            beforeTime: {
-                timeNumber: null,
-                timeUnit: '',
-                time: '2019-08-19T07:00:00.000Z'
-            }
-        },
-        {
-            title: '美國絕不讓六四在香港重演！郭文貴爆楊潔篪訪美碰壁',
-            url: 'https://ec.ltn.com.tw/article/breakingnews/2885451',
-            newsBrand: '自由時報電子報',
-            imageInfo: {
-                size: null,
-                url: null,
-                img: 'data:image/jpeg;base64,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'
-            },
-            description: '郭文貴今日直播聲稱，1名在場美國政府官員告知他，美方有人明確告知楊潔篪，若中共想在香港重演六四，以軍車上街碾壓學生「絕不可能」，此外， ...',
-            urlShow: 'https://ec.ltn.com.tw/article/breakingnews/2885451',
-            beforeTime: {
-                timeNumber: null,
-                timeUnit: '',
-                time: '2019-08-15T07:00:00.000Z'
-            }
-        },
-        {
-            title: '郭文貴再爆：香港4至6日間戒嚴中國絕對動武',
-            url: 'https://ec.ltn.com.tw/article/breakingnews/2873842',
-            newsBrand: '自由時報電子報',
-            imageInfo: {
-                size: null,
-                url: null,
-                img: 'data:image/jpeg;base64,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'
-            },
-            description: '郭文貴稱，他堅信對香港的戒嚴一定會實行，但可能會採取不同的方式或名稱，「一定會戒嚴，一定會有武力行動，任何武力行動就等於戒嚴，只要有 ...',
-            urlShow: 'https://ec.ltn.com.tw/article/breakingnews/2873842',
-            beforeTime: {
-                timeNumber: null,
-                timeUnit: '',
-                time: '2019-08-04T07:00:00.000Z'
-            }
-        },
-        {
-            title: '「中國版紙牌屋」 郭文貴爆王岐山控制歐洲內幕',
-            url: 'https://ec.ltn.com.tw/article/breakingnews/2879599',
-            newsBrand: '自由時報電子報',
-            imageInfo: {
-                size: null,
-                url: null,
-                img: 'data:image/jpeg;base64,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'
-            },
-            description: '郭文貴8日直播再度針對海航集團爆料，他曾在2017年揭露王岐山私生子 ... 郭文貴表示，「慈航並不慈」，而是1個私人基金，德國前總理梅克爾第2屆 ...',
-            urlShow: 'https://ec.ltn.com.tw/article/breakingnews/2879599',
-            beforeTime: {
-                timeNumber: null,
-                timeUnit: '',
-                time: '2019-08-09T07:00:00.000Z'
-            }
-        },
-        {
-            title: '逾15萬網友圍觀！中國國企230億拍下郭文貴盤古大觀5號樓',
-            url: 'https://ec.ltn.com.tw/article/breakingnews/2890056',
-            newsBrand: '自由時報電子報',
-            imageInfo: {
-                size: null,
-                url: null,
-                img: 'data:image/jpeg;base64,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'
-            },
-            description: '〔財經頻道／綜合報導〕流亡美國的中國地產大亨郭文貴旗下資產北京盤古大觀5號樓（又稱盤古大觀「龍首」）19日起由中國司法單位委託民間業者進行 ...',
-            urlShow: 'https://ec.ltn.com.tw/article/breakingnews/2890056',
-            beforeTime: {
-                timeNumber: null,
-                timeUnit: '',
-                time: '2019-08-19T07:00:00.000Z'
-            }
-        },
-        {
-            title: '2週前就預告美對中將有大動作！郭文貴笑稱「又矇對了」',
-            url: 'https://ec.ltn.com.tw/article/breakingnews/2875783',
-            newsBrand: '自由時報電子報',
-            imageInfo: {
-                size: null,
-                url: null,
-                img: 'data:image/jpeg;base64,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'
-            },
-            description: '郭文貴7月21日直播時宣稱，全球已經進入「共同滅共的新時代」，美東時間27日後「世界將有重大變化」，美國對中國將有「想像不到的重大決策」，包括 ...',
-            urlShow: 'https://ec.ltn.com.tw/article/breakingnews/2875783',
-            beforeTime: {
-                timeNumber: null,
-                timeUnit: '',
-                time: '2019-08-06T07:00:00.000Z'
-            }
-        }
-    ],
-    nextPage: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&tbm=nws&ei=iedhXbTHEtW-0PEP_oqHiAo&start=10&sa=N&ved=0ahUKEwj0r9u58pzkAhVVHzQIHX7FAaEQ8NMDCG8',
-    action: null
-};
-const bingIcon = `
-    <svg viewBox="-650 800 900 400">
-    <path style="fill:#008373;fill-opacity:1;stroke:none" d="m -311.5,796.16903 80.6273,28.36401 0,283.80836 113.56729,-65.5599 -55.67962,-26.1246 -35.12739,-87.43067 178.939297,62.86452 0,91.39515 -201.653597,116.3102 -80.67328,-44.875 z" />
-    </svg>
-`;
-const googleIcon = `<svg viewBox="-40 0 150 150">
-  <path fill="#4285F4" d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z"></path>
-  </svg>
-`;
-const duckduckgoIcon = `
-  <svg viewBox="-6 0 210 210" xmlns="http://www.w3.org/2000/svg">
-    <g transform="translate(-24.5 -19)">
-        <circle cx="127" cy="79" fill="#de5833" r="60"/>
-        <path d="m177.8 57.5c-2.8-6.6-6.8-12.5-11.8-17.5-5.1-5.1-11-9-17.5-11.8-6.8-2.9-14-4.3-21.5-4.3-7.4 0-14.7 1.5-21.5 4.3-6.6 2.7-12.5 6.7-17.5 11.8-5.1 5.1-9 11-11.8 17.5-2.9 6.8-4.3 14-4.3 21.5 0 7.5 1.5 14.7 4.3 21.5 2.8 6.6 6.8 12.5 11.8 17.5 5.1 5.1 11 9 17.5 11.8 6.8 2.9 14 4.3 21.5 4.3 7.4 0 14.7-1.5 21.5-4.3 6.5-2.8 12.4-6.8 17.5-11.8 5.1-5.1 9-11 11.8-17.5 2.9-6.8 4.3-14 4.3-21.5 0-7.5-1.4-14.7-4.3-21.5zm-38.8 71c-3.2-5.4-11.6-20.5-11.6-31.7 0-25.8 17.3-3.7 17.3-24.3 0-4.9-2.4-22.1-17.4-25.7-3.7-4.9-12.4-9.6-26.2-7.7 0 0 2.3.7 4.9 2 0 0-5 .7-5.2 4.1 0 0 9.9-.5 15.5 1.3-12.9 1.7-19.5 8.5-18.3 20.8 1.7 17.5 9.1 48.7 11.7 59.6-19.6-7-33.7-25.8-33.7-47.9 0-28.1 22.8-51 51-51 28.2 0 51 22.8 51 51-.1 24-16.7 44.1-39 49.5z" fill="#fff"/>
-        <path clip-rule="evenodd" d="m124.2 87.3c0-6.6 9-8.7 12.4-8.7 9.2 0 22.2-5.9 25.4-5.8 3.3.1 5.4 1.4 5.4 2.9 0 2.2-18.4 10.5-25.5 9.8-6.8-.6-8.4.1-8.4 2.9 0 2.4 4.9 4.6 10.3 4.6 8.1 0 16-3.6 18.4-1.9 2.1 1.5-5.5 6.9-14.2 6.9-8.7 0-23.8-4.1-23.8-10.7z" fill="#fed30a" fill-rule="evenodd"/>
-        <path d="m140.2 59.3c-2.4-3.1-6.7-3.2-8.2.4 2.3-1.8 5.1-2.2 8.2-.4z" fill="#2d4f8d"/>
-        <path d="m113.5 59.4c-3.3-2-8.8-2.2-8.5 4.1 1.6-3.9 3.8-4.6 8.5-4.1z" fill="#2d4f8d"/>
-        <path d="m138.2 65.2c-1.8 0-3.3 1.5-3.3 3.3 0 1.8 1.5 3.3 3.3 3.3 1.8 0 3.3-1.5 3.3-3.3 0-1.8-1.5-3.3-3.3-3.3zm1.2 3.1c-.5 0-1-.4-1-1 0-.5.4-1 1-1 .6 0 1 .4 1 1-.1.5-.5 1-1 1z" fill="#2d4f8d"/>
-        <path d="m112.6 67c-2.1 0-3.8 1.7-3.8 3.8 0 2.1 1.7 3.8 3.8 3.8 2.1 0 3.8-1.7 3.8-3.8 0-2.1-1.7-3.8-3.8-3.8zm1.4 3.5c-.6 0-1.1-.5-1.1-1.1 0-.6.5-1.1 1.1-1.1.6 0 1.1.5 1.1 1.1 0 .6-.5 1.1-1.1 1.1z" fill="#2d4f8d"/>
-        <path d="m104.3 50.8c-4.8 3.5-7 8.9-6.3 16.5 1.7 17.5 9.1 48.8 11.7 59.7.9.3 1.8.6 2.7.9-1.6-6.6-9.3-38.8-12.7-63.5-.9-6.6 1.7-10.5 4.6-13.6z" fill="#d5d7d8"/>
-        <path d="m116.2 46.5c.4 0 .7-.1.7-.1-5.2-2.5-13.4-2.6-15.6-2.6-.2.4-.4.9-.4 1.4-.1.1 9.6-.5 15.3 1.3z" fill="#d5d7d8"/>
-        <path d="m106.8 41.1c-1.6-1.1-2.9-1.8-3.7-2.2-.7.1-1.3.1-2 .2 0 0 2.3.7 4.9 2 0 0-.1 0-.2 0 .7 0 1 0 1 0z" fill="#d5d7d8"/>
-        <path d="m147.1 107.6c-1.7-.4-8.3 4.3-10.8 6.1-.1-.5-.2-.9-.3-1.1-.3-1-6.7-.4-8.2 1.2-4-1.9-12-5.6-12.1-3.3-.3 3 0 15.5 1.6 16.4 1.2.7 8-3 11.4-4.9 0 0 0 0 .1 0 2.1.5 6 0 7.4-.9.2-.1.3-.3.4-.5 3.1 1.2 9.8 3.6 11.2 3.1 1.8-.5 1.4-15.6-.7-16.1z" fill="#67bd47"/>
-        <path d="m128.8 122c-2.1-.4-1.4-2.5-1.4-7.4 0 0 0 0 0 0-.5.3-.9.7-.9 1.1 0 4.9-.8 7.1 1.4 7.4 2.1.5 6 0 7.6-.9.3-.2.4-.5.5-1-1.5.9-5.2 1.3-7.2.8z" fill="#43a347"/>                         
-    </g>
-  </svg>
-`;
-const YahooIcon = `
-  <svg viewBox="-75 0 240 240" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="t" y2="1819.8" gradientUnits="userSpaceOnUse" x2="-190.68" gradientTransform="matrix(.60986 0 0 .60986 -1015.1 -735.2)" y1="1808.7" x1="-209.43">
-      <stop stop-color="#1b0041" offset="0"/>
-      <stop stop-color="#21004f" offset="1"/>
-      </linearGradient>
-      <linearGradient id="u" y2="1877.2" gradientUnits="userSpaceOnUse" x2="-249.85" gradientTransform="matrix(.60986 0 0 .60986 -1015.1 -735.2)" y1="1667.8" x1="-149.7">
-      <stop stop-color="#5500bd" offset="0"/>
-      <stop stop-color="#47008d" offset="1"/>
-      </linearGradient>
-      <linearGradient id="v" y2="1877.6" gradientUnits="userSpaceOnUse" x2="-250.33" gradientTransform="matrix(.60986 0 0 .60986 -1015.1 -735.2)" y1="1669.7" x1="-349.94">
-      <stop stop-color="#5100b2" offset="0"/>
-      <stop stop-color="#5500bd" offset="1"/>
-      </linearGradient>
-      <linearGradient id="w" y2="1838.7" gradientUnits="userSpaceOnUse" x2="-273.09" gradientTransform="matrix(.60986 0 0 .60986 -1015.1 -735.2)" y1="1850.7" x1="-291.09">
-      <stop stop-color="#27005d" stop-opacity=".98039" offset="0"/>
-      <stop stop-color="#2b005d" offset=".31767"/>
-      <stop stop-color="#280055" offset=".59756"/>
-      <stop stop-color="#24004d" offset=".80878"/>
-      <stop stop-color="#230049" offset="1"/>
-      </linearGradient>
-      <linearGradient id="y" y2="2047" gradientUnits="userSpaceOnUse" x2="-253.6" gradientTransform="matrix(.60986 0 0 .60986 -1015.1 -735.2)" y1="1878.8" x1="-253.6">
-      <stop stop-color="#210045" offset="0"/>
-      <stop stop-color="#25004d" offset=".25"/>
-      <stop stop-color="#2b005c" offset=".5"/>
-      <stop stop-color="#340071" offset=".74854"/>
-      <stop stop-color="#3e0088" offset="1"/>
-      </linearGradient>
-      <linearGradient id="x" y2="2047.3" gradientUnits="userSpaceOnUse" x2="-227.23" gradientTransform="matrix(.60986 0 0 .60986 -1015.1 -735.2)" y1="1877.2" x1="-248.82">
-      <stop stop-color="#5500bd" offset="0"/>
-      <stop stop-color="#5300b5" offset="1"/>
-      </linearGradient>
-    </defs>
-    <g transform="translate(1009.8 -337.49)">
-    <g transform="matrix(.5 0 0 .5 -379.18 197.8)">
-      <g>
-          <path d="m-1106.6 282.03 6.7084 15.246 17.076-7.9282 6.9443-7.3183c-10.985 2.4918-20.893 2.5746-30.729 0z" fill="#6700e8"/>
-          <path d="m-1154.8 414.97-11.587 4.269-7.3183-12.807 72.573-115.87 5.1886-1.7772c7.1618-1.6184 14.973-3.354 20.061-6.7608-11.525 15.569-53.493 88.344-78.917 132.95z" fill="url(#t)"/>
-          <path d="m-1170.6 413.15 3.0493-3.0493 71.795-121.34-10.809-6.7347c-8.6682 16.146-40.638 68.392-60.986 101.85l-9.7578 18.296z" fill="url(#u)"/>
-          <path d="m-1228.5 282.03c15.916 28.207 40.349 67.667 60.986 101.85v26.224l-4.8789 4.8789-71.354-126.85z" fill="url(#v)"/>
-          <path d="m-1240.3 289.7 11.761-7.6717c-12.62 2.6914-17.899 2.8627-30.493 0l4.8789 5.4887z" fill="#6700e8"/>
-          <path d="m-1167.6 410.1-5.4887 7.9282-7.3184-3.0493c-13.625-23.55-53.678-95.287-78.672-132.95 5.0665 3.6714 11.911 5.686 19.817 6.9699z" fill="url(#w)"/>
-          <path fill="url(#x)" d="m-1152.9 513.16-20.735-9.7578 1.8296-86.6 4.269-6.7085 12.807 4.8789z"/>
-          <path d="m-1167.6 506.45-14.637 6.7085 1.8295-98.187 12.807-4.8789z" fill="url(#y)"/>
-      </g>
-      </g>
-      </g>
-  </svg>
-`;
-var coSearch_layout;
-(function (coSearch_layout) {
-    class coSearch {
-        constructor() {
-            /** */
-            this.socketIo = io('/CoSearch', { reconnectionAttempts: 5, timeout: 500, autoConnect: true });
-            this.tLang = ko.observable(initLanguageCookie());
-            this.languageIndex = ko.observable(lang[this.tLang()]);
-            this.LocalLanguage = 'up';
-            this.show_mainContect = ko.observable(false);
-            this.inputFocus = ko.observable(false);
-            this.showSearchButton = ko.observable(false);
-            this.password = ko.observable('');
-            this.passwordError = ko.observable(false);
-            this.passwordInputFocus = ko.observable(true);
-            this.searching = ko.observable(false);
-            this.showSearchError = ko.observable(false);
-            this.searchInputTextActionShow = ko.observable(false);
-            this.searchItem = ko.observable(null);
-            this.searchItemList = ko.observableArray([]);
-            this.searchSimilarImagesList = ko.observableArray([]);
-            this.backGroundBlue = ko.observable(false);
-            this.hasFocus = ko.observable(false);
-            this.hasFocusShowTool = ko.observable(false);
-            this.SearchInputNextHasFocus = ko.observable(false);
-            this.searchInputText = ko.observable('');
-            this.searchInputTextShow = ko.observable('');
-            this.moreResultsButtomLoading = ko.observable(false);
-            this.connectInformationMessage = ko.observable(new connectInformationMessage());
-            this.showInputLoading = ko.observable(false);
-            this.SearchNextPageLink = null;
-            this.showMain = ko.observable(true);
-            this.showWebPage = ko.observable(null);
-            this.htmlIframe = ko.observable(false);
-            this.showSubViewToolBar = ko.observable(false);
-            this.safeView = ko.observable(true);
-            this.showTranslateForm = ko.observable(false);
-            this.twoFields = ko.observable(false);
-            this.similarImagesLoading = ko.observable(false);
-            this.showSearchSimilarImagesResult = ko.observable(false);
-            this.showSnapshop = ko.observable(false);
-            this.errorMessageIndex = ko.observable(-1);
-            this.nextButtonShowError = ko.observable(false);
-            this.nextButtonErrorIndex = ko.observable(-1);
-            this.showSimilarImagesError = ko.observable(false);
-            this.similarImagesErrorIndex = ko.observable(-1);
-            this.showSearchesRelated = ko.observable(false);
-            this.showMainSearchForm = ko.observable(true);
-            this.showSearchSetupForm = ko.observable(false);
-            this.searchSetupIcon = ko.observable(bingIcon);
-            this.currentlyShowItems = ko.observable(0);
-            this.webItems = ko.observable(null);
-            this.newsItems = ko.observable(null);
-            this.imageItems = ko.observable(null);
-            this.videoItems = ko.observable(null);
-            this.newsButtonShowLoading = ko.observable(false);
-            this.newsButtonShowError = ko.observable(false);
-            this.newsButtonErrorIndex = ko.observable(-1);
-            this.selectItem = function (that, site) {
-                const tindex = parseInt(lang[this.tLang()]);
-                let index = tindex + 1;
-                if (index > 3) {
-                    index = 0;
-                }
-                this.languageIndex(index);
-                this.tLang(lang[index]);
-                $.cookie('langEH', this.tLang(), { expires: 180, path: '/' });
-                const obj = $("span[ve-data-bind]");
-                obj.each(function (index, element) {
-                    const ele = $(element);
-                    const data = ele.attr('ve-data-bind');
-                    if (data && data.length) {
-                        ele.text(eval(data));
-                    }
-                });
-                $('.languageText').shape('flip ' + this.LocalLanguage);
-                return $('.KnockoutAnimation').transition('jiggle');
-            };
-            const self = this;
-            /**
-             *
-             */
-            this.socketIo.emit11 = function (eventName, ...args) {
-                let CallBack = args.pop();
-                if (typeof CallBack !== 'function') {
-                    CallBack ? args.push(CallBack) : null;
-                    CallBack = null;
-                }
-                const localTimeOut = setTimeout(function () {
-                    //_view.refresh ()
-                    //twitter_view.systemError()
-                }, 10000);
-                const _CallBack = function (err) {
-                    clearTimeout(localTimeOut);
-                    if (CallBack) {
-                        self.socketIo.once(eventName, function (...args) {
-                            return CallBack(...args);
-                        });
-                    }
-                };
-                args.length
-                    ? self.socketIo.emit(eventName, ...args, _CallBack)
-                    : self.socketIo.emit(eventName, _CallBack);
-            };
-            /**
-             *
-             *
-             */
-            this.password.subscribe(function (_text) {
-                self.passwordError(false);
-            });
-            /**
-             *
-             *
-             */
-            this.hasFocus.subscribe(function (_result) {
-                const self = coSearch_view;
-                if (_result) {
-                    self.hasFocusShowTool(true);
-                    self.backGroundBlue(true);
-                }
-                /*
-                if ( self.showMain () ) {
-                    if ( !self.searchInputText().length ) {
-                        self.searchInputTextActionShow ( false )
-                        return self.backGroundBlue ( _result )
-                    }
-                    self.searchInputTextActionShow ( true )
-                    _result = false
-                    return true
-                }
-                if ( !_result ) {
-                    return true
-                }
-                if ( _result ) {
-                    if ( !self.showSubViewToolBar ()) {
-                        self.showSubViewToolBar ( true )
-                    }
-                }
-                return true
-                */
-            });
-            this.searchInputText.subscribe(function (_text) {
-                self.searchInputTextActionShow(_text.length > 0);
-            });
-            this.SearchInputNextHasFocus.subscribe(function (hasFocus) {
-                if (hasFocus) {
-                    self.showSearchesRelated(true);
-                }
-            });
-        }
-        /** */
-        returnSearchItems(items) {
-            this.searchItem(items);
-            this.SearchNextPageLink = items.nextPage;
-            items.Result.forEach(n => {
-                n['showLoading'] = ko.observable(false);
-                n['snapshotReady'] = ko.observable(false);
-                n['id'] = uuid_generate();
-                n['showError'] = ko.observable(false);
-                n['errorIndex'] = ko.observable(-1);
-                n['newsBrand'] = null;
-            });
-            this.searchItemList.push(...items.Result);
-            $('.selection.dropdown').dropdown();
-        }
-        search_form() {
-            const self = this;
-            const search_text = this.searchInputText();
-            this.showInputLoading(true);
-            const width = window.innerWidth;
-            const height = window.outerHeight * 3;
-            this.searchItem(null);
-            this.searchItemList([]);
-            setTimeout(() => {
-                self.showInputLoading(false);
-                self.searchInputTextShow(search_text);
-                self.webItems(googleSearchReturn);
-                self.returnSearchItems(googleSearchReturn);
-            }, 2000);
-            /*
-            
-            return this.socketIo.emit11 ( 'search', search_text, width, height, function ( err, data, snapshot ) {
-                self.showInputLoading ( false )
-                //  error
-                if ( err ) {
-                    return self.showSearchError ( true )
-                }
-                if ( data ) {
-                    return self.returnSearchItems ( data.param )
-                }
-                self.showMain ( false )
-                return self.showWebPage ( snapshot )
-            })
-            /** */
-        }
-        showSnapshotClick(n) {
-            const currentItem = this.searchItemList()[n];
-            this.showMain(false);
-            this.showSnapshop(true);
-            return this.showWebPage(currentItem);
-        }
-        getSnapshotClick(n) {
-            const currentItem = this.searchItemList()[n];
-            const self = this;
-            currentItem.showLoading(true);
-            const url = currentItem.url;
-            const width = $(window).width();
-            const height = $(window).height();
-            setTimeout(() => {
-                currentItem.showLoading(false);
-                currentItem.showError(true);
-                currentItem.errorIndex(1);
-                const currentElm = $(`#${currentItem.id}`);
-                currentElm.popup({
-                    on: 'click',
-                    inline: true,
-                    onHidden: function () {
-                        currentItem.showError(false);
-                        currentItem.errorIndex(-1);
-                    }
-                });
-            }, 1000);
-            /*
-            return this.socketIo.emit11 ( 'getSnapshop', url, width, height , function ( err, data, snapshot ) {
-                currentItem.showLoading ( false )
-                if ( err ) {
-                    return self.showSearchError ( true )
-                }
-                currentItem.snapshotReady ( true )
-                
-                currentItem['localUrl']= snapshot.localUrl
-                currentItem['png']= snapshot.png
-                currentItem['height']= snapshot.height
-
-            })
-            */
-        }
-        showWebPageClose() {
-            this.showMain(true);
-            return this.showWebPage(null);
-        }
-        searchNext() {
-            if (this.moreResultsButtomLoading()) {
-                return;
-            }
-            const self = this;
-            this.moreResultsButtomLoading(true);
-            const nextLink = this.SearchNextPageLink;
-            function showError(err) {
-                self.moreResultsButtomLoading(false);
-                self.nextButtonErrorIndex(err);
-                self.nextButtonShowError(true);
-                /*
-                return $('#nextButton').popup ({
-                    on: 'click',
-                    inline: true,
-                    onHidden: function () {
-                        self.nextButtonShowError ( false )
-                        self.nextButtonErrorIndex ( -1 )
-                        
-                    }
-                })
-                */
-            }
-            //    image search
-            if (this.searchItem().originImage) {
-                return setTimeout(() => {
-                    showError(1);
-                }, 1000);
-                /*
-                return this.socketIo.emit11 ( 'searchNextImage', nextLink , function ( err, data ) {
-                   
-                })
-                */
-            }
-            //      text search
-            return setTimeout(() => {
-                self.moreResultsButtomLoading(false);
-                const data = {
-                    param: googleSearchNextReturn
-                };
-                data.param.Result.forEach(n => {
-                    n['showLoading'] = ko.observable(false);
-                    n['snapshotReady'] = ko.observable(false);
-                    n['id'] = uuid_generate();
-                    n['showError'] = ko.observable(false);
-                    n['errorIndex'] = ko.observable(-1);
-                    n['newsBrand'] = null;
-                });
-                self.searchItemList.push(...data.param.Result);
-                self.SearchNextPageLink = data.param.nextPage;
-            }, 1000);
-            /*
-            return this.socketIo.emit11 ( 'searchNext', nextLink , function ( err, data ) {
-                self.moreResultsButtomLoading ( false )
-                //  error
-                if ( err ) {
-                    return self.showSearchError ( true )
-                }
-                data.param.Result.forEach ( n => {
-                    n['showLoading'] = ko.observable ( false )
-                    n['snapshotReady'] = ko.observable ( false )
-                    n['id'] = uuid_generate ()
-                    n['showError'] = ko.observable ( false )
-                    n['errorIndex'] = ko.observable ( -1 )
-                })
-                self.searchItemList.push ( ...data.param.Result )
-                self.SearchNextPageLink = data.param.nextPage
-                
-                return
-            })
-            */
-        }
-        clearSearchText() {
-            this.searchInputText('');
-            this.backGroundBlue(false);
-        }
-        ImageSearchResult(iResult) {
-            this.showInputLoading(true);
-            //this.showMain ( false )
-            this.returnSearchItems(this.imageItems = iResult);
-            this.searchInputText(iResult.searchesRelated[0]);
-        }
-        showError(err) {
-            this.showInputLoading(false);
-            this.errorMessageIndex(err);
-            this.showSearchError(true);
-        }
-        imageSearch(rawData) {
-            const self = this;
-            this.showInputLoading(true);
-            this.searchItem(null);
-            this.searchItemList([]);
-            setTimeout(() => {
-                self.showInputLoading(false);
-                self.ImageSearchResult(imageSearchResult);
-            }, 2000);
-            /*
-            return this.socketIo.emit11 ( 'searcImage', rawData , function ( err: number , data ) {
-                if ( err ) {
-                    self.errorMessageIndex ( err )
-                }
-                
-            })
-            */
-        }
-        requestSimilarImagesClick() {
-            const self = this;
-            this.similarImagesLoading(true);
-            setTimeout(() => {
-                this.similarImagesLoading(false);
-                this.searchSimilarImagesList(imageSearchALlImage.Result);
-            }, 2000);
-            /** */
-            /*
-            setTimeout(() => {
-                 self.similarImagesLoading ( false )
-                 self.showSimilarImagesError ( true )
-                 self.similarImagesErrorIndex ( 1 )
-            }, 2000 )
-            */
-        }
-        SimilarImagesErrorClick() {
-            this.showSimilarImagesError(false);
-            this.similarImagesErrorIndex(-1);
-        }
-        searchesRelatedSelect(itemIndex) {
-            const item = this.searchItem().searchesRelated[itemIndex].text;
-            this.searchInputText(item);
-            this.showSearchesRelated(false);
-        }
-        similarImagesReadyClick() {
-            if (this.searchSimilarImagesList().length) {
-                this.showMain(false);
-                return this.showSearchSimilarImagesResult(true);
-            }
-        }
-        searchInputCloseError() {
-            this.errorMessageIndex(-1);
-            this.showSearchError(false);
-        }
-        nextButtonErrorClick() {
-            this.nextButtonErrorIndex(-1);
-            this.nextButtonShowError(false);
-        }
-        closeSimilarImagesResult() {
-            this.showMain(true);
-            this.showSearchSimilarImagesResult(false);
-        }
-        searchSetupClick() {
-            this.showSearchSetupForm(true);
-            this.backGroundBlue(true);
-            const self = this;
-            /*
-            $('#coSearchBackGround').one ( 'click', function() {
-                self.backGroundClick ()
-                $('#coSearchForm').off ('click')
-            })
-            $('#coSearchForm').one ( 'click', function() {
-                self.backGroundClick ()
-                $('#coSearchBackGround').off ('click')
-            })
-            */
-            return false;
-        }
-        backGroundClick() {
-            this.showSearchSetupForm(false);
-            this.backGroundBlue(false);
-        }
-        searchSetup(key) {
-            this.showSearchSetupForm(false);
-            this.backGroundBlue(false);
-            switch (key) {
-                case 'b': {
-                    return this.searchSetupIcon(bingIcon);
-                }
-                case 'd': {
-                    return this.searchSetupIcon(duckduckgoIcon);
-                }
-                case 'y': {
-                    return this.searchSetupIcon(YahooIcon);
-                }
-                default: {
-                    this.searchSetupIcon(googleIcon);
-                }
-            }
-        }
-        changeCurrentItemsToNews(newsItems) {
-            this.searchItemList([]);
-            const data = JSON.parse(JSON.stringify(this.webItems()));
-            data.Result = newsItems.Result;
-            data.totalResults = newsItems.totalResults;
-            data.nextPage = newsItems.nextPage;
-            this.newsButtonShowLoading(false);
-            this.currentlyShowItems(1);
-            return this.returnSearchItems(data);
-        }
-        newsButtonClick() {
-            const self = this;
-            //    Clear error if status is Error
-            if (this.newsButtonShowError()) {
-                this.newsButtonShowError(false);
-                return this.newsButtonErrorIndex(-1);
-            }
-            this.newsButtonShowLoading(true);
-            if (!this.newsItems()) {
-                return setTimeout(() => {
-                    this.newsItems(googleNewsSearchResult);
-                    this.changeCurrentItemsToNews(googleNewsSearchResult);
-                }, 1000);
-            }
-            return this.changeCurrentItemsToNews(this.newsItems());
-            /* test error
-            setTimeout (() => {
-                self.newsButtonShowLoading ( false )
-                self.newsButtonShowError ( true )
-                self.newsButtonErrorIndex ( 1 )
-            }, 1000 )
-            */
-        }
-        webItemsClick() {
-            this.currentlyShowItems(0);
-            this.searchItemList([]);
-            return this.returnSearchItems(this.webItems());
-        }
-    }
-    coSearch_layout.coSearch = coSearch;
-})(coSearch_layout || (coSearch_layout = {}));
-const coSearch_view = new coSearch_layout.coSearch();
-ko.applyBindings(coSearch_view, document.getElementById('body'));
-$('.' + coSearch_view.tLang()).addClass('active');
-function fileInputSelected(ee) {
-    if (!ee || !ee.files || !ee.files.length) {
-        return;
-    }
-    const file = ee.files[0];
-    if (!file || !file.type.match(/^image.(png$|jpg$|jpeg$|gif$)/)) {
-        return;
-    }
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const rawData = reader.result.toString();
-        return coSearch_view.imageSearch(rawData);
-    };
-    return reader.readAsDataURL(file);
-}
-/**
- *
- *
- */

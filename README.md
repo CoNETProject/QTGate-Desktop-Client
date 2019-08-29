@@ -7,7 +7,7 @@
 
 ![http protocol](/resources/CoPlatform3.png?raw=true)
 
-CoNET Platform is cross-platform sorware, provids a suite of APP that developed for use on [CoNET](https://github.com/QTGate/CoNET).
+CoNET Platform is cross-platform software, provids a suite of APP that developed for use on [CoNET](https://github.com/QTGate/CoNET).
 
 CoNETプラットフォームは複数のAPPを提供して[CoNET](https://github.com/QTGate/CoNET)を使います。
 
