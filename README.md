@@ -40,7 +40,7 @@ CoNET平台集成了一系列應用來使用[CoNET](https://github.com/QTGate/Co
 2）Get any web page screenshot/任意のWebページへスクリーンショット/抓取任意網站截圖
 ![http protocol](/resources/coSearchOpenPage.gif?raw=true)
 
-3) Major website media file download support live stream/メーインサイドメディアファイルをダウンロード、ライブストリームを対応/主要多媒體網站視頻音頻文件，直播視頻流下載
+3）Major website media file download support live stream/メーインサイドメディアファイルをダウンロード、ライブストリームを対応/主要多媒體網站視頻音頻文件，直播視頻流下載
 
 4）Google translate/Google翻訳/谷歌翻譯
 
