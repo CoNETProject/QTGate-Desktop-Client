@@ -35,10 +35,8 @@ CoNET平台集成了一系列應用來使用[CoNET](https://github.com/QTGate/Co
 
 ### CoSearch
 1）Web or Images search/ウェブまたは画像検索/網頁和圖片檢索
-![http protocol](/resources/coSearch.gif?raw=true)
 
 2）Get any web page screenshot/任意のWebページへスクリーンショット/抓取任意網站截圖
-![http protocol](/resources/coSearchOpenPage.gif?raw=true)
 
 3）Major website media file download support live stream/メーインサイドメディアファイルをダウンロード、ライブストリームを対応/主要多媒體網站視頻音頻文件，直播視頻流下載
 
