@@ -365,6 +365,9 @@ const infoDefine = [
                 hours: '小时前',
                 day: '天前',
                 mins: '分钟前'
+            },
+            TimeTolocalTime: function (time) {
+                return new Date(time).toLocaleDateString('zh-Hans', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             }
         },
         youtube: {
@@ -1024,6 +1027,9 @@ const infoDefine = [
                 hours: '時間前',
                 day: '天前',
                 mins: '分前'
+            },
+            TimeTolocalTime: function (time) {
+                return new Date(time).toLocaleDateString('ja', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             }
         },
         youtube: {
@@ -1690,6 +1696,9 @@ const infoDefine = [
                 hours: 'hours ago',
                 day: 'days ago',
                 mins: 'minutes ago'
+            },
+            TimeTolocalTime: function (time) {
+                return new Date(time).toLocaleDateString('en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             }
         },
         youtube: {
@@ -2401,6 +2410,9 @@ const infoDefine = [
                 hours: '小時前',
                 day: '天前',
                 mins: '分鐘前'
+            },
+            TimeTolocalTime: function (time) {
+                return new Date(time).toLocaleDateString('zh-TW', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             }
         },
         youtube: {

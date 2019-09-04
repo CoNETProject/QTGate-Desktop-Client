@@ -51,7 +51,7 @@ block jumbotron1
                         <!-- ko if: searchInputText().length -->
                         i.icon.search.link.circular( style = "box-shadow: 0 0 0 0.1em; color: #4285f4!important;" data-bind = "click: search_form ")
                         <!-- ko if : !showInputLoading() -->
-                        i.icon.language.circular.link( data-bind = " click: function(){ showTranslateForm ( true )}" style="box-shadow: 0 0 0 0.1em;color: #7742b9!important;margin-right: 2.5em" )
+                        i.icon.language.circular.link( style="box-shadow: 0 0 0 0.1em;color: #7742b9!important;margin-right: 2.5em" )
                         <!-- /ko -->
                         <!-- /ko -->
 
@@ -363,7 +363,7 @@ block jumbotron1
                             
                             <!-- ko if: searchItem().action.news && currentlyShowItems() !== 1 -->
                             a.basic.ui.label.small( style = "padding-right: 1em;"
-                                data-bind = " click: function() { newsButtonClick() }, style: {  cursor: newsButtonShowLoading() ? 'unset' : 'pointer' }, css: { olive: newsItems() && !newsButtonShowLoading(), grey: !newsItems(), red: newsButtonShowError() }")
+                                data-bind = " click: function() { newsButtonClick() }, style: {  cursor: newsButtonShowLoading() ? 'unset' : 'pointer' }, css: { olive: newsItemsArray() && !newsButtonShowLoading(), grey: !newsItemsArray() && !newsButtonShowError(), red: newsButtonShowError() }")
                                 
                                 <!-- ko if: newsButtonShowError() -->
                                 i.icon.info.red
@@ -386,14 +386,56 @@ block jumbotron1
                             <!-- /ko -->
 
                             <!-- ko if: searchItem().action.image && currentlyShowItems() !== 2 -->
-                            a.basic.ui.label.teal.small( style = "padding-right: 1em;" )
-                                i.icon.image.outline.teal
+                            a.basic.ui.label.small( data-bind = "click: function() { imageButtonClick() }, style: {  cursor: imageButtonShowLoading() ? 'unset' : 'pointer' }, css: { teal: imageItemsArray() && !imageButtonShowLoading(), grey: !imageItemsArray() && !imageButtonShowError(), red: imageButtonShowError() }"
+                                style = "padding-right: 1em;" )
+                                
+                                
+
+                                <!-- ko if: imageButtonShowError() -->
+                                i.icon.info.red
+                                span( data-bind = " text: infoDefine[ languageIndex() ].coSearch.errorMessage [ imageButtonErrorIndex()] ")
+                                <!-- /ko -->
+
+                                <!-- ko ifnot: imageButtonShowError() -->
+                                
+                                <!-- ko if: !imageButtonShowLoading() -->
+                                i.icon.image.outline
+                                
+                                <!-- /ko -->
+
+                                <!-- ko if: imageButtonShowLoading() -->
+                                i.icon.notched.circle.loading
+                                <!-- /ko -->
+                                
+                                <!-- /ko -->
                                 span( data-bind = "text: infoDefine[ languageIndex() ].coSearch.searchToolBarMenu[2] " )
                             <!-- /ko -->
 
                             <!-- ko if: searchItem().action.video && currentlyShowItems() !== 3 -->
-                            a.basic.ui.label.blue.small( style = "padding-right: 1em;")
+                            a.basic.ui.label.blue.small( data-bind = "click: function() { videoButtonClick() },style: {  cursor: videoButtonShowLoading() ? 'unset' : 'pointer' }, css: { blue: videoItemsArray() && !videoButtonShowLoading(), grey: !videoItemsArray() && !videoButtonShowError(), red: videoButtonShowError() }"
+                                style = "padding-right: 1em;")
+                                
+
+                                <!-- ko if: videoButtonShowError() -->
+                                i.icon.info.red
+                                span( data-bind = " text: infoDefine[ languageIndex() ].coSearch.errorMessage [ videoButtonErrorIndex()] ")
+                                <!-- /ko -->
+
+                                <!-- ko ifnot: videoButtonShowError() -->
+                                
+                                <!-- ko if: !videoButtonShowLoading() -->
                                 i.icon.video
+                                
+                                <!-- /ko -->
+
+                                <!-- ko if: videoButtonShowLoading() -->
+                                i.icon.notched.circle.loading
+                                <!-- /ko -->
+                                
+                                <!-- /ko -->
+
+
+
                                 span( data-bind = "text: infoDefine[ languageIndex() ].coSearch.searchToolBarMenu[3] " )
                             <!-- /ko -->
 
@@ -481,20 +523,20 @@ block jumbotron1
                             .content
                                 .header
                                     a( data-bind = "text: title, attr:{ href: url } "  style="font-weight: normal;font-size: medium;" )
-                                    
+                                <!-- ko ifnot: newsBrand -->
                                 .meta
                                     span
                                         
                                         <!-- ko if: !showLoading() && ! snapshotReady() && !showError() -->
-                                        i.icon.object.group.olive.link( data-bind = "click: function() { $root.getSnapshotClick( $index() )}")
+                                        i.icon.object.group.grey.link( data-bind = "click: function() { $root.getSnapshotClick( $index() )}")
                                         <!-- /ko -->
 
                                         <!-- ko if: showLoading -->
-                                        i.icon.notched.circle.loading.purple
+                                        i.icon.notched.circle.loading.grey
                                         <!-- /ko -->
 
                                         <!-- ko if: snapshotReady -->
-                                        i.icon.file.image.outline.orange.link( data-bind = "click: function() { $root.showSnapshotClick( $index() )}" )
+                                        i.icon.file.image.outline.olive.link( data-bind = "click: function() { $root.showSnapshotClick( $index() )}" )
                                         <!-- /ko -->
                                         
                                         <!-- ko if: showError -->
@@ -503,28 +545,57 @@ block jumbotron1
 
                                     span( data-bind="text: urlShow, style: { color: snapshotReady() ? 'orange' : ( showError() ? 'red' : 'green') } "
                                         style="margin-top: 0.5em; margin-bottom: 0.5em; font-size: small;" )
+                                <!-- /ko -->
                                 .description( style = " color: grey; ")
 
                                     <!-- ko if: newsBrand -->
-                                    p( data-bind = " text: newsBrand ")
-                                    <!-- /ko -->
-                                    
-                                    <!-- ko ifnot: newsBrand -->
-                                    span
-                                    <!-- /ko -->
+                                    p
+                                        span
+                                            <!-- ko if: !showLoading() && ! snapshotReady() && !showError() -->
+                                            i.icon.object.group.grey.link( data-bind = "click: function() { $root.getSnapshotClick( $index() )}")
+                                            <!-- /ko -->
 
+                                            <!-- ko if: showLoading -->
+                                            i.icon.notched.circle.loading.grey
+                                            <!-- /ko -->
+
+                                            <!-- ko if: snapshotReady -->
+                                            i.icon.file.image.outline.olive.link( data-bind = "click: function() { $root.showSnapshotClick( $index() )}" )
+                                            <!-- /ko -->
+                                            
+                                            <!-- ko if: showError -->
+                                            i.icon.info.circle.red.link( data-bind = "attr: { id: id, 'data-content': infoDefine[ $root.languageIndex() ].coSearch.errorMessage[ errorIndex()]}")
+                                            <!-- /ko -->
+
+                                        span( data-bind = " text: newsBrand " style = "font-weight: bolder; color: #906363db;" )
                                         <!-- ko if: beforeTime -->
                                         <!-- ko with: beforeTime -->
 
                                         <!-- ko if: timeNumber -->
-                                        span( data-bind = "text: timeNumber + ' ' + infoDefine[ $root.languageIndex() ].coSearch.timeUnit[ timeUnit ]" style = "font-weight: bolder; color: #906363db;")
+                                        span( data-bind = "text: ' - ' + timeNumber + ' ' + infoDefine[ $root.languageIndex() ].coSearch.timeUnit[ timeUnit ]" style = "font-weight: bolder; color: #906363db;")
                                         <!-- /ko -->
 
-
+                                        <!-- ko if: time -->
+                                        span( data-bind = "text: ' - ' + infoDefine[ $root.languageIndex() ].coSearch.TimeTolocalTime ( time )" style = "font-weight: bolder; color: #906363db;")
+                                        <!-- /ko -->
 
                                         <!-- /ko -->
                                         <!-- /ko -->
-                                        span( data-bind = "text: description" style = "color: grey")
+
+                                    <!-- /ko -->
+                                    
+                                    <!-- ko ifnot: newsBrand -->
+                                    <!-- ko if: beforeTime -->
+                                    <!-- ko with: beforeTime -->
+
+                                    <!-- ko if: timeNumber -->
+                                    span( data-bind = "text: timeNumber + ' ' + infoDefine[ $root.languageIndex() ].coSearch.timeUnit[ timeUnit ] + ' - ' " style = "font-weight: bolder; color: #906363db;")
+                                    <!-- /ko -->
+
+                                    <!-- /ko -->
+                                    <!-- /ko -->
+                                    <!-- /ko -->
+                                    span( data-bind = "text: description" style = "color: grey")
 
                         .space
                         .space
