@@ -2084,6 +2084,8 @@ const googleSearchImageClickResult = {
   ]
 }
 
+const googleVideoSearchClickResult = 
+
 const bingIcon = `
     <svg viewBox="-650 800 900 400">
     <path style="fill:#008373;fill-opacity:1;stroke:none" d="m -311.5,796.16903 80.6273,28.36401 0,283.80836 113.56729,-65.5599 -55.67962,-26.1246 -35.12739,-87.43067 178.939297,62.86452 0,91.39515 -201.653597,116.3102 -80.67328,-44.875 z" />
@@ -2783,7 +2785,9 @@ module coSearch_layout {
                     this.imageItemsArray ( googleSearchImageClickResult )
                 }, 1000 )
             }
-            this.currentlyShowItems(2)
+
+            //this.currentlyShowItems ( 2 )
+            this.imageButtonShowLoading ( false )
             this.searchSimilarImagesList( this.imageItemsArray().Result  )
             this.showMain ( false )
             return this.showSearchSimilarImagesResult ( true )

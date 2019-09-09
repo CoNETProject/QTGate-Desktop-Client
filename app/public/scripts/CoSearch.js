@@ -2646,7 +2646,8 @@ var coSearch_layout;
                     this.imageItemsArray(googleSearchImageClickResult);
                 }, 1000);
             }
-            this.currentlyShowItems(2);
+            //this.currentlyShowItems ( 2 )
+            this.imageButtonShowLoading(false);
             this.searchSimilarImagesList(this.imageItemsArray().Result);
             this.showMain(false);
             return this.showSearchSimilarImagesResult(true);
