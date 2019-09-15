@@ -375,6 +375,7 @@ const infoDefine = [
             unSafe: ['安全浏览','非安全浏览（非推荐）'],
             similarImages: '外观类似的图片',
             errorMessage: [
+                '无效请求',
                 '您的图片格式无法处理，请尝试选择其他图片',
                 '您的请求已达最大值，请稍后再试'
             ],
@@ -1071,6 +1072,7 @@ const infoDefine = [
             unSafe: ['安全浏览','非安全浏览（非推荐）'],
             similarImages: '類似の画像',
             errorMessage: [
+                '無効なレクエスト',
                 '選択された画像は処理ができません、ほかの画像をしてください',
                 'レクエスト回数は制限にかかった、後ほど改めてお試しください'
             ],
@@ -1767,6 +1769,7 @@ const infoDefine = [
             similarImages: 'Visually similar images',
             unSafe: ['Safe viewer','Unsafe viewer'],
             errorMessage: [
+                'Invalid request.',
                 'This image have issue of format. Select other one please.',
                 'Request maximum error. Try again later.'
             ],
@@ -2506,6 +2509,7 @@ const infoDefine = [
             label_picture:'圖片',
             similarImages: '看起來相似的圖片',
             errorMessage: [
+                '無效請求',
                 '您的圖片格式無法處理，請嘗試選擇其他圖片',
                 '您的請求已達最大值，請稍後再試'
             ],

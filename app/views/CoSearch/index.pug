@@ -453,7 +453,7 @@ block jumbotron1
                                 a.five.wide.column( href = "#" data-bind = "text: text, click: function () { $root.searchesRelatedSelect ( $index() )}" style="padding-top: 0.2rem;padding-bottom: 0.2rem;")
                                 <!-- /ko -->
                         <!-- /ko -->
-            .items( data-bind=" style: { 'margin-top': showSearchesRelated() && !searchItem()['originImage'] ? '16.5em' : '8.5em' }, click: function () { $root.showSearchesRelated ( false )}" )
+            .items( data-bind=" style: { 'margin-top': showSearchesRelated() && !searchItem()['originImage'] ? '16.5em' : '8.5em' }, click: function () { $root.showSearchesRelated ( false ); return true;}" )
                 
                 .AppList.CoContent.content
                     
@@ -515,16 +515,20 @@ block jumbotron1
 
 
                         <!-- ko foreach: searchItemList -->
-                        .item()
+                        .item
                             <!-- ko if: imageInfo && imageInfo['img'] -->
-                            .image
-                                img.ui.top.aligned.tiny.image( data-bind = "attr: { src: imageInfo.img }")
+                            .image.ui.top.aligned( data-bind = "style: { height: imageInfo['videoTime'] ? '90px' : 'auto' }" style = " width:150px ")
+                                img( data-bind = "attr: { src: imageInfo.img }")
+                                <!-- ko if: imageInfo['videoTime'] -->
+                                .ui.bottom.right.attached.label.tiny( data-bind = "text: imageInfo['videoTime'] " style = " background-color: #3130307a!important;; color: rgba(255, 252, 252, 0.77)!important;;")
+                                <!-- /ko -->
+
                             <!-- /ko -->
                             .content
                                 .header
-                                    a( data-bind = "text: title, attr:{ href: url } "  style="font-weight: normal;font-size: medium;" )
+                                    a( data-bind = "text: title, attr: { href: url } "  style="font-weight: normal;font-size: medium;" target = "_blank" )
                                 <!-- ko ifnot: newsBrand -->
-                                .meta
+                                .meta( style="margin:unset;")
                                     span
                                         
                                         <!-- ko if: !showLoading() && ! snapshotReady() && !showError() -->
@@ -589,7 +593,11 @@ block jumbotron1
                                     <!-- ko with: beforeTime -->
 
                                     <!-- ko if: timeNumber -->
-                                    span( data-bind = "text: timeNumber + ' ' + infoDefine[ $root.languageIndex() ].coSearch.timeUnit[ timeUnit ] + ' - ' " style = "font-weight: bolder; color: #906363db;")
+                                    span( data-bind = "text: timeNumber + ' ' + infoDefine[ $root.languageIndex() ].coSearch.timeUnit[ timeUnit ] + ' - '" style = "font-weight: bolder; color: #906363db;")
+                                    <!-- /ko -->
+
+                                    <!-- ko if: time -->
+                                    span( data-bind = "text: infoDefine[ $root.languageIndex() ].coSearch.TimeTolocalTime ( time ) + ' - '" style = "font-weight: bolder; color: #906363db;")
                                     <!-- /ko -->
 
                                     <!-- /ko -->
@@ -672,3 +680,4 @@ block jumbotron1
                 span( data-bind = "text: webUrl")
     <!-- /ko -->
 
+    

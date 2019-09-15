@@ -31,8 +31,6 @@ const coNETConnect_1 = require("./tools/coNETConnect");
 const Crypto = require("crypto");
 const ProxyServer = require("./tools/proxyServer");
 const UploadFile = require("./tools/uploadFile");
-const Twitter_text = require("twitter-text");
-const youtube_1 = require("./tools/youtube");
 const coSearchServer_1 = require("./tools/coSearchServer");
 const JSZip = require("jszip");
 Express.static.mime.define({ 'multipart/related': ['mht'] });
@@ -153,27 +151,6 @@ class localServer {
             return Tool.saveConfig(this.config, err => {
             });
         });
-        this.expressServer.get('/Wrt', (req, res) => {
-            let globalIp = '';
-            if (this.connectCommand && this.connectCommand.length) {
-                globalIp = this.connectCommand[0].localServerIp[0];
-            }
-            else {
-                console.log(`Wrt doing Tool.myIpServer`);
-                return Tool.myIpServer((err, data) => {
-                    if (err) {
-                        globalIp = 'ERR';
-                    }
-                    else {
-                        globalIp = data;
-                    }
-                    console.log(`Wrt doing Tool.myIpServer [${globalIp}]`);
-                    res.render('home/Wrt', { title: 'Wrt', localIP: Tool.getLocalInterface(), globalIP: globalIp });
-                });
-            }
-            console.log(`Wrt doingthis.connectCommand[0].localServerIp [${globalIp}]`);
-            res.render('home/Wrt', { title: 'Wrt', localIP: Tool.getLocalInterface(), globalIP: globalIp });
-        });
         this.expressServer.get('/CoSearch', (req, res) => {
             const sessionHash = req.query.sessionHash;
             const _index = this.sessionHashPool.indexOf(sessionHash);
@@ -223,7 +200,7 @@ class localServer {
         }
         let sendMail = false;
         const _exitFunction = err => {
-            //console.trace ( `tryConnectCoNET exit! err =`, err )
+            console.trace(`_exitFunction err =`, err);
             //console.log (`sessionHashPool.length = [${ this.sessionHashPool.length }]`)
             switch (err) {
                 ///			connect conet had timeout
@@ -321,93 +298,40 @@ class localServer {
         this.proxyServer = new ProxyServer.proxyServer(this.whiteIpList, this.domainPool, uu.localServerPort, 'pac', 5000, arg, 50000, true, this.domainBlackList, uu.localServerIp[0], Tool.LocalServerPortNumber);
         console.log(`this.proxyServer = new ProxyServer.proxyServer! this.proxyServer && this.proxyServer.port = [${this.proxyServer && this.proxyServer.port}]`);
     }
-    requestConnectCoGate(socket, sessionHash, cmd) {
-        //const arg = [{"account":"peter1@conettech.ca","imapData":{"imapPortNumber":"993","smtpPortNumber":587,"imapServer":"imap-mail.outlook.com","imapIgnoreCertificate":false,"smtpIgnoreCertificate":false,"imapSsl":true,"smtpSsl":false,"imapUserName":"proxyviaemai@outlook.com","imapUserPassword":"ajuwrcylbrobvykn","account":"Peter1@CoNETTech.ca","smtpServer":"smtp-mail.outlook.com","smtpUserName":"proxyviaemai@outlook.com","smtpUserPassword":"ajuwrcylbrobvykn","email":"Peter1@CoNETTech.ca","imapTestResult":true,"language":"en","timeZoneOffset":420,"serverFolder":"1f4953ea-6ffe-4e58-bf46-fd7a52867a41","clientFolder":"7b6b9c13-2a30-4682-adcb-751b0643020f","randomPassword":"8a510536516b92d361f94fb624310b","clientIpAddress":"172.218.175.40","requestPortNumber":null},"gateWayIpAddress":"51.15.192.239","region":"paris","connectType":2,"localServerPort":"3001","AllDataToGateway":true,"error":-1,"fingerprint":"052568B9D9742E64C6C0A5D288C08CEAC728A0D9","localServerIp":"172.218.175.40","multipleGateway":[{"gateWayIpAddress":"51.15.192.239","gateWayPort":80,"dockerName":"scaleway-decdbb5e-bb23-4e15-8d46-544d245fcab3","password":"cb5ea121c8fa2a00e91535f921184ce8"}],"requestPortNumber":80,"requestMultipleGateway":1,"webWrt":true,"connectPeer":"ddkjksi32bjsaclbkvf","totalUserPower":2,"transferData":{"account":"peter1@conettech.ca","availableDayTransfer":102400000,"usedMonthlyOverTransfer":0,"productionPackage":"free","transferDayLimit":102400000,"transferMonthly":1024000000,"startDate":"2018-04-25T00:00:00.000Z","availableMonthlyTransfer":1024000000,"resetTime":"2018-06-02T17:17:24.288Z","usedDayTransfer":0,"timeZoneOffset":420,"usedMonthlyTransfer":0,"power":1,"isAnnual":false,"expire":"2018-05-24T00:00:00.000Z","customsID":"","paidID":[],"automatically":false},"requestContainerEachPower":2,"peerUuid":"703145fc-740c-43b6-b1c8-aca935602bd7","containerUUID":"4c6c0c5b-73f9-4fb9-9bcb-c7bc6d05fe8a","runningDocker":"scaleway-decdbb5e-bb23-4e15-8d46-544d245fcab3","dockerName":"scaleway-decdbb5e-bb23-4e15-8d46-544d245fcab3","gateWayPort":80,"randomPassword":"cb5ea121c8fa2a00e91535f921184ce8"}]
-        //this.connectCommand = arg
-        //socket.emit ( 'QTGateGatewayConnectRequest', null, this.connectCommand )
-        if (this.connectCommand) {
-            return socket.emit('QTGateGatewayConnectRequest', null, this.connectCommand);
-        }
-        cmd.account = this.config.keypair.email.toLocaleLowerCase();
-        //			@OPN connect
-        const request = () => {
-            const com = {
-                command: 'connectRequest',
-                Args: [cmd],
-                error: null,
-                requestSerial: Crypto.randomBytes(8).toString('hex')
-            };
-            return this.sendRequest(socket, com, sessionHash, (err, res) => {
-                //		no error
-                if (err) {
-                    socket.emit('QTGateGatewayConnectRequest', err);
-                    return console.log(`on QTGateGatewayConnectRequest CoNETConnectCalss.request return error`, err);
-                }
-                if (res.error < 0) {
-                    const arg = this.connectCommand = res.Args;
-                    this.makeOpnConnect(arg);
-                    return socket.emit('QTGateGatewayConnectRequest', null, this.connectCommand);
-                }
-                return socket.emit('QTGateGatewayConnectRequest', res.error);
-            });
-        };
-        //		iOPN connect 
-        if (cmd.connectType === 2) {
-            return Tool.myIpServer((err, data) => {
-                if (err) {
-                    return saveLog(`on QTGateGatewayConnectRequest Tool.myIpServer return error =[${err.message ? err.message : null}]`);
-                }
-                if (!data) {
-                    return saveLog(`on QTGateGatewayConnectRequest Tool.myIpServer return no data!`);
-                }
-                saveLog(`on QTGateGatewayConnectRequest Tool.myIpServer return localHostIP [${data}]`);
-                cmd.globalIpAddress = data;
-                cmd.localServerIp = Tool.getLocalInterface();
-                return request();
-            });
-        }
-        return request();
-    }
     listenAfterPassword(socket, sessionHash) {
         //console.log (`localServer listenAfterPassword for sessionHash [${ sessionHash }]`)
         socket.on('checkImap', (emailAddress, password, timeZone, tLang, CallBack1) => {
             CallBack1();
             console.log(`localServer on checkImap!`);
-            return Tool.myIpServer((err, ip) => {
-                if (err || !ip) {
-                    saveLog(`on checkImap Tool.myIpServer got error! [${err.message ? err.message : null}]`);
-                    return socket.emit('smtpTest', 4);
-                }
-                const imapServer = Tool.getImapSmtpHost(emailAddress);
-                this.imapConnectData = {
-                    email: this.config.account,
-                    account: this.config.account,
-                    smtpServer: imapServer.smtp,
-                    smtpUserName: emailAddress,
-                    smtpPortNumber: imapServer.SmtpPort,
-                    smtpSsl: imapServer.smtpSsl,
-                    smtpIgnoreCertificate: false,
-                    smtpUserPassword: password,
-                    imapServer: imapServer.imap,
-                    imapPortNumber: imapServer.ImapPort,
-                    imapSsl: imapServer.imapSsl,
-                    imapUserName: emailAddress,
-                    imapIgnoreCertificate: false,
-                    imapUserPassword: password,
-                    timeZoneOffset: timeZone,
-                    language: tLang,
-                    imapTestResult: null,
-                    clientFolder: Uuid.v4(),
-                    serverFolder: Uuid.v4(),
-                    randomPassword: Uuid.v4(),
-                    uuid: Uuid.v4(),
-                    confirmRisk: false,
-                    clientIpAddress: null,
-                    ciphers: null,
-                    sendToQTGate: false
-                };
-                return this.doingCheckImap(socket);
-            });
+            const imapServer = Tool.getImapSmtpHost(emailAddress);
+            this.imapConnectData = {
+                email: this.config.account,
+                account: this.config.account,
+                smtpServer: imapServer.smtp,
+                smtpUserName: emailAddress,
+                smtpPortNumber: imapServer.SmtpPort,
+                smtpSsl: imapServer.smtpSsl,
+                smtpIgnoreCertificate: false,
+                smtpUserPassword: password,
+                imapServer: imapServer.imap,
+                imapPortNumber: imapServer.ImapPort,
+                imapSsl: imapServer.imapSsl,
+                imapUserName: emailAddress,
+                imapIgnoreCertificate: false,
+                imapUserPassword: password,
+                timeZoneOffset: timeZone,
+                language: tLang,
+                imapTestResult: null,
+                clientFolder: Uuid.v4(),
+                serverFolder: Uuid.v4(),
+                randomPassword: Uuid.v4(),
+                uuid: Uuid.v4(),
+                confirmRisk: false,
+                clientIpAddress: null,
+                ciphers: null,
+                sendToQTGate: false
+            };
+            return this.doingCheckImap(socket);
         });
         socket.on('tryConnectCoNET', CallBack1 => {
             CallBack1();
@@ -428,7 +352,8 @@ class localServer {
             const com = {
                 command: 'requestActivEmail',
                 Args: [],
-                error: null
+                error: null,
+                subCom: null
             };
             return this.sendRequest(socket, com, sessionHash, (err, res) => {
                 console.log(`requestActivEmail sendrequest callback! `);
@@ -457,7 +382,8 @@ class localServer {
                 const com = {
                     command: 'activePassword',
                     Args: [pass],
-                    error: null
+                    error: null,
+                    subCom: null
                 };
                 console.log(Util.inspect(com));
                 return this.sendRequest(socket, com, sessionHash, (err, data) => {
@@ -480,141 +406,6 @@ class localServer {
                         });
                     }
                 });
-            });
-        });
-        socket.on('getAvaliableRegion', CallBack1 => {
-            CallBack1();
-            console.log(`on getAvaliableRegion`);
-            if (this.connectCommand && this.connectCommand.length) {
-                console.log(`getAvaliableRegion have this.connectCommand `);
-                //socket.emit ('getAvaliableRegion', this.regionV1, this.dataTransfer, this.config )
-                socket.emit('getAvaliableRegion', this.regionV1, this.dataTransfer, this.config);
-                return setTimeout(() => {
-                    return socket.emit('QTGateGatewayConnectRequest', -1, this.connectCommand);
-                }, 500);
-            }
-            const com = {
-                command: 'getAvaliableRegion',
-                Args: [],
-                error: null
-            };
-            return this.sendRequest(socket, com, sessionHash, (err, res) => {
-                if (err) {
-                    return saveLog(`getAvaliableRegion QTClass.request callback error! STOP [${err}]`);
-                }
-                if (res && res.dataTransfer && res.dataTransfer.productionPackage) {
-                    this.config.freeUser = /free/i.test(res.dataTransfer.productionPackage);
-                }
-                this.dataTransfer = res.dataTransfer;
-                console.log(`dataTransfer `, Util.inspect(this.dataTransfer, false, 2, true));
-                socket.emit('getAvaliableRegion', res.Args[2], res.dataTransfer, this.config);
-                //		Have gateway connect!
-                //this.saveConfig ()
-                this.regionV1 = res.Args[2];
-            });
-        });
-        /*
-        socket.on ( 'pingCheck', CallBack1 => {
-            CallBack1 ()
-            if ( process.platform === 'linux') {
-                return socket.emit ( 'pingCheckSuccess', true )
-            }
-                
-            
-            if ( !this.regionV1 || this.pingChecking ) {
-                saveLog ( `!this.regionV1 [${ !this.regionV1 }] || this.pingChecking [${ this.pingChecking }]`)
-                return socket.emit ( 'pingCheck' )
-            }
-                
-            this.pingChecking = true
-            try {
-                const netPing = require ('net-ping')
-                const session = netPing.createSession ()
-            } catch ( ex ) {
-                console.log ( `netPing.createSession err`, ex )
-                return socket.emit ( 'pingCheckSuccess', true )
-            }
-            Async.eachSeries ( this.regionV1, ( n: regionV1, next ) => {
-                
-                return Tool.testPing ( n.testHostIp, ( err, ping ) => {
-                    saveLog( `testPing [${ n.regionName }] return ping [${ ping }]`)
-                    socket.emit ( 'pingCheck', n.regionName, err? 9999: ping )
-                    return next ()
-                })
-            }, () => {
-                saveLog (`pingCheck success!`)
-                this.pingChecking = false
-                return socket.emit ( 'pingCheckSuccess' )
-            })
-            
-        })
-        */
-        socket.on('promoCode', (promoCode, CallBack1) => {
-            CallBack1();
-            const com = {
-                command: 'promoCode',
-                error: null,
-                Args: [promoCode]
-            };
-            saveLog(`on promoCode`);
-            return this.sendRequest(socket, com, sessionHash, (err, res) => {
-                saveLog(`promoCode got callBack: [${JSON.stringify(res)}]`);
-                if (err) {
-                    socket.emit('promoCode', err);
-                    return saveLog(`promoCode got QTClass.request  error!`);
-                }
-                if (res.error === -1) {
-                    saveLog('promoCode success!');
-                    this.config.freeUser = false;
-                    Tool.saveConfig(this.config, () => {
-                    });
-                }
-                return socket.emit('promoCode', err, res);
-            });
-        });
-        socket.on('checkPort', (portNum, CallBack1) => {
-            CallBack1();
-            return this.checkPort(portNum, socket);
-        });
-        socket.on('QTGateGatewayConnectRequest', (cmd, CallBack1) => {
-            CallBack1();
-            return this.requestConnectCoGate(socket, sessionHash, cmd);
-        });
-        socket.on('disconnectClick', CallBack1 => {
-            CallBack1();
-            return this.stopGetwayConnect(socket, true, null, sessionHash);
-        });
-        socket.on('cardToken', (payment, CallBack1) => {
-            const com = {
-                command: 'cardToken',
-                error: null,
-                Args: [payment]
-            };
-            CallBack1();
-            console.log(`socket.on cardToken send to QTGate!`, Util.inspect(com, false, 2, true));
-            return this.sendRequest(socket, com, sessionHash, (err, res) => {
-                saveLog(`cardToken got callBack: [${JSON.stringify(res)}]`);
-                if (err) {
-                    return saveLog(`cardToken got QTClass.request  error!`);
-                }
-                if (res.error === -1) {
-                    saveLog('cancelPlan success!');
-                    this.config.freeUser = false;
-                    Tool.saveConfig(this.config, err => {
-                    });
-                }
-                socket.emit('cardToken', err, res);
-            });
-        });
-        socket.on('cancelPlan', (CallBack1) => {
-            CallBack1();
-            const com = {
-                command: 'cancelPlan',
-                error: null,
-                Args: []
-            };
-            return this.sendRequest(socket, com, sessionHash, (err, res) => {
-                socket.emit('cancelPlan', err, res);
             });
         });
     }
@@ -669,40 +460,6 @@ class localServer {
             }
         }
         return CallBack(2);
-    }
-    getTimelines(socket, account, sessionHash, CallBack) {
-        const com = {
-            command: 'twitter_home_timeline',
-            Args: [account],
-            error: null,
-            requestSerial: Crypto.randomBytes(8).toString('hex')
-        };
-        let count = 0;
-        return this.sendRequest(socket, com, sessionHash, (err, res) => {
-            count++;
-            if (err) {
-                return CallBack();
-            }
-            if (res.error) {
-                return this.TwitterError(res.error, CallBack);
-            }
-            if (res.Args && res.Args.length > 0) {
-                let uu = null;
-                try {
-                    uu = JSON.parse(Buffer.from(res.Args[0], 'base64').toString());
-                }
-                catch (ex) {
-                    this.TwitterError(2, CallBack);
-                    return saveLog(`getTimelines QTClass.request return JSON.parse Error! _return [${ex} ]`);
-                }
-                if (count >= uu.CoNET_totalTwitter - 1) {
-                    console.log(`socket.emit ( 'getTimelinesEnd' )`);
-                    socket.emit('getTimelinesEnd');
-                }
-                console.log(`Total Tweets [${uu.CoNET_totalTwitter}] current [${count}]`);
-                return CallBack(null, uu);
-            }
-        });
     }
     getMedia(mediaString, CallBack) {
         //saveLog (` getMedia mediaString = [${ mediaString }]`)
@@ -812,6 +569,7 @@ class localServer {
             command: 'twitter_home_timelineNext',
             Args: [account, max_id],
             error: null,
+            subCom: null,
             requestSerial: Crypto.randomBytes(8).toString('hex')
         };
         return this.sendRequest(socket, com, sessionHash, (err, res) => {
@@ -869,39 +627,6 @@ class localServer {
             return CallBack();
         });
     }
-    postTweetViaQTGate(socket, account, postData, sessionHash, Callback) {
-        const post = err => {
-            if (err) {
-                saveLog(`postTweetViaQTGate post got error: [${err.message}] `);
-                return Callback(err);
-            }
-            delete account['twitter_verify_credentials'];
-            delete postData.images;
-            const com = {
-                command: 'twitter_post',
-                Args: [account, postData],
-                error: null,
-                requestSerial: Crypto.randomBytes(10).toString('hex')
-            };
-            console.log(`[twitter_post]\n${Util.inspect(postData)}`);
-            /*
-            Imap.imapGetMediaFilesFromString ( this.localServer.QTClass.imapData, postData.videoFileName, QTGateVideo, ( err1, data ) => {
-                if ( err1 ) {
-                    saveLog ( `Imap.imapGetMediaFilesFromString got error [${ err }]`)
-                }
-                saveLog ( `Imap.imapGetMediaFilesFromString success! [${ data }]`)
-            })
-            */
-            return this.sendRequest(socket, com, sessionHash, Callback);
-        };
-        if (postData.images && postData.images.length) {
-            return this.QT_PictureMediaUpload(postData, post);
-        }
-        if (postData.videoFileName) {
-            return this.QT_VideoMediaUpload(postData, post);
-        }
-        return post(null);
-    }
     tweetTimeCallBack(socket, err, tweets, postReturn) {
         if (err) {
             socket.emit('getTimelines', err);
@@ -913,108 +638,6 @@ class localServer {
             }
             console.log(`*************** socket.emit [${tweet.CoNET_totalTwitter}:${tweet.CoNET_currentTwitter + 1}]`);
             return socket.emit('getTimelines', tweet, postReturn);
-        });
-    }
-    listenAfterTwitterLogin(socket, sessionHash) {
-        socket.on('addTwitterAccount', (addTwitterAccount, CallBack1) => {
-            CallBack1();
-            delete addTwitterAccount['twitter_verify_credentials'];
-            const com = {
-                command: 'twitter_account',
-                Args: [addTwitterAccount],
-                error: null
-            };
-            return this.sendRequest(socket, com, sessionHash, (err, res) => {
-                if (err) {
-                    return socket.emit('addTwitterAccount');
-                }
-                if (res.Args && res.Args.length > 0) {
-                    let uu = null;
-                    try {
-                        uu = JSON.parse(Buffer.from(res.Args[0], 'base64').toString());
-                    }
-                    catch (ex) {
-                        socket.emit('addTwitterAccount');
-                        return saveLog(`getTwitterAccountInfo QTClass.request return JSON.parse Error!`);
-                    }
-                    if (uu && uu.twitter_verify_credentials) {
-                        console.log(`addTwitterAccount ${Util.inspect(uu, false, 2, true)}`);
-                        socket.emit('addTwitterAccount', null, uu);
-                        this.twitterData.push(uu);
-                        return Tool.saveEncryptoData(Tool.twitterDataFileName, this.twitterData, this.config, this.savedPasswrod, err => {
-                            if (err) {
-                                return saveLog(`saveANEWTwitterData got error: ${err.messgae}`);
-                            }
-                        });
-                    }
-                }
-                return socket.emit('addTwitterAccount');
-            });
-        });
-        socket.on('getTimelines', (item, CallBack1) => {
-            CallBack1();
-            delete item['twitter_verify_credentials'];
-            this.setCurrentTwitterAccount(item);
-            return this.getTimelines(socket, item, sessionHash, (err, tweets) => {
-                return this.tweetTimeCallBack(socket, err, tweets, false);
-            });
-        });
-        socket.on('mediaFileUpdata', (uploadId, data, part, CallBack1) => {
-            CallBack1();
-            const fileName = Path.join(Tool.QTGateVideo, uploadId);
-            //		the end!
-            const CallBack = err => {
-                return socket.emit('mediaFileUpdata', err);
-            };
-            if (!part) {
-                Fs.writeFile(fileName, data, 'binary', CallBack);
-            }
-            else {
-                Fs.appendFile(fileName, data, 'binary', CallBack);
-            }
-        });
-        socket.on('getTimelinesNext', (item, maxID, CallBack1) => {
-            CallBack1();
-            return this.getTimelinesNext(socket, item, maxID, sessionHash, (err, tweets) => {
-                return this.tweetTimeCallBack(socket, err, tweets, false);
-            });
-        });
-        socket.on('twitter_postNewTweet', (account, postData, CallBack1) => {
-            CallBack1();
-            if (!account || !postData.length) {
-                return console.log('on twitter_postNewTweet but format error!');
-            }
-            console.log(Util.inspect(postData, false, 4, true));
-            return this.postTweetViaQTGate(socket, account, postData[0], sessionHash, (err, res) => {
-                if (res.Args && res.Args.length > 0) {
-                    let uu = null;
-                    try {
-                        uu = JSON.parse(Buffer.from(res.Args[0], 'base64').toString());
-                    }
-                    catch (ex) {
-                        return socket.emit('getTimelines', 2);
-                    }
-                    console.log(`postTweetViaQTGate return\n`, Util.inspect(uu));
-                    uu.user.profile_image_url_https = this.twitterData[this.currentTwitterAccount].twitter_verify_credentials.profile_image_url_https;
-                    return socket.emit('getTimelines', uu, true);
-                }
-                if (err) {
-                    return socket.emit('twitter_postNewTweet', err);
-                }
-            });
-        });
-        socket.on('getTwitterTextLength', (twitterText, CallBack1) => {
-            CallBack1();
-            return socket.emit('getTwitterTextLength', Twitter_text.parseTweet(twitterText));
-        });
-        return socket.on('saveAccounts', (twitterAccounts, CallBack1) => {
-            CallBack1();
-            this.twitterData = twitterAccounts;
-            return Tool.saveEncryptoData(Tool.twitterDataFileName, this.twitterData, this.config, this.savedPasswrod, err => {
-                if (err) {
-                    return saveLog(`saveTwitterData error [${err.message ? err.message : ''}]`);
-                }
-            });
         });
     }
     passwordFail(socket) {
@@ -1192,42 +815,6 @@ class localServer {
             }
             this.sessionHashPool.push(sessionHash = Crypto.randomBytes(10).toString('hex'));
             console.log(`this.sessionHashPool.push!\n${this.sessionHashPool}\n${this.sessionHashPool.length}`);
-            this.listenAfterTwitterLogin(socket, sessionHash);
-            if (this.twitterDataInit) {
-                return socket.emit('password', null, this.twitterData);
-            }
-            this.twitterDataInit = true;
-            return Tool.readEncryptoFile(Tool.twitterDataFileName, password, this.config, (err, data) => {
-                if (data && data.length) {
-                    try {
-                        this.twitterData = JSON.parse(data);
-                    }
-                    catch (ex) {
-                        return socket.emit('password', true);
-                    }
-                    return socket.emit('password', null, this.twitterData);
-                }
-                return socket.emit('password', true);
-            });
-        });
-        socket.on('password_youtube', (password, Callback1) => {
-            Callback1();
-            if (!this.config.keypair || !this.config.keypair.publicKey) {
-                console.log(`password !this.config.keypair`);
-                return socket.emit('password_youtube', true);
-            }
-            if (!password || password.length < 5) {
-                console.log(`! password_youtube `);
-                return socket.emit('password_youtube', true);
-            }
-            if (this.savedPasswrod && this.savedPasswrod.length) {
-                if (this.savedPasswrod !== password) {
-                    console.log(`password_youtube savedPasswrod !== password `);
-                    return socket.emit('password_youtube', true);
-                }
-            }
-            new youtube_1.default(socket);
-            return socket.emit('password_youtube', null, null);
         });
     }
     socketServer_CoSearchConnected(socket, sessionHash) {

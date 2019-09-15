@@ -40,7 +40,6 @@ class default_1 extends Imap.imapPeer {
         }, (decryptText, CallBack) => {
             return Tool.decryptoMessage(openKeyOption, decryptText, CallBack);
         }, err => {
-            console.log(`coNETConnect IMAP class exit with err: [${err}] doing this.exit(err)!`);
             return this.exit1(err);
         });
         this.imapData = imapData;
@@ -134,8 +133,7 @@ class default_1 extends Imap.imapPeer {
             return CallBack(new Error(`CoNET looks offline!`));
         }
         Async.waterfall([
-            next => Tool.myIpServer(next),
-            (ip, next) => this.checkConnect(next),
+            next => this.checkConnect(next),
             next => {
                 saveLog(`request command [${command.command}] requestSerial [${command.requestSerial}]`, true);
                 if (command.requestSerial) {
@@ -174,24 +172,16 @@ class default_1 extends Imap.imapPeer {
     tryConnect1() {
         this.connectStage = 1;
         this.sockerServer.emit('tryConnectCoNETStage', null, this.connectStage = 1);
-        return Tool.myIpServer((err, localIpAddress) => {
+        if (this.doNetSendConnectMail) {
+            //	 wait long time to get response from CoNET
+            console.log(`this.doNetSendConnectMail = true`);
+        }
+        console.log(`doing checkConnect `);
+        return this.checkConnect(err => {
+            console.log(`tryConnect1 success!`);
             if (err) {
-                console.log(`Tool.myIpServer callback error`, err);
-                this.connectStage = 0;
-                return this.sockerServer.emit('tryConnectCoNETStage', 0);
+                return this.exit1(err);
             }
-            console.log(`tryConnect success Tool.myIpServer [${localIpAddress}]`, true);
-            if (this.doNetSendConnectMail) {
-                //	 wait long time to get response from CoNET
-                console.log(`this.doNetSendConnectMail = true`);
-            }
-            console.log(`doing checkConnect `);
-            return this.checkConnect(err => {
-                console.log(`tryConnect1 success!`);
-                if (err) {
-                    return this.exit1(err);
-                }
-            });
         });
     }
 }

@@ -40,7 +40,7 @@ CoNET平台集成了一系列應用來使用[CoNET](https://github.com/QTGate/Co
 
 3）Major website media file download support live stream/メーインサイドメディアファイルをダウンロード、ライブストリームを対応/主要多媒體網站視頻音頻文件，直播視頻流下載
 
-[supported sites/サポートするサイド/支持的多媒體網站](https://ytdl-org.github.io/youtube-dl/supportedsites.html)
+[Download supported sites/タウンロードをサポートするサイド/支持下載的多媒體網站列表](https://ytdl-org.github.io/youtube-dl/supportedsites.html)
 
 4）Google translate/Google翻訳/谷歌翻譯
 

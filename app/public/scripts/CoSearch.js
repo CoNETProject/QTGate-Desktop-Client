@@ -645,276 +645,6 @@ const imageSearchALlImage = {
         }
     ]
 };
-const googleSearchReturn = {
-    resultLength: 9,
-    totalResults: '1,710,000',
-    Result: [
-        {
-            title: '郭文貴- 維基百科，自由的百科全書 - Wikipedia',
-            url: 'https://zh.wikipedia.org/zh-hant/%E9%83%AD%E6%96%87%E8%B4%B5',
-            description: '郭文貴（1970年5月10日－），山東聊城莘縣人，是流亡海外的中國商人，目前身居美國紐約曼哈頓。 郭文貴是山東省莘縣人，戶籍地為北京大興區。在其發布於2017年5 ...',
-            urlShow: 'https://zh.wikipedia.org › zh-hant › 郭文贵',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '郭文貴、班農8月31日（完整版） - YouTube',
-            url: 'https://www.youtube.com/watch?v=aZj6hT-_ZwE',
-            description: "00:00:12 Don't Be Evil ○郭文貴、班農. ... 郭文貴、班農8月31日（完整版）. 華人自由燈塔. Loading... Unsubscribe from 華人自由燈塔? Cancel",
-            urlShow: 'https://www.youtube.com › watch',
-            beforeTime: { timeNumber: 2, timeUnit: 'day', time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '郭文貴、班農直播驚爆中共在福建部署50萬大軍準備攻台- 自由 ...',
-            url: 'https://ec.ltn.com.tw/article/breakingnews/2903049',
-            description: '郭文貴（左）今日與前白宮首席策士班農（右）直播時聲稱，中共已在福建部署50萬大軍和導彈部隊，一旦香港局勢失去全面控制，共軍將攻打台灣。',
-            urlShow: 'https://ec.ltn.com.tw › article › breakingnews',
-            beforeTime: { timeNumber: 6, timeUnit: 'hours', time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '「郭文貴」相關新聞- 自由時報電子報',
-            url: 'https://news.ltn.com.tw/topic/%E9%83%AD%E6%96%87%E8%B2%B4',
-            description: '2019-08-11 17:00. 郭文貴爆台灣某佛教大師去中國「天天想見共產黨官員」. 2019-08-11 10:57. 中共憂心撐不到明年！郭文貴大爆北戴河會議內幕. 圖. 2019-08-11 ...',
-            urlShow: 'https://news.ltn.com.tw › topic › 郭文貴',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '最新》班農聯手郭文貴爆：福建集結50萬大軍港失控就對台開戰 ...',
-            url: 'https://tw.news.yahoo.com/%E6%9C%80%E6%96%B0-%E7%8F%AD%E8%BE%B2%E8%81%AF%E6%89%8B%E9%83%AD%E6%96%87%E8%B2%B4%E7%88%86-%E7%A6%8F%E5%BB%BA%E9%9B%86%E7%B5%9050%E8%90%AC%E5%A4%A7%E8%BB%8D-%E6%B8%AF%E5%A4%B1%E6%8E%A7%E5%B0%B1%E5%B0%8D%E5%8F%B0%E9%96%8B%E6%88%B0-015305820.html',
-            description: '精準預言解放軍將入港的郭文貴，2日和班農聯手揭發中共的驚天陰謀、真正目標是…',
-            urlShow: 'https://tw.news.yahoo.com › 最新-班農聯手郭文貴爆-...',
-            beforeTime: { timeNumber: 6, timeUnit: 'hours', time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '#郭文貴hashtag on Twitter',
-            url: 'https://twitter.com/hashtag/%E9%83%AD%E6%96%87%E8%B2%B4',
-            description: 'See Tweets about #郭文貴on Twitter. See what people are saying and join the conversation.',
-            urlShow: 'https://twitter.com › hashtag › 郭文貴',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '郭文貴- 萬維讀者網',
-            url: 'http://news.creaders.net/china/t/big5/1290.html',
-            description: '他是中共特務郭文貴爆張首晟不可能自殺 ... 中國流亡富商郭文貴近日爆料，張首晟. ... 路透美國之音去年4月直播中國流亡海外富商郭文貴的專訪時突然節目中斷， ...',
-            urlShow: 'news.creaders.net › china › big5',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '郭文貴| 立場新聞',
-            url: 'https://thestandnews.com/tag/%E9%83%AD%E6%96%87%E8%B2%B4/',
-            description: '流亡美國的中國富豪郭文貴近年經常針對中共領導層爆料。 ... 曾報道富商郭文貴爆料的美國華文媒體《明鏡》，其媒體負責人之一陳小平疑遭中共報復，與在大陸的妻子 ...',
-            urlShow: 'https://thestandnews.com › tag › 郭文貴',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '郭文貴｜風傳媒',
-            url: 'https://www.storm.mg/category/k86711',
-            description: '中國加強網路社群監控，連「國外的」也要管！ 他爆料：風暴中心「在於此」！2018-11-21 16:29:58郭文貴遭重罰2700億！中國對付爆料流亡富商，大連法院對名下公司 ...',
-            urlShow: 'https://www.storm.mg › category',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        }
-    ],
-    searchesRelated: [
-        {
-            text: '郭文貴爆料',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E7%88%86%E6%96%99&sa=X&ved=2ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ1QIoAHoECA8QAQ'
-        },
-        {
-            text: '郭文貴是誰',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E6%98%AF%E8%AA%B0&sa=X&ved=2ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ1QIoAXoECA8QAg'
-        },
-        {
-            text: '郭文貴youtube',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4youtube&sa=X&ved=2ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ1QIoAnoECA8QAw'
-        },
-        {
-            text: '郭文貴香港',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E9%A6%99%E6%B8%AF&sa=X&ved=2ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ1QIoA3oECA8QBA'
-        },
-        {
-            text: '郭文貴台灣',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E5%8F%B0%E7%81%A3&sa=X&ved=2ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ1QIoBHoECA8QBQ'
-        },
-        {
-            text: '郭文貴最新消息',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E6%9C%80%E6%96%B0%E6%B6%88%E6%81%AF&sa=X&ved=2ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ1QIoBXoECA8QBg'
-        },
-        {
-            text: '郭文貴twitter',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4twitter&sa=X&ved=2ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ1QIoBnoECA8QBw'
-        },
-        {
-            text: '郭文貴習近平',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E7%BF%92%E8%BF%91%E5%B9%B3&sa=X&ved=2ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ1QIoB3oECA8QCA'
-        },
-        {
-            text: '郭文貴王岐山',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E7%8E%8B%E5%B2%90%E5%B1%B1&sa=X&ved=2ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ1QIoCHoECA8QCQ'
-        },
-        {
-            text: '郭文貴可信度',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E5%8F%AF%E4%BF%A1%E5%BA%A6&sa=X&ved=2ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ1QIoCXoECA8QCg'
-        }
-    ],
-    nextPage: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&ei=6dBsXYriCIC_0PEPuZSQoAk&start=10&sa=N&ved=0ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ8NMDCLMB',
-    action: {
-        video: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=vid&sa=X&ved=0ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ_AUIEigC',
-        image: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ_AUIEygD',
-        news: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=nws&sa=X&ved=0ahUKEwjK-uW12rHkAhWAHzQIHTkKBJQQ_AUIESgB'
-    }
-};
-const googleSearchNextReturn = {
-    resultLength: 9,
-    totalResults: '2',
-    Result: [
-        {
-            title: '郭文貴再爆料國民黨高官接受共產黨性招待「床上國共合作」-風傳媒',
-            url: 'https://www.storm.mg/article/300924',
-            description: '流亡海外的中國富商郭文貴日前才爆料中共中紀委書記王岐山與知名女星范冰冰留有性愛錄影帶，遭范冰冰工作室在美國提告。15日他又宣稱1998年有國民黨高層 ...',
-            urlShow: 'https://www.storm.mg › 國際',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '郭文貴_郭文貴最新新聞|資訊|視頻|圖片|消息-多維新聞網',
-            url: 'http://tag.dwnews.com/big5/%E9%83%AD%E6%96%87%E8%B2%B4.html',
-            description: '多維新聞網為您聚焦郭文貴最新新聞資訊，郭文貴圖片，郭文貴視頻等消息內容,北京時間2019年8月20日，位于北京市北四環上格外顯眼的盤古大觀司法拍賣結束， ...',
-            urlShow: 'tag.dwnews.com › big5 › 郭文貴',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '郭文貴Profiles | Facebook',
-            url: 'https://www.facebook.com/public/%E9%83%AD%E6%96%87%E8%B2%B4',
-            description: 'View the profiles of people named 郭文貴. Join Facebook to connect with 郭文貴and others you may know. Facebook gives people the power to share and ...',
-            urlShow: 'https://www.facebook.com › public › 郭文貴',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '郭文貴| 搜尋標籤| 聯合新聞網 - UDN.com',
-            url: 'https://udn.com/search/tagging/2/%E9%83%AD%E6%96%87%E8%B2%B4',
-            description: '搜尋｛郭文貴｝共找到18篇新聞。udn.com 提供即時新聞以及豐富的政治、社會、地方、兩岸、國際、財經、數位、運動、NBA、娛樂、生活、健康、旅遊新聞，以最即時、 ...',
-            urlShow: 'https://udn.com › search › tagging › 郭文貴',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '內地逃犯郭文貴62億在港資產續凍結包括21億元海通證券H股｜香港01 ...',
-            url: 'https://www.hk01.com/01%E5%81%B5%E6%9F%A5/338884/%E5%85%A7%E5%9C%B0%E9%80%83%E7%8A%AF%E9%83%AD%E6%96%87%E8%B2%B462%E5%84%84%E5%9C%A8%E6%B8%AF%E8%B3%87%E7%94%A2%E7%BA%8C%E5%87%8D%E7%B5%90-%E5%8C%85%E6%8B%AC21%E5%84%84%E5%85%83%E6%B5%B7%E9%80%9A%E8%AD%89%E5%88%B8h%E8%82%A1',
-            description: '流亡美國的中國內地富豪郭文貴，在港資產再被凍結。《香港01》發現，律政司今年4月底獲高等法院批准，繼續凍結由郭文貴控制、合共62億元在港 ...',
-            urlShow: 'https://www.hk01.com › 01偵查 › 內地逃犯郭文貴62億...',
-            beforeTime: { timeNumber: 6, timeUnit: 'day', time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '時事- 郭文貴- 法廣',
-            url: 'http://trad.cn.rfi.fr/tag/%E9%83%AD%E6%96%87%E8%B2%B4/',
-            description: '郭文貴-在trad.cn.rfi.fr 收聽瀏覽文章、音頻、視頻、信息圖表.',
-            urlShow: 'trad.cn.rfi.fr › tag › 郭文貴',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '通緝郭文貴 - on.cc 東網',
-            url: 'http://on.cc/wantedmileskwok/',
-            description: '3月1日(五) 12:58. 郭文貴紐約打官司敗訴遭瑞銀出售其私人飛機 ... 國安部前副部長馬建受賄助郭文貴被判終身監禁 ... 訂購郭文貴T恤惠州男尋釁滋事罪成入獄1年半.',
-            urlShow: 'on.cc › wantedmileskwok',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '搜尋:郭文貴  TVBS新聞網',
-            url: 'https://news.tvbs.com.tw/news/searchresult/news?search_text=%E9%83%AD%E6%96%87%E8%B2%B4',
-            description: '網路審查無國界！紐時爆：陸方早將手伸進臉書. 2018/03/07 11:27. 新聞. 報導郭文貴遭報復陳小平指控陸綁架妻子. 2018/01/18 10:16. 新聞. 陸查封郭文貴41棟房產 ...',
-            urlShow: 'https://news.tvbs.com.tw › news › searchresult › news',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        },
-        {
-            title: '赴美招降郭文貴國安紀委書記險遭FBI拘捕｜新紀元周刊｜和您攜手 ...',
-            url: 'https://www.epochweekly.com/b5/556/891.htm',
-            description: '中共國安部紀委書記劉彥平等四官員，曾於5月24日赴紐約促郭文貴停止「激進行為」並返回中國，但未通知美方，險遭FBI拘捕。（大紀元資...',
-            urlShow: 'https://www.epochweekly.com › ...',
-            beforeTime: { timeNumber: NaN, timeUnit: null, time: null },
-            imageInfo: null,
-            newsBrand: null
-        }
-    ],
-    searchesRelated: [
-        {
-            text: '郭文貴爆料',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E7%88%86%E6%96%99&sa=X&ved=2ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChDVAigAegQIChAB'
-        },
-        {
-            text: '郭文貴是誰',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E6%98%AF%E8%AA%B0&sa=X&ved=2ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChDVAigBegQIChAC'
-        },
-        {
-            text: '郭文貴youtube',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4youtube&sa=X&ved=2ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChDVAigCegQIChAD'
-        },
-        {
-            text: '郭文貴香港',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E9%A6%99%E6%B8%AF&sa=X&ved=2ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChDVAigDegQIChAE'
-        },
-        {
-            text: '郭文貴台灣',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E5%8F%B0%E7%81%A3&sa=X&ved=2ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChDVAigEegQIChAF'
-        },
-        {
-            text: '郭文貴最新消息',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E6%9C%80%E6%96%B0%E6%B6%88%E6%81%AF&sa=X&ved=2ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChDVAigFegQIChAG'
-        },
-        {
-            text: '郭文貴twitter',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4twitter&sa=X&ved=2ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChDVAigGegQIChAH'
-        },
-        {
-            text: '郭文貴習近平',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E7%BF%92%E8%BF%91%E5%B9%B3&sa=X&ved=2ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChDVAigHegQIChAI'
-        },
-        {
-            text: '郭文貴王岐山',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E7%8E%8B%E5%B2%90%E5%B1%B1&sa=X&ved=2ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChDVAigIegQIChAJ'
-        },
-        {
-            text: '郭文貴可信度',
-            searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E5%8F%AF%E4%BF%A1%E5%BA%A6&sa=X&ved=2ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChDVAigJegQIChAK'
-        }
-    ],
-    nextPage: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&ei=ddJsXcvRD8jU-gS49bjQCA&start=0&sa=N&ved=0ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChDx0wMIqwE',
-    action: {
-        video: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=vid&sa=X&ved=0ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChD8BQgSKAI',
-        image: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=isch&sa=X&ved=0ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChD8BQgTKAM',
-        news: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=nws&sa=X&ved=0ahUKEwiL4Nby27HkAhVIqp4KHbg6Doo4ChD8BQgRKAE'
-    }
-};
 const googleNewsSearchResult = {
     resultLength: 10,
     totalResults: '142,000',
@@ -2073,6 +1803,180 @@ const googleSearchImageClickResult = {
         }
     ]
 };
+const googleVideoSearchClickResult = {
+    originImage: null,
+    resultLength: 10,
+    totalResults: '297,000',
+    Result: [
+        {
+            title: '郭文貴9月8日：習是上天送我們的禮物；美國國會山開山“滅共助 ...',
+            url: 'https://www.youtube.com/watch?v=zoXy-TiF7Gg',
+            description: "00:00:12 Don't Be Evil ○習是上天送我們的禮物；中共金融詐騙；金融戰士核心； 美國國會山開山“滅共 ...",
+            urlShow: 'https://www.youtube.com › watch',
+            beforeTime: { timeUnit: 'day', timeNumber: 1, time: null },
+            imageInfo: {
+                size: null,
+                url: null,
+                img: 'data:image/jpeg;base64,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',
+                videoTime: '▶ 1:16:52'
+            },
+            newsBrand: null,
+            videoUpload: undefined
+        },
+        {
+            title: '郭文貴：習就是個二貨；中共的詐騙王國- 龐氏騙局；全世界最有錢 ...',
+            url: 'https://www.youtube.com/watch?v=cRXR5K1dvm4',
+            description: "Don't Be Evil ○習就是個二貨；中共的詐騙王國- 龐氏騙局；全世界最有錢的無產階級-中共；",
+            urlShow: 'https://www.youtube.com › watch',
+            beforeTime: { timeUnit: 'day', timeNumber: 1, time: null },
+            imageInfo: {
+                size: null,
+                url: null,
+                img: 'data:image/jpeg;base64,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',
+                videoTime: '▶ 22:07'
+            },
+            newsBrand: null,
+            videoUpload: undefined
+        },
+        {
+            title: '郭文貴9月6日：中共利用香港向世界發起金融核戰爭； - YouTube',
+            url: 'https://www.youtube.com/watch?v=GQB0iFoNdSs',
+            description: "00:00:12 Don't Be Evil ○中共利用香港向世界發起金融核戰爭；",
+            urlShow: 'https://www.youtube.com › watch',
+            beforeTime: { timeUnit: 'day', timeNumber: 3, time: null },
+            imageInfo: {
+                size: null,
+                url: null,
+                img: 'data:image/jpeg;base64,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',
+                videoTime: '▶ 10:29'
+            },
+            newsBrand: null,
+            videoUpload: undefined
+        },
+        {
+            title: '郭文貴8/13/2019：香港危在旦夕；未來48小時很關鍵；中共最後 ...',
+            url: 'https://www.youtube.com/watch?v=IC-1pndf3MM',
+            description: '00:00:12 我們與香港在一起○香港危在旦夕；未來48小時很關鍵；中共最後的瘋狂； ○香港人民獲勝的4個條件：1 ...',
+            urlShow: 'https://www.youtube.com › watch',
+            beforeTime: {
+                timeUnit: null,
+                timeNumber: null,
+                time: '2019-08-14T00:00:00.000Z'
+            },
+            imageInfo: {
+                size: null,
+                url: null,
+                img: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAEEAdAMBIgACEQEDEQH/xAAbAAABBQEBAAAAAAAAAAAAAAAEAAIDBQYHAf/EADoQAAIBAwMDAgQEBAILAAAAAAECAwAEEQUSIQYTMSJBFFFhcTKRocEHIzOBQnIVJDVSYnOCwtHh8P/EABkBAAIDAQAAAAAAAAAAAAAAAAECAAMEBf/EACwRAAICAQIDBgYDAAAAAAAAAAABAhEDEjETIWEEBUFRkdEyM3GB8PEUFST/2gAMAwEAAhEDEQA/AKvp6x6el6ftZLiz0KS+7Y3/AOkNSW2B48nZI5J/zLH9h4rD6sirql0qRWsSiTAjtJe5Ev8AkfJ3D65rpWj3cMXRcIOpr/LslJ33L9tV2ybkMQlDNtZFjOAMlwQMVza9uZtRvZLu4/rTtuYAsef+ok/mTUINtNPuLrPZjLUTcaJfQQPM0DdtBlyMHaK1ukiC0jSJkGTgk8Z/InJ/tVjevCqhAGfcvO1PYis2TLKL5GvHghKNt8zmO2ug9PdF6Ne6XDeXlzdLK8W4xyyGBGOVBxui3bRuALAkZ/TH6tarbXzwxg8Y9vn/AOsVq9E62GlaPaWNzFfzzwO/cbv7cDd6V5BJwOMcYxitCdqzM1ToAfpyyTWr+0mMsMSqjRBplgePc+OBOF7ijGM8csvnyDusemNH0vTHudOkKyxXDRMpuY2GfR6CN5O4AscAZ85wMVWt1A0Gq6xfwrcrdXMo+GkkYboI+7vZcHOCQABjxzVj1T1jDrOnS2tqL9O7LvxI4VAuckEBju8LjwBz88UQA3SPTVlq2nXFzcPJPMX7EdvEXRo2xu35CNuOBwMY859qh1vpq10zXrewjuLiSGZlVY9u66yR52MsagFuBz7E59qbo+tWtjpbWE0FyY7jv/ESRMA3rQIuzPHA3Zz86Iuuobc6rp2o6XDc272m1JpBtXMQwBGqg4Axv58nd9BiECNa6Y0iyte6h1YLbHsTSx2YcSyBd5fJkwEA9ORxkHz5oLS+n9OuNCtb+8efvTSSoVXULe2UBNvjurk/i9v3oy96h066srm1WPXPh5Lh5ifjxxuUr2yNuNn/AA1Fput6Ta6Tb2c9reT9rLN3Le2kVXYDdt3oSASvj6VCFde9MlusJtC05pWjRkzNIQxjjKKzuxAAwNx9vkPel1FoOmQ29/qOkX7/AA1vdLbizntpEkVmz6Sz4yQASeKk1C80rU9bmv7hdX+HkiHf7faEhcAKBwAoQqAPGc0N1Jr9xra28PbaGzthiOMyGRicAbnc8u2ABk+3AokM0V5pVKV5pVAG9stV6gg0eztmu9EsIntQkAu5+3LNDsZEYjcRtAZ8bgAT6iDwayVxa3Gm3r293C0Vzbvh43wSpH24P3966DCu/ou2ciK7txaQmaZmhVVMTFlgcMp3Kp9OCckccVg766mvrua8vpe5PM26RyAMn7DgfYUoUbW3mAsEYxKz4yDnHFFCW3mDPNahtv8AT3YJBqp0/Trk9P2uosvesnBIkRd/aZWKkMP7efFTw2F3cWd3eWke21gheaa6MeyNQqk4HsTx4FZcmNp14m7FljpsAsRBe9UMJdjfywAXtxKi4wWY+pdoUZ5/SrG/s7VeslSS3gkSfu7lOnKUkycgjLMGIJ9THbgK3isfa3MiiT4eZlEgAkCn8XOeR78gURJd3cveD3Eu2YydxVYhW3nLjA4wSASK0JUqMsnbs1+tWVtL1FatItmI0aWZ5DCkK3Lq3pXueG5IUgnI2MccimatZxrp2q2yC3E8k1zNHGAu1lE8YD78ekrkrtz7nOKzs9rq92wmkt7qXvt3xsjJUk/4sDgHx+lSxx65d2jRp8ZLbXMhdlydsj+ST/f9ftT6JFLz4krcl6oI1S1sG00QQSkLB8UbaRpPS5Ro9w+u4BiP7Vq9Xt7YWmoCVERDG+4tAisCrNtGO02Bjwd3tkAHJrCdq+vQlpslm+FVgsQTmMZ5/X50TMmsCWRLhLju3amNu8nLgHcQCfHJJOMeT86ml7h4uNOm1Zdww28mg3hna3WEW8WTNblpY8xNsLFBhtpdCDjIXz5Fe6a9lF0/HLc2FpGrRxMyT9tUuCpdQWYp5JVj5J9X50j3msBrW5aecNHuED+MZ4P3z458jA8V6t/rWnxsFnkSJWERV0V0DIAuMMCMgYGaGlh4kH4lv0+lnF08ZJ0jjjlUlpbmODaSsiZ9TqeMkYDE+D9KH0W3gHTUzQW8LxuJGfvwLIXCGRk7h3DgbQOM8sKAW56gsYWmSS5hiVQp3ABcA5HpPB5Ynx70I9lrNysc/wALPIIGMqN2hwWO8nxzk8+9HRITj4qvUvUrNegjh1zUIoUVIkuZFRFHCgMQAKVR3DyXE8k8zl5ZXLu5/wATE5JryoMWVp1Zf29nbx9m2NzbWvwkVxulysW0rgpv7ZOCeSv1IJ5qkXL5LOMKPc+foKhZ8SKB4Y4pw4NXaUhbOw/wn1CWLovVRb8XFvMRET4Xco5/PPH0onW7mRP4ea7bGfuJGuwLjBjJYAjPuDnP3zWP/hnftGdRstxxL25Av23A/wDbVh11d/D6HeWw4+Mki5/yNmsOTJ/qjAvhBLC5HNgQF3K5Dg+MfvU8V/Kn4wHH180LTZGxx7nitVFVnTdM1y2m0W2LyhZxCSEKswDqTt5II8qv7YqTRdUtbTTYIZ5V3RbiV2n3Y8cDzj/73rn+n6w1nb9hoVlAYsCTgjPt9qt7XVrG4wGfsv8AKTx+fin4809jnS7p7PKLjb5u/Dr06l1ot3BZ6rdXE8vocHDgH1esH2BPjJ8flVnd6xZy39tcrL6Y+5nCOfxKo8ED3z+X1xVGsSsMqQw+YOaRhx7Uke0SUaLMvdeHJl4rbuq+1V5Fzc6pZtJbGO4bZHcRPghiQvJbPHODj3NBXuprNbTKszHEUaRqS4Ln+WTkZPjY3qLZ58nzVeUqJlovPJgh3Xhg003yL/Udbtn0mSCKUtKYlATdL5O0N6s8458n75qKy1jT4LV4ZHiyDgloP6voAzhUx+Ld5/eqBlqB1FN/Ildif1WBQ0W97AWGSTjGfalU7JzSqqzpFBcMFXcPY5qUMGXINH9PXVpby3j31zaxIbZ1WG5tzKJ3IIUZCMUAJySME4A+ou9W1bQpFuBZx25R7GWOPFltKt3FMSZ2ghlXcCw4P+8aWWeSyaVFvqCuW4J0Vc9jWhggdyJlGfnkH9qsv4h3PdNnGPYFj96lh1fQG6jtbyE20AW3aMYgYosrlyCAI1yqKQmSuTkeQM07+Il7pFwkdvYvbxXds7SBDbk7geQhO3HuvBJBxzjwcDySl2qLcGrXuXxdYmjClqFLF5cfLmtZrGpaTNZa7HbNbH4i5SSyRbYqy4K5x/LAVSu7/F9NvOayEZPdPzroY8jmrar9fiKGqLG0s/iILiQzojxr/LiJG5z/AOMCj49ItmnKf6QCxqv42QctxwPV45/SqiJsSZ+YopJKEoyvkx4yit0G2mlxs1kWvVQzKTLt8xnI4/WvWW+trdXh1D1mVlMbPkKozhvc+3y9x9aGEtOEtLple4dUa2DUuNSFjJP8XbSSoeIgnLDjnnBHk+3tTYNQvpJYRK9oiMRv9L5Ue/nj9aEMtMMn1oqINSLPuzuJc3NujR3Aj27c7lyAX8+Oc/2NPm3ILz/WYWMMYaNdhG84Gff5/eqYvUTNQ0PzDrj5BA1WbHrs3z9GpUGX580qehLB7j8JqeL+kn2pUquiIxp/CP71adS/7dvP+Z+wpUqrfzF9PYsXwFQ/k1B7vSpUwo+3/EKMWvKVLIhIKePFKlShEfFNNe0qhBhqNqVKoAjPmlSpUSH/2Q==',
+                videoTime: '▶ 55:23'
+            },
+            newsBrand: null,
+            videoUpload: undefined
+        },
+        {
+            title: '郭文貴8/11/2019：香港血流成河；香港811是戒嚴還是屠殺；CCP ...',
+            url: 'https://www.youtube.com/watch?v=5p1NGjtqHJ0',
+            description: '00:00:12 ○香港血流成河；香港811遠超911；CCP非法政權滅亡前的掙扎；',
+            urlShow: 'https://www.youtube.com › watch',
+            beforeTime: {
+                timeUnit: null,
+                timeNumber: null,
+                time: '2019-08-12T00:00:00.000Z'
+            },
+            imageInfo: {
+                size: null,
+                url: null,
+                img: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAEEAdAMBEQACEQEDEQH/xAAbAAABBQEBAAAAAAAAAAAAAAAEAQIDBQYHAP/EADcQAAIBAgUDAgQEBQQDAQAAAAECAwQRAAUSITEGE0EiUTJhcYEUQpGhI7HB0fAVJDPxUpKyB//EABoBAAIDAQEAAAAAAAAAAAAAAAADAQIEBQb/xAA2EQABAwIEAwcDAwIHAAAAAAABAAIRAyEEEjFBBVFhEyJxkaGx8DKB0RRC4RXBBiNSYnKS8f/aAAwDAQACEQMRAD8AsOlKSY5JTvFTyyy6fQlXSwinIudw6RPIfuRh7yMySz6Vnuu4c2Wsphm1Bl1INL9kUCqFcbXvYkk8c25wynliyVUzTdZho9NtZIvsFCkk/YYH1Ws1Qyk5+ifJRMsQl9QjP5mQqMLbi6ZMJrsJVAmEO0WxtY29t8aAQdFmII1XVsl6cyE5ZTKKWhesmjUxvIyTaz6hc3YrckWOlSB+tsznulaAxsKj6TyDL6nM3pZqZKlYKlmYMHkZYwvBeMNGymx223FgTqwx7iBKqwCYRNb0lRtnGX08NDJFBUUDEt6gFcRgBjrCAkNuRe5G5AviA8wTKC0SBCN6w6Sy6g6erZ8vyyN5lqJJe6GIMKF9+CBpCiwW22555GPJcASpewBsgKvpOlsinpoKSRcwExnTXOksYY61pBp3T4Qam4HOx33FjO7VGRuiC6OyfLa7tCrpaep7c7tJr7ysulSyrsCjhtBNja1m5GJe4jRVY0FNr+ncqk6kSjIjpKYUT1UzU9Qw0kJrse4p0Ae9t1IPnYDjllGQZoRHU2R5Rl3TkY/B9qRJI4BVNIjsZBLLr+FFLnRubkbaLWPMMc4uUva0BGUfS+UVLrPNlFKYZalVHbSrRWRniW4YyLpv3QwUrwDuQLmpe4bq2Rq5hIFlkaRIliRyWWNSSEB3sCSSQPmb40LPZdUyLLIZ8qheTLInbQW1y0lHdxq03BkYMRcgXI52whxIOvuntaCNPZZ/PKamLrDRQNBJG8gkWWkjiIctwQh3ANxvwNhi8kNkqoDS6Am5XSIGso/hqfTt+5+eOTiqh0XoMFSAErYUdEJqdonUsjggrbYjHKLzK6xDQ26w2a5G2WVbaD/AZiApHB+uO3w/ElxDCvN8SwoZL2q/yDqHNovwOXUEELLCpUK0kihhqZiTZgvk+Dx5xuxHZ0mGo82XMpucSGtCFyaeuyqakoYqfS0dQXKPqUylkCAHcbAXI4+K+Ll1J9M1c3djxjy9VVuZpDIutBXVNStGldFSRxStH2kkYszWdbagxPhdvl7XthFKvRqVDRaZI1+xhMcHgZyENns9ZJk9QlTT+uqqdarYkDU5fStjuDq4O/64ZSrUHuIY76dfyqvDw241Qg6gzaKolRMpy1Zqe7yAQSfw+329z/E8diL/ANBgmjka/NZ0R1nTbdGZ8kRp85oHK85rIS6UVFRRlO7UAKGAGwL8sbnQpUewJtucWqhrQC46kDzsPVDXHbxUNR1DUTVBnSgoUqZIPw7y9strX0DcMSD6UC2tazN74t2cC5UZ5NgjepMzzX8JNHm2W5XoqXZY0CgtE2pTIRY/mIFzfxta2MuGr0a7iKRNo9dEyoHtHeGqGpcz6hlzWOuNO86yu9RDTNIY4viQg2BF1Vu3a+2wHviX18OwEF2lj6/goaKhIMLHrEAoA3AG2NaSNF2HKaOVcuppZTFNCaUxFmpg9wZRohHqGpgy6rHgHzhDj3inN0Cx3V8j0Mta8szVEpka9QgBDnXa9r4s9wyAQoptOeZWfyzNq1Na008UsMa65ZGg3jF9ibHHNr0mEgldbD1qoBDVoMh6sqJq+KKeo7gLEFVTSFsPO+M9bDUmtlq00cTWe6HLXZ9SLmmU3ipzrOmUPdeAbk8+18JwtQUq7STupxTTUoOaFUZD/tFqNEjRMUJuJLAnYAW+5352+oPV4nhnVSy035T1n00053gjz+HqBoN4RK5YKzNpo6aOCFFZ1uouHG44Nxc/IAC98WpsqjAtMlziAYmI9jbqSglprHQASrCrpv8AZPSlW9CXFiqi6geAN7lST7bWOMODpVGYom2a+snc77WgA73kJ1VzTS6fb54ofPZ4o6OJoGTud9TdCQzWUi5PhuOLcn64ZgsO/ORVaYykGdBeYbzHjOyrWqNiWm87eG6r6pl/1TNXgkKwVUc4Fjs5Ktp/c7fXGluHccLh5b3mln20n+Uo1B2j4NjKGyqFaRZWnSLQylATErvdhY2BB2AJNvPHnF8fSdVLW05kX1IFr+ZNhuNdkUXBoJP8of8AAOmbrLVvA6owkZo3QI4HAFthfYeLXufOINVpwpbSBBNoIMidfLX22Uhp7SXFWHUcscuTRKopZmBQMykk3Ksb8g3HgkfmPFyMc3h1FzcU6ZGvoR0Ou8HYCbJ9d4NMaFLDPQItHGahBFDD6C72GrXcAgWI3RfyjwWvxhVShiCXnKZJ5dOs7HmeTVcPYABPz508VjKqmkSokE5jMl7t2ypW/wAtPp/THoaTmlgLdOs/3v5rE4Gb6roMGWwRwRS1ck2uaMyLHBCHIQEjUxJFhsffjxicxmyMgi6pOucmR8kSaKoJic+hymk7MAysL+LjgnnCqzu6eYTaA74jQoP/APOly/KvxkFYhkM40m8eoOpFtNv1xxcY5xgru4Vgylo1RNN0VTNn90rZIadGDKWh3ZfrfnxxhBxXcghazRLe8NVtpwsCaY5O1FCg02O5A8fO/GE0WurVg0blLq1G0qBc5ZpoBDGXYjYGwJtcgXx7abSvDvrhjwyCdJjaTAn78pXsvpZkre9JKdYPwofhsRtxipB3KWMcwxlYTMRpcGTIv0Ot9OaMp+5S5kJJiZI2j7difYi1z+uIE6K7sZSFLtBykeUx4pmcxmYwhEYopN15IxABKYcRTawOcQJ5mEkdIqQqfYeRb/rF9LKjMSxzc3nqfbX7JHiGk4gqtHFiq+IPz4EFPRmzG29rjbn3wEFQ3H0nEAf+cv8AtIhCJl7TC4IXey6hydv2/tioaSpxGPZQdliY16KteC9PLOzKiR2BLbXJNuePvikTdaalcMqNpxJM+g8/nRVtY70tS8LBCyGzWN7H2xU2MJlKo2qwPboV12jhqEy6EETyrLE6q0VGH7asSCuq9/c/fCiQXH8p4kNH4VB1hOIMgqTVX0xL24U7YUglhbYcG+5xcsDmEc1RryHg8lium5JPxyNqd0YjawNv83xxsW0taQV6HAPaXTFiuiRB6ebu90vCyWKMBzvxjjucuqWzZVfVlUKZ6FpJNLyLKVjvudIU3/z/AMsdHhf1OXJ4lBaAnQGGsjK1BJkQX029xa/7Y9IyqCIOq8pXwj+17RjoBieoBnnbUg6yExpTHNI0cJ1Nck6uSSP7fvhxdyWRvD5DW1HS1sQI2AI563uegsmNmhN9aC6jQVvvsOefn/PFQYTK+BbWNzAEQI5e/sl/1mkqlRJ2SND6Ulsb3ta1h43/AH++CRMqzcM8URSnQiDGwIIm4va6u5DFGpSaqjCWshKWJ+18RomOoufTdTe6Z6ICsXtw6kkjIba5P9MEyl4fDGk4GdvW3pAVXUVigHWvqINjewN7+OfJwZiqNwIYA1rtxryEW23aPVCDODChRKYP8ybf0xIdASq/DBXqF5fHzxVZ+IWETxwxSMkhUgs9mFiDuRvcEbWtbf3xSY0Wp2GfULXPdcTta8iwPjeZ2QdWxqqh55IUDuSzEFjcn6k/2xVxkyn0aIosDAbDw/sAuvQS0CQxky06WBMhlViTufIHFva3nCnB0laGkQFzzrnPqbOZBl9BH/toZtYlJN29tvvh2UgCVSQSYVAYKjI3pqlZxolfRpYfCxBI/kcc7FtFQFdDB1HUzC3nTNZJV0xlzEoixm6yXsoH3x5/EUw18NXoKVYmnmKwXX3UNNnHVNM2XSmSnpAIUkHDtuWI9x8I+2Orw+iabb6lcjF1My0bVIhpaet1aWiYK59wxCn9yMdPQrmxNlbUdZFX9ymkAMoB03NuBfn2sRhmYi6XANkHl6ZfmmXxV8D6Y5BexsCh8g/TDWuDhKo9paYKhqIaGANMJ09IuAr21H+RxWpUFNpcdk3D0H4iq2kzU/D5C6SLMqI1CromdiwGskEf9YxDiLC8NjWPVdl/+HqzKLqpeLAnylST5rD3pI9MllPxDc82P+DDDjmioWRos7eDVHYdtfOAHc56Rf32GsoOSrh7YftsS3IHj6k4l2KIpdoGz8+bKjOGNdizhjUA0uQbyJtE+pCg78Eha0bgX2O2+IpYoVZOWAN7IxfDDhQ0F4Lz+0B06kWt7weQOqiM8AcjR6fBv5wr+oU8+Xbn/HLqtX9BxPYB/wC/WOn/AC0zf7dfvZRPLFq2jxsDgRIXGdTcxxa4QQi+s+oRTzUmURS3Mvrl+Q/KPucWDwHBQ2kXiAqWghus0srLpLKqFfVvuT/IYh9QErczhVecstgic2YZYmNfG3iiOrwK/JTHArtLBKk1gvxLup/+r4zVIVmYOu1pe4aHLrefD7LHznMIYo6epnaWK5ChW1WI5B+eEFomVqr4atQgPvMixm41HiEXR0IGaUYqVAhTW0hRhtYb/cEj9cXp2crV+HVx3TG5JkQI1k7RI81s1R/9LLTONMysO34U2NrH62P2w9xELDTwdd2J/TAd+Y1HuoemqqQZrTmoOlqdXSUn2VSb/pti7iAISmYWq6m6sPpaYN9/BUXS1WYz29+3ILhb2t7YRSfD45qarJZPJXs8rMhXtJpPkjf9zhtdhfTLRuowNZtDEMquJAHLXw++h6IbvWYM7b8k45v6F/azNua9J/XqH6XJluRERbT2mBz6c42qTc2Fzh7sIX1XOJ1/n+LrCzi7aOFp02NktnUnkLyIsTIjlC80slwGaynZV4vtgGGe6iGE+d1B4lRZjX12tsRAi215m/soKia6MFZlJ4N8RhcM6ld0XCni/E6WKBbSmxkGenmPRK9UFa+pjvtuLkYSMJWsCfU9Pn4W53GcGS54B15C473hAuOvigdb+ZMdSF5QBVmciqrs7nqHjqCvcFmWMkhRbjCnkzZPo5LZjbdW9JW2a/aqRANtLREFbebeecMbJvuutVxmDk0QT2ZAAsO7ldm/1XkzJtcrXQClnjjU1EAQwNC5ZwCQeNsVLLALJU4gH9s4CHPeHDpGb8rBVTSM6A00/wDCJkukNtchIO4HjGfK7kujiOIUarm3+mXTAGZxI1A0FvFT0c1pJWWCpQEvIWkhsQXI2A82th1NnNWfxWgx/wDlkic5mAYLo2mCAARfmtFVGObJtMhTu04jqIVB9Q9QDLtsTYttiQHaFYXYvD/rW4oT9ckdLddTeRtspZhTS1zVAKiKsonEik2Kt22BBHgnbFnNJb4LJRxDGsrMP74j7GbrGZcKqJUYwShrjlCPOM0EOmFJc0tiVfBpZgrMbDkA842TKwxCXtEm5YfYYEQvHSNg+/ywITHeNDqLX/e2BCHapjLelWJOIUod57k2UG/vvgQlbawMeo25wIR8XGLpZ1Ui+PriFKVcCE78v3wISDnAVISjnEKU38uBBSeTiELw/rgQnYEKKb4DiUICX/jwIQ7/AAn6HEKU6L4z9cCE6f8A5DiEL//Z',
+                videoTime: '▶ 1:16:39'
+            },
+            newsBrand: null,
+            videoUpload: undefined
+        },
+        {
+            title: '［粤語郭文貴35］ 香港何去何從和中共內鬥的關係；萬刧不復 ...',
+            url: 'https://www.youtube.com/watch?v=4S4mDAGe3-Q',
+            description: '互動雜誌實驗很有參考和討論價值的留言我會加紅心(至今共4個)，你在留言區飛快找紅心，就能省到你看留言在大海 ...',
+            urlShow: 'https://www.youtube.com › watch',
+            beforeTime: { timeUnit: 'day', timeNumber: 4, time: null },
+            imageInfo: {
+                size: null,
+                url: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTT1RxCZZonP1PHZBsTY1CJWkM_Y4OokHOGCOvXWGrE7zYDGo9PFji0drNqU74',
+                img: 'data:image/jpg;base64,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',
+                videoTime: '▶ 23:15'
+            },
+            newsBrand: null,
+            videoUpload: undefined
+        },
+        {
+            title: '郭文貴：一周以後世界將進入新時代；正義永遠會贏； - YouTube',
+            url: 'https://www.youtube.com/watch?v=br-_W9CSF0k',
+            description: '00:00:10 ○一周以後世界將進入新時代；正義永遠會贏；',
+            urlShow: 'https://www.youtube.com › watch',
+            beforeTime: {
+                timeUnit: null,
+                timeNumber: null,
+                time: '2019-07-15T00:00:00.000Z'
+            },
+            imageInfo: {
+                size: null,
+                url: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS6SvUdKcE4gFoFG_T4jtQVsKI6PDwkhkJ5hNFePy3ROci3MqZ1Vxlrf-k',
+                img: 'data:image/jpg;base64,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',
+                videoTime: '▶ 4:20'
+            },
+            newsBrand: null,
+            videoUpload: undefined
+        },
+        {
+            title: '郭文貴9月7日：美國將通過一系列法案支持香港人民；關注香港的 ...',
+            url: 'https://www.youtube.com/watch?v=SjYSmmkh1KY',
+            description: "00:00:12 Don't Be Evil ○美國將通過一系列法案支持香港人民；關注香港的年輕人； 北京下令：不允許 ...",
+            urlShow: 'https://www.youtube.com › watch',
+            beforeTime: { timeUnit: 'day', timeNumber: 2, time: null },
+            imageInfo: {
+                size: null,
+                url: 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSLGIWLWfViekPKJxfxLK35uwi1YMv64a42unG4OBliZiV5wtLgWRVOq0Q',
+                img: 'data:image/jpg;base64,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',
+                videoTime: '▶ 52:02'
+            },
+            newsBrand: null,
+            videoUpload: undefined
+        },
+        {
+            title: '郭文貴9月9日：香港富豪被中共威脅；中共國正在殺貧濟富 ...',
+            url: 'https://www.youtube.com/watch?v=nrH2Hni-8VY',
+            description: "00:00:12 Don't Be Evil ○香港富豪被中共威脅；中共國正在殺貧濟富；",
+            urlShow: 'https://www.youtube.com › watch',
+            beforeTime: { timeUnit: 'hours', timeNumber: 6, time: null },
+            imageInfo: {
+                size: null,
+                url: 'https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQgESJokXESCgn48sxexsq_4LjBIRcq5I12H_gFEF5XbPIpMNMRMjGU2Wo',
+                img: 'data:image/jpg;base64,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',
+                videoTime: '▶ 10:46'
+            },
+            newsBrand: null,
+            videoUpload: undefined
+        },
+        {
+            title: '郭文貴：27號以後有大動作，世界將發生重大變化；中美將發生你 ...',
+            url: 'https://www.youtube.com/watch?v=ektPogk5DZk',
+            description: '郭文貴：27號以後有大動作，世界將發生重大變化；中美將發生你想象不到的變化；中共進入倒計時我會休息；27號以後 ...',
+            urlShow: 'https://www.youtube.com › watch',
+            beforeTime: {
+                timeUnit: null,
+                timeNumber: null,
+                time: '2019-07-22T00:00:00.000Z'
+            },
+            imageInfo: {
+                size: null,
+                url: 'https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQsZ0erru-NE4eF7CUqb1Js-xMHsCBjjXSR-v_qaT780h1E290EiHlATpRxkbZJ',
+                img: 'data:image/jpg;base64,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',
+                videoTime: '▶ 20:07'
+            },
+            newsBrand: null,
+            videoUpload: undefined
+        }
+    ],
+    nextPage: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&tbm=vid&ei=BMZ2XbubG46YaczJgcAN&start=10&sa=N&ved=0ahUKEwi7rYW42cTkAhUOTBoKHcxkANgQ8NMDCIMB'
+};
 const bingIcon = `
     <svg viewBox="-650 800 900 400">
     <path style="fill:#008373;fill-opacity:1;stroke:none" d="m -311.5,796.16903 80.6273,28.36401 0,283.80836 113.56729,-65.5599 -55.67962,-26.1246 -35.12739,-87.43067 178.939297,62.86452 0,91.39515 -201.653597,116.3102 -80.67328,-44.875 z" />
@@ -2178,7 +2082,7 @@ var coSearch_layout;
             this.searchInputText = ko.observable('');
             this.searchInputTextShow = ko.observable('');
             this.moreResultsButtomLoading = ko.observable(false);
-            this.connectInformationMessage = ko.observable(new connectInformationMessage());
+            this.connectInformationMessage = new connectInformationMessage(this.socketIo);
             this.showInputLoading = ko.observable(false);
             this.showMain = ko.observable(true);
             this.showWebPage = ko.observable(null);
@@ -2317,13 +2221,18 @@ var coSearch_layout;
                 if (!n['newsBrand']) {
                     n['newsBrand'] = null;
                 }
+                if (n.imageInfo) {
+                    if (!n.imageInfo['videoTime']) {
+                        n.imageInfo['videoTime'] = null;
+                    }
+                }
             });
         }
         createNewsResult(newsResult) {
             const newsItems = JSON.parse(JSON.stringify(this.searchItemsArray()));
-            newsItems.Result = googleNewsSearchResult.Result;
-            newsItems.nextPage = googleNewsSearchResult.nextPage;
-            newsItems.totalResults = googleNewsSearchResult.totalResults;
+            newsItems.Result = newsResult.Result;
+            newsItems.nextPage = newsResult.nextPage;
+            newsItems.totalResults = newsResult.totalResults;
             return newsItems;
         }
         showResultItems(items) {
@@ -2339,27 +2248,53 @@ var coSearch_layout;
             const height = window.outerHeight * 3;
             this.searchItem(null);
             this.searchItemList([]);
-            setTimeout(() => {
-                self.showInputLoading(false);
-                self.searchInputTextShow(search_text);
-                self.searchItemsArray(googleSearchReturn);
-                self.returnSearchResultItemsInit(googleSearchReturn);
-                self.showResultItems(self.searchItemsArray());
-            }, 1000);
             /*
-            
-            return this.socketIo.emit11 ( 'search', search_text, width, height, function ( err, data, snapshot ) {
+            setTimeout (() => {
                 self.showInputLoading ( false )
+                self.searchInputTextShow ( search_text )
+                
+                self.searchItemsArray ( googleSearchReturn )
+                self.returnSearchResultItemsInit ( googleSearchReturn )
+                self.showResultItems ( self.searchItemsArray())
+            }, 1000 )
+
+            
+            /** */
+            /*
+            setTimeout (() => {
+                this.searchInputText ('')
+                this.showError (1)
+            }, 1000 )
+            /** */
+            //        Snapshot
+            if (/^http[s]?:\/\//.test(search_text)) {
+                return this.socketIo.emit11('getSnapshop', search_text, width, height, function (err, data, snapshot) {
+                    self.showInputLoading(false);
+                    //  error
+                    if (err) {
+                        self.searchInputText('');
+                        return self.showError(err);
+                    }
+                    self.showMain(false);
+                    return self.showWebPage(snapshot);
+                });
+            }
+            return this.socketIo.emit11('search', search_text, width, height, function (err, data, snapshot) {
+                self.showInputLoading(false);
                 //  error
-                if ( err ) {
-                    return self.showSearchError ( true )
+                if (err) {
+                    self.searchInputText('');
+                    return self.showError(err);
                 }
-                if ( data ) {
-                    return self.returnSearchItems ( data.param )
+                if (data) {
+                    self.searchInputTextShow(search_text);
+                    self.searchItemsArray(data.param);
+                    self.returnSearchResultItemsInit(data.param);
+                    return self.showResultItems(self.searchItemsArray());
                 }
-                self.showMain ( false )
-                return self.showWebPage ( snapshot )
-            })
+                self.showMain(false);
+                return self.showWebPage(snapshot);
+            });
             /** */
         }
         showSnapshotClick(n) {
@@ -2375,34 +2310,26 @@ var coSearch_layout;
             const url = currentItem.url;
             const width = $(window).width();
             const height = $(window).height();
-            setTimeout(() => {
+            return this.socketIo.emit11('getSnapshop', url, width, height, function (err, data, snapshot) {
                 currentItem.showLoading(false);
-                currentItem.showError(true);
-                currentItem.errorIndex(1);
-                const currentElm = $(`#${currentItem.id}`);
-                currentElm.popup({
-                    on: 'click',
-                    inline: true,
-                    onHidden: function () {
-                        currentItem.showError(false);
-                        currentItem.errorIndex(-1);
-                    }
-                });
-            }, 1000);
-            /*
-            return this.socketIo.emit11 ( 'getSnapshop', url, width, height , function ( err, data, snapshot ) {
-                currentItem.showLoading ( false )
-                if ( err ) {
-                    return self.showSearchError ( true )
+                if (err) {
+                    currentItem.showError(true);
+                    currentItem.errorIndex(1);
+                    const currentElm = $(`#${currentItem.id}`);
+                    return currentElm.popup({
+                        on: 'click',
+                        inline: true,
+                        onHidden: function () {
+                            currentItem.showError(false);
+                            currentItem.errorIndex(-1);
+                        }
+                    });
                 }
-                currentItem.snapshotReady ( true )
-                
-                currentItem['localUrl']= snapshot.localUrl
-                currentItem['png']= snapshot.png
-                currentItem['height']= snapshot.height
-
-            })
-            */
+                currentItem.snapshotReady(true);
+                currentItem['localUrl'] = snapshot.localUrl;
+                currentItem['png'] = snapshot.png;
+                currentItem['height'] = snapshot.height;
+            });
         }
         showWebPageClose() {
             this.showMain(true);
@@ -2419,74 +2346,39 @@ var coSearch_layout;
                 self.nextButtonErrorIndex(err);
                 self.nextButtonShowError(true);
             }
-            //      text search
-            return setTimeout(() => {
+            const nextLink = this.searchItem().nextPage;
+            let currentArray = null;
+            switch (self.currentlyShowItems()) {
+                //      google search
+                case 0: {
+                    currentArray = self.searchItemsArray();
+                    break;
+                }
+                //      news
+                case 1: {
+                    currentArray = self.newsItemsArray();
+                    break;
+                }
+                case 2: {
+                    currentArray = self.imageItemsArray();
+                    break;
+                }
+                default: {
+                    currentArray = self.videoItemsArray();
+                    break;
+                }
+            }
+            return this.socketIo.emit11('searchNext', self.currentlyShowItems(), nextLink, function (err, data) {
                 self.moreResultsButtomLoading(false);
-                let _data = null;
-                switch (self.currentlyShowItems()) {
-                    //      google search
-                    case 0: {
-                        _data = googleSearchNextReturn;
-                        break;
-                    }
-                    //      news
-                    case 1: {
-                        _data = googleNewsSearchNextResult;
-                        break;
-                    }
-                    case 2: {
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
-                self.returnSearchResultItemsInit(_data);
-                let currentArray = null;
-                switch (self.currentlyShowItems()) {
-                    //      google search
-                    case 0: {
-                        currentArray = self.searchItemsArray();
-                        break;
-                    }
-                    //      news
-                    case 1: {
-                        currentArray = self.newsItemsArray();
-                        break;
-                    }
-                    case 2: {
-                        currentArray = self.imageItemsArray();
-                        break;
-                    }
-                    default: {
-                        currentArray = self.videoItemsArray();
-                        break;
-                    }
-                }
-                currentArray.Result.push(..._data.Result);
-                currentArray.nextPage = _data.nextPage;
-                self.showResultItems(currentArray);
-            }, 1000);
-            /*
-            return this.socketIo.emit11 ( 'searchNext', nextLink , function ( err, data ) {
-                self.moreResultsButtomLoading ( false )
                 //  error
-                if ( err ) {
-                    return self.showSearchError ( true )
+                if (err) {
+                    return showError(err);
                 }
-                data.param.Result.forEach ( n => {
-                    n['showLoading'] = ko.observable ( false )
-                    n['snapshotReady'] = ko.observable ( false )
-                    n['id'] = uuid_generate ()
-                    n['showError'] = ko.observable ( false )
-                    n['errorIndex'] = ko.observable ( -1 )
-                })
-                self.searchItemList.push ( ...data.param.Result )
-                self.SearchNextPageLink = data.param.nextPage
-                
-                return
-            })
-            */
+                self.returnSearchResultItemsInit(data.param);
+                currentArray.Result.push(...data.param.Result);
+                currentArray.nextPage = data.param.nextPage;
+                return self.showResultItems(currentArray);
+            });
         }
         clearSearchText() {
             this.searchInputText('');
@@ -2617,8 +2509,7 @@ var coSearch_layout;
                     this.newsButtonShowLoading(false);
                     this.newsItemsArray(this.createNewsResult(googleNewsSearchResult));
                     this.returnSearchResultItemsInit(this.newsItemsArray());
-                    this.showResultItems(this.newsItemsArray());
-                    this.currentlyShowItems(1);
+                    //this.showResultItems ( this.newsItemsArray () )
                 }, 1000);
             }
             this.currentlyShowItems(1);
@@ -2667,11 +2558,23 @@ var coSearch_layout;
                 return this.videoButtonErrorIndex(-1);
             }
             this.videoButtonShowLoading(true);
-            setTimeout(() => {
-                self.videoButtonShowLoading(false);
-                self.videoButtonShowError(true);
-                self.videoButtonErrorIndex(1);
-            }, 1000);
+            if (!this.videoItemsArray()) {
+                return setTimeout(() => {
+                    this.videoButtonShowLoading(false);
+                    this.videoItemsArray(this.createNewsResult(googleVideoSearchClickResult));
+                    this.returnSearchResultItemsInit(this.videoItemsArray());
+                }, 1000);
+            }
+            this.videoButtonShowLoading(false);
+            this.currentlyShowItems(3);
+            return this.showResultItems(this.videoItemsArray());
+            /*
+            setTimeout (() => {
+                self.videoButtonShowLoading ( false )
+                self.videoButtonShowError ( true )
+                self.videoButtonErrorIndex ( 1 )
+            }, 1000 )
+            */
         }
         webItemsClick() {
             this.currentlyShowItems(0);

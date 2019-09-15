@@ -17,7 +17,7 @@ const messageBoxDefine = {
     offline: ['无互联网链接', 'インターネットに接続していないです', 'Have no Internet', '無互聯網連結']
 };
 class connectInformationMessage {
-    constructor() {
+    constructor(socketIo) {
         this.offlineInfo = ko.observable(false);
         this.showNegative = ko.observable(false);
         this.showGreen = ko.observable(false);
@@ -35,8 +35,8 @@ class connectInformationMessage {
         });
         this.first = false;
     }
-    showOfflineMessage() {
-        this.messageArray(messageBoxDefine.offline);
+    showOfflineMessage(err) {
+        this.messageArray(messageBoxDefine[err]);
         this.showNegative(true);
         this.offlineInfo(true);
     }

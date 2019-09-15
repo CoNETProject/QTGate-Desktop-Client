@@ -23,7 +23,9 @@ class connectInformationMessage {
 	public messageArray = ko.observable ( null )
 
 	private first = true
-	constructor () {
+	constructor ( socketIo: SocketIOClient.Socket ) {
+
+		
 
 		this.offlineInfo.subscribe ( function (vv) {
 			if ( this.first ) {
@@ -31,15 +33,15 @@ class connectInformationMessage {
 			}
 			const div =  $('#offlineInfo')
 			if ( vv ) {
-					return div.transition('fly down')
+				return div.transition('fly down')
 			}
 			div.transition('fly down')
 		})
 		this.first = false
 		
 	}
-	public showOfflineMessage () {
-		this.messageArray ( messageBoxDefine.offline )
+	public showOfflineMessage ( err ) {
+		this.messageArray ( messageBoxDefine[ err ] )
 		this.showNegative ( true )
 		this.offlineInfo ( true )
 	}

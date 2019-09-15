@@ -96,7 +96,7 @@ export default class extends Imap.imapPeer {
 		}, ( decryptText: string, CallBack ) => {
 			return Tool.decryptoMessage ( openKeyOption, decryptText, CallBack )
 		}, err => {
-			console.log (`coNETConnect IMAP class exit with err: [${ err }] doing this.exit(err)!`)
+			
 			return this.exit1 ( err )
 		})
 		saveLog (`=====================================  new CoNET connect() doNetSendConnectMail = [${ doNetSendConnectMail }]\n`, true )
@@ -156,8 +156,7 @@ export default class extends Imap.imapPeer {
 			return CallBack ( new Error ( `CoNET looks offline!`))
 		}
 		Async.waterfall ([
-			next => Tool.myIpServer ( next ),
-			( ip, next ) => this.checkConnect ( next ),
+			next => this.checkConnect ( next ),
 			next => {
 				saveLog ( `request command [${ command.command }] requestSerial [${ command.requestSerial }]`, true )
 				if ( command.requestSerial ) {
@@ -204,13 +203,7 @@ export default class extends Imap.imapPeer {
 		this.connectStage = 1
 		
 		this.sockerServer.emit ( 'tryConnectCoNETStage', null, this.connectStage = 1 )
-		return Tool.myIpServer (( err, localIpAddress ) => {
-			if ( err ) {
-				console.log (`Tool.myIpServer callback error`, err )
-				this.connectStage = 0
-				return this.sockerServer.emit ( 'tryConnectCoNETStage', 0 )
-			}
-			console.log (`tryConnect success Tool.myIpServer [${ localIpAddress }]`, true )
+		
 			if ( this.doNetSendConnectMail ) {
 				//	 wait long time to get response from CoNET
 				console.log (`this.doNetSendConnectMail = true`)
@@ -224,7 +217,7 @@ export default class extends Imap.imapPeer {
 				}
 			})
 			
-		})
+		
 		
 	}
 }

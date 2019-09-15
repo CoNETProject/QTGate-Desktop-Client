@@ -449,25 +449,6 @@ const doUrl = (url, CallBack) => {
         return CallBack(err);
     });
 };
-const myIpServerUrl = ['https://ipinfo.io/ip', 'https://icanhazip.com/', 'https://diagnostic.opendns.com/myip', 'http://ipecho.net/plain', 'https://www.trackip.net/ip'];
-exports.myIpServer = (CallBack) => {
-    let ret = false;
-    Async.each(myIpServerUrl, (n, next) => {
-        return doUrl(n, (err, data) => {
-            if (err || !Net.isIPv4(data)) {
-                return next();
-            }
-            if (!ret) {
-                ret = true;
-                return CallBack(null, data);
-            }
-        });
-    }, () => {
-        if (!ret) {
-            return CallBack(new Error('no network'));
-        }
-    });
-};
 const _smtpVerify = (imapData, CallBack) => {
     const option = {
         host: Net.isIP(imapData.smtpServer) ? null : imapData.smtpServer,

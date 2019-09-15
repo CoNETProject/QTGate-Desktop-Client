@@ -42,6 +42,7 @@ const saveSnapshop = (src, sessionHash, _CallBack) => {
         });
     });
 };
+const searchCommandNextSelect = ['searchNext', 'newsNext', 'imageNext', 'videoNext'];
 class coSearchServer {
     constructor(sessionHash, socket, saveLog, clientName, localServer) {
         this.sessionHash = sessionHash;
@@ -93,21 +94,19 @@ class coSearchServer {
                 if (res && res.error === -1) {
                     return console.log(`Get process response !`);
                 }
-                console.log(Util.inspect(res.Args, false, 2, true));
-                console.log(`socket.emit ( 'search')`);
                 return socket.emit('search', null, res.Args);
             });
         });
-        socket.on('searchNext', (nextLink, callback1) => {
+        socket.on('searchNext', (currentlyList, nextLink, callback1) => {
             callback1();
             const com = {
                 command: 'CoSearch',
                 Args: [sessionHash, 'google', nextLink],
                 error: null,
-                subCom: 'searchNext',
+                subCom: searchCommandNextSelect[currentlyList],
                 requestSerial: Crypto.randomBytes(8).toString('hex')
             };
-            console.log(`on searchNext [${nextLink}]`);
+            console.log(`on searchNext currentlyList [${currentlyList}] [${nextLink}]`);
             return localServer.sendRequest(socket, com, sessionHash, (err, res) => {
                 if (err) {
                     return saveLog(`coSearchServer [${clientName}] search sendRequest on ERROR[${err.message}] `);
@@ -115,8 +114,7 @@ class coSearchServer {
                 if (res && res.error === -1) {
                     return console.log(`Get process response !`);
                 }
-                socket.emit('searchNext', null, res.Args);
-                return console.log(`on searchNext [${nextLink}] get response!\n${Util.inspect(res.Args, false, 4, true)}`);
+                return socket.emit('searchNext', null, res.Args);
             });
         });
         socket.on('getSnapshop', (url, width, height, callback1) => {
@@ -134,7 +132,7 @@ class coSearchServer {
                     return saveLog(`coSearchServer [${clientName}] getSnapshop on ERROR[${err.message}] `);
                 }
                 if (res && res.error === -1) {
-                    return console.log(`Get process response !`);
+                    return console.log(`getSnapshop Get process response !`);
                 }
                 console.log(`getSnapshop get result ${res.Args} typeof res.Args = [${typeof res.Args}] `);
                 localServer.getHTMLCompleteZIP(res.Args[0], Tool.QTGateTemp, err => {
