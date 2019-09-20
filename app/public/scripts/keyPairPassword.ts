@@ -43,7 +43,7 @@ class keyPairPassword {
 			return this.showPasswordError ()
 		}
 		this.passwordChecking ( true )
-		return socketIo.emit11 ( 'checkPemPassword', this.systemSetup_systemPassword(), function ( err: boolean, _imapData: imapData, sessionHash: string ) {
+		return _view.connectInformationMessage.sockEmit ( 'checkPemPassword', this.systemSetup_systemPassword(), function ( err: boolean, _imapData: imapData, sessionHash: string ) {
 			self.passwordChecking ( false )
 			if ( err || typeof _imapData === 'boolean' && _imapData ) {
 				return self.showPasswordError()

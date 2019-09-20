@@ -18,7 +18,15 @@
     "node": ">=50.9"
   },
   "devDependencies": {
-    "electron-builder-squirrel-windows": "19.52.0"
+    "electron-builder-squirrel-windows": "19.52.0",
+    "@types/express": "^4.17.1",
+    "@types/node": "^12.7.5",
+    "@types/jquery": "3.3.1",
+    "@types/socket.io": "1.4.33",
+    "@types/socket.io-client": "1.4.32",
+    "@types/knockout": "3.4.53",
+    "@types/node-uuid": "0.0.28",
+    "@types/cookie-parser": "1.4.1"
   },
   "build": {
     "appId": "com.CoNET.Platform",
@@ -57,19 +65,17 @@
   },
   "homepage": "https://www.CoNET.com",
   "dependencies": {
-    "@types/express": "^4.17.1",
-    "@types/node": "^12.7.5",
     "async": "^3.1.0",
     "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
-    "jimp": "^0.6.8",
+    "jimp": "^0.8.4",
     "jszip": "^3.2.2",
     "node-uuid": "^1.4.8",
     "nodemailer": "^6.3.0",
     "openpgp": "^4.6.2",
     "portastic": "^1.0.1",
     "pug": "^2.0.4",
-    "socket.io": "^2.2.0",
-    "socket.io-client": "^2.2.0"
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
   }
 }

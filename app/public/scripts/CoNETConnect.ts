@@ -24,7 +24,7 @@
 	public mayNotMakeImapConnect = ko.observable ( false )
 	public Loading = ko.observable ( false )
 	public keyPairSign: KnockoutObservable< keyPairSign > = ko.observable ( null )
-	constructor ( public email: string, private isKeypairBeSign: boolean, confirmRisk: boolean, public account: string, private ready: ( err, showCoGate? ) => void ) {
+	constructor ( public email: string, private isKeypairBeSign: boolean, confirmRisk: boolean, public account: string, private ready: ( err ) => void ) {
 		const self = this
 		if ( !confirmRisk ) {
 			this.showSendImapDataWarning ( true )
@@ -33,18 +33,18 @@
 			this.Loading ( true )
 		}
 
-		socketIo.on ( 'tryConnectCoNETStage', function ( err, stage, showCoGate: boolean ) {
-			return self.listingConnectStage ( err, stage, showCoGate )
+		_view.connectInformationMessage.socketIo.on ( 'tryConnectCoNETStage', function ( err, stage ) {
+			return self.listingConnectStage ( err, stage )
 		})
 	}
 
-	public listingConnectStage ( err, stage, showCoGate: boolean ) {
+	public listingConnectStage ( err, stage ) {
 		const self = this
 		this.showConnectCoNETProcess ( true )
 		let processBarCount = 0
 		if ( typeof err === 'number' && err > -1 ) {
 			this.connectStage ( -1 )
-			this.ready ( err, false )
+			this.ready ( err )
 			return this.connetcError ( err )
 		}
 		
@@ -60,16 +60,15 @@
 					return this.keyPairSign ( u = new keyPairSign (( function () {
 						
 						self.keyPairSign ( u = null )
-						self.ready ( null, showCoGate )
+						self.ready ( null )
 					})))
 				}
 				return
 			}
 			
-			return this.ready ( null, showCoGate )
+			return this.ready ( null )
 			
 		}
-		
 		$('.keyPairProcessBar').progress ({
 			percent: processBarCount += 33
 		})
@@ -82,14 +81,14 @@
 
 
 	public returnToImapSetup () {
-		return this.ready ( 0, true )
+		return this.ready ( 0 )
 	}
 
 	public imapConform () {
 		this.showSendImapDataWarning ( false )
 		this.connetcError ( -1 )
 		this.Loading ( true )
-		return socketIo.emit11 ( 'tryConnectCoNET' )
+		return _view.connectInformationMessage.sockEmit ( 'tryConnectCoNET' )
 	}
 
 

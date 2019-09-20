@@ -164,7 +164,7 @@ class keyPairGenerateForm {
                     return doingProcessBar();
             }, timeSet);
         };
-        socketIo.once('newKeyPairCallBack', function (keyPair, newKeyPairCallBack) {
+        _view.connectInformationMessage.sockEmit('NewKeyPair', sendData, function (err, keyPair, newKeyPairCallBack) {
             self.stopDoingProcessBar();
             self.keyPairGenerateFormMessage(true);
             if (!keyPair) {
@@ -173,7 +173,6 @@ class keyPairGenerateForm {
             self.exit(keyPair, newKeyPairCallBack);
             return self.message_keyPairGenerateSuccess(true);
         });
-        socketIo.emit11('NewKeyPair', sendData);
         return doingProcessBar();
     }
     CloseKeyPairGenerateFormMessage() {

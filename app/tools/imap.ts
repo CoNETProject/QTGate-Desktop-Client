@@ -1013,13 +1013,11 @@ export class qtGateImap extends Event.EventEmitter {
     
         this.connectTimeOut = setTimeout (() => {
             console.log (`qtGateImap on connect socket tiemout! this.imapStream.end`)
-            if ( this.socket ) {
-
-                if ( this.socket.destroy )
-                    return this.socket.destroy ()
+            if ( this.socket && typeof this.socket.end === 'function' ) {
                 this.socket.end ()
             }
             this.imapStream.end ()
+            this.emit ( 'error', new Error ('Connect timeout!'))
         }, socketTimeOut )
 
 
@@ -1235,6 +1233,7 @@ export class qtGateImapRead extends qtGateImap {
     }
 
     constructor ( IMapConnect: imapConnect, listenFolder: string, deleteBoxWhenEnd: boolean, newMail: ( mail ) => void ) {
+
         super ( IMapConnect, listenFolder, deleteBoxWhenEnd, null, debug, newMail )
         this.once ( 'ready', () => {
             this.openBox = true
@@ -1367,10 +1366,10 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
     const ramdomText = Crypto.randomBytes ( 20 )
     let timeout: NodeJS.Timer = null
 
-    const doCallBack = ( err, ret ) => {
+    const doCallBack = ( err?: Error, ret? ) => {
         if ( ! callbackCall ) {
             
-            saveLog (`imapAccountTest doing callback err [${ err && err.messgae ? err.messgae : `undefine `}] ret [${ ret ? ret : 'undefine'}]`)
+            //saveLog (`imapAccountTest doing callback err [${ err && err.message ? err.message : `undefine `}] ret [${ ret ? ret : 'undefine'}]`)
             callbackCall = true
             clearTimeout ( timeout )
             return CallBack ( err, ret )
@@ -1434,7 +1433,7 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
     })
 
     rImap.once ( 'end', err => {
-        saveLog (`rImap.once ( 'end' ) [${ err && err.message ? err.message : 'err = undefine' }]`, true )
+        saveLog ( `rImap.once ( 'end' ) [${ err && err.message ? err.message : 'err = undefine' }]`, true )
         if (! callbackCall && !err ) {
             saveLog (`rImap.once ( 'end') before finished test! do imapAccountTest again!`, true )
             return imapAccountTest ( IMapConnect, CallBack )
@@ -1444,7 +1443,7 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
 
     rImap.once ( 'error', err => {
         saveLog ( `rImap.once ( 'error' ) [${ err.message }]`, true )
-        return doCallBack ( err, null )
+        return doCallBack ( err )
     })
 
 

@@ -77,6 +77,7 @@ class default_1 extends Imap.imapPeer {
             saveLog('Connected CoNET!', true);
             this.connectStage = 4;
             this.sockerServer.emit('tryConnectCoNETStage', null, 4, cmdResponse ? false : true);
+            this.sockerServer.emit('systemErr', 'connectedToCoNET');
             return this.sendFeedback();
         });
         this.on('pingTimeOut', () => {
@@ -87,6 +88,7 @@ class default_1 extends Imap.imapPeer {
         });
         this.ignorePingTimeout = doNetSendConnectMail;
         this.sockerServer.emit('tryConnectCoNETStage', null, this.connectStage = 0);
+        this.sockerServer.emit('systemErr', 'connectingToCoNET');
     }
     sendFeedback() {
         return;
@@ -126,12 +128,6 @@ class default_1 extends Imap.imapPeer {
         console.log(`exit1 cancel already Exit [${err}]`);
     }
     requestCoNET(command, CallBack) {
-        command.requestTimes = command.requestTimes || 0;
-        command.requestTimes++;
-        if (command.requestTimes > 3) {
-            saveLog(`request command [${command.command}] did too many times!`, true);
-            return CallBack(new Error(`CoNET looks offline!`));
-        }
         Async.waterfall([
             next => this.checkConnect(next),
             next => {

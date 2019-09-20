@@ -626,7 +626,6 @@ interface install_config {
     iterations: number
     salt?: any
     keylen?: number
-    localIpAddress: string []
     digest?: string
     freeUser: boolean
     connectedImapDataUuid: string
@@ -635,7 +634,12 @@ interface install_config {
     serverPort: number
     connectedQTGateServer: boolean          //      true when connect to QTGate network
     lastConnectType: number
+    localIpAddress: any[]
     
+}
+
+interface Jimp {
+    read( ...args: any): any
 }
 
 declare namespace SemanticUI {
@@ -645,6 +649,7 @@ declare namespace SemanticUI {
 declare namespace SocketIOClient {
     interface Emitter {
         emit11
+        emit22
     }
 }
 
@@ -666,4 +671,38 @@ interface coSearch_Object {
     args: string[]
     screenSize_x: number
     screenSize_y: number
+}
+
+interface JQuery<TElement extends Node = HTMLElement> extends Iterable<TElement> {
+    //css(properties: JQuery.PlainObject<string | number | ((this: TElement, index: number, value: string) => string | number | void | undefined)>): this;
+    /**
+     * Get the computed style properties for the first element in the set of matched elements.
+     *
+     * @param propertyName A CSS property.
+     *                     An array of one or more CSS properties.
+     * @see {@link https://api.jquery.com/css/}
+     * @since 1.0
+     */
+    //css(propertyName: string): string;
+    /**
+     * Get the computed style properties for the first element in the set of matched elements.
+     *
+     * @param propertyNames An array of one or more CSS properties.
+     * @see {@link https://api.jquery.com/css/}
+     * @since 1.9
+     */
+    //css(propertyNames: string[]): JQuery.PlainObject<string>;
+
+    progress(k?:any ): any
+    transition(k?:any): any
+    dropdown(k?:any):any
+    popup(k?:any): any
+    shape(k?:any):any
+    dimmer(k?:any):any
+    checkbox(k?:any): any
+    
+}
+interface JQueryStatic<TElement extends Node = HTMLElement> {
+    //'langEH', this.tLang(), { expires: 180, path: '/' }
+    cookie( ...obj:any): any
 }

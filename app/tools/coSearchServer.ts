@@ -50,8 +50,8 @@ export default class coSearchServer {
     
     constructor ( private sessionHash: string, private socket: SocketIO.Socket, private saveLog: ( arg: any ) => void, clientName: string, private localServer: localServer  ) {
         
-        socket.on ( `search`, ( searchText, width, height, callback1 ) => {
-            callback1()
+        socket.on ( `search`, ( searchText, width, height, CallBack ) => {
+            
             saveLog ( `coSearchServer [${ clientName }] on [search] [${ searchText }] `)
             const com: QTGateAPIRequestCommand = {
                 command: 'CoSearch',
@@ -60,6 +60,7 @@ export default class coSearchServer {
                 subCom: null,
                 requestSerial: Crypto.randomBytes(8).toString ('hex' )
             }
+
             if ( Tool.checkUrl ( searchText )) {
                 
                 console.log ( `on getSnapshop \nurl=[${ searchText }]\nwidth=[${ width }]\nheight=[${ height }]` )
@@ -86,7 +87,7 @@ export default class coSearchServer {
                         }
                         const u: string = res.Args[0]
                         const fileName = u.split ('.')[0]
-                        socket.emit ( 'search', null, null, { localUrl: `/tempfile/temp/${ fileName }.html`, png: `/tempfile/temp/${ fileName }.png`, height: height } )
+                        CallBack ( null, null, { localUrl: `/tempfile/temp/${ fileName }.html`, png: `/tempfile/temp/${ fileName }.png`, height: height } )
                     })
                     
                 })
@@ -100,14 +101,16 @@ export default class coSearchServer {
             
             return localServer.sendRequest ( socket, com, sessionHash, ( err, res: QTGateAPIRequestCommand ) => {
                 if ( err ) {
+                    CallBack ( err )
                     return saveLog (`coSearchServer [${ clientName }] search sendRequest on ERROR[${ err.message }] `)
                 }
                 
                 if ( res && res.error === -1  ) {
-                    return console.log ( `Get process response !`)
+                    CallBack ( res.error )
+                    return saveLog ( `CoNET responer error! ${ Util.inspect (res, false, 3, true ) }`)
                 }
                 
-                return socket.emit ( 'search', null, res.Args )
+                return CallBack( null, res.Args )
                 
             })
             

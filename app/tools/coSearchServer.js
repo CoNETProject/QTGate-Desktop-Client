@@ -49,8 +49,7 @@ class coSearchServer {
         this.socket = socket;
         this.saveLog = saveLog;
         this.localServer = localServer;
-        socket.on(`search`, (searchText, width, height, callback1) => {
-            callback1();
+        socket.on(`search`, (searchText, width, height, CallBack) => {
             saveLog(`coSearchServer [${clientName}] on [search] [${searchText}] `);
             const com = {
                 command: 'CoSearch',
@@ -79,7 +78,7 @@ class coSearchServer {
                         }
                         const u = res.Args[0];
                         const fileName = u.split('.')[0];
-                        socket.emit('search', null, null, { localUrl: `/tempfile/temp/${fileName}.html`, png: `/tempfile/temp/${fileName}.png`, height: height });
+                        CallBack(null, null, { localUrl: `/tempfile/temp/${fileName}.html`, png: `/tempfile/temp/${fileName}.png`, height: height });
                     });
                 });
             }
@@ -89,12 +88,14 @@ class coSearchServer {
             //socket.emit ( 'search', null, uuu.Args )
             return localServer.sendRequest(socket, com, sessionHash, (err, res) => {
                 if (err) {
+                    CallBack(err);
                     return saveLog(`coSearchServer [${clientName}] search sendRequest on ERROR[${err.message}] `);
                 }
                 if (res && res.error === -1) {
-                    return console.log(`Get process response !`);
+                    CallBack(res.error);
+                    return saveLog(`CoNET responer error! ${Util.inspect(res, false, 3, true)}`);
                 }
-                return socket.emit('search', null, res.Args);
+                return CallBack(null, res.Args);
             });
         });
         socket.on('searchNext', (currentlyList, nextLink, callback1) => {

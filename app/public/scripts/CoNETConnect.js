@@ -36,17 +36,17 @@ class CoNETConnect {
             this.imapConform();
             this.Loading(true);
         }
-        socketIo.on('tryConnectCoNETStage', function (err, stage, showCoGate) {
-            return self.listingConnectStage(err, stage, showCoGate);
+        _view.connectInformationMessage.socketIo.on('tryConnectCoNETStage', function (err, stage) {
+            return self.listingConnectStage(err, stage);
         });
     }
-    listingConnectStage(err, stage, showCoGate) {
+    listingConnectStage(err, stage) {
         const self = this;
         this.showConnectCoNETProcess(true);
         let processBarCount = 0;
         if (typeof err === 'number' && err > -1) {
             this.connectStage(-1);
-            this.ready(err, false);
+            this.ready(err);
             return this.connetcError(err);
         }
         if (stage === 4) {
@@ -58,12 +58,12 @@ class CoNETConnect {
                     let u = null;
                     return this.keyPairSign(u = new keyPairSign((function () {
                         self.keyPairSign(u = null);
-                        self.ready(null, showCoGate);
+                        self.ready(null);
                     })));
                 }
                 return;
             }
-            return this.ready(null, showCoGate);
+            return this.ready(null);
         }
         $('.keyPairProcessBar').progress({
             percent: processBarCount += 33
@@ -74,12 +74,12 @@ class CoNETConnect {
         return this.connectStage(stage);
     }
     returnToImapSetup() {
-        return this.ready(0, true);
+        return this.ready(0);
     }
     imapConform() {
         this.showSendImapDataWarning(false);
         this.connetcError(-1);
         this.Loading(true);
-        return socketIo.emit11('tryConnectCoNET');
+        return _view.connectInformationMessage.sockEmit('tryConnectCoNET');
     }
 }

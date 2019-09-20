@@ -195,7 +195,7 @@ class keyPairSign {
 			text = text.replace (/ MESSAGE-----/,' MESSAGE-----\r\n')
 		}
 		
-		return socketIo.emit11 ( 'checkActiveEmailSubmit', text, function ( err, req: QTGateAPIRequestCommand ) {
+		return _view.connectInformationMessage.sockEmit ( 'checkActiveEmailSubmit', text, function ( err, req: QTGateAPIRequestCommand ) {
 			self.activeing ( false )
 			if ( err !== null && err > -1 || req && req.error != null && req.error > -1 ) {
 				self.conformTextErrorNumber ( err !== null && err > -1 ? err :
@@ -226,7 +226,7 @@ class keyPairSign {
 		const self = this
 		this.requestActivEmailrunning ( true )
 		
-		return socketIo.emit11 ( 'requestActivEmail', function ( err ) {
+		return _view.connectInformationMessage.sockEmit ( 'requestActivEmail', function ( err ) {
 			self.requestActivEmailrunning ( false )
 			if ( err !== null && err > -1 ) {
 				return self.requestError ( err )
@@ -237,7 +237,6 @@ class keyPairSign {
 		})
 	}
 }
-
 
 class imapForm {
 	public emailAddress = ko.observable ('')
@@ -292,9 +291,9 @@ class imapForm {
 		}
 
 		const removeAllListen = function () {
-			socketIo.removeEventListener ( 'smtpTest', smtpTest )
-			socketIo.removeEventListener ( 'imapTest', imapTest )
-			socketIo.removeEventListener ( 'imapTestFinish', imapTestFinish )
+			_view.connectInformationMessage.socketIo.removeEventListener ( 'smtpTest', smtpTest )
+			_view.connectInformationMessage.socketIo.removeEventListener ( 'imapTest', imapTest )
+			_view.connectInformationMessage.socketIo.removeEventListener ( 'imapTestFinish', imapTestFinish )
 		}
 
 		const errorProcess = function ( err ) {
@@ -302,10 +301,10 @@ class imapForm {
 			return self.checkImapError ( err )
 		}
 
-		socketIo.once ( 'smtpTest', smtpTest )
-		socketIo.once ( 'imapTest', imapTest )
-		socketIo.once ( 'imapTestFinish', imapTestFinish )
-		socketIo.emit11 ( 'checkImap', self.emailAddress (), self.password (), new Date ().getTimezoneOffset (), _view.tLang ())
+		_view.connectInformationMessage.socketIo.once ( 'smtpTest', smtpTest )
+		_view.connectInformationMessage.socketIo.once ( 'imapTest', imapTest )
+		_view.connectInformationMessage.socketIo.once ( 'imapTestFinish', imapTestFinish )
+		_view.connectInformationMessage.sockEmit ( 'checkImap', self.emailAddress (), self.password (), new Date ().getTimezoneOffset (), _view.tLang ())
 	}
 
 	private checkEmailAddress ( email: string ) {

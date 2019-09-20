@@ -129,7 +129,7 @@ export default class extends Imap.imapPeer {
 			saveLog ( 'Connected CoNET!', true )
 			this.connectStage = 4
 			this.sockerServer.emit ( 'tryConnectCoNETStage', null, 4, cmdResponse ? false : true  )
-			
+			this.sockerServer.emit ( 'systemErr', 'connectedToCoNET')
 			return this.sendFeedback ()
 		})
 
@@ -145,16 +145,11 @@ export default class extends Imap.imapPeer {
 		this.ignorePingTimeout = doNetSendConnectMail
 		
 		this.sockerServer.emit ( 'tryConnectCoNETStage', null, this.connectStage = 0 )
-
+		this.sockerServer.emit ( 'systemErr', 'connectingToCoNET')
 	}
 
 	public requestCoNET ( command: QTGateAPIRequestCommand, CallBack ) {
-		command.requestTimes = command.requestTimes || 0
-		command.requestTimes ++
-		if ( command.requestTimes > 3 ) {
-			saveLog( `request command [${ command.command }] did too many times!`, true )
-			return CallBack ( new Error ( `CoNET looks offline!`))
-		}
+		
 		Async.waterfall ([
 			next => this.checkConnect ( next ),
 			next => {

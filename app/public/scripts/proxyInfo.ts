@@ -1,5 +1,0 @@
-class proxyInfo {
-	constructor () {
-		
-	}
-}

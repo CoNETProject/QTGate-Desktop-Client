@@ -882,12 +882,11 @@ class qtGateImap extends Event.EventEmitter {
         });
         this.connectTimeOut = timers_1.setTimeout(() => {
             console.log(`qtGateImap on connect socket tiemout! this.imapStream.end`);
-            if (this.socket) {
-                if (this.socket.destroy)
-                    return this.socket.destroy();
+            if (this.socket && typeof this.socket.end === 'function') {
                 this.socket.end();
             }
             this.imapStream.end();
+            this.emit('error', new Error('Connect timeout!'));
         }, socketTimeOut);
     }
     destroyAll(err) {
@@ -1163,7 +1162,7 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
     let timeout = null;
     const doCallBack = (err, ret) => {
         if (!callbackCall) {
-            saveLog(`imapAccountTest doing callback err [${err && err.messgae ? err.messgae : `undefine `}] ret [${ret ? ret : 'undefine'}]`);
+            //saveLog (`imapAccountTest doing callback err [${ err && err.message ? err.message : `undefine `}] ret [${ ret ? ret : 'undefine'}]`)
             callbackCall = true;
             timers_1.clearTimeout(timeout);
             return CallBack(err, ret);
@@ -1230,7 +1229,7 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
     });
     rImap.once('error', err => {
         saveLog(`rImap.once ( 'error' ) [${err.message}]`, true);
-        return doCallBack(err, null);
+        return doCallBack(err);
     });
 };
 exports.imapGetMediaFile = (IMapConnect, fileName, CallBack) => {

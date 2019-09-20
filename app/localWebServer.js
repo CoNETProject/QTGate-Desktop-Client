@@ -29,8 +29,6 @@ const Uuid = require("node-uuid");
 const Imap = require("./tools/imap");
 const coNETConnect_1 = require("./tools/coNETConnect");
 const Crypto = require("crypto");
-const ProxyServer = require("./tools/proxyServer");
-const UploadFile = require("./tools/uploadFile");
 const coSearchServer_1 = require("./tools/coSearchServer");
 const JSZip = require("jszip");
 Express.static.mime.define({ 'multipart/related': ['mht'] });
@@ -57,7 +55,6 @@ const saveServerStartupError = (err) => {
         `${err['message']}\n`;
     saveLog(info);
 };
-const yy = new Map();
 const imapErrorCallBack = (message) => {
     if (message && message.length) {
         if (/auth|login|log in|Too many simultaneous|UNAVAILABLE/i.test(message)) {
@@ -101,17 +98,6 @@ class localServer {
         this.localConnected = new Map();
         this.CoNETConnectCalss = null;
         this.openPgpKeyOption = null;
-        this.pingChecking = false;
-        this.regionV1 = null;
-        this.connectCommand = null;
-        this.dataTransfer = null;
-        this.proxyServer = null;
-        this.whiteIpList = [];
-        this.domainBlackList = [];
-        this.domainPool = new Map();
-        this.twitterDataInit = false;
-        this.twitterData = [];
-        this.currentTwitterAccount = -1;
         this.sessionHashPool = [];
         this.expressServer.set('views', Path.join(__dirname, 'views'));
         this.expressServer.set('view engine', 'pug');
@@ -121,35 +107,6 @@ class localServer {
         this.expressServer.use(Express.static(Path.join(__dirname, 'html')));
         this.expressServer.get('/', (req, res) => {
             res.render('home', { title: 'home', proxyErr: false });
-        });
-        this.expressServer.get('/twitter', (req, res) => {
-            if (!this.config.keypair || !this.config.keypair.publicKey || !this.CoNETConnectCalss) {
-                return res.render('home', { title: 'home', proxyErr: false });
-            }
-            res.render('twitter', { title: 'Co_Twitter' });
-        });
-        this.expressServer.get('/youtube', (req, res) => {
-            /*
-            if ( !this.config.keypair || !this.config.keypair.publicKey || !this.CoNETConnectCalss ) {
-                
-                return res.render( 'home', { title: 'home', proxyErr: false  })
-                
-            }
-            */
-            return res.render('Youtube', { title: 'Co_Youtube' });
-        });
-        this.expressServer.get('/proxyErr', (req, res) => {
-            console.log(`get /proxyErr`);
-            res.render('home', { title: 'CoNET for Twitter', proxyErr: true });
-        });
-        this.expressServer.get('/doingUpdate', (req, res) => {
-            res.json();
-            const { ver } = req.query;
-            saveLog(`/doingUpdate res.query = [${ver}]`);
-            this.config.newVersion = ver;
-            this.config.newVerReady = true;
-            return Tool.saveConfig(this.config, err => {
-            });
         });
         this.expressServer.get('/CoSearch', (req, res) => {
             const sessionHash = req.query.sessionHash;
@@ -181,26 +138,17 @@ class localServer {
             this.config = data['1'];
             if (!test) {
                 this.httpServer.listen(Tool.LocalServerPortNumber, () => {
-                    return saveServerStartup(this.config.localIpAddress[0]);
+                    return saveServerStartup(`localhost`);
                 });
             }
         });
     }
-    CoNET_systemError() {
-        return this.socketServer.emit('CoNET_systemError');
-    }
     tryConnectCoNET(socket, sessionHash) {
         console.log(`doing tryConnectCoNET`);
         //		have CoGate connect
-        if (this.connectCommand && this.connectCommand.length) {
-            socket.emit('tryConnectCoNETStage', -1, 4, true);
-            setTimeout(() => {
-                socket.emit('QTGateGatewayConnectRequest', null, this.connectCommand);
-            }, 200);
-        }
         let sendMail = false;
         const _exitFunction = err => {
-            console.trace(`_exitFunction err =`, err);
+            //console.trace ( `_exitFunction err =`, err )
             //console.log (`sessionHashPool.length = [${ this.sessionHashPool.length }]`)
             switch (err) {
                 ///			connect conet had timeout
@@ -230,13 +178,16 @@ class localServer {
                 this.imapConnectData.sendToQTGate = true;
                 Tool.saveEncryptoData(Tool.imapDataFileName1, this.imapConnectData, this.config, this.savedPasswrod, () => { });
                 this.socketServer.emit('tryConnectCoNETStage', null, 3);
+                this.socketServer.emit('systemErr', 'connectingToCoNET');
                 return Tool.sendCoNETConnectRequestEmail(this.imapConnectData, this.openPgpKeyOption, this.config.version, this.keyPair.publicKey, (err) => {
                     if (err) {
                         console.log(`sendCoNETConnectRequestEmail callback error`, err);
                         saveLog(`tryConnectCoNET sendCoNETConnectRequestEmail got error [${err.message ? err.message : JSON.stringify(err)}]`);
+                        this.socketServer.emit('systemErr', err);
                         return socket.emit('tryConnectCoNETStage', imapErrorCallBack(err.message));
                     }
                     socket.emit('tryConnectCoNETStage', null, 3);
+                    this.socketServer.emit('systemErr', 'connectingToCoNET');
                     return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, catchUnSerialCmd, _exitFunction);
                 });
             }
@@ -251,12 +202,12 @@ class localServer {
     sendRequest(socket, cmd, sessionHash, CallBack) {
         if (!this.openPgpKeyOption) {
             console.log(`sendrequest keypair error! !this.config [${!this.config}] !this.keyPair[${!this.keyPair}]`);
-            return CallBack(1);
+            return CallBack('systemError');
         }
         if (!this.CoNETConnectCalss) {
             console.log(`sendrequest no CoNETConnectCalss`);
             this.tryConnectCoNET(socket, sessionHash);
-            return CallBack(0);
+            return CallBack('reConnectCoNET');
         }
         saveLog(`sendRequest send [${cmd.command}]`);
         cmd.requestSerial = Crypto.randomBytes(8).toString('hex');
@@ -268,35 +219,6 @@ class localServer {
             }
             return CallBack(null, res);
         });
-    }
-    checkPort(portNum, socket) {
-        const num = parseInt(portNum.toString());
-        if (!/^[0-9]*$/.test(portNum.toString()) || !num || num < 3000 || num > 65535) {
-            return socket.emit('checkPort', true);
-        }
-        if (this.proxyServer && this.proxyServer.port) {
-            console.log(`this.proxyServer = true, typeof this.proxyServer.port = [${typeof this.proxyServer.port}] typeof portNum = [${typeof portNum}]`);
-            if (portNum.toString() === this.proxyServer.port)
-                return socket.emit('checkPort', true, this.proxyServer.port);
-        }
-        console.log(`this.proxyServer && this.proxyServer.port = [${this.proxyServer && this.proxyServer.port}] typeof this.proxyServer [${typeof this.proxyServer}] `);
-        return findPort(portNum, (err, kk) => {
-            saveLog(`check port [${typeof portNum}] got back kk [${typeof kk}]`);
-            if (kk !== portNum) {
-                return socket.emit('checkPort', true, kk);
-            }
-            return socket.emit('checkPort');
-        });
-    }
-    makeOpnConnect(arg) {
-        const uu = arg[0];
-        saveLog(`makeOpnConnect arg = ${JSON.stringify(arg)}`);
-        if (this.proxyServer && typeof this.proxyServer.reNew === 'function') {
-            console.log(`find this.proxyServer && typeof this.proxyServer.reNew === 'function'`);
-            return this.proxyServer.reNew(arg);
-        }
-        this.proxyServer = new ProxyServer.proxyServer(this.whiteIpList, this.domainPool, uu.localServerPort, 'pac', 5000, arg, 50000, true, this.domainBlackList, uu.localServerIp[0], Tool.LocalServerPortNumber);
-        console.log(`this.proxyServer = new ProxyServer.proxyServer! this.proxyServer && this.proxyServer.port = [${this.proxyServer && this.proxyServer.port}]`);
     }
     listenAfterPassword(socket, sessionHash) {
         //console.log (`localServer listenAfterPassword for sessionHash [${ sessionHash }]`)
@@ -334,9 +256,8 @@ class localServer {
             return this.doingCheckImap(socket);
         });
         socket.on('tryConnectCoNET', CallBack1 => {
-            CallBack1();
             if (!this.imapConnectData) {
-                return this.CoNET_systemError();
+                return CallBack1('systemError');
             }
             if (!this.imapConnectData.confirmRisk) {
                 this.imapConnectData.confirmRisk = true;
@@ -347,7 +268,6 @@ class localServer {
             return this.tryConnectCoNET(socket, sessionHash);
         });
         socket.on('requestActivEmail', CallBack1 => {
-            CallBack1();
             saveLog(`on requestActivEmail`);
             const com = {
                 command: 'requestActivEmail',
@@ -357,19 +277,18 @@ class localServer {
             };
             return this.sendRequest(socket, com, sessionHash, (err, res) => {
                 console.log(`requestActivEmail sendrequest callback! `);
-                return socket.emit('requestActivEmail', err, res);
+                return CallBack1(err, res);
             });
         });
         socket.on('checkActiveEmailSubmit', (text, CallBack1) => {
-            CallBack1();
             saveLog(`on checkActiveEmailSubmit`);
             if (!text || !text.length || !/^-----BEGIN PGP MESSAGE-----/.test(text)) {
-                socket.emit('checkActiveEmailSubmit', 0);
+                CallBack1(0);
                 return saveLog(`checkActiveEmailSubmit, no text.length ! [${text}]`);
             }
             return Tool.decryptoMessage(this.openPgpKeyOption, text, (err, data) => {
                 if (err) {
-                    socket.emit('checkActiveEmailSubmit', 1);
+                    CallBack1(1);
                     return saveLog(`checkActiveEmailSubmit, decryptoMessage error [${err.message ? err.message : null}]\n${text}`);
                 }
                 let pass = null;
@@ -377,7 +296,7 @@ class localServer {
                     pass = JSON.parse(data);
                 }
                 catch (ex) {
-                    return socket.emit('checkActiveEmailSubmit', 1);
+                    return CallBack1(1);
                 }
                 const com = {
                     command: 'activePassword',
@@ -388,15 +307,15 @@ class localServer {
                 console.log(Util.inspect(com));
                 return this.sendRequest(socket, com, sessionHash, (err, data) => {
                     if (err) {
-                        return socket.emit('checkActiveEmailSubmit', err);
+                        return CallBack1(err);
                     }
                     if (data.error > -1) {
-                        return socket.emit('checkActiveEmailSubmit', null, data);
+                        return CallBack1(null, data);
                     }
                     const key = Buffer.from(data.Args[0], 'base64').toString();
                     if (key && key.length) {
                         saveLog(`active key success! \n[${key}]`);
-                        socket.emit('checkActiveEmailSubmit');
+                        CallBack1();
                         this.keyPair.publicKey = this.config.keypair.publicKey = key;
                         this.keyPair.verified = this.config.keypair.verified = true;
                         return Tool.saveConfig(this.config, err => {
@@ -423,8 +342,8 @@ class localServer {
             }),
             next => Tool.smtpVerify(this.imapConnectData, next)
         ], (err) => {
-            console.log(`doingCheckImap Async.series success!`);
             if (err) {
+                console.log(`doingCheckImap Async.series Error!`, err);
                 return socket.emit('smtpTest', imapErrorCallBack(err.message));
             }
             this.imapConnectData.imapTestResult = true;
@@ -433,33 +352,6 @@ class localServer {
                 socket.emit('imapTestFinish', this.imapConnectData);
             });
         });
-    }
-    deleteCurrentAccount() {
-        if (this.currentTwitterAccount < 0) {
-            return;
-        }
-        this.twitterData.splice(this.currentTwitterAccount, 1);
-        return Tool.saveEncryptoData(Tool.twitterDataFileName, this.twitterData, this.config, this.savedPasswrod, err => {
-            if (err) {
-                return saveLog(`saveANEWTwitterData got error: ${err.messgae}`);
-            }
-        });
-    }
-    setCurrentTwitterAccount(account) {
-        this.currentTwitterAccount = this.twitterData.findIndex(n => {
-            return n.access_token_secret === account.access_token_secret;
-        });
-    }
-    TwitterError(err, CallBack) {
-        if (typeof err === 'object') {
-            console.log(`TwitterError err = [${Util.inspect(err)}]`);
-            if (err.message && /Invalid or expired token/i.test(err.message)) {
-                console.log(`Twitter account error!`);
-                this.deleteCurrentAccount();
-                return CallBack(1);
-            }
-        }
-        return CallBack(2);
     }
     getMedia(mediaString, CallBack) {
         //saveLog (` getMedia mediaString = [${ mediaString }]`)
@@ -513,135 +405,8 @@ class localServer {
             return CallBack();
         });
     }
-    getQuote_status(tweet, CallBack) {
-        saveLog(`doing getQuote_status [${tweet.id_str}]`);
-        if (tweet.quoted_status) {
-            const entities = tweet.quoted_status.extended_entities = tweet.quoted_status.extended_entities || null;
-            if (entities && entities.media && entities.media.length) {
-                console.log(`getTweetMediaData [${entities.media.map(n => { return n.media_url_https; })}]`);
-                return this.getTweetMediaData(tweet.quoted_status.extended_entities.media, CallBack);
-            }
-        }
-        if (tweet.retweeted_status) {
-            const entities = tweet.retweeted_status.extended_entities = tweet.retweeted_status.extended_entities || null;
-            if (entities && entities.media && entities.media.length) {
-                console.log(`getTweetMediaData [${entities.media.map(n => { return n.media_url_https; })}]`);
-                return this.getTweetMediaData(tweet.retweeted_status.extended_entities.media, CallBack);
-            }
-        }
-        return CallBack();
-    }
-    getTweetMediaData(media, CallBack) {
-        const uu = media && media.length && media[0].video_info ? media[0].video_info : null;
-        if (uu && uu.QTDownload) {
-            return this.getVideo(uu, CallBack);
-        }
-        return Async.eachSeries(media, (n, next) => {
-            n.video_info = null;
-            return this.getMedia(n.media_url_https, (err, data) => {
-                if (err) {
-                    return next();
-                }
-                n.media_url_https = data ? `data:image/png;base64,${data}` : n.media_url_https;
-                return next();
-            });
-        }, CallBack);
-    }
-    createTweetData_next(tweet, err, data, CallBack) {
-        //saveLog ( `createTweetData_next CallBack: data = [${ data.map ( n => { return n.length })}]`)
-        tweet.user.profile_image_url_https = `data:image/png;base64,${data[0]}`;
-        if (tweet.retweeted && tweet.retweeted.user) {
-            tweet.retweeted.user.profile_image_url_https = `data:image/png;base64,${data[1]}`;
-        }
-        if (tweet.retweeted_status && tweet.retweeted_status.user) {
-            tweet.retweeted_status.user.profile_image_url_https = `data:image/png;base64,${data[1]}`;
-        }
-        if (!tweet.retweeted_status && tweet.extended_entities && tweet.extended_entities.media && tweet.extended_entities.media.length) {
-            return this.getTweetMediaData(tweet.extended_entities.media, err => {
-                return this.getQuote_status(tweet, CallBack);
-            });
-        }
-        return this.getQuote_status(tweet, CallBack);
-    }
-    getTimelinesNext(socket, account, max_id, sessionHash, CallBack) {
-        delete account['twitter_verify_credentials'];
-        const com = {
-            command: 'twitter_home_timelineNext',
-            Args: [account, max_id],
-            error: null,
-            subCom: null,
-            requestSerial: Crypto.randomBytes(8).toString('hex')
-        };
-        return this.sendRequest(socket, com, sessionHash, (err, res) => {
-            if (err) {
-                return CallBack();
-            }
-            if (res.error) {
-                this.TwitterError(res.error, CallBack);
-            }
-            if (res.Args && res.Args.length > 0) {
-                let uu = null;
-                try {
-                    uu = JSON.parse(Buffer.from(res.Args[0], 'base64').toString());
-                }
-                catch (ex) {
-                    return saveLog(`getTimelines QTClass.request return JSON.parse Error!`);
-                }
-                return CallBack(null, uu);
-            }
-        });
-    }
-    createTweetData(tweet, CallBack) {
-        if (!tweet) {
-            saveLog(`createTweetData got Null tweet data `);
-            return CallBack(new Error('have no tweet data!'));
-        }
-        const action = [
-            next => this.getMedia(tweet.user.profile_image_url_https, next)
-        ];
-        if (tweet.retweeted && tweet.retweeted.user) {
-            action.push(next => this.getMedia(tweet.retweeted.user.profile_image_url_https, next));
-        }
-        if (tweet.retweeted_status && tweet.retweeted_status.user) {
-            action.push(next => this.getMedia(tweet.retweeted_status.user.profile_image_url_https, next));
-        }
-        return Async.series(action, (err, data) => {
-            return this.createTweetData_next(tweet, err, data, err1 => {
-                CallBack(null, tweet);
-                /*
-                if ( this.tweetTimeLineDataPool.length ) {
-                    const uu = this.tweetTimeLineDataPool.shift ()
-                    return this.createTweetData ( uu.post, uu.CallBack )
-                }
-                */
-            });
-        });
-    }
-    QT_VideoMediaUpload(data, CallBack) {
-        return UploadFile.sendFile3(Path.join(Tool.QTGateVideo, data.videoFileName), this.CoNETConnectCalss, (err, files) => {
-            if (err) {
-                return CallBack(err);
-            }
-            saveLog(`QT_VideoMediaUpload got files ${files}`);
-            data.videoFileName = files.join(',');
-            return CallBack();
-        });
-    }
-    tweetTimeCallBack(socket, err, tweets, postReturn) {
-        if (err) {
-            socket.emit('getTimelines', err);
-            return console.log(`socket.on ( 'getTimelines' return [${err}]`);
-        }
-        return this.createTweetData(tweets, (err, tweet) => {
-            if (err) {
-                return console.log(`getTweetCount error`, err);
-            }
-            console.log(`*************** socket.emit [${tweet.CoNET_totalTwitter}:${tweet.CoNET_currentTwitter + 1}]`);
-            return socket.emit('getTimelines', tweet, postReturn);
-        });
-    }
-    passwordFail(socket) {
-        return socket.emit('checkPemPassword', null, true);
+    passwordFail(CallBack) {
+        return CallBack(null, true);
     }
     socketServerConnected(socket) {
         const clientName = `[${socket.id}][ ${socket.conn.remoteAddress}]`;
@@ -651,34 +416,33 @@ class localServer {
             socket: socket,
             login: false
         };
+        saveLog(`socketServerConnected ${clientName} connect ${this.localConnected.size}`);
         socket.once('disconnect', reason => {
             saveLog(`socketServerConnected ${clientName} on disconnect ${this.localConnected.size}`);
             return this.localConnected.delete(clientName);
         });
-        socket.on('init', Callback1 => {
-            Callback1();
+        socket.once('init', Callback1 => {
+            saveLog(`socket.on ( 'init' )`);
             const ret = Tool.emitConfig(this.config, false);
-            return socket.emit('init', null, ret);
+            return Callback1(null, ret);
         });
-        socket.once('agreeClick', CallBack1 => {
-            CallBack1();
+        socket.once('agreeClick', () => {
             this.config.firstRun = false;
             return Tool.saveConfig(this.config, saveLog);
         });
         socket.on('checkPemPassword', (password, CallBack1) => {
-            CallBack1();
             if (!this.config.keypair || !this.config.keypair.publicKey) {
                 console.log(`checkPemPassword !this.config.keypair`);
-                return this.passwordFail(socket);
+                return this.passwordFail(CallBack1);
             }
             if (!password || password.length < 5) {
                 console.log(`! password `);
-                return this.passwordFail(socket);
+                return this.passwordFail(CallBack1);
             }
             if (this.savedPasswrod && this.savedPasswrod.length) {
                 if (this.savedPasswrod !== password) {
                     console.log(`savedPasswrod !== password `);
-                    return this.passwordFail(socket);
+                    return this.passwordFail(CallBack1);
                 }
             }
             return Async.waterfall([
@@ -688,7 +452,7 @@ class localServer {
                     //console.log ( `checkPemPassword Tool.getKeyPairInfo success!`)
                     if (!key.passwordOK) {
                         saveLog(`[${clientName}] on checkPemPassword had try password! [${password}]`);
-                        return this.passwordFail(socket);
+                        return this.passwordFail(CallBack1);
                     }
                     this.savedPasswrod = password;
                     this.keyPair = key;
@@ -705,7 +469,7 @@ class localServer {
                 //console.log (`checkPemPassword Async.waterfall success!`)
                 if (err) {
                     if (!(err.message && /no such file/i.test(err.message))) {
-                        socket.emit('checkPemPassword');
+                        CallBack1();
                         return saveLog(`Tool.makeGpgKeyOption return err [${err && err.message ? err.message : null}]`);
                     }
                 }
@@ -715,10 +479,10 @@ class localServer {
                 try {
                     this.imapConnectData = JSON.parse(data);
                     this.localConnected.set(clientName, clientObj);
-                    return socket.emit('checkPemPassword', null, this.imapConnectData, sessionHash);
+                    return CallBack1(null, this.imapConnectData, sessionHash);
                 }
                 catch (ex) {
-                    return socket.emit('checkPemPassword');
+                    return CallBack1();
                 }
             });
         });
@@ -731,7 +495,6 @@ class localServer {
                 return this.socketServer.emit('deleteKeyPairNoite');
             }
             const info = `socket on deleteKeyPairNext, delete key pair now.`;
-            console.log(info);
             saveLog(info);
             this.config = Tool.InitConfig();
             this.config.firstRun = false;
@@ -746,7 +509,6 @@ class localServer {
             return this.socketServer.emit('init', null, this.config);
         });
         socket.on('NewKeyPair', (preData, CallBack1) => {
-            CallBack1();
             //		already have key pair
             if (this.config.keypair && this.config.keypair.createDate) {
                 return saveLog(`[${clientName}] on NewKeyPair but system already have keypair: ${this.config.keypair.publicKeyID} stop and return keypair.`);
@@ -755,21 +517,21 @@ class localServer {
             return Tool.getPbkdf2(this.config, this.savedPasswrod, (err, Pbkdf2Password) => {
                 if (err) {
                     saveLog(`NewKeyPair getPbkdf2 Error: [${err.message}]`);
-                    return this.CoNET_systemError();
+                    return CallBack1('systemError');
                 }
                 preData.password = Pbkdf2Password.toString('hex');
                 console.log(`preData.password = [${preData.password}]`);
                 return Tool.newKeyPair(preData.email, preData.nikeName, preData.password, (err, retData) => {
                     if (err) {
                         console.log(err);
-                        this.socketServer.emit('newKeyPairCallBack');
+                        CallBack1();
                         return saveLog(`CreateKeyPairProcess return err: [${err.message}]`);
                     }
                     if (!retData) {
                         const info = `newKeyPair return null key!`;
                         saveLog(info);
                         console.log(info);
-                        return this.socketServer.emit('newKeyPairCallBack');
+                        return CallBack1();
                     }
                     if (!clientObj.listenAfterPasswd) {
                         clientObj.listenAfterPasswd = clientObj.login = true;
@@ -781,7 +543,7 @@ class localServer {
                     return Tool.getKeyPairInfo(retData.publicKey, retData.privateKey, preData.password, (err, key) => {
                         if (err) {
                             const info = `Tool.getKeyPairInfo Error [${err.message ? err.message : 'null err message '}]`;
-                            return this.CoNET_systemError();
+                            return CallBack1('systemError');
                         }
                         this.keyPair = this.config.keypair = key;
                         this.config.account = this.config.keypair.email;
@@ -791,7 +553,7 @@ class localServer {
                             }
                             this.openPgpKeyOption = data;
                             Tool.saveConfig(this.config, saveLog);
-                            return this.socketServer.emit('newKeyPairCallBack', this.config.keypair, sessionHash);
+                            return CallBack1(null, this.config.keypair, sessionHash);
                         });
                     });
                 });
