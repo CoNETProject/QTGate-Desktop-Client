@@ -15,7 +15,7 @@
  */
 
 import * as Imap from './imap'
-
+import { randomBytes } from 'crypto'
 import * as Tool from './initSystem'
 import * as Fs from 'fs'
 import * as Async from 'async'
@@ -43,11 +43,7 @@ export default class extends Imap.imapPeer {
 	public alreadyExit = false
 	private ignorePingTimeout = false
 
-	private sendFeedback () {
-		return
-	}
-
-	private checkConnect ( CallBack ) {
+	public checkConnect ( CallBack ) {
 		if ( this.wImap && this.wImap.imapStream && this.wImap.imapStream.writable &&
 			this.rImap && this.rImap.imapStream && this.rImap.imapStream.readable ) {
 
@@ -66,7 +62,7 @@ export default class extends Imap.imapPeer {
 				return CallBack ()
 				
 		}
-		console.log (`checkConnect need destroy `)
+		console.log ( `checkConnect need destroy `)
 		if ( this.wImap && this.wImap.imapStream && this.wImap.imapStream.writable  ) {
 			console.log ( `checkConnect this.wImap GOOD! `)
 		} else {
@@ -101,8 +97,21 @@ export default class extends Imap.imapPeer {
 		})
 		saveLog (`=====================================  new CoNET connect() doNetSendConnectMail = [${ doNetSendConnectMail }]\n`, true )
 
-		this.newMail = ( ret: QTGateAPIRequestCommand ) => {
+		this.newMail = ( ret: QTGateAPIRequestCommand, hashCode: string ) => {
+
 			//		have not requestSerial that may from system infomation
+			if ( hashCode && typeof ret === 'string' ) {
+				const poolData = this.commandCallBackPool.get ( hashCode )
+				if ( ! poolData || typeof poolData.CallBack !== 'function' ) {
+					return saveLog ( `QTGateAPIRequestCommand got commandCallBackPool = [${ this.commandCallBackPool.size }] have not matched callback !`)
+				}
+				clearTimeout ( poolData.timeout )
+				return poolData.CallBack ( null, ret )
+			}
+
+			return this.cmdResponse ( ret )
+
+			/*
 			if ( ! ret.requestSerial ) {
 				return this.cmdResponse ( ret )
 			}
@@ -114,7 +123,7 @@ export default class extends Imap.imapPeer {
 			}
 			clearTimeout ( poolData.timeout )
 			return poolData.CallBack ( null, ret )
-			
+			*/
 		}
 
 		this.on ( 'wImapReady', () => {
@@ -130,7 +139,7 @@ export default class extends Imap.imapPeer {
 			this.connectStage = 4
 			this.sockerServer.emit ( 'tryConnectCoNETStage', null, 4, cmdResponse ? false : true  )
 			this.sockerServer.emit ( 'systemErr', 'connectedToCoNET')
-			return this.sendFeedback ()
+			return 
 		})
 
 		this.on ( 'pingTimeOut', () => {
@@ -148,7 +157,7 @@ export default class extends Imap.imapPeer {
 		this.sockerServer.emit ( 'systemErr', 'connectingToCoNET')
 	}
 
-	public requestCoNET ( command: QTGateAPIRequestCommand, CallBack ) {
+	public requestCoNET11 ( command: QTGateAPIRequestCommand, CallBack ) {
 		
 		Async.waterfall ([
 			next => this.checkConnect ( next ),
@@ -193,24 +202,44 @@ export default class extends Imap.imapPeer {
 		
 	}
 
+	public requestCoNET_v1 ( text: string, CallBack ) {
+		const self = this
+		const hash = randomBytes(15).toString ('hex')
+		Async.waterfall ([
+			next => this.checkConnect ( next ),
+			next => {
+				const poolData: requestPoolData = {
+					CallBack: CallBack,
+					timeout: setTimeout (() => {
+						saveLog ( `request timeout!`, true )
+						self.commandCallBackPool.delete ( hash )
+						return CallBack ( new Error ('requestCoNET_v1 timeout error!'))
+					}, requestTimeOut )
+				}
+				self.commandCallBackPool.set ( hash, poolData )
+				return self.trySendToRemote ( Buffer.from ( text ), next )
+			},
+	}
+
+
 	public tryConnect1 () {
 		
 		this.connectStage = 1
 		
 		this.sockerServer.emit ( 'tryConnectCoNETStage', null, this.connectStage = 1 )
 		
-			if ( this.doNetSendConnectMail ) {
-				//	 wait long time to get response from CoNET
-				console.log (`this.doNetSendConnectMail = true`)
+		if ( this.doNetSendConnectMail ) {
+			//	 wait long time to get response from CoNET
+			console.log (`this.doNetSendConnectMail = true`)
 
+		}
+		console.log ( `doing checkConnect `)
+		return this.checkConnect ( err => {
+			
+			if ( err ) {
+				return this.exit1 ( err )
 			}
-			console.log ( `doing checkConnect `)
-			return this.checkConnect ( err => {
-				console.log (`tryConnect1 success!`)
-				if ( err ) {
-					return this.exit1 ( err )
-				}
-			})
+		})
 			
 		
 		

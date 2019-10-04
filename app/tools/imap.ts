@@ -634,9 +634,12 @@ class ImapServerSwitchStream extends Stream.Transform {
         
     }
 
-    public append ( text: string, CallBack ) {
+    public append ( text: string, subject: string, CallBack ) {
         //console.log (`[${ this.imapServer.imapSerialID }] ImapServerSwitchStream append => [${ text.length }]`)
-        
+        if ( typeof subject === 'function' ) {
+			CallBack = subject
+			subject = null
+		}
         this.canDoLogout = false
         this.doCommandCallback = ( err, info: string ) => {
             this.canDoLogout = true
@@ -646,7 +649,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                 CallBack ( err, info )
             })
         }
-        let out = `Content-Type: application/octet-stream\r\nContent-Disposition: attachment\r\nMessage-ID:<${ Uuid.v4() }@>${ this.imapServer.domainName }\r\nContent-Transfer-Encoding: base64\r\nMIME-Version: 1.0\r\n\r\n${ text }`
+        let out = `Content-Type: application/octet-stream\r\nContent-Disposition: attachment\r\nMessage-ID:<${ Uuid.v4() }@>${ this.imapServer.domainName }\r\n${ subject ? 'Subject: '+ subject + '\r\n' : '' }Content-Transfer-Encoding: base64\r\nMIME-Version: 1.0\r\n\r\n${ text }`
 
         this.commandProcess = ( text1: string, cmdArray: string[], next, _callback ) => {
             switch ( cmdArray[0] ) {
@@ -679,10 +682,13 @@ class ImapServerSwitchStream extends Stream.Transform {
         this.push ( this.cmd + '\r\n' )
         
         this.appendWaitResponsrTimeOut = setTimeout (() => {
-            console.log (`IMAP append TIMEOUT stop IMAP this.imapServer.socket.end ()`)
+            const err = `IMAP append TIMEOUT stop IMAP this.imapServer.socket.end ()`
             this.imapServer.socket.end ()
-            return this.imapServer.emit ( 'end' )
-        }, time )
+            this.emit ( 'end' )
+			this.imapServer.emit ( 'end' )
+			CallBack ( new Error ( err ))
+		}, time )
+		
         //console.log (`*************************************  append time = [${ time }] `)
         if ( this.imapServer.literalPlus ) {
             console.log (``)
@@ -1246,11 +1252,21 @@ export const getMailAttached = ( email: Buffer ) => {
     
     const attachmentStart = email.indexOf ('\r\n\r\n')
     if ( attachmentStart < 0 ) {
-        console.log (`getMailAttached error! can't faind mail attahced start!`)
-        return null
+        console.log ( `getMailAttached error! can't faind mail attahced start!\n${ email.toString() }`)
+        return ''
     }
     const attachment = email.slice ( attachmentStart + 4 )
     return Buffer.from ( attachment.toString(), 'base64')
+}
+
+export const getMailSubject = ( email: Buffer ) => {
+	const ret = email.toString().split ('\r{0,1}\n\r{0,1}\n')[0].split('\r{0,1}\n').find ( n => {
+		return /^subject: /i.test( n )
+	})
+	if ( !ret || !ret.length ) {
+		return ''
+	}
+	return ret.split(/^subject: /i)[1]
 }
 
 export const getMailAttachedBase64 = ( email: Buffer ) => {
@@ -1457,7 +1473,7 @@ export const imapGetMediaFile = ( IMapConnect: imapConnect, fileName: string, Ca
     })
 }
 
-const pingPongTimeOut = 1000 * 10
+const pingPongTimeOut = 1000 * 30
 
 
 interface mailPool {
@@ -1474,7 +1490,7 @@ export class imapPeer extends Event.EventEmitter {
     
     public peerReady = false
     private readyForSendMail = false
-    public newMail: ( data: any ) => void
+    public newMail: ( data: any, subject ) => void
     private makeWImap = false
     private makeRImap = false
     private pingCount = 1
@@ -1483,7 +1499,13 @@ export class imapPeer extends Event.EventEmitter {
 
     private mail ( email: Buffer ) {
         
-        const attr = getMailAttached (  email ).toString ()
+		
+		const subject = getMailSubject ( email )
+		const attr = getMailAttached (  email ).toString ()
+		if ( subject ) {
+			return this.newMail ( attr, subject )
+		}
+		
         return this.deCrypto ( attr, ( err, data ) => {
             if ( err ) {
                 saveLog ( email.toString())
@@ -1541,7 +1563,7 @@ export class imapPeer extends Event.EventEmitter {
                 return this.emit ('ready')
             }
 
-            return this.newMail (uu )
+            return this.newMail ( uu, null )
             
         })
 
@@ -1600,11 +1622,11 @@ export class imapPeer extends Event.EventEmitter {
         return Async.waterfall ([
             next => this.enCrypto ( mail, next ),
             ( data, next ) => {
-                //saveLog (`encryptAndAppendWImap1 doing this.wImap.append1 typeof next = [${ typeof next }]`)
+                
                 return this.wImap.append1 ( Buffer.from ( data ).toString ('base64'), next )
             }
         ], err => {
-            //console.log (`encryptAndAppendWImap1 Async.waterfall success`, err )
+            console.log (`encryptAndAppendWImap1 Async.waterfall success`, err )
             this.wImap.canAppend = true
             return CallBack ( err )
         })
@@ -1635,20 +1657,16 @@ export class imapPeer extends Event.EventEmitter {
         
         return this.encryptAndAppendWImap1 ( JSON.stringify ({ ping: pingUuid }), err => {
             if ( err ) {
+				
                 if ( err.message && /TRYCREATE/i.test( err.message )) {
                     saveLog ( `Outlook mail support emit [wFolder] []` )
-                    
-                    return this.emit ('wFolder')
                 }
                 if ( /no wImap|/i.test ( err.message ))  {
-                    return saveLog (`Doing ping got no imap err stop! [${ err.message ? err.message : null }]`, true )
+                    saveLog (`Doing ping got no imap err stop! [${ err.message ? err.message : null }]`, true )
                 }
-                saveLog ( `Doing ping got ERROR! try again [${ err.message ? err.message : null }]`, true )
-                return setTimeout (() => {
-                    saveLog ( `setTimeout doing Ping!`)
-                    return this.Ping ()
-                }, 3000 )
-                
+				saveLog ( `Doing ping got ERROR! try again [${ err.message ? err.message : null }]`, true )
+				
+                this.destroy ( err )
             }
             this.pingUuid = pingUuid
             return this.setTimeOutOfPing ()
@@ -1689,7 +1707,8 @@ export class imapPeer extends Event.EventEmitter {
         this.wImap = new qtGateImapwrite ( this.imapData, this.writeBox )
 
         this.wImap.once ( 'end', err => {
-            return console.log ( `wImap end ! [${ err && err.message ? err.message : null }]!` )
+			console.log ( `wImap end ! [${ err && err.message ? err.message : null }]! try reBuild wImap!` )
+			return this.newWriteImap()
         })
 
         this.wImap.once ( 'error', err => {

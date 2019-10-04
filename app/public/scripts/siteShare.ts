@@ -28,6 +28,7 @@ const uuid_generate = function () {
         lut [ d2 & 0x3f | 0x80 ]+ lut [ d2 >> 8 & 0xff ] + '-' + lut [ d2 >> 16 & 0xff]+ lut [ d2 >> 24 & 0xff ] +
         lut [ d3 & 0xff ]+ lut [ d3 >> 8 & 0xff ] + lut [ d3 >> 16 & 0xff] + lut [ d3 >> 24 & 0xff ];
 }
+
 const bingIcon = `
     <svg viewBox="-650 800 900 400">
     <path style="fill:#008373;fill-opacity:1;stroke:none" d="m -311.5,796.16903 80.6273,28.36401 0,283.80836 113.56729,-65.5599 -55.67962,-26.1246 -35.12739,-87.43067 178.939297,62.86452 0,91.39515 -201.653597,116.3102 -80.67328,-44.875 z" />
@@ -492,6 +493,12 @@ const infoDefine = [
         },
         perment:{
             serverTitle:'服务器'
+        },
+        appsManager: {
+            mainLoading: '正在获取节点信息...',
+            nodeName: '您进入的节点名：',
+            connectAddress:'节点接入地址：',
+            serviceList:'提供服务一览'
         },
 
         twitter: {
@@ -976,7 +983,7 @@ const infoDefine = [
 
         thirdParty: {
             comesoon:'即将推出',
-            information: '您已进入CoNET网络',
+            information: '欢迎来到CoNET网络',
             app: ['Co定制代理','酷茶','酷存','Co邮件','Co新闻频道','酷检索','Co推特', 'Co油管','酷钱包','CoNET定制业务'],
             qtgateGateway: 'CoNET提供的高质量上网技术iOPN和@OPN，在CoNET全球16个区域，当场定制您专属的代理服务器，变换您的IP地址隐身无障碍的访问互联网',
             dimmer: [
@@ -1140,6 +1147,7 @@ const infoDefine = [
         }
         
 	},{
+
         coSearch: {
             searchInputPlaceholder: 'サーチキーワードまたはウェーブアドレス',
             SearchText:'検索',
@@ -1171,6 +1179,14 @@ const infoDefine = [
                 return new Date ( time ).toLocaleDateString ('ja', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
             }
         },
+
+        appsManager: {
+            mainLoading: 'ノードのサービスを取得中...',
+            nodeName: 'ノードの名前：',
+            connectAddress:'ノードに接続アドレス：',
+            serviceList:'サービス一覧'
+        },
+
         youtube: {
             startup: {
                 title: 'Co for Youtubeへようこそ',
@@ -1867,6 +1883,13 @@ const infoDefine = [
             TimeTolocalTime: function ( time: string ) {
                 return new Date ( time ).toLocaleDateString ('en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
             }
+        },
+
+        appsManager: {
+            mainLoading: 'Loading node information...',
+            nodeName: 'Node name: ',
+            connectAddress:'Node address: ',
+            serviceList:'Service list'
         },
         youtube: {
             startup: {
@@ -2619,6 +2642,14 @@ const infoDefine = [
             }
 
         },
+
+        appsManager: {
+            mainLoading: '正在獲取結點信息...',
+            nodeName: '您進入的節點名：',
+            connectAddress:'接入地址：',
+            welcomeTextSub: '',
+            serviceList:'提供服務一覽'
+        },
         youtube: {
             startup: {
                 title: '歡迎使用Co for Youtube',
@@ -2658,7 +2689,7 @@ const infoDefine = [
             
         },
         thirdParty: {
-            information: '您已進入CoNET網絡',
+            information: '歡迎來到CoNET網絡',
             comesoon:'即將登場',
             app:['CoGate','酷茶','酷存','Co邮箱','Co新闻频道','酷檢索','酷推特','Co for','酷錢包','CoNet業務訂製'],
             qtgateGateway: 'CoNET提供的高質量上網技術iOPN和@OPN，在CoNET全球16個區域，當場定制您專屬的代理服務器，變換您的IP地址隱身無障礙的訪問互聯網',

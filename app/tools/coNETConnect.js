@@ -16,6 +16,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const Imap = require("./imap");
+const crypto_1 = require("crypto");
 const Tool = require("./initSystem");
 const Fs = require("fs");
 const Async = require("async");
@@ -54,17 +55,30 @@ class default_1 extends Imap.imapPeer {
         this.alreadyExit = false;
         this.ignorePingTimeout = false;
         saveLog(`=====================================  new CoNET connect() doNetSendConnectMail = [${doNetSendConnectMail}]\n`, true);
-        this.newMail = (ret) => {
+        this.newMail = (ret, hashCode) => {
             //		have not requestSerial that may from system infomation
-            if (!ret.requestSerial) {
-                return this.cmdResponse(ret);
+            if (hashCode && typeof ret === 'string') {
+                const poolData = this.commandCallBackPool.get(hashCode);
+                if (!poolData || typeof poolData.CallBack !== 'function') {
+                    return saveLog(`QTGateAPIRequestCommand got commandCallBackPool = [${this.commandCallBackPool.size}] have not matched callback !`);
+                }
+                clearTimeout(poolData.timeout);
+                return poolData.CallBack(null, ret);
             }
-            const poolData = this.commandCallBackPool.get(ret.requestSerial);
-            if (!poolData || typeof poolData.CallBack !== 'function') {
-                return saveLog(`QTGateAPIRequestCommand got commandCallBackPool ret.requestSerial [${ret.requestSerial}] have not callback `);
+            return this.cmdResponse(ret);
+            /*
+            if ( ! ret.requestSerial ) {
+                return this.cmdResponse ( ret )
             }
-            clearTimeout(poolData.timeout);
-            return poolData.CallBack(null, ret);
+            
+            const poolData = this.commandCallBackPool.get ( ret.requestSerial )
+    
+            if ( ! poolData || typeof poolData.CallBack !== 'function' ) {
+                return saveLog ( `QTGateAPIRequestCommand got commandCallBackPool ret.requestSerial [${ ret.requestSerial }] have not callback `)
+            }
+            clearTimeout ( poolData.timeout )
+            return poolData.CallBack ( null, ret )
+            */
         };
         this.on('wImapReady', () => {
             console.log('on imapReady !');
@@ -78,7 +92,7 @@ class default_1 extends Imap.imapPeer {
             this.connectStage = 4;
             this.sockerServer.emit('tryConnectCoNETStage', null, 4, cmdResponse ? false : true);
             this.sockerServer.emit('systemErr', 'connectedToCoNET');
-            return this.sendFeedback();
+            return;
         });
         this.on('pingTimeOut', () => {
             if (this.ignorePingTimeout) {
@@ -89,9 +103,6 @@ class default_1 extends Imap.imapPeer {
         this.ignorePingTimeout = doNetSendConnectMail;
         this.sockerServer.emit('tryConnectCoNETStage', null, this.connectStage = 0);
         this.sockerServer.emit('systemErr', 'connectingToCoNET');
-    }
-    sendFeedback() {
-        return;
     }
     checkConnect(CallBack) {
         if (this.wImap && this.wImap.imapStream && this.wImap.imapStream.writable &&
@@ -127,7 +138,7 @@ class default_1 extends Imap.imapPeer {
         }
         console.log(`exit1 cancel already Exit [${err}]`);
     }
-    requestCoNET(command, CallBack) {
+    requestCoNET11(command, CallBack) {
         Async.waterfall([
             next => this.checkConnect(next),
             next => {
@@ -165,6 +176,25 @@ class default_1 extends Imap.imapPeer {
             console.log(`request success!`);
         });
     }
+    requestCoNET_v1(text, CallBack) {
+        const self = this;
+        const hash = crypto_1.randomBytes(15).toString('hex');
+        Async.waterfall([
+            next => this.checkConnect(next),
+            next => {
+                const poolData = {
+                    CallBack: CallBack,
+                    timeout: setTimeout(() => {
+                        saveLog(`request timeout!`, true);
+                        self.commandCallBackPool.delete(hash);
+                        return CallBack(new Error('requestCoNET_v1 timeout error!'));
+                    }, requestTimeOut)
+                };
+                self.commandCallBackPool.set(hash, poolData);
+                return self.trySendToRemote(Buffer.from(text), next);
+            },
+        ]);
+    }
     tryConnect1() {
         this.connectStage = 1;
         this.sockerServer.emit('tryConnectCoNETStage', null, this.connectStage = 1);
@@ -174,7 +204,6 @@ class default_1 extends Imap.imapPeer {
         }
         console.log(`doing checkConnect `);
         return this.checkConnect(err => {
-            console.log(`tryConnect1 success!`);
             if (err) {
                 return this.exit1(err);
             }

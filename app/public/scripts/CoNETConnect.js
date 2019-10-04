@@ -63,6 +63,7 @@ class CoNETConnect {
                 }
                 return;
             }
+            _view.showIconBar(true);
             return this.ready(null);
         }
         $('.keyPairProcessBar').progress({

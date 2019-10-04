@@ -65,7 +65,7 @@
 				}
 				return
 			}
-			
+			_view.showIconBar ( true )
 			return this.ready ( null )
 			
 		}

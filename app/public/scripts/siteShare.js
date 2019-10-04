@@ -464,6 +464,12 @@ const infoDefine = [
         perment: {
             serverTitle: '服务器'
         },
+        appsManager: {
+            mainLoading: '正在获取节点信息...',
+            nodeName: '您进入的节点名：',
+            connectAddress: '节点接入地址：',
+            serviceList: '提供服务一览'
+        },
         twitter: {
             newTwitterAccount: `请输入您的推特APP信息，如何获得和设置推特账号APP信息，请点击<a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/Create-Twitter-APP')">这里</a>`,
             addAccount: '添加推特账户',
@@ -926,7 +932,7 @@ const infoDefine = [
         },
         thirdParty: {
             comesoon: '即将推出',
-            information: '您已进入CoNET网络',
+            information: '欢迎来到CoNET网络',
             app: ['Co定制代理', '酷茶', '酷存', 'Co邮件', 'Co新闻频道', '酷检索', 'Co推特', 'Co油管', '酷钱包', 'CoNET定制业务'],
             qtgateGateway: 'CoNET提供的高质量上网技术iOPN和@OPN，在CoNET全球16个区域，当场定制您专属的代理服务器，变换您的IP地址隐身无障碍的访问互联网',
             dimmer: [
@@ -1110,6 +1116,12 @@ const infoDefine = [
             TimeTolocalTime: function (time) {
                 return new Date(time).toLocaleDateString('ja', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             }
+        },
+        appsManager: {
+            mainLoading: 'ノードのサービスを取得中...',
+            nodeName: 'ノードの名前：',
+            connectAddress: 'ノードに接続アドレス：',
+            serviceList: 'サービス一覧'
         },
         youtube: {
             startup: {
@@ -1780,6 +1792,12 @@ const infoDefine = [
             TimeTolocalTime: function (time) {
                 return new Date(time).toLocaleDateString('en', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             }
+        },
+        appsManager: {
+            mainLoading: 'Loading node information...',
+            nodeName: 'Node name: ',
+            connectAddress: 'Node address: ',
+            serviceList: 'Service list'
         },
         youtube: {
             startup: {
@@ -2496,6 +2514,13 @@ const infoDefine = [
                 return new Date(time).toLocaleDateString('zh-TW', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             }
         },
+        appsManager: {
+            mainLoading: '正在獲取結點信息...',
+            nodeName: '您進入的節點名：',
+            connectAddress: '接入地址：',
+            welcomeTextSub: '',
+            serviceList: '提供服務一覽'
+        },
         youtube: {
             startup: {
                 title: '歡迎使用Co for Youtube',
@@ -2534,7 +2559,7 @@ const infoDefine = [
             accountError: '推特回送錯誤信息提示：您輸入的APP應用設定信息有誤。請檢查您的推特APP信息後再試。'
         },
         thirdParty: {
-            information: '您已進入CoNET網絡',
+            information: '歡迎來到CoNET網絡',
             comesoon: '即將登場',
             app: ['CoGate', '酷茶', '酷存', 'Co邮箱', 'Co新闻频道', '酷檢索', '酷推特', 'Co for', '酷錢包', 'CoNet業務訂製'],
             qtgateGateway: 'CoNET提供的高質量上網技術iOPN和@OPN，在CoNET全球16個區域，當場定制您專屬的代理服務器，變換您的IP地址隱身無障礙的訪問互聯網',

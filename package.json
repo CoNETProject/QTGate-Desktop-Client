@@ -18,15 +18,15 @@
     "node": ">=50.9"
   },
   "devDependencies": {
-    "electron-builder-squirrel-windows": "19.52.0",
+    "@types/cookie-parser": "^1.4.1",
     "@types/express": "^4.17.1",
-    "@types/node": "^12.7.5",
-    "@types/jquery": "3.3.1",
-    "@types/socket.io": "1.4.33",
-    "@types/socket.io-client": "1.4.32",
-    "@types/knockout": "3.4.53",
-    "@types/node-uuid": "0.0.28",
-    "@types/cookie-parser": "1.4.1"
+    "@types/jquery": "^3.3.31",
+    "@types/knockout": "^3.4.66",
+    "@types/node": "^12.7.10",
+    "@types/node-uuid": "^0.0.28",
+    "@types/socket.io": "^1.4.40",
+    "@types/socket.io-client": "^1.4.32",
+    "electron-builder-squirrel-windows": "^19.56.0"
   },
   "build": {
     "appId": "com.CoNET.Platform",

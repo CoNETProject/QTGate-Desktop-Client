@@ -118,7 +118,12 @@ export default class localServer {
 	private CoNETConnectCalss: CoNETConnectCalss = null
 	private openPgpKeyOption = null
 	private sessionHashPool = []
-	
+	private Pbkdf2Password = null
+	private nodeList = [{
+		email: 'QTGate@CoNETTech.ca',
+		keyID:'',
+		key: ''
+	}]
 	
 	private tryConnectCoNET ( socket: SocketIO.Socket, sessionHash: string ) {
 		console.log (`doing tryConnectCoNET`)
@@ -166,8 +171,8 @@ export default class localServer {
 				this.imapConnectData.sendToQTGate = true
 				Tool.saveEncryptoData ( Tool.imapDataFileName1, this.imapConnectData, this.config, this.savedPasswrod, () => {})
 				this.socketServer.emit ( 'tryConnectCoNETStage', null, 3 )
-				this.socketServer.emit ( 'systemErr','connectingToCoNET' )
-				return Tool.sendCoNETConnectRequestEmail ( this.imapConnectData, this.openPgpKeyOption, this.config.version, this.keyPair.publicKey, ( err: Error ) => {
+				this.socketServer.emit ( 'systemErr','sendConnectRequestMail' )
+				return Tool.sendCoNETConnectRequestEmail ( this.imapConnectData, this.openPgpKeyOption, this.config.version, this.nodeList[0].email, this.keyPair.publicKey, ( err: Error ) => {
 					if ( err ) {
 						console.log (`sendCoNETConnectRequestEmail callback error`, err )
 						saveLog ( `tryConnectCoNET sendCoNETConnectRequestEmail got error [${ err.message ? err.message : JSON.stringify ( err ) }]`)
@@ -175,8 +180,6 @@ export default class localServer {
 						return socket.emit ( 'tryConnectCoNETStage', imapErrorCallBack ( err.message ))
 					}
 					
-					socket.emit ( 'tryConnectCoNETStage', null, 3 )
-					this.socketServer.emit ('systemErr','connectingToCoNET')
 					return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, catchUnSerialCmd, _exitFunction )
 				})
 			
@@ -187,6 +190,7 @@ export default class localServer {
 		}
 		
 		if ( !this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit ) {
+			saveLog( `!this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit` )
 			return makeConnect ( false )
 		}
 		
@@ -258,10 +262,9 @@ export default class localServer {
 
 				return this.doingCheckImap ( socket )
 		})
-		
 
 		socket.on ( 'tryConnectCoNET', CallBack1 => {
-			
+			saveLog (`socket on tryConnectCoNET!`)
 			if ( !this.imapConnectData ) {
 				return CallBack1 ('systemError')
 				
@@ -348,6 +351,10 @@ export default class localServer {
 			})
 		})
 
+		socket.on ( 'doingRequest',  request => {
+			this.CoNETConnectCalss.trySendToRemote ( )
+		})
+
 	}
 
 	private doingCheckImap ( socket: SocketIO.Socket ) {
@@ -380,7 +387,6 @@ export default class localServer {
 			
 		
 	}
-
 
 	private getMedia ( mediaString: string, CallBack ) {
 		//saveLog (` getMedia mediaString = [${ mediaString }]`)
@@ -495,7 +501,10 @@ export default class localServer {
 			
 			return Async.waterfall ([
 				next => Tool.getPbkdf2 ( this.config, password, next ),
-				( Pbkdf2Password: Buffer, next ) => Tool.getKeyPairInfo ( this.config.keypair.publicKey, this.config.keypair.privateKey, Pbkdf2Password.toString('hex'), next ),
+				( Pbkdf2Password: Buffer, next ) => {
+					this.Pbkdf2Password = Pbkdf2Password.toString ( 'hex' )
+					Tool.getKeyPairInfo ( this.config.keypair.publicKey, this.config.keypair.privateKey, this.Pbkdf2Password, next )
+				},
 				( key, next ) => {
 					//console.log ( `checkPemPassword Tool.getKeyPairInfo success!`)
 					if ( ! key.passwordOK ) {
@@ -512,6 +521,7 @@ export default class localServer {
 				( option_KeyOption, next ) => {
 					//console.log (`checkPemPassword Tool.makeGpgKeyOption success!`)
 					this.openPgpKeyOption = option_KeyOption
+
 					return Tool.readEncryptoFile ( Tool.imapDataFileName1, password, this.config, next )
 			}], ( err: Error, data: string ) => {
 				//console.log (`checkPemPassword Async.waterfall success!`)
@@ -520,10 +530,7 @@ export default class localServer {
 						CallBack1 ()
 						return saveLog ( `Tool.makeGpgKeyOption return err [${ err && err.message ? err.message : null }]` )
 					}
-					
 				}
-				
-				
 
 				this.sessionHashPool.push ( sessionHash = Crypto.randomBytes (10).toString ('hex'))
 				console.log (`this.sessionHashPool.push!\n${ this.sessionHashPool }\n${ this.sessionHashPool.length }`)
@@ -532,7 +539,7 @@ export default class localServer {
 					this.imapConnectData = JSON.parse ( data )
 					this.localConnected.set ( clientName, clientObj )
 					
-					return CallBack1 ( null, this.imapConnectData, sessionHash )
+					return CallBack1 ( null, this.imapConnectData, this.Pbkdf2Password, sessionHash )
 				} catch ( ex ) {
 					return CallBack1 ()
 				}
@@ -679,6 +686,7 @@ export default class localServer {
 				console.log (`sessionHashPool have not this [${ sessionHash }]!\n${ this.sessionHashPool }`)
 				return res.render( 'home', { title: 'home', proxyErr: false  })
 			}
+			
 			this.socketServer_CoSearch.once ( 'connection', socket => {
 				return this.socketServer_CoSearchConnected ( socket, sessionHash )
 			})

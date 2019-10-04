@@ -139,6 +139,8 @@ interface keypair {
     delete_btn_click?: () => void
     showConform?: KnockoutObservable < boolean >
     deleteKeyPairNext?: () => void
+	_password: string
+	CoNET_publicKey?: string 
     keyPairPassword?: KnockoutObservable < keyPairPassword >
     showDeleteKeyPairNoite?: KnockoutObservable < boolean >
 }

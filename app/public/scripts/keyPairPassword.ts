@@ -19,7 +19,7 @@ class keyPairPassword {
 	public systemSetup_systemPassword = ko.observable ('')
 	public passwordChecking = ko.observable ( false )
 	public inputFocus = ko.observable ( false )
-	constructor ( private exit: ( imapDat: imapData, sessionHash: string ) => void ) {
+	constructor ( private exit: ( imapDat: imapData, passwd: string, sessionHash: string ) => void ) {
 		const self = this
 		this.systemSetup_systemPassword.subscribe ( function ( newValue ) {
 			if ( !newValue || !newValue.length ) {
@@ -36,20 +36,19 @@ class keyPairPassword {
 		return initPopupArea()
 	}
 
-	public keyPair_checkPemPasswordClick = function () {
+	public keyPair_checkPemPasswordClick () {
 		const self = this
 		this.showPasswordErrorMessage ( false )
 		if ( !this.systemSetup_systemPassword() || this.systemSetup_systemPassword().length < 5 ) {
 			return this.showPasswordError ()
 		}
 		this.passwordChecking ( true )
-		return _view.connectInformationMessage.sockEmit ( 'checkPemPassword', this.systemSetup_systemPassword(), function ( err: boolean, _imapData: imapData, sessionHash: string ) {
+		return _view.connectInformationMessage.sockEmit ( 'checkPemPassword', this.systemSetup_systemPassword(), function ( err: boolean, _imapData: imapData, passwd: string, sessionHash: string ) {
 			self.passwordChecking ( false )
 			if ( err || typeof _imapData === 'boolean' && _imapData ) {
 				return self.showPasswordError()
 			}
-			return self.exit ( _imapData, sessionHash )
+			return self.exit ( _imapData, passwd, sessionHash )
 		})
 	}
 }
-

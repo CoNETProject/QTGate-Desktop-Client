@@ -99,6 +99,12 @@ class localServer {
         this.CoNETConnectCalss = null;
         this.openPgpKeyOption = null;
         this.sessionHashPool = [];
+        this.Pbkdf2Password = null;
+        this.nodeList = [{
+                email: 'QTGate@CoNETTech.ca',
+                keyID: '',
+                key: ''
+            }];
         this.expressServer.set('views', Path.join(__dirname, 'views'));
         this.expressServer.set('view engine', 'pug');
         this.expressServer.use(cookieParser());
@@ -178,16 +184,14 @@ class localServer {
                 this.imapConnectData.sendToQTGate = true;
                 Tool.saveEncryptoData(Tool.imapDataFileName1, this.imapConnectData, this.config, this.savedPasswrod, () => { });
                 this.socketServer.emit('tryConnectCoNETStage', null, 3);
-                this.socketServer.emit('systemErr', 'connectingToCoNET');
-                return Tool.sendCoNETConnectRequestEmail(this.imapConnectData, this.openPgpKeyOption, this.config.version, this.keyPair.publicKey, (err) => {
+                this.socketServer.emit('systemErr', 'sendConnectRequestMail');
+                return Tool.sendCoNETConnectRequestEmail(this.imapConnectData, this.openPgpKeyOption, this.config.version, this.nodeList[0].email, this.keyPair.publicKey, (err) => {
                     if (err) {
                         console.log(`sendCoNETConnectRequestEmail callback error`, err);
                         saveLog(`tryConnectCoNET sendCoNETConnectRequestEmail got error [${err.message ? err.message : JSON.stringify(err)}]`);
                         this.socketServer.emit('systemErr', err);
                         return socket.emit('tryConnectCoNETStage', imapErrorCallBack(err.message));
                     }
-                    socket.emit('tryConnectCoNETStage', null, 3);
-                    this.socketServer.emit('systemErr', 'connectingToCoNET');
                     return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, catchUnSerialCmd, _exitFunction);
                 });
             }
@@ -195,6 +199,7 @@ class localServer {
             return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, catchUnSerialCmd, _exitFunction);
         };
         if (!this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit) {
+            saveLog(`!this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit`);
             return makeConnect(false);
         }
         return this.CoNETConnectCalss.tryConnect1();
@@ -256,6 +261,7 @@ class localServer {
             return this.doingCheckImap(socket);
         });
         socket.on('tryConnectCoNET', CallBack1 => {
+            saveLog(`socket on tryConnectCoNET!`);
             if (!this.imapConnectData) {
                 return CallBack1('systemError');
             }
@@ -326,6 +332,9 @@ class localServer {
                     }
                 });
             });
+        });
+        socket.on('doingRequest', request => {
+            this.CoNETConnectCalss.trySendToRemote();
         });
     }
     doingCheckImap(socket) {
@@ -447,7 +456,10 @@ class localServer {
             }
             return Async.waterfall([
                 next => Tool.getPbkdf2(this.config, password, next),
-                (Pbkdf2Password, next) => Tool.getKeyPairInfo(this.config.keypair.publicKey, this.config.keypair.privateKey, Pbkdf2Password.toString('hex'), next),
+                (Pbkdf2Password, next) => {
+                    this.Pbkdf2Password = Pbkdf2Password.toString('hex');
+                    Tool.getKeyPairInfo(this.config.keypair.publicKey, this.config.keypair.privateKey, this.Pbkdf2Password, next);
+                },
                 (key, next) => {
                     //console.log ( `checkPemPassword Tool.getKeyPairInfo success!`)
                     if (!key.passwordOK) {
@@ -479,7 +491,7 @@ class localServer {
                 try {
                     this.imapConnectData = JSON.parse(data);
                     this.localConnected.set(clientName, clientObj);
-                    return CallBack1(null, this.imapConnectData, sessionHash);
+                    return CallBack1(null, this.imapConnectData, this.Pbkdf2Password, sessionHash);
                 }
                 catch (ex) {
                     return CallBack1();

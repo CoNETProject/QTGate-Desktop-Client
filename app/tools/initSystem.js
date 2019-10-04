@@ -40,7 +40,8 @@ const InitKeyPair = () => {
         email: null,
         passwordOK: false,
         verified: false,
-        publicKeyID: null
+        publicKeyID: null,
+        _password: null
     };
     return keyPair;
 };
@@ -79,9 +80,6 @@ exports.checkFolder = (folder, CallBack) => {
         }
         return CallBack();
     });
-};
-const readQTGatePublicKey = (CallBack) => {
-    return Fs.readFile(exports.CoNET_PublicKey, 'utf8', CallBack);
 };
 exports.convertByte = (byte) => {
     if (byte < 1000) {
@@ -208,6 +206,7 @@ async function getKeyPairInfo(publicKey, privateKey, password, CallBack) {
     return privateKey1.decrypt(password).then(keyOK => {
         //console.log (`privateKey1.decrypt then keyOK [${ keyOK }] didCallback [${ didCallback }]`)
         ret.passwordOK = keyOK;
+        ret._password = password;
         didCallback = true;
         return CallBack(null, ret);
     }).catch(err => {
@@ -715,7 +714,7 @@ const testSmtpAndSendMail = (imapData, CallBack) => {
         return CallBack();
     });
 };
-exports.sendCoNETConnectRequestEmail = (imapData, openKeyOption, ver, publicKey, CallBack) => {
+exports.sendCoNETConnectRequestEmail = (imapData, openKeyOption, ver, toEmail, publicKey, CallBack) => {
     const qtgateCommand = {
         account: imapData.account,
         QTGateVersion: ver,
@@ -750,7 +749,7 @@ exports.sendCoNETConnectRequestEmail = (imapData, openKeyOption, ver, publicKey,
             console.log(Util.inspect(option));
             const mailOptions = {
                 from: imapData.smtpUserName,
-                to: 'QTGate@CoNETTech.ca',
+                to: toEmail,
                 subject: 'CoNET',
                 attachments: [{
                         content: _data

@@ -42,7 +42,8 @@ const InitKeyPair = () => {
 		email: null,
 		passwordOK: false,
 		verified: false,
-		publicKeyID: null
+		publicKeyID: null,
+		_password: null
 		
 	}
 	return keyPair
@@ -88,10 +89,6 @@ export const checkFolder = ( folder: string, CallBack: ( err?: Error ) => void )
         }
         return CallBack ()
     })
-}
-
-const readQTGatePublicKey = ( CallBack ) => {
-	return Fs.readFile ( CoNET_PublicKey, 'utf8', CallBack )
 }
 
 export const convertByte = ( byte: number ) => {
@@ -231,6 +228,7 @@ export async function getKeyPairInfo ( publicKey: string, privateKey: string, pa
 	return privateKey1.decrypt ( password ).then ( keyOK => {
 		//console.log (`privateKey1.decrypt then keyOK [${ keyOK }] didCallback [${ didCallback }]`)
 		ret.passwordOK = keyOK
+		ret._password = password
 		didCallback = true
 		return CallBack ( null, ret )
 	}).catch ( err => {
@@ -625,7 +623,7 @@ export async function saveEncryptoData ( fileName: string, data: any, config: in
 		return Fs.unlink ( fileName, CallBack )
 	}
 	const _data = JSON.stringify ( data )
-	const publicKeys = (await OpenPgp.key.readArmored ( config.keypair.publicKey )).keys
+	const publicKeys = ( await OpenPgp.key.readArmored ( config.keypair.publicKey )).keys
 	const privateKeys = ( await OpenPgp.key.readArmored ( config.keypair.privateKey )).keys[0]
 	const options = {
 		message: OpenPgp.message.fromText ( _data ),
@@ -804,7 +802,7 @@ const testSmtpAndSendMail = ( imapData: IinputData, CallBack ) => {
 	})
 }
 
-export const sendCoNETConnectRequestEmail = ( imapData: IinputData, openKeyOption, ver: string, publicKey: string, CallBack ) => {
+export const sendCoNETConnectRequestEmail = ( imapData: IinputData, openKeyOption, ver: string, toEmail: string, publicKey: string, CallBack ) => {
 
 	const qtgateCommand: QTGateCommand = {
 		account: imapData.account,
@@ -840,7 +838,7 @@ export const sendCoNETConnectRequestEmail = ( imapData: IinputData, openKeyOptio
 			console.log ( Util.inspect ( option ))
 			const mailOptions = {
 				from: imapData.smtpUserName,
-				to: 'QTGate@CoNETTech.ca',
+				to: toEmail,
 				subject:'CoNET',
 				attachments: [{
 					content: _data
