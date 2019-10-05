@@ -177,7 +177,13 @@ class localServer {
                 }
             }
         };
+        /**
+         *
+         * @param cmd CoNET server command
+         *
+         */
         const catchUnSerialCmd = (cmd) => {
+            return console.log(`catchUnSerialCmd: LocalWebServer catch UnSerialCmd!\n\ncmd`);
         };
         const makeConnect = (sendMail) => {
             if (!this.imapConnectData.sendToQTGate || sendMail) {
@@ -192,38 +198,21 @@ class localServer {
                         this.socketServer.emit('systemErr', err);
                         return socket.emit('tryConnectCoNETStage', imapErrorCallBack(err.message));
                     }
-                    return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, catchUnSerialCmd, _exitFunction);
+                    return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, mail => {
+                        return catchUnSerialCmd(mail);
+                    }, _exitFunction);
                 });
             }
             console.log(`makeConnect without sendMail`);
-            return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, catchUnSerialCmd, _exitFunction);
+            return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, mail => {
+                return catchUnSerialCmd(mail);
+            }, _exitFunction);
         };
         if (!this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit) {
             saveLog(`!this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit`);
             return makeConnect(false);
         }
         return this.CoNETConnectCalss.tryConnect1();
-    }
-    sendRequest(socket, cmd, sessionHash, CallBack) {
-        if (!this.openPgpKeyOption) {
-            console.log(`sendrequest keypair error! !this.config [${!this.config}] !this.keyPair[${!this.keyPair}]`);
-            return CallBack('systemError');
-        }
-        if (!this.CoNETConnectCalss) {
-            console.log(`sendrequest no CoNETConnectCalss`);
-            this.tryConnectCoNET(socket, sessionHash);
-            return CallBack('reConnectCoNET');
-        }
-        saveLog(`sendRequest send [${cmd.command}]`);
-        cmd.requestSerial = Crypto.randomBytes(8).toString('hex');
-        return this.CoNETConnectCalss.requestCoNET(cmd, (err, res) => {
-            saveLog(`request response [${cmd.command}]`);
-            if (err) {
-                CallBack(err);
-                return saveLog(`QTClass.request error! [${err}]`);
-            }
-            return CallBack(null, res);
-        });
     }
     listenAfterPassword(socket, sessionHash) {
         //console.log (`localServer listenAfterPassword for sessionHash [${ sessionHash }]`)
@@ -333,8 +322,9 @@ class localServer {
                 });
             });
         });
-        socket.on('doingRequest', request => {
-            this.CoNETConnectCalss.trySendToRemote();
+        socket.on('doingRequest', (uuid, request, CallBack) => {
+            console.log(`on doingRequest\n[ ${uuid}]\n${request}`);
+            return this.CoNETConnectCalss.requestCoNET_v1(uuid, request, CallBack);
         });
     }
     doingCheckImap(socket) {

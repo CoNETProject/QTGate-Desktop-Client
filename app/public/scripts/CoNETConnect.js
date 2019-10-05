@@ -27,6 +27,7 @@ class CoNETConnect {
         this.maynotConnectConet = ko.observable(false);
         this.mayNotMakeImapConnect = ko.observable(false);
         this.Loading = ko.observable(false);
+        this.listenFun = null;
         this.keyPairSign = ko.observable(null);
         const self = this;
         if (!confirmRisk) {
@@ -36,9 +37,10 @@ class CoNETConnect {
             this.imapConform();
             this.Loading(true);
         }
-        _view.connectInformationMessage.socketIo.on('tryConnectCoNETStage', function (err, stage) {
+        this.listenFun = (err, stage) => {
             return self.listingConnectStage(err, stage);
-        });
+        };
+        _view.connectInformationMessage.socketIo.on('tryConnectCoNETStage', this.listenFun);
     }
     listingConnectStage(err, stage) {
         const self = this;

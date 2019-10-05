@@ -355,6 +355,26 @@ const _appScript = {
         const height = window.outerHeight * 3;
         self.searchItem(null);
         self.searchItemList([]);
+        const com = {
+            command: 'CoSearch',
+            Args: null,
+            error: null,
+            subCom: null
+        };
+        /**
+         * 			web page address
+         */
+        if (/^http[s]?:\/\//.test(search_text)) {
+            com.Args = [search_text, width, height];
+            com.subCom = 'getSnapshop';
+        }
+        else {
+            com.Args = ['google', search_text];
+            com.subCom = 'webSearch';
+        }
+        _view.keyPairCalss.emitRequest(com, (err, responser) => {
+        });
+        return false;
     },
     searchSetup: (key, self, event) => {
         self.showSearchSetupForm(false);
@@ -498,8 +518,8 @@ class appsManager {
     appClick(appIndex) {
         this.showMainMenu(false);
         this.tempAppHtml(true);
-        eval(_appScriptGlobal);
         _appScript.startup(_appScript);
         this.appScript(_appScript);
+        eval(_appScriptGlobal);
     }
 }

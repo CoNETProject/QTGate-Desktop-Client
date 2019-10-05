@@ -286,7 +286,8 @@ interface QTGateAPIRequestCommand {
     fingerprint?: string
     dataTransfer?: iTransferData
     requestTimes?: number
-    region?: string
+	region?: string
+	CallBack?: any
     
 }
 

@@ -23,6 +23,7 @@
 	public maynotConnectConet = ko.observable ( false )
 	public mayNotMakeImapConnect = ko.observable ( false )
 	public Loading = ko.observable ( false )
+	public listenFun = null
 	public keyPairSign: KnockoutObservable< keyPairSign > = ko.observable ( null )
 	constructor ( public email: string, private isKeypairBeSign: boolean, confirmRisk: boolean, public account: string, private ready: ( err ) => void ) {
 		const self = this
@@ -33,9 +34,11 @@
 			this.Loading ( true )
 		}
 
-		_view.connectInformationMessage.socketIo.on ( 'tryConnectCoNETStage', function ( err, stage ) {
+		this.listenFun = (  err, stage  ) => {
 			return self.listingConnectStage ( err, stage )
-		})
+		}
+
+		_view.connectInformationMessage.socketIo.on ( 'tryConnectCoNETStage', this.listenFun )
 	}
 
 	public listingConnectStage ( err, stage ) {

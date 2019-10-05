@@ -16,7 +16,6 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const Imap = require("./imap");
-const crypto_1 = require("crypto");
 const Tool = require("./initSystem");
 const Fs = require("fs");
 const Async = require("async");
@@ -57,10 +56,11 @@ class default_1 extends Imap.imapPeer {
         saveLog(`=====================================  new CoNET connect() doNetSendConnectMail = [${doNetSendConnectMail}]\n`, true);
         this.newMail = (ret, hashCode) => {
             //		have not requestSerial that may from system infomation
+            console.log(`new Mail ====>\n\n subject: [${ret}]\nattr: [${hashCode}]`);
             if (hashCode && typeof ret === 'string') {
                 const poolData = this.commandCallBackPool.get(hashCode);
                 if (!poolData || typeof poolData.CallBack !== 'function') {
-                    return saveLog(`QTGateAPIRequestCommand got commandCallBackPool = [${this.commandCallBackPool.size}] have not matched callback !`);
+                    return console.log(`QTGateAPIRequestCommand got commandCallBackPool = [${this.commandCallBackPool.size}] have not matched callback !`);
                 }
                 clearTimeout(poolData.timeout);
                 return poolData.CallBack(null, ret);
@@ -138,62 +138,40 @@ class default_1 extends Imap.imapPeer {
         }
         console.log(`exit1 cancel already Exit [${err}]`);
     }
-    requestCoNET11(command, CallBack) {
-        Async.waterfall([
-            next => this.checkConnect(next),
-            next => {
-                saveLog(`request command [${command.command}] requestSerial [${command.requestSerial}]`, true);
-                if (command.requestSerial) {
-                    const poolData = {
-                        CallBack: CallBack,
-                        timeout: setTimeout(() => {
-                            saveLog(`request command [${command.command}] timeout! do again`, true);
-                            this.commandCallBackPool.delete(command.requestSerial);
-                            return this.requestCoNET(command, CallBack);
-                        }, requestTimeOut)
-                    };
-                    this.commandCallBackPool.set(command.requestSerial, poolData);
-                }
-                return Tool.encryptMessage(this.openKeyOption, JSON.stringify(command), next);
-            },
-            (data, next) => this.trySendToRemote(Buffer.from(data), next)
-        ], (err) => {
-            if (err) {
-                saveLog(`request got error [${err.message ? err.message : null}]`, true);
-                this.commandCallBackPool.delete(command.requestSerial);
-                if (typeof err.message === 'string') {
-                    switch (err.message) {
-                        case 'no network': {
-                            return this.sockerServer.emit('tryConnectCoNETStage', 0);
-                        }
-                        default: {
-                            return this.sockerServer.emit('tryConnectCoNETStage', 5);
-                        }
-                    }
-                }
-                return CallBack(err);
-            }
-            console.log(`request success!`);
-        });
-    }
-    requestCoNET_v1(text, CallBack) {
+    requestCoNET_v1(uuid, text, CallBack) {
         const self = this;
-        const hash = crypto_1.randomBytes(15).toString('hex');
-        Async.waterfall([
-            next => this.checkConnect(next),
+        return Async.waterfall([
+            next => self.checkConnect(next),
             next => {
                 const poolData = {
                     CallBack: CallBack,
                     timeout: setTimeout(() => {
                         saveLog(`request timeout!`, true);
-                        self.commandCallBackPool.delete(hash);
+                        self.commandCallBackPool.delete(uuid);
                         return CallBack(new Error('requestCoNET_v1 timeout error!'));
                     }, requestTimeOut)
                 };
-                self.commandCallBackPool.set(hash, poolData);
-                return self.trySendToRemote(Buffer.from(text), next);
-            },
-        ]);
+                self.commandCallBackPool.set(uuid, poolData);
+                return self.trySendToRemote(Buffer.from(text), uuid, next);
+            }
+        ], (err) => {
+            if (err) {
+                saveLog(`requestCoNET_v1 got error [${err.message ? err.message : null}]`, true);
+                self.commandCallBackPool.delete(uuid);
+                if (typeof err.message === 'string') {
+                    switch (err.message) {
+                        case 'no network': {
+                            return self.sockerServer.emit('tryConnectCoNETStage', 0);
+                        }
+                        default: {
+                            return self.sockerServer.emit('tryConnectCoNETStage', 5);
+                        }
+                    }
+                }
+                return CallBack(err);
+            }
+            CallBack();
+        });
     }
     tryConnect1() {
         this.connectStage = 1;

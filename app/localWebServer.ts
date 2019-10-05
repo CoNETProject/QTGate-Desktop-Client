@@ -160,9 +160,13 @@ export default class localServer {
 			
 			
 		}
-
-		const catchUnSerialCmd = ( cmd: QTGateAPIRequestCommand ) => {
-
+		/**
+		 * 
+		 * @param cmd CoNET server command
+		 * 
+		 */
+		const catchUnSerialCmd = ( cmd: string ) => {
+			return console.log (`catchUnSerialCmd: LocalWebServer catch UnSerialCmd!\n\ncmd`)
 		}
 
 		const makeConnect = ( sendMail: boolean ) => {
@@ -180,12 +184,16 @@ export default class localServer {
 						return socket.emit ( 'tryConnectCoNETStage', imapErrorCallBack ( err.message ))
 					}
 					
-					return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, catchUnSerialCmd, _exitFunction )
+					return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, mail => {
+						return catchUnSerialCmd ( mail )
+					}, _exitFunction )
 				})
 			
 			}
 			console.log ( `makeConnect without sendMail`)
-			return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, catchUnSerialCmd, _exitFunction )
+			return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, mail => {
+				return catchUnSerialCmd ( mail )
+			}, _exitFunction )
 			
 		}
 		
@@ -195,32 +203,6 @@ export default class localServer {
 		}
 		
 		return this.CoNETConnectCalss.tryConnect1 ()
-		
-	}
-
-	public sendRequest ( socket: SocketIO.Socket, cmd: QTGateAPIRequestCommand, sessionHash: string, CallBack ) {
-		if ( !this.openPgpKeyOption )  {
-			console.log ( `sendrequest keypair error! !this.config [${ !this.config }] !this.keyPair[${ !this.keyPair }]`)
-			return CallBack ( 'systemError' )
-		}
-		if ( !this.CoNETConnectCalss ) {
-			console.log (`sendrequest no CoNETConnectCalss`)
-			this.tryConnectCoNET ( socket, sessionHash )
-			return CallBack ( 'reConnectCoNET' )
-		}
-		
-		saveLog (`sendRequest send [${ cmd.command }]`)
-
-		cmd.requestSerial = Crypto.randomBytes(8).toString('hex')
-
-		return this.CoNETConnectCalss.requestCoNET ( cmd, ( err, res: QTGateAPIRequestCommand ) => {
-			saveLog ( `request response [${ cmd.command }]`)
-			if ( err ) {
-				CallBack ( err )
-				return saveLog ( `QTClass.request error! [${ err }]`)
-			}
-			return CallBack ( null, res )
-		})
 		
 	}
 
@@ -351,8 +333,9 @@ export default class localServer {
 			})
 		})
 
-		socket.on ( 'doingRequest',  request => {
-			this.CoNETConnectCalss.trySendToRemote ( )
+		socket.on ( 'doingRequest', ( uuid, request, CallBack ) => {
+			console.log (`on doingRequest\n[ ${ uuid }]\n${ request }`)
+			return this.CoNETConnectCalss.requestCoNET_v1 ( uuid, request, CallBack )
 		})
 
 	}

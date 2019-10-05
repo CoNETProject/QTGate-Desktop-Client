@@ -5,7 +5,7 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/qtgate/qtgate-desktop-client/badge.svg)](https://snyk.io/test/github/qtgate/qtgate-desktop-client)
 [![Telegram](https://img.shields.io/badge/telebot-community%20group-blue.svg)](https://t.me/joinchat/IpX64hGK_95XDTXit42vOg)
 
-![http protocol](/resources/CoPlatform3.png?raw=true)
+![http protocol](/resources/CoPlatform4.png?raw=true)
 
 CoNET Platform is cross-platform software, provids a suite of APP that developed for use on [CoNET](https://github.com/QTGate/CoNET).
 

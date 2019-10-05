@@ -9,7 +9,7 @@
 	<!-- /ko -->
 
 	<!-- ko if: showMainSearchForm() -->
-	form#coSearchForm.ui.form( data-bind = " style: { 'margin-top': showSearchSetupForm() ? '-50%' : '-30%' }, submit: search_form " style = "100%" )
+	form#coSearchForm.ui.form( data-bind = " style: { 'margin-top': showSearchSetupForm() ? '-50%' : '-30%' }, event: { 'submit': search_form }, submitBubble: false" style = "100%" )
 		<!-- ko if: !showSearchSetupForm() -->
 		.field
 			.ui.search

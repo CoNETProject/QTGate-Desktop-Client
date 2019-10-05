@@ -1174,10 +1174,11 @@ export class qtGateImapwrite extends qtGateImap {
         
     }
 
-    public append1 ( text: string, _callback ) {
-        
-        return this.imapStream.append ( text, _callback )
-    }
+    public append1 ( text: string, subject, _callback ) {
+        return this.imapStream.append ( text, subject, _callback )
+	}
+	
+
     
     constructor ( IMapConnect: imapConnect, writeFolder: string ) {
         super ( IMapConnect, null, false, writeFolder, debug, null )
@@ -1260,13 +1261,16 @@ export const getMailAttached = ( email: Buffer ) => {
 }
 
 export const getMailSubject = ( email: Buffer ) => {
-	const ret = email.toString().split ('\r{0,1}\n\r{0,1}\n')[0].split('\r{0,1}\n').find ( n => {
+	const ret = email.toString().split ('\r\n\r\n')[0].split('\r\n')
+	
+	const yy = ret.find ( n => {
 		return /^subject: /i.test( n )
 	})
-	if ( !ret || !ret.length ) {
+	if ( !yy || !yy.length ) {
+		saveLog(`\n\n${ ret } \n`)
 		return ''
 	}
-	return ret.split(/^subject: /i)[1]
+	return yy.split(/^subject: /i)[1]
 }
 
 export const getMailAttachedBase64 = ( email: Buffer ) => {
@@ -1340,8 +1344,8 @@ export const imapBasicTest = ( IMapConnect: imapConnect, CallBack ) => {
     }
 
     wImap.once ( 'ready', () => {
-        saveLog (`imapBasicTest wImap.once ( 'ready' )`)
-        wImap.append1 ( ramdomText.toString ('base64'), ( err, code: string ) => {
+        saveLog ( `imapBasicTest wImap.once ( 'ready' )`)
+        wImap.append1 ( ramdomText.toString ('base64'), null, ( err, code: string ) => {
             append = true
             if ( err ) {
                 saveLog (`wImap.append got error [${ err.message }]`)
@@ -1414,7 +1418,7 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
         wImap.once ( 'ready', () => {
             saveLog (`wImap.once ( 'ready' )`)
 
-            wImap.append1 ( ramdomText.toString ('base64'), err => {
+            wImap.append1 ( ramdomText.toString ('base64'), null, err => {
                 sendMessage = true
                 wImap.logout ()
                 wImap = null
@@ -1478,7 +1482,8 @@ const pingPongTimeOut = 1000 * 30
 
 interface mailPool {
     CallBack: () => void
-    mail: Buffer
+	mail: Buffer
+	uuid: string
 }
 
 export class imapPeer extends Event.EventEmitter {
@@ -1502,10 +1507,13 @@ export class imapPeer extends Event.EventEmitter {
 		
 		const subject = getMailSubject ( email )
 		const attr = getMailAttached (  email ).toString ()
+		
 		if ( subject ) {
+			saveLog(`\n\nnew mail to this.newMail!\n\ntypeof this.newMail = [${ typeof this.newMail }] \n [${ this.newMail.toString ()}]`)
+
 			return this.newMail ( attr, subject )
 		}
-		
+		saveLog(`\n\nnew mail to this.deCrypto!\n\n`)
         return this.deCrypto ( attr, ( err, data ) => {
             if ( err ) {
                 saveLog ( email.toString())
@@ -1559,7 +1567,7 @@ export class imapPeer extends Event.EventEmitter {
                     this.needPing = true
                 }, pingFailureTime )
                 clearTimeout ( this.waitingReplyTimeOut )
-                this.sendAllMail ()
+               
                 return this.emit ('ready')
             }
 
@@ -1569,24 +1577,25 @@ export class imapPeer extends Event.EventEmitter {
 
     }
 
-    public trySendToRemote ( email: Buffer, CallBack ) {
+    public trySendToRemote ( email: Buffer, uuid, CallBack ) {
         if ( !this.wImap.canAppend ) {
             return this.mailPool.push ({
                 CallBack: CallBack,
-                mail: email
+				mail: email,
+				uuid: uuid
             })
         }
         this.wImap.canAppend = false
-        return this.wImap.append1 ( email.toString ( 'base64' ), err => {
+        return this.wImap.append1 ( email.toString ( 'base64' ), uuid, err => {
             this.wImap.canAppend = true
             if ( err ) {
-                return this.trySendToRemote ( email, CallBack )
+                return this.trySendToRemote ( email, uuid, CallBack )
             }
             CallBack ( err )
             if ( this.mailPool.length ) {
                 const uu = this.mailPool.shift ()
                 if ( uu ) {
-                    return this.trySendToRemote ( uu.mail, uu.CallBack )
+                    return this.trySendToRemote ( uu.mail, uu.uuid, uu.CallBack )
                 }
             }
         })
@@ -1595,7 +1604,7 @@ export class imapPeer extends Event.EventEmitter {
 
     private replyPing ( uu ) {
 
-        return this.encryptAndAppendWImap1 ( JSON.stringify ({ pong: uu.ping }), err => {
+        return this.encryptAndAppendWImap1 ( JSON.stringify ({ pong: uu.ping }), null, err => {
             if ( err ) {
                 saveLog (`reply Ping ERROR! [${ err.message ? err.message : null }]`)
             }
@@ -1603,7 +1612,7 @@ export class imapPeer extends Event.EventEmitter {
         
     }
 
-    private encryptAndAppendWImap1 ( mail: string, CallBack ) {
+    private encryptAndAppendWImap1 ( mail: string, uuid: string, CallBack ) {
 
         if ( !this.wImap ) {
             const info = `encryptAndAppendWImap error: no wImap`
@@ -1623,7 +1632,7 @@ export class imapPeer extends Event.EventEmitter {
             next => this.enCrypto ( mail, next ),
             ( data, next ) => {
                 
-                return this.wImap.append1 ( Buffer.from ( data ).toString ('base64'), next )
+                return this.wImap.append1 ( Buffer.from ( data ).toString ('base64'), uuid, next )
             }
         ], err => {
             console.log (`encryptAndAppendWImap1 Async.waterfall success`, err )
@@ -1655,7 +1664,7 @@ export class imapPeer extends Event.EventEmitter {
         const pingUuid = Uuid.v4 ()
         //saveLog ( `Ping! ${ this.pingUuid }`, true )
         
-        return this.encryptAndAppendWImap1 ( JSON.stringify ({ ping: pingUuid }), err => {
+        return this.encryptAndAppendWImap1 ( JSON.stringify ({ ping: pingUuid }), null, err => {
             if ( err ) {
 				
                 if ( err.message && /TRYCREATE/i.test( err.message )) {
@@ -1675,28 +1684,6 @@ export class imapPeer extends Event.EventEmitter {
 
     public rImap: qtGateImapRead = null
 
-    private sendMailPool: Buffer[] = []
-
-    private sendAllMail () {
-
-        if ( ! this.sendMailPool.length || ! this.peerReady ) {
-            return //saveLog ( `sendAllMail do nothing! sendMailPool.length [${ this.sendMailPool.length }] peerReady [${ this.peerReady }]`)
-        }
-
-        const uu = this.sendMailPool.pop ()
-        if ( !uu ) {
-            saveLog ( `sendAllMail this.sendMailPool.pop () got nothing!` )
-            return this.sendAllMail ()
-        }
-            
-        return this.trySendToRemote ( uu, err => {
-            if ( err ) {
-                //      stop send all mail
-                return saveLog ( `sendAllMail this.trySendToRemote got err! stop[${ err.message ? err.message : null }]` )
-            }
-            return this.sendAllMail ()
-        })
-    }
 
     public newWriteImap () {
         if ( this.makeWImap || this.wImap && this.wImap.imapStream && this.wImap.imapStream.writable ) {
@@ -1851,55 +1838,6 @@ export class imapPeer extends Event.EventEmitter {
         }
     }
 
-    private sendDone () {
-        return Async.waterfall ([
-            next => this.enCrypto ( JSON.stringify ({ done: new Date().toISOString()}), next),
-            ( data, next ) => this.trySendToRemote ( Buffer.from ( data ), next )
-        ], ( err: Error ) => {
-            if ( err )
-                return saveLog (`sendDone got error [${ err.message }]`)
-        })
-    }
-
-}
-
-export const sendMediaData = ( imapPeer: imapPeer, mediaData: string, CallBack ) => {
-    const writeBox = Uuid.v4 ()
-    let _return = false
-    let _err = null
-    let wImap = new qtGateImapwrite ( imapPeer.imapData, writeBox )
-    wImap.once ( 'error', err => {
-        _err = err
-        wImap.logout ()
-        if ( err.message && /auth|login|log in|Too many simultaneous|UNAVAILABLE/i.test ( err.message )) {
-            if ( !_return ) {
-                _return = true
-                return CallBack ( err )
-            }
-            return
-        }
-        return sendMediaData ( imapPeer, mediaData, CallBack )
-    })
-
-    wImap.once ( 'end', err => {
-        wImap = null
-        //saveLog ( `trySendToRemoteFromFile on end! err = [${ err }]` )
-        if ( !_return ) {
-            _return = true
-            return CallBack ( _err, writeBox )
-        }
-    })
-
-    wImap.once ( 'ready', () => {
-        //saveLog ( `trySendToRemoteFromFile wImap on ready for [${ fileName }]`)
-        return Async.series ([
-            next => wImap.imapStream.createBox ( false, writeBox, next ),
-            next => wImap.append1 ( mediaData, next )
-        ], err => {
-            _err = err
-            wImap.logout ()
-        })
-    })
 }
 
 export const trySendToRemoteFromFile1Less10MB4 = ( imapPeer: imapPeer, fileName: string, CallBack ) => {
