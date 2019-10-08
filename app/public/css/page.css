@@ -838,3 +838,16 @@ ul.plan-features {
 {
 	color:#e7bdbc!important
 }
+
+
+.loadingGetResponse::after {
+	border-color: #ab9420d9 transparent transparent!important;
+}
+
+.conetResponse::after {
+	border-color: #36c576d9 transparent transparent!important;
+}
+
+.buttonUnActive {
+	background: #e0e1e288 none!important;
+}

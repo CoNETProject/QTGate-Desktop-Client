@@ -1987,7 +1987,6 @@ const googleVideoSearchClickResult = {
   nextPage: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&tbm=vid&ei=BMZ2XbubG46YaczJgcAN&start=10&sa=N&ved=0ahUKEwi7rYW42cTkAhUOTBoKHcxkANgQ8NMDCIMB'
 }
 
-
 module coSearch_layout {
 	  export class coSearch {
         

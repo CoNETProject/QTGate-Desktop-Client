@@ -165,7 +165,7 @@ interface imapData {
 }
 
 interface requestPoolData {
-    CallBack: ( err?: Error, returnData?: any ) => void
+    
     timeout: any
 }
 
@@ -282,7 +282,7 @@ interface QTGateAPIRequestCommand {
     account?: string
 	error: number
 	requestSerial?: string
-    Args: any[]
+    Args: any
     fingerprint?: string
     dataTransfer?: iTransferData
     requestTimes?: number

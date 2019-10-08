@@ -1287,7 +1287,6 @@ class imapPeer extends Event.EventEmitter {
         const subject = exports.getMailSubject(email);
         const attr = exports.getMailAttached(email).toString();
         if (subject) {
-            saveLog(`\n\nnew mail to this.newMail!\n\ntypeof this.newMail = [${typeof this.newMail}] \n [${this.newMail.toString()}]`);
             return this.newMail(attr, subject);
         }
         saveLog(`\n\nnew mail to this.deCrypto!\n\n`);

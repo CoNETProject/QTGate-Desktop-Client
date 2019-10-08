@@ -19,11 +19,35 @@ const messageBoxDefine = {
     reConnectCoNET: ['CoNET链接已中断', 'CoNETとの接続が中断され', 'CoNET connection lost.', 'CoNET的鏈接已中斷'],
     connectingToCoNET: ['正在连接CoNET...', 'CoNETへ接続中...', 'Connecting to CoNET...', '正在連結CoNET...'],
     connectedToCoNET: ['成功连接CoNET', 'CoNETに接続しました', 'Success to connect CoNET', '成功連結CoNET'],
+    timeOut: [
+        'CoNET节点无响应，节点可能正在忙碌中，请稍后再试',
+        'CoNETノートからの応答がなかったです、サーバー側は忙しいかもしれませんが、後ほどもう一度してみてください。',
+        'CoNET node not responding to requests. Maybe busy now, try again later.',
+        'CoNET節點無響應，節點可能正在忙碌中，請稍後再試'
+    ],
     sendConnectRequestMail: [
         '客户端正向CoNET系统发出联机请求Email。这需要额外的时间，请耐心等待。',
         '接続要請メールをCoNETシステムへ送信しました、接続を完了するまで時間がかかるのため、しばらくお待ちおください。',
         'Sending connection request email to CoNET. Please wait a moment, re-connecting to CoNET.',
         '客戶端正向CoNET發出聯網請求Email。這需要額外的時間，請耐心等待。'
+    ],
+    maximumRequest: [
+        '您的请求已达最大值，请稍后再试',
+        'レクエスト回数は制限にかかった、後ほど改めてお試しください',
+        'Request maximum error. Try again later.',
+        '您的請求已達最大值，請稍後再試'
+    ],
+    invalidRequest: [
+        '无效请求',
+        '無効なレクエスト',
+        'Invalid request.',
+        '無效請求'
+    ],
+    unKnowError: [
+        '未知错误，请再试！如果持续发生请重启CoNET客户端或重新安装',
+        '不明なエラーが発生、もしこんな状況が続くであれば、CoNET端末を再起動するか、CoNET端末を再インストールしてください。',
+        'Opps. Unknow error. Try again or restart CoNET client, if still same error please re-install CoNET.',
+        '未知错误，请再试！如果持续发生请重启CoNET客户端或重新安装'
     ]
 };
 class connectInformationMessage {
@@ -102,5 +126,14 @@ class connectInformationMessage {
         this.offlineInfo(false);
         this.messageArray(null);
         this.showNegative(false);
+    }
+    getErrorIndex(err) {
+        if (!err) {
+            return 'unKnowError';
+        }
+        if (typeof err !== 'object') {
+            return messageBoxDefine[err] ? err : 'unKnowError';
+        }
+        return messageBoxDefine[err['message']] ? err['message'] : 'unKnowError';
     }
 }

@@ -124,12 +124,23 @@ export default class localServer {
 		keyID:'',
 		key: ''
 	}]
+
+	private requestPool: Map < string, SocketIO.Socket > = new Map()
+
+
+	private catchCmd ( mail: string, uuid: string ) {
+		const socket = this.requestPool.get ( uuid )
+		if ( !socket ) {
+			return console.log (`Get cmd that have no matched socket \n\n`, mail )
+		}
+
+		socket.emit ( 'doingRequest', mail, uuid )
+	}
 	
 	private tryConnectCoNET ( socket: SocketIO.Socket, sessionHash: string ) {
 		console.log (`doing tryConnectCoNET`)
 		//		have CoGate connect
 		
-
 		let sendMail = false
 		const _exitFunction = err => {
 			//console.trace ( `_exitFunction err =`, err )
@@ -160,14 +171,6 @@ export default class localServer {
 			
 			
 		}
-		/**
-		 * 
-		 * @param cmd CoNET server command
-		 * 
-		 */
-		const catchUnSerialCmd = ( cmd: string ) => {
-			return console.log (`catchUnSerialCmd: LocalWebServer catch UnSerialCmd!\n\ncmd`)
-		}
 
 		const makeConnect = ( sendMail: boolean ) => {
 			
@@ -184,15 +187,15 @@ export default class localServer {
 						return socket.emit ( 'tryConnectCoNETStage', imapErrorCallBack ( err.message ))
 					}
 					
-					return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, mail => {
-						return catchUnSerialCmd ( mail )
+					return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, ( mail, uuid ) => {
+						return this.catchCmd ( mail, uuid )
 					}, _exitFunction )
 				})
 			
 			}
 			console.log ( `makeConnect without sendMail`)
-			return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, mail => {
-				return catchUnSerialCmd ( mail )
+			return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, ( mail, uuid ) => {
+				return this.catchCmd ( mail, uuid )
 			}, _exitFunction )
 			
 		}
@@ -334,7 +337,9 @@ export default class localServer {
 		})
 
 		socket.on ( 'doingRequest', ( uuid, request, CallBack ) => {
-			console.log (`on doingRequest\n[ ${ uuid }]\n${ request }`)
+			
+			this.requestPool.set ( uuid, socket )
+			saveLog (`doingRequest on ${ uuid }`)
 			return this.CoNETConnectCalss.requestCoNET_v1 ( uuid, request, CallBack )
 		})
 

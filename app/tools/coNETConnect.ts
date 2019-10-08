@@ -37,7 +37,6 @@ const commandRequestTimeOutTime = 1000 * 10
 const requestTimeOut = 1000 * 60
 
 export default class extends Imap.imapPeer {
-	private commandCallBackPool: Map <string, requestPoolData > = new Map ()
 	private CoNETConnectReady = false
 	public connectStage = -1
 	public alreadyExit = false
@@ -86,7 +85,7 @@ export default class extends Imap.imapPeer {
 	}
 
 	constructor ( public imapData: IinputData, private sockerServer: SocketIO.Server, private openKeyOption, public doNetSendConnectMail: boolean,
-		private cmdResponse: ( cmd: string ) => void, public _exit: ( err ) => void ) {
+		private cmdResponse: ( mail: string, hashCode: string ) => void, public _exit: ( err ) => void ) {
 		super ( imapData, imapData.clientFolder, imapData.serverFolder, ( encryptText: string, CallBack ) => {
 			
 			return Tool.encryptMessage ( openKeyOption, encryptText, CallBack )
@@ -98,36 +97,8 @@ export default class extends Imap.imapPeer {
 		})
 		saveLog (`=====================================  new CoNET connect() doNetSendConnectMail = [${ doNetSendConnectMail }]\n`, true )
 
-		this.newMail = ( ret: string, hashCode: string ) => {
-
-			//		have not requestSerial that may from system infomation
-
-			console.log (`new Mail ====>\n\n subject: [${ ret }]\nattr: [${ hashCode }]`)
-			if ( hashCode && typeof ret === 'string' ) {
-				const poolData = this.commandCallBackPool.get ( hashCode )
-				if ( ! poolData || typeof poolData.CallBack !== 'function' ) {
-					return console.log ( `QTGateAPIRequestCommand got commandCallBackPool = [${ this.commandCallBackPool.size }] have not matched callback !`)
-				}
-
-				clearTimeout ( poolData.timeout )
-				return poolData.CallBack ( null, ret )
-			}
-
-			return this.cmdResponse ( ret )
-
-			/*
-			if ( ! ret.requestSerial ) {
-				return this.cmdResponse ( ret )
-			}
-			
-			const poolData = this.commandCallBackPool.get ( ret.requestSerial )
-	
-			if ( ! poolData || typeof poolData.CallBack !== 'function' ) {
-				return saveLog ( `QTGateAPIRequestCommand got commandCallBackPool ret.requestSerial [${ ret.requestSerial }] have not callback `)
-			}
-			clearTimeout ( poolData.timeout )
-			return poolData.CallBack ( null, ret )
-			*/
+		this.newMail = ( mail: string, hashCode: string ) => {
+			return this.cmdResponse ( mail, hashCode )
 		}
 
 		this.on ( 'wImapReady', () => {
@@ -167,22 +138,11 @@ export default class extends Imap.imapPeer {
 		return Async.waterfall ([
 			next => self.checkConnect ( next ),
 			next => {
-
-				const poolData: requestPoolData = {
-					CallBack: CallBack,
-					timeout: setTimeout (() => {
-						saveLog ( `request timeout!`, true )
-						self.commandCallBackPool.delete ( uuid )
-						return CallBack ( new Error ( 'requestCoNET_v1 timeout error!' ))
-					}, requestTimeOut )
-				}
-				self.commandCallBackPool.set ( uuid, poolData )
-
 				return self.trySendToRemote ( Buffer.from ( text ), uuid, next )
 			}], ( err: Error ) => {
 				if ( err ) {
-					saveLog ( `requestCoNET_v1 got error [${ err.message ? err.message : null }]`, true )
-					self.commandCallBackPool.delete ( uuid )
+					saveLog ( `requestCoNET_v1 got error [${ err.message ? err.message : null }]` )
+					
 					if ( typeof err.message ==='string') {
 						switch ( err.message ) {
 							case 'no network': {
@@ -196,7 +156,6 @@ export default class extends Imap.imapPeer {
 					return CallBack ( err )
 				}
 				CallBack ()
-				
 			})
 
 	}

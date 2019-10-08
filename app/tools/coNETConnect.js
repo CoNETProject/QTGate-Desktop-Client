@@ -48,37 +48,13 @@ class default_1 extends Imap.imapPeer {
         this.doNetSendConnectMail = doNetSendConnectMail;
         this.cmdResponse = cmdResponse;
         this._exit = _exit;
-        this.commandCallBackPool = new Map();
         this.CoNETConnectReady = false;
         this.connectStage = -1;
         this.alreadyExit = false;
         this.ignorePingTimeout = false;
         saveLog(`=====================================  new CoNET connect() doNetSendConnectMail = [${doNetSendConnectMail}]\n`, true);
-        this.newMail = (ret, hashCode) => {
-            //		have not requestSerial that may from system infomation
-            console.log(`new Mail ====>\n\n subject: [${ret}]\nattr: [${hashCode}]`);
-            if (hashCode && typeof ret === 'string') {
-                const poolData = this.commandCallBackPool.get(hashCode);
-                if (!poolData || typeof poolData.CallBack !== 'function') {
-                    return console.log(`QTGateAPIRequestCommand got commandCallBackPool = [${this.commandCallBackPool.size}] have not matched callback !`);
-                }
-                clearTimeout(poolData.timeout);
-                return poolData.CallBack(null, ret);
-            }
-            return this.cmdResponse(ret);
-            /*
-            if ( ! ret.requestSerial ) {
-                return this.cmdResponse ( ret )
-            }
-            
-            const poolData = this.commandCallBackPool.get ( ret.requestSerial )
-    
-            if ( ! poolData || typeof poolData.CallBack !== 'function' ) {
-                return saveLog ( `QTGateAPIRequestCommand got commandCallBackPool ret.requestSerial [${ ret.requestSerial }] have not callback `)
-            }
-            clearTimeout ( poolData.timeout )
-            return poolData.CallBack ( null, ret )
-            */
+        this.newMail = (mail, hashCode) => {
+            return this.cmdResponse(mail, hashCode);
         };
         this.on('wImapReady', () => {
             console.log('on imapReady !');
@@ -143,21 +119,11 @@ class default_1 extends Imap.imapPeer {
         return Async.waterfall([
             next => self.checkConnect(next),
             next => {
-                const poolData = {
-                    CallBack: CallBack,
-                    timeout: setTimeout(() => {
-                        saveLog(`request timeout!`, true);
-                        self.commandCallBackPool.delete(uuid);
-                        return CallBack(new Error('requestCoNET_v1 timeout error!'));
-                    }, requestTimeOut)
-                };
-                self.commandCallBackPool.set(uuid, poolData);
                 return self.trySendToRemote(Buffer.from(text), uuid, next);
             }
         ], (err) => {
             if (err) {
-                saveLog(`requestCoNET_v1 got error [${err.message ? err.message : null}]`, true);
-                self.commandCallBackPool.delete(uuid);
+                saveLog(`requestCoNET_v1 got error [${err.message ? err.message : null}]`);
                 if (typeof err.message === 'string') {
                     switch (err.message) {
                         case 'no network': {

@@ -105,6 +105,7 @@ class localServer {
                 keyID: '',
                 key: ''
             }];
+        this.requestPool = new Map();
         this.expressServer.set('views', Path.join(__dirname, 'views'));
         this.expressServer.set('view engine', 'pug');
         this.expressServer.use(cookieParser());
@@ -149,6 +150,13 @@ class localServer {
             }
         });
     }
+    catchCmd(mail, uuid) {
+        const socket = this.requestPool.get(uuid);
+        if (!socket) {
+            return console.log(`Get cmd that have no matched socket \n\n`, mail);
+        }
+        socket.emit('doingRequest', mail, uuid);
+    }
     tryConnectCoNET(socket, sessionHash) {
         console.log(`doing tryConnectCoNET`);
         //		have CoGate connect
@@ -177,14 +185,6 @@ class localServer {
                 }
             }
         };
-        /**
-         *
-         * @param cmd CoNET server command
-         *
-         */
-        const catchUnSerialCmd = (cmd) => {
-            return console.log(`catchUnSerialCmd: LocalWebServer catch UnSerialCmd!\n\ncmd`);
-        };
         const makeConnect = (sendMail) => {
             if (!this.imapConnectData.sendToQTGate || sendMail) {
                 this.imapConnectData.sendToQTGate = true;
@@ -198,14 +198,14 @@ class localServer {
                         this.socketServer.emit('systemErr', err);
                         return socket.emit('tryConnectCoNETStage', imapErrorCallBack(err.message));
                     }
-                    return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, mail => {
-                        return catchUnSerialCmd(mail);
+                    return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, (mail, uuid) => {
+                        return this.catchCmd(mail, uuid);
                     }, _exitFunction);
                 });
             }
             console.log(`makeConnect without sendMail`);
-            return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, mail => {
-                return catchUnSerialCmd(mail);
+            return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, (mail, uuid) => {
+                return this.catchCmd(mail, uuid);
             }, _exitFunction);
         };
         if (!this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit) {
@@ -323,7 +323,8 @@ class localServer {
             });
         });
         socket.on('doingRequest', (uuid, request, CallBack) => {
-            console.log(`on doingRequest\n[ ${uuid}]\n${request}`);
+            this.requestPool.set(uuid, socket);
+            saveLog(`doingRequest on ${uuid}`);
             return this.CoNETConnectCalss.requestCoNET_v1(uuid, request, CallBack);
         });
     }

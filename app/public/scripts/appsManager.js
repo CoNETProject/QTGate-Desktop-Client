@@ -313,7 +313,165 @@ tlsunRays.fromTo(sunRayRight, 4.5, {
 }, "-=5");
 
 `;
+const googleSearchResult1 = [{
+        command: 'GoogleSearch',
+        sessionHash: '03483c5a-cfe4-4782-8c7b-1d8d1a23f054',
+        param: {
+            resultLength: 9,
+            totalResults: '1,310,000',
+            Result: [
+                {
+                    title: '剷除異己？ 郭文貴爆習近平想殺掉這5名中共高官- 國際- 自由 ...',
+                    url: 'https://news.ltn.com.tw/news/world/breakingnews/2938227',
+                    description: '中國國家主席習近平等高官10月1日齊聚天安門城樓觀看大規模閱兵式，以慶賀中共建政70週年。不過中國反共富豪郭文貴4日爆料，當日站在天安門 ...',
+                    urlShow: 'https://news.ltn.com.tw › news › world › breakingnews',
+                    beforeTime: { timeNumber: 1, timeUnit: 'day', time: null },
+                    imageInfo: null,
+                    newsBrand: null
+                },
+                {
+                    title: '郭文貴- 維基百科，自由的百科全書 - Wikipedia',
+                    url: 'https://zh.wikipedia.org/zh-hant/%E9%83%AD%E6%96%87%E8%B4%B5',
+                    description: '郭文貴（1970年5月10日－），山東聊城莘縣人，是流亡海外的中國商人，目前身居美國紐約曼哈頓。 郭文貴是山東省莘縣人，戶籍地為北京大興區。在其發布於2017年5 ...',
+                    urlShow: 'https://zh.wikipedia.org › zh-hant › 郭文贵',
+                    beforeTime: { timeNumber: null, timeUnit: null, time: '' },
+                    imageInfo: null,
+                    newsBrand: null
+                },
+                {
+                    title: '郭文貴：香港四大惡人與中共的交易；中共對港警作惡后的承諾 ...',
+                    url: 'https://www.youtube.com/watch?v=9SxmSwWS5oo',
+                    description: "Don't Be Evil! (Sincerely thank all friends who follow this channel) CCP is a Devil! 中國人請站起來對CCP大聲說：NO ○香港四大惡人與中共的 ...",
+                    urlShow: 'https://www.youtube.com › watch',
+                    beforeTime: { timeNumber: 2, timeUnit: 'day', time: null },
+                    imageInfo: null,
+                    newsBrand: null
+                },
+                {
+                    title: '郭文貴10月4日：香港宵禁背後；林鄭被北京絕對控制；香港四大 ...',
+                    url: 'https://www.youtube.com/watch?v=RS6D8HGz8bo',
+                    description: "00:00:12 Don't Be Evil! (Sincerely thank all friends who follow this channel) CCP is a Devil! 中國人請站起來對CCP大聲說：NO ○香港宵禁背後； ...",
+                    urlShow: 'https://www.youtube.com › watch',
+                    beforeTime: { timeNumber: 2, timeUnit: 'day', time: null },
+                    imageInfo: null,
+                    newsBrand: null
+                },
+                {
+                    title: '#郭文貴hashtag on Twitter',
+                    url: 'https://twitter.com/hashtag/%E9%83%AD%E6%96%87%E8%B2%B4',
+                    description: 'See Tweets about #郭文貴on Twitter. See what people are saying and join the conversation.',
+                    urlShow: 'https://twitter.com › hashtag › 郭文貴',
+                    beforeTime: { timeNumber: null, timeUnit: null, time: '' },
+                    imageInfo: null,
+                    newsBrand: null
+                },
+                {
+                    title: '郭文貴｜風傳媒',
+                    url: 'https://www.storm.mg/category/k86711',
+                    description: '中國加強網路社群監控，連「國外的」也要管！ 他爆料：風暴中心「在於此」！2018-11-21 16:29:58郭文貴遭重罰2700億！中國對付爆料流亡富商，大連法院對名下公司 ...',
+                    urlShow: 'https://www.storm.mg › category',
+                    beforeTime: { timeNumber: null, timeUnit: null, time: '' },
+                    imageInfo: null,
+                    newsBrand: null
+                },
+                {
+                    title: '郭文貴：新聞、播客、視頻和分析- 法廣 - RFI',
+                    url: 'http://www.rfi.fr/tw/tag/%E9%83%AD%E6%96%87%E8%B2%B4/',
+                    description: '在法廣收聽瀏覽文章、音頻、視頻、信息圖表關於郭文貴.',
+                    urlShow: 'www.rfi.fr › tag › 郭文貴',
+                    beforeTime: { timeNumber: null, timeUnit: null, time: '' },
+                    imageInfo: null,
+                    newsBrand: null
+                },
+                {
+                    title: '郭文貴| 新唐人中文電視台在線',
+                    url: 'https://www.ntdtv.com/b5/%E9%83%AD%E6%96%87%E8%B2%B4.htm',
+                    description: '流亡美國的中國富翁郭文貴日前向外界透露，川普（特朗普）總統已經對中共造成很大的衝擊，中共正全力運作干... 65天前. 郭文貴爆江志成發國難財砸700億拉港股？',
+                    urlShow: 'https://www.ntdtv.com › 郭文貴',
+                    beforeTime: { timeNumber: null, timeUnit: null, time: '' },
+                    imageInfo: null,
+                    newsBrand: null
+                },
+                {
+                    title: '郭文貴- 萬維讀者網',
+                    url: 'http://news.creaders.net/china/t/big5/1290.html',
+                    description: '他是中共特務郭文貴爆張首晟不可能自殺 ... 中國流亡富商郭文貴近日爆料，張首晟. ... 路透美國之音去年4月直播中國流亡海外富商郭文貴的專訪時突然節目中斷， ...',
+                    urlShow: 'news.creaders.net › china › big5',
+                    beforeTime: { timeNumber: null, timeUnit: null, time: '' },
+                    imageInfo: null,
+                    newsBrand: null
+                }
+            ],
+            searchesRelated: [
+                {
+                    text: '郭文貴是誰',
+                    searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E6%98%AF%E8%AA%B0&sa=X&ved=2ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ1QIoAHoECA4QAQ'
+                },
+                {
+                    text: '郭文貴爆料',
+                    searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E7%88%86%E6%96%99&sa=X&ved=2ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ1QIoAXoECA4QAg'
+                },
+                {
+                    text: '郭文貴youtube',
+                    searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4youtube&sa=X&ved=2ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ1QIoAnoECA4QAw'
+                },
+                {
+                    text: '郭文貴twitter',
+                    searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4twitter&sa=X&ved=2ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ1QIoA3oECA4QBA'
+                },
+                {
+                    text: '郭文貴香港',
+                    searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E9%A6%99%E6%B8%AF&sa=X&ved=2ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ1QIoBHoECA4QBQ'
+                },
+                {
+                    text: '郭文貴最新消息',
+                    searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E6%9C%80%E6%96%B0%E6%B6%88%E6%81%AF&sa=X&ved=2ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ1QIoBXoECA4QBg'
+                },
+                {
+                    text: '郭文貴台灣',
+                    searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E5%8F%B0%E7%81%A3&sa=X&ved=2ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ1QIoBnoECA4QBw'
+                },
+                {
+                    text: '郭文貴2019',
+                    searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B42019&sa=X&ved=2ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ1QIoB3oECA4QCA'
+                },
+                {
+                    text: '郭文貴習近平',
+                    searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E7%BF%92%E8%BF%91%E5%B9%B3&sa=X&ved=2ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ1QIoCHoECA4QCQ'
+                },
+                {
+                    text: '郭文貴間諜',
+                    searchKey: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4%E9%96%93%E8%AB%9C&sa=X&ved=2ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ1QIoCXoECA4QCg'
+                }
+            ],
+            nextPage: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&ei=BQWbXc7IMZCYlwTYp4fADA&start=10&sa=N&ved=0ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ8NMDCL4B',
+            action: {
+                video: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=vid&sa=X&ved=0ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ_AUIEygC',
+                image: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=isch&sa=X&ved=0ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ_AUIFCgD',
+                news: '/search?q=%E9%83%AD%E6%96%87%E8%B2%B4&source=lnms&tbm=nws&sa=X&ved=0ahUKEwiO34_L6onlAhUQzIUKHdjTAcgQ_AUIEigB'
+            }
+        },
+        publicKeyID: null,
+        HtmlDockerClass: null,
+        dockerName: 'GoogleSearch'
+    }];
 const _appScript = {
+    info: {
+        totalResults: ['大约有', '約', 'About', '大約有'],
+        totalResults1: ['条记录', '件', 'results', '條記錄'],
+        moreResults: ['更多结果', '結果をさらに表示', 'More Results', '更多結果'],
+        searchToolBarMenu: [
+            [
+                '网站', 'ウェイブ', 'Website', '網頁'
+            ], [
+                '新闻', 'ニュース', 'News', '新聞'
+            ], [
+                '图片', '画像', 'Picture', '圖片'
+            ], [
+                '视频', 'ビデオ', 'Video', '視頻'
+            ]
+        ]
+    },
     showMain: ko.observable(true),
     searchItemsArray: ko.observable(),
     hasFocusShowTool: ko.observable(false),
@@ -333,6 +491,31 @@ const _appScript = {
     SearchInputNextHasFocus: ko.observable(false),
     showSearchesRelated: ko.observable(false),
     searchItemList: ko.observableArray([]),
+    loadingGetResponse: ko.observable(false),
+    conetResponse: ko.observable(false),
+    searchInputTextShow: ko.observable(''),
+    currentlyShowItems: ko.observable(0),
+    newsButtonShowLoading: ko.observable(false),
+    newsItemsArray: ko.observable(),
+    newsButtonShowError: ko.observable(false),
+    nextButtonShowError: ko.observable(false),
+    moreResultsButtomLoading: ko.observable(false),
+    imageButtonShowLoading: ko.observable(false),
+    imageButtonShowError: ko.observable(false),
+    imageButtonErrorIndex: ko.observable(-1),
+    imageItemsArray: ko.observable(),
+    videoButtonShowLoading: ko.observable(false),
+    videoItemsArray: ko.observable(),
+    videoButtonShowError: ko.observable(false),
+    videoButtonErrorIndex: ko.observable(-1),
+    nextButtonErrorIndex: ko.observable(false),
+    nextButtonConetResponse: ko.observable(false),
+    nextButtonLoadingGetResponse: ko.observable(false),
+    showResultItems: (self, items) => {
+        self.searchItem(items);
+        self.searchItemList(items.Result);
+        $('.selection.dropdown').dropdown();
+    },
     searchSetupClick: (self, event) => {
         self.showSearchSetupForm(true);
         self.backGroundBlue(true);
@@ -347,6 +530,27 @@ const _appScript = {
         })
         */
         return false;
+    },
+    searchInputCloseError: (self, event) => {
+        self.errorMessageIndex(-1);
+        self.showSearchError(false);
+    },
+    returnSearchResultItemsInit: (items) => {
+        items.Result.forEach(n => {
+            n['showLoading'] = ko.observable(false);
+            n['snapshotReady'] = ko.observable(false);
+            n['id'] = uuid_generate();
+            n['showError'] = ko.observable(false);
+            n['errorIndex'] = ko.observable(-1);
+            if (!n['newsBrand']) {
+                n['newsBrand'] = null;
+            }
+            if (n.imageInfo) {
+                if (!n.imageInfo['videoTime']) {
+                    n.imageInfo['videoTime'] = null;
+                }
+            }
+        });
     },
     search_form: (self, event) => {
         const search_text = self.searchInputText();
@@ -372,9 +576,74 @@ const _appScript = {
             com.Args = ['google', search_text];
             com.subCom = 'webSearch';
         }
-        _view.keyPairCalss.emitRequest(com, (err, responser) => {
+        const errorProcess = (err) => {
+            self.showInputLoading(false);
+            self.searchInputText('');
+            self.errorMessageIndex(_view.connectInformationMessage.getErrorIndex(err));
+            return self.showSearchError(true);
+        };
+        /**
+         *
+         * 		test Unit
+         */
+        setTimeout(() => {
+            /** test error */
+            /*
+            return errorProcess ( 'eee ' )
+            /** */
+            /** Test response from Local host */
+            /** test status */
+            /*
+            setTimeout (() => {
+                self.loadingGetResponse ( false )
+                return self.conetResponse ( true )
+            }, 2000 )
+            return self.loadingGetResponse ( true )
+            /** */
+            /**  test normail result */
+            /*
+            self.showInputLoading ( false )
+            self.loadingGetResponse ( false )
+            self.conetResponse ( false )
+
+            const args = googleSearchResult1[0]
+            self.searchInputTextShow ( search_text )
+            self.searchItemsArray ( args.param )
+            self.returnSearchResultItemsInit ( args.param )
+            return self.showResultItems ( self, args.param )
+            /** */
+        }, 2000);
+        /** */
+        return _view.keyPairCalss.emitRequest(com, (err, com) => {
+            if (err) {
+                self.searchInputText('');
+                self.showInputLoading(false);
+                self.errorMessageIndex(err);
+                self.showSearchError(true);
+                return;
+            }
+            if (!com) {
+                return self.loadingGetResponse(true);
+            }
+            if (com.error === -1) {
+                self.loadingGetResponse(false);
+                return self.conetResponse(true);
+            }
+            if (com.error) {
+                self.showInputLoading(false);
+                self.searchInputText('');
+                self.errorMessageIndex(com.error);
+                return self.showSearchError(true);
+            }
+            if (com.subCom === 'webSearch') {
+                self.showInputLoading(false);
+                const args = com.Args;
+                self.searchInputTextShow(search_text);
+                self.searchItemsArray(args.param);
+                self.returnSearchResultItemsInit(args.param);
+                return self.showResultItems(self, args.param);
+            }
         });
-        return false;
     },
     searchSetup: (key, self, event) => {
         self.showSearchSetupForm(false);
@@ -432,6 +701,84 @@ const _appScript = {
                 self.showSearchesRelated(true);
             }
         });
+    },
+    nextButtonErrorClick: (self) => {
+        self.nextButtonShowError(false);
+        self.nextButtonErrorIndex(null);
+    },
+    searchNext: (self, event) => {
+        if (self.moreResultsButtomLoading()) {
+            return;
+        }
+        self.moreResultsButtomLoading(true);
+        function showError(err) {
+            self.moreResultsButtomLoading(false);
+            self.nextButtonErrorIndex(_view.connectInformationMessage.getErrorIndex(err));
+            self.nextButtonShowError(true);
+        }
+        const nextLink = self.searchItem().nextPage;
+        let currentArray = null;
+        const com = {
+            command: 'CoSearch',
+            Args: ['google', nextLink],
+            error: null,
+            subCom: null
+        };
+        switch (self.currentlyShowItems()) {
+            //      google search
+            case 0: {
+                com.subCom = 'searchNext';
+                currentArray = self.searchItemsArray();
+                break;
+            }
+            //      news
+            case 1: {
+                com.subCom = 'newsNext';
+                currentArray = self.newsItemsArray();
+                break;
+            }
+            case 2: {
+                com.subCom = 'imageNext';
+                currentArray = self.imageItemsArray();
+                break;
+            }
+            default: {
+                com.subCom = 'videoNext';
+                currentArray = self.videoItemsArray();
+                break;
+            }
+        }
+        /**  TEST unit  */
+        setTimeout(() => {
+            /** Error Test  */
+            /*
+            return showError ( 'dd' )
+            /** */
+            /** Status Test */
+            /*
+            setTimeout (() => {
+                self.nextButtonLoadingGetResponse ( false )
+                self.nextButtonConetResponse ( true )
+            }, 2000 )
+            return self.nextButtonLoadingGetResponse ( true )
+            /** */
+        }, 2000);
+        /** */
+        return _view.keyPairCalss.emitRequest(com, (err, com) => {
+            if (err) {
+                return showError(err);
+            }
+            if (!com) {
+                return self.nextButtonLoadingGetResponse(true);
+            }
+            if (com.error === -1) {
+                self.nextButtonLoadingGetResponse(false);
+                return self.nextButtonConetResponse(true);
+            }
+            if (com.error) {
+                return showError(com.error);
+            }
+        });
     }
 };
 class appsManager {
@@ -454,14 +801,6 @@ class appsManager {
         /**
          *
          */
-        this.errorMessage = {
-            'timeOut': [
-                'CoNET节点无响应，节点可能正在忙碌中，请稍后再试',
-                'CoNETノートからの応答がなかったです、サーバー側は忙しいかもしれませんが、後ほどもう一度してみてください。',
-                'CoNET node not responding to requests. Maybe busy now, try again later.',
-                'CoNET節點無響應，節點可能正在忙碌中，請稍後再試'
-            ]
-        };
         this.mainScript = ko.observable(null);
         _view.sectionLogin(false);
         this.updateAppsManu(appMenu);

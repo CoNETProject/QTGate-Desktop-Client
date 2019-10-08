@@ -138,6 +138,7 @@ CRBU6F0VPCctLgIbDAAAw/QA+gLA2aVvlPB6mPWo7H+wIkhE1/pSNiFH5PotAv50
 
 
 `;
+const requestTimeOut = 1000 * 45;
 class encryptoClass {
     constructor(_keypair) {
         this._keypair = _keypair;
@@ -147,47 +148,49 @@ class encryptoClass {
             this._privateKey = (await openpgp.key.readArmored(this._keypair.privateKey)).keys;
             await this._privateKey[0].decrypt(this._keypair._password);
         };
-        this.onDoingRequest = async (err, uuid, encryptoText) => {
-            if (err) {
-                return _view.connectInformationMessage.showErrorMessage(err.message);
-            }
+        this.onDoingRequest = async (encryptoText, uuid) => {
             const request = this.requestPool.get(uuid);
             if (!request) {
                 return;
             }
+            clearTimeout(request.timeOut);
             const option = {
                 privateKeys: this._privateKey,
                 publicKeys: this.CoNET_publicKey,
                 message: await openpgp.message.readArmored(encryptoText)
             };
-            openpgp.decrypt(option).then(plaintext => {
+            let cmd = null;
+            openpgp.decrypt(option).then(_plaintext => {
+                cmd = JSON.parse(_plaintext.data);
+                return request.CallBack(null, cmd);
             }).catch(err => {
                 return _view.connectInformationMessage.showErrorMessage(err.message);
             });
         };
         this.makeKeyReady();
-        _view.connectInformationMessage.socketIo.on('doingRequest', (err, uuid, encryptoText) => {
-            return this.onDoingRequest(err, uuid, encryptoText);
+        _view.connectInformationMessage.socketIo.on('doingRequest', (encryptoText, uuid) => {
+            return this.onDoingRequest(encryptoText, uuid);
         });
     }
     emitRequest(cmd, CallBack) {
         const uuid = cmd.requestSerial = uuid_generate();
+        const self = this;
         const option = {
             privateKeys: this._privateKey,
             publicKeys: this.CoNET_publicKey,
             message: openpgp.message.fromText(JSON.stringify(cmd)),
             compression: openpgp.enums.compression.zip
         };
+        this.requestPool.set(uuid, { CallBack: CallBack, cmd: cmd, timeOut: setTimeout(() => {
+                self.requestPool.delete(uuid);
+                return CallBack(new Error('timeOut'));
+            }, requestTimeOut) });
         return openpgp.encrypt(option).then(ciphertext => {
             return _view.connectInformationMessage.sockEmit('doingRequest', uuid, ciphertext.data, err => {
-                if (!err) {
-                    cmd.CallBack = CallBack;
-                    return this.requestPool.set(uuid, cmd);
-                }
-                return _view.connectInformationMessage.showErrorMessage(err.message);
+                return CallBack(err);
             });
         }).catch(err => {
-            return _view.connectInformationMessage.showErrorMessage(err.message);
+            return CallBack('systemError');
         });
     }
 }

@@ -1782,7 +1782,7 @@ const infoDefine = [
             coSearchConfigIcon: ['google', ''],
             coSearchEngineName: ['Google', ''],
             searchToolBarMenu: [
-                "Webside", "News", "Picture", "Video"
+                "Website", "News", "Picture", "Video"
             ],
             timeUnit: {
                 hours: 'hours ago',
