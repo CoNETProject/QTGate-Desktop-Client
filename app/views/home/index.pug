@@ -338,13 +338,13 @@ block jumbotron1
 		.CoGateCards( style="max-width: 60em;")
 			.welcomeText.ui.header
 				.content
-					h1.AppListHeader( data-bind = " text: infoDefine[ $root.languageIndex() ].thirdParty.information" style = "color: white;")
+					h1( data-bind = " text: infoDefine[ $root.languageIndex() ].thirdParty.information" )
 					//.sub.header( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.welcomeTextSub" )
 
 
 			<!-- ko if: mainLoading -->
-			h4.ui.header.AppListHeader( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.mainLoading" style = "color: white;")
-			.ui.active.inline.inverted.loader
+			h4.ui.header( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.mainLoading" )
+			.ui.active.inline.loader
 			<!-- /ko -->
 
 			<!-- ko if: loadingError -->

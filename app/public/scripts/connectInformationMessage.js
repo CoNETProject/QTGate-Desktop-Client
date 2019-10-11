@@ -48,6 +48,9 @@ const messageBoxDefine = {
         '不明なエラーが発生、もしこんな状況が続くであれば、CoNET端末を再起動するか、CoNET端末を再インストールしてください。',
         'Opps. Unknow error. Try again or restart CoNET client, if still same error please re-install CoNET.',
         '未知错误，请再试！如果持续发生请重启CoNET客户端或重新安装'
+    ],
+    NodeInBusy: [
+        '节点目前繁忙，请稍后再试', 'ノードは忙しいです。しばらくしてからもう一度お試しください', 'Node is currently busy, please try again later', '节点目前繁忙，请稍后再试'
     ]
 };
 class connectInformationMessage {

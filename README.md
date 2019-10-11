@@ -15,21 +15,8 @@ CoNET平台集成了一系列應用來使用[CoNET](https://github.com/QTGate/Co
 
 ## Download ダウンロード 下載
 
-### [The latest 最新版 v2.0.11](https://github.com/QTGate/QTGate-Desktop-Client/releases/latest/)
-
-[Android, 安卓](https://github.com/QTGate/CoNETPlatform-Android)
-
-[windows32](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.11/CoNET.Setup.2.0.11.ia32.exe)
-
-[windows64](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.11/CoNET.Setup.2.0.11.exe)
-
-[MacOS](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.11/CoNET-2.0.11.dmg)
-
-[Linux deb](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.11/CoNET_2.0.11_amd64.deb)
-
-[Linux pacman](https://github.com/QTGate/QTGate-Desktop-Client/releases/download/v2.0.11/CoNET-2.0.11.pacman)
-
-[WInXP or npm install](https://github.com/QTGate/QTGate-Desktop-Client/wiki/WInXP%E4%BB%A5%E5%8F%8ANPM%E7%92%B0%E5%A2%83%E4%B8%8B%E5%AE%89%E8%A3%9DCoNET)
+### Come soon./準備中/即將推出
+CoNET official node have not ready yet./CoNET公式ノード準備中/CoNET官方節點停機中
 
 ## CoNET APPs
 

@@ -1,6 +1,6 @@
 
 
-body {
+.bodyCoNETBlue {
 	background: rgba(101,226,245,1);
 	background: -moz-linear-gradient(left, rgba(101,226,245,1) 0%, rgba(125,175,250,1) 100%);
 	background: -webkit-gradient(left top, right top, color-stop(0%, rgba(101,226,245,1)), color-stop(100%, rgba(125,175,250,1)));
@@ -11,6 +11,11 @@ body {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#65e2f5', endColorstr='#7daffa', GradientType=1 );
 	height: unset!important;
 }
+
+.bodyWhite {
+	background: white
+}
+
 .welcome-bg {
 	position: fixed;
 	top: 0;
@@ -842,6 +847,13 @@ ul.plan-features {
 
 .loadingGetResponse::after {
 	border-color: #ab9420d9 transparent transparent!important;
+}
+
+.loadingGetResponse {
+	color: #ab9420d9!important;
+}
+.conetResponse {
+	color: #36c576d9!important;
 }
 
 .conetResponse::after {

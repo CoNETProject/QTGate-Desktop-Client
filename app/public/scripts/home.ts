@@ -263,6 +263,7 @@ module view_layout {
         public imapFormClass: imapForm = null
         public CoNETConnect: KnockoutObservable < CoNETConnect > = ko.observable ( null )
 		public appMenuObj = {}
+		public bodyBlue = ko.observable ( true )
 		
 		public keyPairCalss: encryptoClass = null
 
@@ -398,10 +399,12 @@ module view_layout {
                 return this.connectInformationMessage.showSystemError ()
             }
             
-            this.sectionWelcome ( false )
+			this.sectionWelcome ( false )
+			/*
             if ( this.localServerConfig().firstRun ) {
                 return this.sectionAgreement ( true )
-            }
+			}
+			*/
             this.sectionLogin ( true )
             return initPopupArea ()
             

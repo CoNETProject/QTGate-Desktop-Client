@@ -1,19 +1,19 @@
 
 #mainMenu_temp( data-bind = "with: mainScript " style = "margin-top: 2em;")
 	.ui.divider
-	.ui.header.AppListHeader( style = "color: cornsilk;" )
+	.ui.header
 		.content
 			span( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.nodeName" )
-			span( data-bind = " text: nodeName  [$root.languageIndex() ]" style = "color: lightcyan;" )
-			.sub.header( style = "color: cornsilk;" )
+			span( data-bind = " text: nodeName  [$root.languageIndex() ]" )
+			.sub.header
 				span( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.connectAddress " )
-				span( data-bind = " text: nodeAddress " style = "color: lightcyan;" )
-	.ui.header.AppListHeader( style = " color: white;" )
+				span( data-bind = " text: nodeAddress " )
+	.ui.header
 		.content
 			h2( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.serviceList" )
 	.ui.divider
 	.ui.items.divided( data-bind = " foreach: mainMenuItem" )
-		a.item.AppListHeader( data-bind = "click: function() { $parents[1].appClick ( $index()) }")
+		a.item( data-bind = "click: function() { $parents[1].appClick ( $index()) }")
 			img.ui.medium.image( data-bind = " attr: { src: imgSrc }" )
 			.content
 				.header( data-bind = " text: headerText[ $root.languageIndex()], style: { color: headerTextColor }" )

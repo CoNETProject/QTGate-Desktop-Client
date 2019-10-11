@@ -329,33 +329,33 @@
 						.field( style = "margin-left: 1em;" )
 
 							<!-- ko if: currentlyShowItems() !== 0 -->
-								a.basic.ui.label.yellow.small( data-bind = " click: function() { webItemsClick() }" style = "padding-right: 1em;" )
-								i.icon.rss
-								span( data-bind = "text: info.searchToolBarMenu[0][ $root.languageIndex() ] ")
+								a.basic.ui.label.yellow.small( data-bind = " click: webItemsClick " style = "padding-right: 1em;" )
+									i.icon.rss
+									span( data-bind = "text: info.searchToolBarMenu[0][ $root.languageIndex() ] ")
 							<!-- /ko -->
 
 							<!-- ko if: searchItem().action.news && currentlyShowItems() !== 1 -->
 							a.basic.ui.label.small( style = "padding-right: 1em;"
-								data-bind = " click: function() { newsButtonClick() }, style: {  cursor: newsButtonShowLoading() ? 'unset' : 'pointer' }, css: { olive: newsItemsArray() && !newsButtonShowLoading(), grey: !newsItemsArray() && !newsButtonShowError(), red: newsButtonShowError() }")
+								data-bind = " click: newsButtonClick , style: {  cursor: newsButtonShowLoading() ? 'unset' : 'pointer' }, css: { 'disabled': newsButtonShowLoading(), 'olive': newsItemsArray() && !newsButtonShowLoading(), 'grey': !newsItemsArray() && !newsButtonShowError(), 'red': newsButtonShowError() }")
 								
-								<!-- ko if: newsButtonShowError() -->
+								<!-- ko if: newsButtonShowError -->
 								i.icon.info.red
 								span( data-bind = " text: messageBoxDefine[ newsButtonErrorIndex()][ $root.languageIndex() ] ")
 								<!-- /ko -->
 
-								<!-- ko ifnot: newsButtonShowError() -->
+								<!-- ko ifnot: newsButtonShowError -->
 
-								<!-- ko if: !newsButtonShowLoading() -->
+								<!-- ko ifnot: newsButtonShowLoading -->
 								i.icon.newspaper.outline
-								
 								<!-- /ko -->
 
-								<!-- ko if: newsButtonShowLoading() -->
-								i.icon.notched.circle.loading
+								<!-- ko if: newsButtonShowLoading -->
+								i.icon.notched.circle.loading( data-bind = " css: { 'loadingGetResponse': newsLoadingGetResponse, 'conetResponse': newsConetResponse }")
+								<!-- /ko -->
+
+								span( data-bind = "text: info.searchToolBarMenu[1][ $root.languageIndex() ] " )
 								<!-- /ko -->
 								
-								<!-- /ko -->
-								span( data-bind = "text: info.searchToolBarMenu[1][ $root.languageIndex() ] " )
 							<!-- /ko -->
 
 							<!-- ko if: searchItem().action.image && currentlyShowItems() !== 2 -->

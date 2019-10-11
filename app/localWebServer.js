@@ -151,6 +151,7 @@ class localServer {
         });
     }
     catchCmd(mail, uuid) {
+        console.log(`Get response from CoNET [${uuid}] length [${mail.length}]`);
         const socket = this.requestPool.get(uuid);
         if (!socket) {
             return console.log(`Get cmd that have no matched socket \n\n`, mail);

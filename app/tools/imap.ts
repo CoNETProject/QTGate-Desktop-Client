@@ -1510,7 +1510,6 @@ export class imapPeer extends Event.EventEmitter {
 		
 		if ( subject ) {
 			
-
 			return this.newMail ( attr, subject )
 		}
 		saveLog(`\n\nnew mail to this.deCrypto!\n\n`)

@@ -243,6 +243,7 @@ var view_layout;
             this.imapFormClass = null;
             this.CoNETConnect = ko.observable(null);
             this.appMenuObj = {};
+            this.bodyBlue = ko.observable(true);
             this.keyPairCalss = null;
             this.appsManager = ko.observable(null);
             this.AppList = ko.observable(false);
@@ -351,9 +352,11 @@ var view_layout;
                 return this.connectInformationMessage.showSystemError();
             }
             this.sectionWelcome(false);
-            if (this.localServerConfig().firstRun) {
-                return this.sectionAgreement(true);
+            /*
+            if ( this.localServerConfig().firstRun ) {
+                return this.sectionAgreement ( true )
             }
+            */
             this.sectionLogin(true);
             return initPopupArea();
         }
