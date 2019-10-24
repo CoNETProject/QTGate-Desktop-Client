@@ -15,7 +15,7 @@ CoNET平台集成了一系列應用來使用[CoNET](https://github.com/QTGate/Co
 
 ## Download ダウンロード 下載
 
-### Come soon./準備中/即將推出
+# Come soon./準備中/即將推出
 CoNET official node have not ready yet./CoNET公式ノード準備中/CoNET官方節點停機中
 
 ## CoNET APPs

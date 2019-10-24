@@ -16,7 +16,6 @@
 
 import * as Express from 'express'
 import * as Path from 'path'
-import * as cookieParser from 'cookie-parser'
 import * as HTTP from 'http'
 import * as SocketIo from 'socket.io'
 import * as Tool from './tools/initSystem'
@@ -28,11 +27,12 @@ import * as Uuid from 'node-uuid'
 import * as Imap from './tools/imap'
 import CoNETConnectCalss from './tools/coNETConnect'
 import * as Crypto from 'crypto'
-import coSearceServer from './tools/coSearchServer'
-import * as JSZip from 'jszip'
-
+import * as mime from 'mime-types'
 
 Express.static.mime.define({ 'multipart/related': ['mht'] })
+//Express.static.mime.define({ 'message/rfc822' : ['mhtml','mht'] })
+Express.static.mime.define({ 'application/x-mimearchive' : ['mhtml','mht'] })
+Express.static.mime.define({ 'multipart/related' : ['mhtml','mht'] })
 
 interface localConnect {
 	socket: SocketIO.Socket
@@ -129,7 +129,7 @@ export default class localServer {
 
 
 	private catchCmd ( mail: string, uuid: string ) {
-		console.log (`Get response from CoNET [${ uuid }] length [${ mail.length }]`)
+		console.log (`Get response from CoNET uuid [${ uuid }] length [${ mail.length }]`)
 		const socket = this.requestPool.get ( uuid )
 		if ( !socket ) {
 			return console.log (`Get cmd that have no matched socket \n\n`, mail )
@@ -210,7 +210,6 @@ export default class localServer {
 		
 	}
 
-
 	private listenAfterPassword ( socket: SocketIO.Socket, sessionHash: string ) {
 		//console.log (`localServer listenAfterPassword for sessionHash [${ sessionHash }]`)
 		socket.on ( 'checkImap', ( emailAddress: string, password: string, timeZone, tLang, CallBack1 ) => {
@@ -265,76 +264,26 @@ export default class localServer {
 			
 		})
 
-		socket.on ( 'requestActivEmail', CallBack1 => {
-			
-			saveLog (`on requestActivEmail`)
-			const com: QTGateAPIRequestCommand = {
-				command: 'requestActivEmail',
-				Args: [],
-				error: null,
-				subCom: null
-			}
-
-			return this.sendRequest ( socket, com, sessionHash, ( err: number, res: QTGateAPIRequestCommand ) => {
-				console.log (`requestActivEmail sendrequest callback! `)
-				return CallBack1 ( err, res )
-			})
-			
-		})
-
 		socket.on ( 'checkActiveEmailSubmit', ( text, CallBack1 ) => {
-			saveLog (`on checkActiveEmailSubmit`)
-			if ( ! text || ! text.length || !/^-----BEGIN PGP MESSAGE-----/.test ( text )) {
-				CallBack1( 0 )
-				return saveLog ( `checkActiveEmailSubmit, no text.length ! [${ text }]` )
-			}
-
-
-			return Tool.decryptoMessage ( this.openPgpKeyOption, text, ( err, data ) => {
-				if ( err ) {
-					CallBack1 ( 1 )
-					return saveLog ( `checkActiveEmailSubmit, decryptoMessage error [${ err.message ? err.message : null }]\n${text}` )
-				}
-				let pass = null
-				try {
-					pass = JSON.parse ( data )
-				} catch ( ex ) {
-					return CallBack1 ( 1 )
-				}
+			console.log ( `on checkActiveEmailSubmit` )
+			const key = Buffer.from ( text, 'base64' ).toString ()
+			if ( key && key.length ) {
+				console.log ( `active key success! \n[${ key }]`)
 				
-				
-				const com: QTGateAPIRequestCommand = {
-					command: 'activePassword',
-					Args: [ pass ],
-					error: null,
-					subCom: null
-				}
-				console.log ( Util.inspect ( com ))
-				
-				return this.sendRequest ( socket, com, sessionHash, ( err, data: QTGateAPIRequestCommand ) => {
+				this.keyPair.publicKey = this.config.keypair.publicKey = key
+				this.keyPair.verified = this.config.keypair.verified = true 
+				return Tool.saveConfig ( this.config, err => {
 					if ( err ) {
-						return CallBack1 ( err )
+						saveLog (`Tool.saveConfig return Error: [${ err.message }]`)
 					}
-					if ( data.error > -1 ) {
-						return CallBack1 ( null, data )
-					}
-					const key = Buffer.from ( data.Args[0], 'base64' ).toString ()
-					if ( key && key.length ) {
-						saveLog (`active key success! \n[${ key }]`)
-						CallBack1 ()
-						this.keyPair.publicKey = this.config.keypair.publicKey = key
-						this.keyPair.verified = this.config.keypair.verified = true 
-						return Tool.saveConfig ( this.config, err => {
-							if ( err ) {
-								saveLog (`Tool.saveConfig return Error: [${ err.message }]`)
-							}
-						})
-						
-					}
-					
+					CallBack1 ()
 				})
 				
-			})
+			}
+			
+		
+				
+			
 		})
 
 		socket.on ( 'doingRequest', ( uuid, request, CallBack ) => {
@@ -342,6 +291,52 @@ export default class localServer {
 			this.requestPool.set ( uuid, socket )
 			saveLog (`doingRequest on ${ uuid }`)
 			return this.CoNETConnectCalss.requestCoNET_v1 ( uuid, request, CallBack )
+		})
+
+		socket.on ( 'getFilesFromImap', ( files: string, CallBack ) => {
+			console.log ( `socket.on ('getFilesFromImap')`, files )
+			if ( typeof files !== 'string' || !files.length ) {
+				return CallBack ( new Error ('invalidRequest'))
+			}
+			const _files = files.split (',')
+			console.log (`socket.on ('getFilesFromImap') _files = [${ _files }] _files.length = [${ _files.length }]`  )
+			
+			
+			
+			let ret = ''
+			return Async.eachSeries ( _files, ( n, next ) => {
+				console.log (`Async.eachSeries _files[${ n }]`)
+				return this.CoNETConnectCalss.getFile ( n, ( err, data ) => {
+					if ( err ) {
+						return next ( err )
+					}
+					ret += data.toString ()
+					return next ()
+				})
+			}, err => {
+				if ( err ) {
+					return CallBack ( err )
+				}
+				
+				console.log (`******************** getFilesFromImap success all fies!\n\n${ ret.length }\n\n`)
+
+				
+				return CallBack ( null, ret )
+			})
+			
+		})
+
+		socket.on ( 'sendMedia', ( uuid, rawData, CallBack ) => {
+			
+			return this.CoNETConnectCalss.sendDataToUuidFolder ( Buffer.from ( rawData ).toString ( 'base64' ), uuid, CallBack )
+		})
+
+		socket.on ( 'mime', ( _mime, CallBack ) => {
+			let y = mime.lookup( _mime )
+			if ( !y ) {
+				return CallBack ( new Error ('no mime'))
+			}
+			return CallBack ( null, y )
 		})
 
 	}
@@ -402,7 +397,7 @@ export default class localServer {
 			}
 			Fs.writeFileSync ( Path.join( saveFolder, fileName ), data )
 			
-			return JSZip.loadAsync ( Buffer.from ( data.toString(), 'base64'))
+			return JSZip.loadAsync ( Buffer.from ( data.toString(), 'base64' ))
 				.then ( zip => {
 					let u = true
 					Async.each ( Object.keys ( zip.files ), ( _filename, next ) => {
@@ -653,13 +648,15 @@ export default class localServer {
 	}
 
 	constructor( private cmdResponse: ( cmd: QTGateAPIRequestCommand ) => void, test: boolean ) {
-		
+		//Express.static.mime.define({ 'message/rfc822' : ['mhtml','mht'] })
+		//Express.static.mime.define ({ 'multipart/related' : ['mhtml','mht'] })
+		Express.static.mime.define ({ 'application/x-mimearchive' : ['mhtml','mht'] })
 		this.expressServer.set ( 'views', Path.join ( __dirname, 'views' ))
 		this.expressServer.set ( 'view engine', 'pug' )
-		this.expressServer.use ( cookieParser ())
 		this.expressServer.use ( Express.static ( Tool.QTGateFolder ))
 		this.expressServer.use ( Express.static ( Path.join ( __dirname, 'public' )))
 		this.expressServer.use ( Express.static ( Path.join ( __dirname, 'html' )))
+		
 		
 
 		this.expressServer.get ( '/', ( req, res ) => {
@@ -667,26 +664,9 @@ export default class localServer {
             res.render( 'home', { title: 'home', proxyErr: false  })
 		})
 
-		this.expressServer.get ( '/CoSearch', ( req: Express.Request, res ) => {
-			const sessionHash = req.query.sessionHash
-			
-			const _index = this.sessionHashPool.indexOf (sessionHash)
-			if ( !sessionHash || _index < 0 ) {
-				console.log (`sessionHashPool have not this [${ sessionHash }]!\n${ this.sessionHashPool }`)
-				return res.render( 'home', { title: 'home', proxyErr: false  })
-			}
-			
-			this.socketServer_CoSearch.once ( 'connection', socket => {
-				return this.socketServer_CoSearchConnected ( socket, sessionHash )
-			})
-
-			return res.render ( 'CoSearch', { title: 'CoSearch', sessionHash: sessionHash })
-		})
-
 		this.socketServer.on ( 'connection', socker => {
 			return this.socketServerConnected ( socker )
 		})
-
 		
 
 		this.httpServer.once ( 'error', err => {
@@ -711,15 +691,5 @@ export default class localServer {
 			}
 		})
 		
-	}
-
-	private socketServer_CoSearchConnected ( socket: SocketIO.Socket, sessionHash: string ) {
-		const clientName = `[${ socket.id }][ ${ socket.conn.remoteAddress }]`
-		//saveLog (`socketServer_CoSearchConnected make new coSearceServer for [${ clientName }]`)
-		let _coSearchServer = new coSearceServer ( sessionHash, socket, saveLog, clientName, this )
-		socket.once ( 'disconnect', reason => {
-			_coSearchServer = null
-			return saveLog ( `socketServer_CoSearchConnected destroy coSearceServer for [${ clientName }]`)
-		})
 	}
 }

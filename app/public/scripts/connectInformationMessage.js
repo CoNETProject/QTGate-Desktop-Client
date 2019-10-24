@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 const messageBoxDefine = {
+    LoadingPage: ['正在解密数据和加载页面', '暗号化したデータを復号化とページの読み込み中。', 'Decrypting data and loading page.', '正在解密数据和加载頁面'],
     offline: [' 无互联网链接 ', ' インターネットに接続していないです ', ' Have no Internet ', ' 無互聯網連結 '],
     systemError: ['CoNET客户端故障，请重启后再试', '端末故障です、CoNETを再起動してください', 'CoNET client error! Restart CoNET please!', 'CoNET客戶端故障，請重啟後再試'],
     reConnectCoNET: ['CoNET链接已中断', 'CoNETとの接続が中断され', 'CoNET connection lost.', 'CoNET的鏈接已中斷'],
     connectingToCoNET: ['正在连接CoNET...', 'CoNETへ接続中...', 'Connecting to CoNET...', '正在連結CoNET...'],
-    connectedToCoNET: ['成功连接CoNET', 'CoNETに接続しました', 'Success to connect CoNET', '成功連結CoNET'],
+    connectedToCoNET: ['无IP地址成功连接CoNET', 'IPなしでCoNETに接続しました', 'Success to connect CoNET without IP address.', '無IP地址成功連結CoNET'],
     timeOut: [
         'CoNET节点无响应，节点可能正在忙碌中，请稍后再试',
         'CoNETノートからの応答がなかったです、サーバー側は忙しいかもしれませんが、後ほどもう一度してみてください。',
@@ -51,6 +52,21 @@ const messageBoxDefine = {
     ],
     NodeInBusy: [
         '节点目前繁忙，请稍后再试', 'ノードは忙しいです。しばらくしてからもう一度お試しください', 'Node is currently busy, please try again later', '节点目前繁忙，请稍后再试'
+    ],
+    PgpMessageFormatError: [
+        '内容格式错误，请复制从“-----BEGIN PGP MESSAGE----- （开始，一直到）-----END PGP MESSAGE-----” 结束的完整内容，粘贴在此输入框中。',
+        'フォーマットエラー、コピーするのは「-----BEGIN PGP MESSAGE-----」から「-----END PGP MESSAGE-----」まで全ての内容をしてください。',
+        'Format error! Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
+        '內容格式錯誤，請複制從“-----BEGIN PGP MESSAGE----- （開始，一直到）-----END PGP MESSAGE-----” 結束的完整內容，粘貼在此輸入框中。'
+    ],
+    PgpDecryptError: [
+        '提供的内容不能被解密，请确认这是在您收到的最后一封从CoNET发送过来的激活信。如果还是没法完成激活，请删除您的密钥重新生成和设定。',
+        'この内容で暗号化解除ができませんでした。鍵ペアEmailアカンウトメールボックス再検査し、CoNETから最後のを選んでください。または鍵ペアを削除して、鍵ペア再発行してください。',
+        'Decrypt message failed. Find the lasest mail from CoNET in your key pair email mailbox. Or delete this key pair and rebuild new key pair please.',
+        '提供的內容不能被解密，請確認這是在您收到的最後一封從CoNET發送過來的激活信。如果還是沒法完成激活，請刪除您的密鑰重新生成和設定。'
+    ],
+    pageLoadingError: [
+        '页面加载发生错误', 'エラーが発生してページの読み込みが完了できません', 'Loading page has error.', '頁面加載發生錯誤'
     ]
 };
 class connectInformationMessage {
@@ -61,7 +77,7 @@ class connectInformationMessage {
         this.showGreen = ko.observable(false);
         this.messageArray = ko.observable(null);
         this.socketIoOnline = true;
-        this.socketIo = io(`http://localhost:3000${this.url}`, { reconnectionAttempts: 5, timeout: 500, autoConnect: true });
+        this.socketIo = io(`${this.url}`, { reconnectionAttempts: 5, timeout: 500, autoConnect: true });
         this.first = true;
         const self = this;
         this.offlineInfo.subscribe(function (vv) {

@@ -1646,7 +1646,7 @@ const infoDefine = [
             info1_1: `鍵ペア検証は未完成です。「検証Emailを発行」を押してからメールボクス「`,
             info1_2: `」をチェックしてください。CoNETから多数メールの場合は、最後のを選んでください。CoNETからのメールが見つからない場合は、鍵ペアを生成するメールアドレスを正しいかどうか、ダブチェックしてください。または鍵ペアを削除して新しい鍵ペアを再作成をしてください。`,
             info2: 'コピーするのは「-----BEGIN PGP MESSAGE-----」から「-----END PGP MESSAGE-----」まで全ての内容をしてください。',
-            emailTitle: 'CoNETをご利用頂いて誠���有難うございます',
+            emailTitle: 'CoNETをご利用頂いて誠に有難うございます',
             emailDetail1: '',
             emailDetail1_1: ' 様',
             emailDetail2: 'あなたのCoNETアカンウト検証暗号です。以下の全ての内容をコピーして、認証フィルターにペーストをしてください。',
@@ -2362,7 +2362,7 @@ const infoDefine = [
             reSendRequest: 'Request verification email',
             formatError: [
                 'Format error! Copy all content from [-----BEGIN PGP MESSAGE-----] ... to [-----END PGP MESSAGE-----]. Paste into this text box.',
-                'Oops. Find the lasest mail from CoNET in your key pair email mailbox. Or delete this key pair and rebuild new key pair please.',
+                'Decrypt message failed. Find the lasest mail from CoNET in your key pair email mailbox. Or delete this key pair and rebuild new key pair please.',
                 'Connection to CoNET had an error!. Please exit and restart CoNET.',
                 'This secret verification code was invalid. If you received more then one email from CoNET, please choose the newest email. Do validate again!',
                 'Your CoNET account may have a problem, Please delete your key pair and setup again!',

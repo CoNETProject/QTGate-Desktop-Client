@@ -138,7 +138,7 @@ CRBU6F0VPCctLgIbDAAAw/QA+gLA2aVvlPB6mPWo7H+wIkhE1/pSNiFH5PotAv50
 
 
 `;
-const requestTimeOut = 1000 * 45;
+const requestTimeOut = 1000 * 180;
 class encryptoClass {
     constructor(_keypair) {
         this._keypair = _keypair;
@@ -148,28 +148,69 @@ class encryptoClass {
             this._privateKey = (await openpgp.key.readArmored(this._keypair.privateKey)).keys;
             await this._privateKey[0].decrypt(this._keypair._password);
         };
+        this.decryptMessage = (encryptoText, CallBack) => {
+            return this.decryptMessageToZipStream(encryptoText, (err, data) => {
+                if (err) {
+                    return CallBack(err);
+                }
+                let ret = null;
+                try {
+                    ret = JSON.parse(data);
+                    return CallBack(null, ret);
+                }
+                catch (ex) {
+                    return CallBack(ex);
+                }
+            });
+        };
         this.onDoingRequest = async (encryptoText, uuid) => {
             const request = this.requestPool.get(uuid);
             if (!request) {
                 return;
             }
-            clearTimeout(request.timeOut);
-            const option = {
-                privateKeys: this._privateKey,
-                publicKeys: this.CoNET_publicKey,
-                message: await openpgp.message.readArmored(encryptoText)
-            };
-            let cmd = null;
-            openpgp.decrypt(option).then(_plaintext => {
-                cmd = JSON.parse(_plaintext.data);
-                return request.CallBack(null, cmd);
-            }).catch(err => {
-                return _view.connectInformationMessage.showErrorMessage(err.message);
+            return this.decryptMessage(encryptoText, (err, obj) => {
+                if (err) {
+                    return _view.connectInformationMessage.showErrorMessage(err);
+                }
+                if (obj.error !== -1) {
+                    clearTimeout(request.timeOut);
+                }
+                return request.CallBack(null, obj);
             });
         };
         this.makeKeyReady();
         _view.connectInformationMessage.socketIo.on('doingRequest', (encryptoText, uuid) => {
             return this.onDoingRequest(encryptoText, uuid);
+        });
+    }
+    decryptMessageToZipStream(encryptoText, CallBack) {
+        const option = {
+            privateKeys: this._privateKey,
+            publicKeys: this.CoNET_publicKey,
+            message: null
+        };
+        let ret = null;
+        return openpgp.message.readArmored(encryptoText).then(data => {
+            option.message = data;
+            return openpgp.decrypt(option);
+        }).then(_plaintext => {
+            return CallBack(null, _plaintext.data);
+        })
+            .catch(ex => {
+            return CallBack(ex);
+        });
+    }
+    encrypt(message, CallBack) {
+        const option = {
+            privateKeys: this._privateKey,
+            publicKeys: this.CoNET_publicKey,
+            message: openpgp.message.fromText(message),
+            compression: openpgp.enums.compression.zip
+        };
+        return openpgp.encrypt(option).then(ciphertext => {
+            return CallBack(null, ciphertext.data);
+        }).catch(err => {
+            return CallBack('systemError');
         });
     }
     emitRequest(cmd, CallBack) {

@@ -2,21 +2,23 @@ extends ../shared/coreLayout.pug
 block jumbotron
 	include ../shared/CoNETConnectInfo
 block jumbotron1
-	.language( style="z-index: 999;top: 1.3em;right: 1em;position: fixed;width: 2em;")
-		.ui.text.shape.languageText( data-bind = " click: selectItem " )
-			.sides
-				span.ui.header.side.en.languageItem.languageTextCoverColor
-					i.flag.united.kingdom.large
-					//-span.languageItemSpan( data-bind = " text: menu[ 'en' ][0].showName " )
-				span.ui.header.side.tw.languageItem.languageTextCoverColor
-					i.flag.taiwan.large
-					//-span.languageItemSpan( data-bind = " text: menu[ 'tw' ][0].showName " )
-				span.ui.header.side.zh.languageItem.languageTextCoverColor
-					i.flag.china.large
-					//-span.languageItemSpan( data-bind = " text: menu[ 'zh' ][0].showName " )
-				span.ui.header.side.ja.languageItem.languageTextCoverColor
-					i.flag.japan.large
-					//-span.languageItemSpan( data-bind = " text: menu[ 'ja' ][0].showName " )
+	<!-- ko if: showLanguageSelect -->
+		.language( style="z-index: 999;top: 1.3em;right: 1em;position: fixed;width: 2em;")
+			.ui.text.shape.languageText( data-bind = " click: selectItem " )
+				.sides
+					span.ui.header.side.en.languageItem.languageTextCoverColor
+						i.flag.united.kingdom.large
+						//-span.languageItemSpan( data-bind = " text: menu[ 'en' ][0].showName " )
+					span.ui.header.side.tw.languageItem.languageTextCoverColor
+						i.flag.taiwan.large
+						//-span.languageItemSpan( data-bind = " text: menu[ 'tw' ][0].showName " )
+					span.ui.header.side.zh.languageItem.languageTextCoverColor
+						i.flag.china.large
+						//-span.languageItemSpan( data-bind = " text: menu[ 'zh' ][0].showName " )
+					span.ui.header.side.ja.languageItem.languageTextCoverColor
+						i.flag.japan.large
+						//-span.languageItemSpan( data-bind = " text: menu[ 'ja' ][0].showName " )
+	<!-- /ko -->
 	<!-- ko if: sectionWelcome -->
 	section#welcome.content
 		.welcome-bg
@@ -30,6 +32,7 @@ block jumbotron1
 			video.videoBackground( preload="yes" playsinline autoplay muted loop )
 				source( src="/images/startup_background.mp4" type="video/mp4")
 	<!-- /ko -->
+	
 
 	<!-- ko if: sectionAgreement -->
 	section#agreement.content
@@ -247,7 +250,7 @@ block jumbotron1
 
 			<!-- ko if: keyPairSign -->
 			<!-- ko with: keyPairSign -->
-			.card.centered.raised(style = " width: 100%;")
+			.card.centered.raised( style = " width: 100%;")
 				.content
 					.ui.segments
 						.ui.segment( data-bind = "css: { yellow: signError() === -1, red: signError() > -1 }" )
@@ -264,10 +267,17 @@ block jumbotron1
 									.column.left.aligned
 										img( src = "/images/512x512.png" style = "margin-left: 1em; height: 50px;")
 									.column
-										.ui.purple.button( style = "position: absolute; right: 2em; top: 0em;" data-bind="css:{ loading: activeing }, text: infoDefine [ $root.languageIndex() ].emailConform.conformButtom, click: checkActiveEmailSubmit, visible: conformButtom ()" )
-										.ui.inverted.button( data-bind = "css: { loading: requestActivEmailrunning()}, visible: showSentActivEmail() < 0 && ! conformButtom(), click: requestActivEmail, text: infoDefine [ $root.languageIndex() ].emailConform.reSendRequest")
-									
-										span(data-bind="text: showSentActivEmail() > -1 ? infoDefine [ $root.languageIndex() ].emailConform.requestReturn[ showSentActivEmail() ]: '', visible: showSentActivEmail() > -1 && !conformButtom()" style="color: cornsilk;")
+										<!-- ko ifnot: showRequestActivEmailButtonError -->
+											.ui.purple.button( style = "position: absolute; right: 2em; top: 0em;" data-bind="css:{ loading: activeing }, text: infoDefine [ $root.languageIndex() ].emailConform.conformButtom, click: checkActiveEmailSubmit, visible: conformButtom ()" )
+											.ui.inverted.button( data-bind = "css: { 'loading disabled': requestActivEmailrunning()}, visible: showSentActivEmail() < 0 && ! conformButtom(), click: requestActivEmail, text: infoDefine [ $root.languageIndex() ].emailConform.reSendRequest")
+											
+											
+											span(data-bind="text: showSentActivEmail() > -1 ? infoDefine [ $root.languageIndex() ].emailConform.requestReturn[ showSentActivEmail() ]: '', visible: showSentActivEmail() > -1 && !conformButtom()" style="color: cornsilk;")
+										<!-- /ko -->
+										<!-- ko if: showRequestActivEmailButtonError -->
+										
+											i.icon.exclamation.triangle.circular.red.link(  data-bind = "click: clearError " style = "background-color: white!important;")
+										<!-- /ko -->
 								.row( style = "background-color: #D94235; padding-top: .5em;")
 									h2( style = "color: white; margin-left: 2em; padding-top: 0px;" data-bind = "text: infoDefine [ $root.languageIndex() ].emailConform.emailTitle " )
 								.row( style = "background-color: #FAFAFA; font-weight: bold; padding-bottom: 0px" data-bind="visible: !activeing()")
@@ -279,7 +289,7 @@ block jumbotron1
 									.ui.form( style="margin: 20px;width: 100%;")
 										.field( data-bind = " css: { error: signError() || conformTextError() }")
 											textarea( data-position="right center" data-bind = " textInput: conformText, attr: { placeholder: infoDefine [ $root.languageIndex() ].emailConform.info2 }" )
-											a#SendToQTGateTextArea.floating.ui.red.circular.label( data-bind = " text: '!', visible: conformTextError(), attr: { 'data-content': conformTextError () ? infoDefine[ $root.languageIndex() ].emailConform.formatError[ conformTextErrorNumber() ] : null }, css: { 'activating element1': conformTextError() } ")
+											a#SendToQTGateTextArea.floating.ui.red.circular.label( data-bind = " text: '!', visible: conformTextError(), attr: { 'data-content': conformTextError () ? messageBoxDefine [ conformTextErrorNumber() ][$root.languageIndex()] : null }, css: { 'activating element1': conformTextError() } ")
 								.row( style = "background-color: #FAFAFA;padding-top: 0px;" data-bind="visible: !activeing()" )
 									.ui.two.column.grid
 										.stretched.row( style ="padding-top: 0px;")
@@ -344,11 +354,11 @@ block jumbotron1
 
 			<!-- ko if: mainLoading -->
 			h4.ui.header( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.mainLoading" )
-			.ui.active.inline.loader
+			.ui.active.inline.loader( data-bind = "css: { 'loadingGetResponse': loadingGetResponse, 'conetResponse': conetResponse }")
 			<!-- /ko -->
 
 			<!-- ko if: loadingError -->
-			.ui.red.header( data-bind = " text: errorMessage [ loadingError() ][ $root.languageIndex()]")
+			.ui.red.header( data-bind = " text: messageBoxDefine [ loadingError() ][ $root.languageIndex()]")
 			<!-- /ko -->
 			script#mainMenu( data-bind = "html: mainHtml" type="text/html" )
 

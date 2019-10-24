@@ -272,7 +272,8 @@ module view_layout {
 
         public imapData: IinputData = null
         public newVersion = ko.observable ( null )
-        public sessionHash = ''
+		public sessionHash = ''
+		public showLanguageSelect = ko.observable ( true )
 
         private afterInitConfig ( ) {
             

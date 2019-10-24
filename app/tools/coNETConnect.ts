@@ -73,7 +73,6 @@ export default class extends Imap.imapPeer {
 		
 	}
 
-
 	public exit1 ( err ) {
 		
 		if ( !this.alreadyExit ) {
@@ -160,7 +159,6 @@ export default class extends Imap.imapPeer {
 
 	}
 
-
 	public tryConnect1 () {
 		
 		this.connectStage = 1
@@ -174,7 +172,6 @@ export default class extends Imap.imapPeer {
 		}
 		console.log ( `doing checkConnect `)
 		return this.checkConnect ( err => {
-			
 			if ( err ) {
 				return this.exit1 ( err )
 			}
@@ -182,5 +179,36 @@ export default class extends Imap.imapPeer {
 			
 		
 		
+	}
+
+	public getFile ( fileName: string, CallBack ) {
+		let callback = false
+		if ( this.alreadyExit ) {
+			return CallBack ( new Error ('alreadyExit'))
+		}
+
+		const rImap = new Imap.qtGateImapRead ( this.imapData, fileName, true, mail => {
+			
+			
+			const attr = Imap.getMailAttached ( mail )
+
+			console.log (`====================================>\n\nImap.imapPeer getFile return new mail ==> [${ mail.length }] attr ==> [${ attr.length }]\n\n`)
+			
+			CallBack ( null, attr )
+			callback = true
+			return rImap.destroyAll( null )
+		})
+
+		rImap.once ( 'error', err => {
+			if ( !callback ) {
+				return CallBack ( err )
+			}
+			
+		})
+
+		rImap.once( 'end', () => {
+			return console.log (`Connect Class GetFile_rImap on end!`)
+		})
+
 	}
 }

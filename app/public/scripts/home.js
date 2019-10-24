@@ -250,6 +250,7 @@ var view_layout;
             this.imapData = null;
             this.newVersion = ko.observable(null);
             this.sessionHash = '';
+            this.showLanguageSelect = ko.observable(true);
             this.socketListen();
         }
         afterInitConfig() {
