@@ -25,7 +25,7 @@ CoNET official node have not ready yet./CoNET公式ノード準備中/CoNET官�
 
 2）Get any web page screenshot/任意のWebページのスクリーンショット/抓取任意網站截圖
 
-3）Major website media file download support live stream/メーインサイドメディアファイルをダウンロード、ライブストリームを対応/主要多媒體網站視頻音頻文件，直播視頻流下載
+3）Provide major website media file download link support live stream/メーインサイドメディアファイルをダウンロードリンクアドレスを提供し、ライブストリームを対応/提供主要多媒體網站視頻音頻文件，直播視頻流下載連結
 
 [Download supported sites/タウンロードをサポートするサイド/支持下載的多媒體網站列表](https://ytdl-org.github.io/youtube-dl/supportedsites.html)
 
