@@ -236,8 +236,9 @@ const appReady = () => {
 };
 const initialize = () => {
     app.once('ready', () => {
-        if (doReady)
+        if (doReady) {
             return;
+        }
         doReady = true;
         return appReady();
     });

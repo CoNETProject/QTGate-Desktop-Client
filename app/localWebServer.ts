@@ -301,8 +301,6 @@ export default class localServer {
 			const _files = files.split (',')
 			console.log (`socket.on ('getFilesFromImap') _files = [${ _files }] _files.length = [${ _files.length }]`  )
 			
-			
-			
 			let ret = ''
 			return Async.eachSeries ( _files, ( n, next ) => {
 				console.log (`Async.eachSeries _files[${ n }]`)
@@ -318,7 +316,7 @@ export default class localServer {
 					return CallBack ( err )
 				}
 				
-				console.log (`******************** getFilesFromImap success all fies!\n\n${ ret.length }\n\n`)
+				console.log (`******************** getFilesFromImap success all [${ ret.length }] fies!\n\n${ ret }\n\n`)
 
 				
 				return CallBack ( null, ret )

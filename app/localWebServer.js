@@ -295,7 +295,7 @@ class localServer {
                 if (err) {
                     return CallBack(err);
                 }
-                console.log(`******************** getFilesFromImap success all fies!\n\n${ret.length}\n\n`);
+                console.log(`******************** getFilesFromImap success all [${ret.length}] fies!\n\n${ret}\n\n`);
                 return CallBack(null, ret);
             });
         });

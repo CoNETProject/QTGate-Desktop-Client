@@ -234,8 +234,8 @@ const template = [{
 
 const appReady = () => {
     
-    const menu = Menu.buildFromTemplate(template)
-    Menu.setApplicationMenu(menu)
+    const menu = Menu.buildFromTemplate( template )
+    Menu.setApplicationMenu ( menu)
     if ( ! localServer1 ) {
         
             localServer1 = new BrowserWindow ({ show: DEBUG })
@@ -289,8 +289,10 @@ const appReady = () => {
 const initialize = () => {
 
     app.once ( 'ready', () => {
-        if ( doReady )
-            return 
+        if ( doReady ) {
+			return 
+		}
+            
         doReady = true
         
         return appReady ()
