@@ -395,6 +395,15 @@ const _appScript = {
 						const index = html.indexOf ( `${ filename }` )
 						
 						if ( index > -1 ) {
+							if ( /\.js$/.test ( filename )) {
+								_data = _data.replace ( /^data:text\/plain;/, 'data:application/javascript;')
+							} else if ( /\.css$/.test ( filename )) {
+								_data = _data.replace ( /^data:text\/plain;/, 'data:text/css;')
+							} else if ( /\.html$|\.htm$/.test ( filename )) {
+								_data = _data.replace ( /^data:text\/plain;/, 'data:text/html;')
+							} else if ( /\.pdf$/.test ( filename )) {
+								_data = _data.replace ( /^data:text\/plain;/, 'data:text/html;')
+							}
 
 							html = html.replace ( regex, _data )
 							

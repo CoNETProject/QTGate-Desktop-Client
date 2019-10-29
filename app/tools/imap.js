@@ -497,7 +497,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         };
         this.Tag = `A${this.imapServer.TagCount1()}`;
         this.cmd = `${this.Tag} LOGOUT`;
-        this.debug ? debugOut(this.cmd, false, this.imapServer.imapSerialID) : null;
+        this.debug ? debugOut(this.cmd, false, this.imapServer.listenFolder || this.imapServer.imapSerialID) : null;
         if (this.writable) {
             this.appendWaitResponsrTimeOut = timers_1.setTimeout(() => {
                 return CallBack();
