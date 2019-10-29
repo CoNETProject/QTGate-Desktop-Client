@@ -1,6 +1,9 @@
 window.URL = window.URL || window.webkitURL;
 const getFilenameMime = (fileName, CallBack) => {
     const exc = fileName.split('.');
+    if (exc.length < 2) {
+        CallBack();
+    }
     const exc1 = exc[exc.length - 1];
     const ret = $.cookie(`mime.${exc1}`);
     if (ret && ret.length) {
@@ -22,49 +25,35 @@ const showHTMLComplete = (uuid, zipStream, CallBack) => {
         const ret = {
             img: null,
             html: null,
-            folder: new Map()
+            folder: []
         };
         const allFiles = Object.keys(zip.files);
-        let currentFileName = '';
-        const getZipFile = (filename, __CallBack) => {
-            return getFilenameMime(filename, (err, mime) => {
-                if (err) {
-                    return __CallBack(err);
-                }
-                if (/^text\//.test(mime)) {
-                    return zip.files[filename].async('string').then(__CallBack, errCallBack);
-                }
-                return zip.files[filename].async('uint8array').then(__CallBack, errCallBack);
-            });
-        };
+        let currentFileName = allFiles.shift();
         const _CallBack = content => {
             if (content && content.length) {
                 const processFile = () => {
-                    return getFilenameMime(currentFileName, (err, mine) => {
-                        if (err) {
-                            return;
+                    switch (currentFileName) {
+                        case `temp/${uuid}.html`: {
+                            return ret.html = content;
                         }
-                        switch (currentFileName) {
-                            case `temp/${uuid}.html`: {
-                                return ret.html = content;
-                            }
-                            case `temp/${uuid}.png`: {
-                                return ret.img = content;
-                            }
-                            default: {
-                                const contentBlob = new Blob([content], { type: mine });
-                                ret.folder.set(currentFileName.replace('temp/', './'), contentBlob);
-                            }
+                        case `temp/${uuid}.png`: {
+                            return ret.img = content;
                         }
-                    });
+                        default: {
+                            return ret.folder.push({ filename: currentFileName.replace('temp/', './'), data: content });
+                        }
+                    }
                 };
                 processFile();
             }
-            if (allFiles.length) {
-                return getZipFile(currentFileName = allFiles.shift(), _CallBack);
+            if (currentFileName = allFiles.shift()) {
+                return zip.files[currentFileName].async('string').then(_CallBack, errCallBack);
             }
             return CallBack(null, ret);
         };
-        return getZipFile(currentFileName = allFiles.shift(), _CallBack);
+        if (currentFileName) {
+            return zip.files[currentFileName].async('string').then(_CallBack, errCallBack);
+        }
+        return CallBack(null, ret);
     }, errCallBack);
 };

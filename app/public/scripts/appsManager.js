@@ -338,23 +338,18 @@ const _appScript = {
                         return self.showErrorMessageProcess();
                     }
                     _view.bodyBlue(false);
-                    let html = data.html;
-                    data.folder.forEach((val, key) => {
-                        const regex = new RegExp(`["]?[']?${key}["]?[']?`, 'g');
-                        const index = html.indexOf(`"${key}"`);
+                    const getData = (filename, _data) => {
+                        const regex = new RegExp(`${filename}`, 'g');
+                        const index = html.indexOf(`${filename}`);
                         if (index > -1) {
-                            const url = window.URL.createObjectURL(val);
-                            self.urlPool.push(url);
-                            html = html.replace(regex, `"${url}"`);
+                            html = html.replace(regex, _data);
                         }
-                        else {
-                            const uuu = 999;
-                        }
+                    };
+                    let html = data.html;
+                    data.folder.forEach(n => {
+                        getData(n.filename, n.data);
                     });
-                    const imgBlob = new Blob([data.img], { type: 'image/png' });
-                    const urlImg = window.URL.createObjectURL(imgBlob);
-                    self.png(urlImg);
-                    self.urlPool.push(urlImg);
+                    self.png(data.img);
                     const htmlBolb = new Blob([html], { type: 'text/html' });
                     const url = window.URL.createObjectURL(htmlBolb);
                     self.urlPool.push(url);
@@ -384,6 +379,21 @@ const _appScript = {
         htmlClick() {
             this.showHtmlCodePage(true);
             this.showImgPage(false);
+        }
+        getimageData(val, mine, CallBack) {
+            const img = document.createElement('img');
+            const contentBlob = new Blob([val], { type: mine });
+            const url = window.URL.createObjectURL(contentBlob);
+            img.addEventListener('loadend', e => {
+                window.URL.revokeObjectURL(url);
+                const uu = $(`${img.id}`);
+                const ret = uu.attr('src');
+                uu.remove();
+                return CallBack(null, ret);
+            });
+            img.id = uuid_generate();
+            img.src = url;
+            $('#tempDom').append(img);
         }
     },
     info: {
@@ -895,10 +905,6 @@ const _appScript = {
                 self.returnSearchResultItemsInit(self.imageItemsArray());
             });
             /** */
-            return setTimeout(() => {
-                self.imageButtonShowLoading(false);
-                self.imageItemsArray(googleSearchImageClickResult);
-            }, 2000);
         }
         self.searchSimilarImagesList(self.imageItemsArray().Result);
         self.showMain(false);

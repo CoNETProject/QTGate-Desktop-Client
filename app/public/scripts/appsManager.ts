@@ -353,6 +353,25 @@ const _appScript = {
 			this.showHtmlCodePage ( true )
 			this.showImgPage ( false )
 		}
+
+		private getimageData ( val: any, mine: string, CallBack ) {
+			const  img = document.createElement('img')
+			const contentBlob = new Blob ([ val ], { type: mine })
+			const url = window.URL.createObjectURL ( contentBlob )
+
+			img.addEventListener ( 'loadend', e => {
+				window.URL.revokeObjectURL ( url )
+				const uu = $( `${ img.id }`)
+				const ret = uu.attr ('src')
+				uu.remove ()
+				return CallBack ( null, ret )
+			})
+
+			img.id = uuid_generate ()
+			img.src = url
+			$('#tempDom').append ( img )
+		}
+
 		constructor ( public showUrl: string, private zipBase64Stream: string, private zipBase64StreamUuid: string, private exit: ()=> void ) {
 			const self = this
 			_view.showIconBar ( false )
@@ -361,37 +380,49 @@ const _appScript = {
 				if ( err ) {
 					return self.showErrorMessageProcess ()
 				}
-				showHTMLComplete ( zipBase64StreamUuid, data, ( err, data: { img: string, html: string, folder: Map < string, Blob >} ) => {
+				showHTMLComplete ( zipBase64StreamUuid, data, ( err, data: { img: string, html: string, folder: [ { filename: string, data: string }]} ) => {
 					if ( err ) {
 						return self.showErrorMessageProcess ()
 					}
 					_view.bodyBlue ( false )
-					let html = data.html
-					data.folder.forEach (( val, key ) => {
+
+
+
+					const getData =  ( filename: string, _data: string ) => {
 						
-						const regex = new RegExp (`["]?[']?${ key }["]?[']?`,'g')
+						const regex = new RegExp (`${ filename }`,'g')
 						
-						const index = html.indexOf ( `"${ key }"` )
+						const index = html.indexOf ( `${ filename }` )
 						
 						if ( index > -1 ) {
-							const url = window.URL.createObjectURL ( val )
-							self.urlPool.push ( url )
-							html = html.replace ( regex, `"${ url }"` )
-						} else  {
-							const uuu = 999
+
+							html = html.replace ( regex, _data )
+							
 						}
 						
+						
+					}
+
+					let html = data.html
+					
+					data.folder.forEach ( n => {
+						getData ( n.filename, n.data )
 					})
-					const imgBlob = new Blob ([ data.img ], { type: 'image/png'})
-					const urlImg = window.URL.createObjectURL ( imgBlob )
-					self.png ( urlImg )
-					self.urlPool.push ( urlImg )
+
+					
+					
+					self.png ( data.img )
+					
 					const htmlBolb = new Blob ([ html ], { type: 'text/html'})
 					const url = window.URL.createObjectURL ( htmlBolb )
 					self.urlPool.push ( url )
 					//_view.showLanguageSelect ( false )
 					self.showLoading ( false )
 					self.htmlIframe ( url )
+					
+
+
+					
 					
 				})
 			})
@@ -1049,11 +1080,6 @@ const _appScript = {
 			})
 			/** */
 
-			
-			return setTimeout (() => {
-				self.imageButtonShowLoading ( false )
-				self.imageItemsArray ( googleSearchImageClickResult )
-			}, 2000 )
 		}
 
 
@@ -1396,7 +1422,6 @@ const _appScript = {
 
 
 }
-
 
 class appsManager {
 	public mainPages = ko.observable( null )
