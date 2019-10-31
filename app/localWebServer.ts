@@ -22,7 +22,6 @@ import * as Tool from './tools/initSystem'
 import * as Async from 'async'
 import * as Fs from 'fs'
 import * as Util from 'util'
-import * as freePort from 'portastic'
 import * as Uuid from 'node-uuid'
 import * as Imap from './tools/imap'
 import CoNETConnectCalss from './tools/coNETConnect'
@@ -96,14 +95,6 @@ const imapErrorCallBack = ( message: string ) => {
 
 }
 
-const findPort = ( port: number, CallBack ) => {
-    return freePort.test ( port ).then ( isOpen => {
-        if ( isOpen )
-            return CallBack ( null, port )
-        ++ port
-        return findPort ( port, CallBack )
-    })
-}
 
 export default class localServer {
 	private expressServer = Express()

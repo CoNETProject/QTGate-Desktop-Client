@@ -23,7 +23,6 @@ const Tool = require("./tools/initSystem");
 const Async = require("async");
 const Fs = require("fs");
 const Util = require("util");
-const freePort = require("portastic");
 const Uuid = require("node-uuid");
 const Imap = require("./tools/imap");
 const coNETConnect_1 = require("./tools/coNETConnect");
@@ -76,14 +75,6 @@ const imapErrorCallBack = (message) => {
         return 5;
     }
     return -1;
-};
-const findPort = (port, CallBack) => {
-    return freePort.test(port).then(isOpen => {
-        if (isOpen)
-            return CallBack(null, port);
-        ++port;
-        return findPort(port, CallBack);
-    });
 };
 class localServer {
     constructor(cmdResponse, test) {

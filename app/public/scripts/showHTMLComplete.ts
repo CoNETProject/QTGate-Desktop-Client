@@ -1,6 +1,7 @@
 
 window.URL = window.URL || window.webkitURL
 declare const JSZip
+
 const getFilenameMime = ( fileName: string, CallBack ) => {
 	const exc = fileName.split ('.')
 	if ( exc.length < 2 ) {
@@ -35,7 +36,8 @@ const showHTMLComplete = ( uuid: string, zipStream: string, CallBack ) => {
 		let currentFileName = allFiles.shift()
 		
 		const _CallBack = content => {
-			if ( content && content.length ) {
+
+			if ( content && content.length > 20 ) {
 				
 				const processFile = () => {
 					switch ( currentFileName ) {

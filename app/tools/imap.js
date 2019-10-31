@@ -43,7 +43,7 @@ const debugOut = (text, isIn, serialID) => {
     const log = `【${new Date().toISOString()}】【${serialID}】${isIn ? '<=' : '=>'} 【${text}】`;
     saveLog(log);
 };
-const idleInterval = 1000 * 30; // 3 mins
+const idleInterval = 1000 * 180; // 3 mins
 const socketTimeOut = 1000 * 60;
 class ImapServerSwitchStream extends Stream.Transform {
     constructor(imapServer, exitWithDeleteBox, debug) {
@@ -87,7 +87,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         }
         if (this.writable) {
             this.idleDoingDone = true;
-            this.debug ? debugOut(`DONE`, false, this.imapServer.listenFolder) : null;
+            this.debug ? debugOut(`DONE`, false, this.imapServer.listenFolder || this.imapServer.imapSerialID) : null;
             return this.push(`DONE\r\n`);
         }
         return this.imapServer.destroyAll(null);
@@ -368,7 +368,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                     if (/^RECENT$|^FETCH$|^EXISTS$|^EXPUNGE$/i.test(cmdArray[2])) {
                         newSwitchRet = true;
                     }
-                    if (/^EXISTS$/i.test(cmdArray[2]) || this.isWaitLogout) {
+                    if (/^RECENT$/i.test(cmdArray[2]) || this.isWaitLogout) {
                         this.idleDoingDown();
                     }
                     return callback();
@@ -609,7 +609,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         this.cmd = `APPEND "${folderName}" {${_length}${this.imapServer.literalPlus ? '+' : ''}}`;
         this.cmd = `${this.Tag} ${this.cmd}`;
         const _time = _length / 1000 + 20000;
-        this.debug ? debugOut(this.cmd, false, this.imapServer.IMapConnect.imapUserName) : null;
+        this.debug ? debugOut(this.cmd, false, this.imapServer.listenFolder || this.imapServer.imapSerialID) : null;
         if (!this.writable) {
             return this.doCommandCallback(new Error('! imap.writable '));
         }
@@ -619,7 +619,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         }, _time);
         //console.log (`*************************************  append time = [${ time }] `)
         if (this.imapServer.literalPlus) {
-            this.debug ? debugOut(out, false, this.imapServer.IMapConnect.imapUserName) : null;
+            this.debug ? debugOut(out, false, this.imapServer.listenFolder || this.imapServer.imapSerialID) : null;
             this.push(out);
             this.push(Base64Data + '\r\n');
         }

@@ -223,12 +223,14 @@ class encryptoClass {
 	}
 
 	public encrypt ( message, CallBack ) {
+		
 		const option = {
 			privateKeys: this._privateKey,
 			publicKeys: this.CoNET_publicKey,
 			message: openpgp.message.fromText ( message ),
 			compression: openpgp.enums.compression.zip
 		}
+
 		return openpgp.encrypt ( option ).then ( ciphertext => {
 			return CallBack ( null, ciphertext.data )
 			

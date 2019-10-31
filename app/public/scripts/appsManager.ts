@@ -30,6 +30,15 @@ const _mainMenuObj = {
 		
 	}],
 
+	appScript:[{
+		startup: {
+
+		},
+		_appScriptGlobal: {
+
+		}
+	}]
+
 }
 
 const _appScriptGlobal = `
@@ -330,7 +339,6 @@ const _appScript = {
 		public showErrorMessage = ko.observable ( false )
 		public showHtmlCodePage = ko.observable ( false )
 		public showImgPage = ko.observable ( true )
-		private urlPool = []
 		public showErrorMessageProcess () {
 			this.showLoading ( false )
 			this.showErrorMessage ( true )
@@ -340,9 +348,6 @@ const _appScript = {
 			this.showImgPage ( false )
 			this.showHtmlCodePage ( false )
 			this.png ( null )
-			this.urlPool.forEach ( n => {
-				window.URL.revokeObjectURL ( n )
-			})
 			this.exit ()
 		}
 		public imgClick () {
@@ -385,9 +390,6 @@ const _appScript = {
 						return self.showErrorMessageProcess ()
 					}
 					_view.bodyBlue ( false )
-
-
-
 					const getData =  ( filename: string, _data: string ) => {
 						
 						const regex = new RegExp (`${ filename }`,'g')
@@ -395,14 +397,16 @@ const _appScript = {
 						const index = html.indexOf ( `${ filename }` )
 						
 						if ( index > -1 ) {
-							if ( /\.js$/.test ( filename )) {
+							if ( /js$/.test ( filename )) {
 								_data = _data.replace ( /^data:text\/plain;/, 'data:application/javascript;')
-							} else if ( /\.css$/.test ( filename )) {
+							} else if ( /css$/.test ( filename )) {
 								_data = _data.replace ( /^data:text\/plain;/, 'data:text/css;')
-							} else if ( /\.html$|\.htm$/.test ( filename )) {
+							} else if ( /html$|htm$/.test ( filename )) {
 								_data = _data.replace ( /^data:text\/plain;/, 'data:text/html;')
-							} else if ( /\.pdf$/.test ( filename )) {
+							} else if ( /pdf$/.test ( filename )) {
 								_data = _data.replace ( /^data:text\/plain;/, 'data:text/html;')
+							} else {
+								const kkk = _data
 							}
 
 							html = html.replace ( regex, _data )
@@ -423,15 +427,14 @@ const _appScript = {
 					self.png ( data.img )
 					
 					const htmlBolb = new Blob ([ html ], { type: 'text/html'})
-					const url = window.URL.createObjectURL ( htmlBolb )
-					self.urlPool.push ( url )
-					//_view.showLanguageSelect ( false )
+					const _url = window.URL.createObjectURL ( htmlBolb )
+					const fileReader = new FileReader()
+					fileReader.onloadend = evt => {
+						return window.URL.revokeObjectURL ( _url )
+					}
+					
 					self.showLoading ( false )
-					self.htmlIframe ( url )
-					
-
-
-					
+					self.htmlIframe ( _url )
 					
 				})
 			})
@@ -571,6 +574,7 @@ const _appScript = {
 
 	search_form: ( self, event ) => {
 		const search_text = self.searchInputText ()
+		self.showSearchesRelated ( false )
 		self.showInputLoading ( true )
 		const width = window.innerWidth
 		const height = window.outerHeight
@@ -608,46 +612,6 @@ const _appScript = {
 		 * 
 		 * 		test Unit
 		 */
-
-		 
-		setTimeout (() => {
-
-
-			/** test error */
-			/*
-			return errorProcess ( 'eee ' )
-			/** */
-
-
-			/** Test response from Local host */
-
-			/** test status */
-			/*
-			setTimeout (() => {
-				self.loadingGetResponse ( false )
-				return self.conetResponse ( true )
-			}, 2000 )
-			return self.loadingGetResponse ( true )
-			/** */
-
-
-			/**  test normail result */
-			/*
-			self.showInputLoading ( false )
-			self.loadingGetResponse ( false )
-			self.conetResponse ( false )
-
-			const args = googleSearchResult1[0]
-			self.searchInputTextShow ( search_text )
-			self.searchItemsArray ( args.param )
-			self.returnSearchResultItemsInit ( args.param )
-			return self.showResultItems ( self, args.param )
-			/** */
-
-
-		}, 2000 )
-		
-		/** */
 
 		
 
@@ -844,27 +808,6 @@ const _appScript = {
 				break
 			}
 		}
-
-		/**  TEST unit  */
-		setTimeout (() => {
-
-			/** Error Test  */
-			/*
-			return showError ( 'dd' )
-			/** */
-
-			/** Status Test */
-			/*
-			setTimeout (() => {
-				self.nextButtonLoadingGetResponse ( false )
-				self.nextButtonConetResponse ( true )
-			}, 2000 )
-			return self.nextButtonLoadingGetResponse ( true )
-			/** */
-			
-
-
-		}, 2000 )
 
 		/** */
 		
@@ -1189,6 +1132,12 @@ const _appScript = {
 		}))
 	},
 
+	searchesRelatedSelect: ( self, index ) => {
+
+		self.searchInputText ( self.searchItem().searchesRelated[index].text )
+		self.showSearchesRelated ( false )
+	},
+
 	closeSimilarImagesResult: ( self ) => {
 		self.searchSimilarImagesList ([])
 		self.showMain ( true )
@@ -1275,13 +1224,14 @@ const _appScript = {
 		const media = mediaData.split(',')
 		const type = media[0].split(';')[0].split (':')[1]
 		const _media = Buffer.from ( media[1], 'base64')
+		
 		const ret: twitter_mediaData = {
 			total_bytes: media[1].length,
-			media_type: type,
+			media_type: 'image/png',
 			rawData: media[1],
 			media_id_string: null
 		}
-		const uploadDataPool = []
+		
 		
 		//if ( mediaData.length > maxImageLength) {
 		const exportImage = ( _type, img ) => {
@@ -1301,26 +1251,22 @@ const _appScript = {
 				return CallBack ( err )
 			}
 			const uu = image.bitmap
-			if ( uu.height > uu.width ) {
-				image.resize ( Jimp.AUTO, imageMaxHeight )
-			} else {
-				image.resize ( imageMaxWidth, Jimp.AUTO )
+
+			if ( uu.height +  uu.width > imageMaxHeight + imageMaxWidth ) {
+				if ( uu.height > uu.widt ) {
+					image.resize ( Jimp.AUTO, imageMaxHeight )
+				} else {
+					image.resize ( imageMaxWidth, Jimp.AUTO )
+				}
+			
 			}
-			if ( /\/PNG/i.test ( type )) {
-				return image.deflateStrategy ( 1, () => {
-					return exportImage ( type, image )
-				})
-			}
-			if ( /\/(JPEG|JPG)/i.test ( type )) {
-				return image.quality ( 100, () => {
-					return exportImage ( type, image )
-				})
-			}
-			//		BMP and all other to PNG
-			ret.media_type = 'image/png'
-			return image.deflateStrategy ( 4, () => {
+			//		to PNG
+
+			return image.deflateStrategy ( 2, () => {
 				return exportImage ( ret.media_type, image )
 			})
+			
+
 		})
 		//}
 		
@@ -1339,10 +1285,7 @@ const _appScript = {
 				return
 			}
 
-
 			const reader = new FileReader()
-			
-
 
 			reader.onload = e => {
 				const self = _view.appsManager().appScript()
@@ -1362,7 +1305,7 @@ const _appScript = {
 					if ( err ) {
 						return errorProcess ( err )
 					}
-					const uuid = uuid_generate()
+					const uuid = uuid_generate() + '.png'
 
 					return _view.keyPairCalss.encrypt ( data.rawData, ( err, textData ) => {
 
@@ -1370,7 +1313,7 @@ const _appScript = {
 							return errorProcess ( err )
 						}
 
-						return _view.connectInformationMessage.sockEmit ('sendMedia', uuid, textData, err => {
+						return _view.connectInformationMessage.sockEmit ( 'sendMedia', uuid, textData, err => {
 
 							if ( err ) {
 								return errorProcess ( err )
@@ -1427,9 +1370,6 @@ const _appScript = {
 		
 	}
 
-
-
-
 }
 
 class appsManager {
@@ -1483,7 +1423,7 @@ class appsManager {
 		
 		const com: QTGateAPIRequestCommand = {
 			command: 'mainPage',
-			Args: null,
+			Args: [''],
 			error: null,
 			subCom: null
 		}
@@ -1594,10 +1534,15 @@ class appsManager {
 		this.showMainMenu ( false )
 		this.tempAppHtml ( true )
 		_view.bodyBlue ( false )
+
 		
 		_appScript.startup ( _appScript )
 		this.appScript ( _appScript )
 		eval ( _appScriptGlobal )
+		
+
+		
+
 	}
 
 	constructor ( private appMenu: any ) {

@@ -309,15 +309,16 @@
 		.listItems( style = "margin:1em;" )
 			.ui.top.fixed.menu.borderless
 				.item( style = "width: 90%;" )
-					form.ui.form( data-bind = "submit: search_form" style = "width: 100%;" )
+					form.ui.form( data-bind = "event: { 'submit': search_form }" style = "width: 100%;" )
 						.field
 						
 							.ui.search
-								.ui.input.icon
-									input( style="color:rgba(0,0,0,0.5);border-radius: 500rem!important;" type="text" data-bind = "textInput: searchInputText, hasFocus: SearchInputNextHasFocus" )
+								.ui.input.icon( data-bind = "css : { 'error': showSearchError(), 'loading disabled': showInputLoading }")
+									input( style="color:rgba(0,0,0,0.5);border-radius: 500rem!important;" type="text" 
+										data-bind = " textInput: searchInputText, hasFocus: SearchInputNextHasFocus, attr: { placeholder: showSearchError() ? ( messageBoxDefine [ errorMessageIndex() ][ $root.languageIndex() ]): infoDefine[ $root.languageIndex() ].coSearch.searchInputPlaceholder }" )
 									
 									<!-- ko if: searchInputText().length -->
-									i.icon.circular.search.link.icon( style="color: #4285f4!important;" )
+									i.icon.circular.search.link.icon( data-bind = "click: search_form" style="color: #4285f4!important;" )
 									<!-- /ko -->
 
 									<!-- ko if: !searchInputText().length -->
@@ -325,6 +326,11 @@
 										.hideInput( style="position: absolute;")
 											input( onchange = "fileInputSelected ( this )" id = "imageInput1" type = "file" accept = 'image/gif,image/jpeg,image/jpg,image/png' style="opacity:0;width: 0px;height: 0px;" )
 									<!-- /ko -->
+
+									<!-- ko if: showSearchError -->
+										i.icon.link.circular.red.close( data-bind = " click: searchInputCloseError ")
+									<!-- /ko -->
+
 						<!-- ko if: searchItem().action -->
 						.field( style = "margin-left: 1em;" )
 
@@ -423,7 +429,7 @@
 							.related.ui.grid( style = "padding-bottom: 1em;" )
 
 								<!-- ko foreach: searchItem().searchesRelated -->
-								a.five.wide.column( href = "#" data-bind = "text: text, click: function () { $root.searchesRelatedSelect ( $index() )}" style="padding-top: 0.2rem;padding-bottom: 0.2rem;")
+								a.five.wide.column( href = "#" data-bind = "text: text, click: function () { $parents[0].searchesRelatedSelect ( $parents[0], $index())}" style="padding-top: 0.2rem;padding-bottom: 0.2rem;")
 								<!-- /ko -->
 						<!-- /ko -->
 			.items( data-bind=" style: { 'margin-top': showSearchesRelated() && !searchItem()['originImage'] ? '15.5em' : '7.5em', 'padding-top': showSearchesRelated() && !searchItem()['originImage'] ? '1em': '1em' }, click: function () { showSearchesRelated ( false ); return true;}" )
@@ -637,7 +643,7 @@
 					<!-- /ko -->
 		<!-- ko if: showHtmlCodePage -->
 		
-			iframe( data-bind = " attr: { src: htmlIframe() } "  style = "border: none;width: 100%; height: -webkit-fill-available;margin-top: 7em;" sandbox = "allow-scripts allow-forms" )
+			iframe( data-bind = " attr: { src: htmlIframe() } "  style = "border: none;width: 100%; height: -webkit-fill-available;margin-top: 7em;" sandbox = "allow-forms" )
 		<!-- /ko -->
 
 		<!-- ko if: showImgPage -->
@@ -664,6 +670,4 @@
 					i.icon.object.group.olive
 				span( data-bind = "text: webUrl" )
 	<!-- /ko -->
-
-	#tempDom( style = 'width: 0px;height:0px')
 <!-- /ko -->

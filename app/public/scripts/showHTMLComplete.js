@@ -30,7 +30,7 @@ const showHTMLComplete = (uuid, zipStream, CallBack) => {
         const allFiles = Object.keys(zip.files);
         let currentFileName = allFiles.shift();
         const _CallBack = content => {
-            if (content && content.length) {
+            if (content && content.length > 20) {
                 const processFile = () => {
                     switch (currentFileName) {
                         case `temp/${uuid}.html`: {
