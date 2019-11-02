@@ -348,8 +348,8 @@ block jumbotron1
 		.CoGateCards( style="max-width: 60em;")
 			.welcomeText.ui.header
 				.content
-					h1( data-bind = " text: infoDefine[ $root.languageIndex() ].thirdParty.information" )
-					//.sub.header( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.welcomeTextSub" )
+					h1.shadowText1( data-bind = " text: infoDefine[ $root.languageIndex() ].thirdParty.information" style="color:white;")
+					.sub.header( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.welcomeTextSub" )
 
 
 			<!-- ko if: mainLoading -->
@@ -373,8 +373,7 @@ block jumbotron1
 			
 			<!-- mainMenu section -->
 			<!-- /ko -->
-
-			
+	
 	<!-- /ko -->
 
 	<!-- ko if: appHtml -->

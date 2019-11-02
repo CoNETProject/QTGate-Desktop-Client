@@ -26,7 +26,7 @@
 							<!-- ko if : hasFocusShowTool -->
 
 								<!-- ko if: !searchInputText().length -->
-									i.icon.image.outline.link.circular( data-bind = " click: function (){ document.getElementById('imageInput1').click() } " style = "box-shadow: 0 0 0 0.1em; color: #42c8f4!important;")
+									i.icon.image.outline.link.circular( data-bind = " click: function (){ document.getElementById('imageInput1').click() }, style: { 'margin-top' : hasFocus ? '2px' : '0px' }" style = "box-shadow: 0 0 0 0.1em; color: #42c8f4!important;")
 									input( onchange = "_view.appsManager().appScript().imageSearch( this )" id = "imageInput1" type = "file" accept = 'image/gif,image/jpeg,image/jpg,image/png' style="opacity:0" )
 								<!-- /ko -->
 
@@ -451,38 +451,38 @@
 								img( data-bind = " attr: { src: img }")
 							.content
 								.meta( data-bind = " text: infoDefine[ $root.languageIndex() ].coSearch.imageSize ")
-								.description( data-bind = " text: size" style = "color: gray;")
+								.description( data-bind = " text: size" style = "color: gray;" )
 								.meta
 									
-									<!-- ko if: $root.similarImagesLoading -->
+									<!-- ko if: $parents[0].similarImagesLoading -->
 									span
 										i.icon.notched.circle.loading.purple
 										span.purple( data-bind = " text: infoDefine[ $root.languageIndex() ].coSearch.similarImages" style = "color: #a333c8!important;")
 									<!-- /ko -->
 
-									<!-- ko ifnot: $root.showSimilarImagesError() -->
+									<!-- ko ifnot: $parents[0].showSimilarImagesError -->
 									.notSimilarImagesShowError
 
-										<!-- ko ifnot: $root.similarImagesLoading -->
+										<!-- ko ifnot: $parents[0].similarImagesLoading -->
 										.ifNotSimilarImagesLoading
 
-											<!-- ko if: $root.searchSimilarImagesList().length -->
+											<!-- ko if: $parents[0].searchSimilarImagesList().length -->
 											.ifHaveSearchSimilarImagesList
-												i.icon.file.image.outline.orange.link( data-bind = "click: function() { $root.similarImagesReadyClick()}")
-												a.ui( data-bind = "text: infoDefine[ $root.languageIndex() ].coSearch.similarImages, click: function() { $root.similarImagesReadyClick()}", style="color:orange!important" )
+												i.icon.file.image.outline.orange.link( data-bind = "click: $parents[0].similarImagesReadyClick ")
+												a.ui( data-bind = " text: infoDefine[ $root.languageIndex() ].coSearch.similarImages, click: $parents[0].similarImagesReadyClick ", style = "color:orange!important" )
 											<!-- /ko -->
 
-											<!-- ko ifnot: $root.searchSimilarImagesList().length -->
+											<!-- ko ifnot: $parents[0].searchSimilarImagesList().length -->
 											.ifHaveNotSearchSimilarImagesList
-												a.ui( data-bind = "text: infoDefine[ $root.languageIndex() ].coSearch.similarImages, click: function() { $root.requestSimilarImagesClick()}" )
+												a.ui( data-bind = "text: infoDefine[ $root.languageIndex() ].coSearch.similarImages, click: $parents[0].requestSimilarImagesClick " )
 											<!-- /ko -->
 										<!-- /ko -->
 									<!-- /ko -->
 
-									<!-- ko if: $root.showSimilarImagesError() -->
+									<!-- ko if: $parents[0].showSimilarImagesError -->
 									span
-										i.icon.info.circle.red.link( data-bind = "click: function () { $root.SimilarImagesErrorClick ()}" )
-										a.ui( data-bind = "text: messageBoxDefine [ similarImagesErrorIndex()] [ $root.languageIndex() ], click: function () { $root.SimilarImagesErrorClick ()}"
+										i.icon.info.circle.red.link( data-bind = "click: $parents[0].SimilarImagesErrorClick" )
+										a.ui( data-bind = "text: messageBoxDefine [ similarImagesErrorIndex()] [ $root.languageIndex() ], click: $parents[0].SimilarImagesErrorClick "
 											style = "color: #990000a8!important;")
 									<!-- /ko -->
 								

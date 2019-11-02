@@ -468,7 +468,8 @@ const infoDefine = [
             mainLoading: '正在获取节点信息...',
             nodeName: '您进入的节点名：',
             connectAddress: '节点接入地址：',
-            serviceList: '提供服务一览'
+            serviceList: '提供服务一览',
+            welcomeTextSub: '隐私安全自由的新互联网'
         },
         twitter: {
             newTwitterAccount: `请输入您的推特APP信息，如何获得和设置推特账号APP信息，请点击<a target="_blank" href='https://github.com/QTGate/QTGate-Desktop-Client/wiki/Create-Twitter-APP')">这里</a>`,
@@ -1121,7 +1122,8 @@ const infoDefine = [
             mainLoading: 'ノードのサービスを取得中...',
             nodeName: 'ノードの名前：',
             connectAddress: 'ノードに接続アドレス：',
-            serviceList: 'サービス一覧'
+            serviceList: 'サービス一覧',
+            welcomeTextSub: 'プライバシー、セキュリティー、自由な新なインターネット'
         },
         youtube: {
             startup: {
@@ -1797,7 +1799,8 @@ const infoDefine = [
             mainLoading: 'Loading node information...',
             nodeName: 'Node name: ',
             connectAddress: 'Node address: ',
-            serviceList: 'Service list'
+            serviceList: 'Service list',
+            welcomeTextSub: 'Anonymous, private, security and freedom of new Internet.'
         },
         youtube: {
             startup: {
@@ -2518,7 +2521,7 @@ const infoDefine = [
             mainLoading: '正在獲取結點信息...',
             nodeName: '您進入的節點名：',
             connectAddress: '接入地址：',
-            welcomeTextSub: '',
+            welcomeTextSub: '隱私安全自由的新互聯網',
             serviceList: '提供服務一覽'
         },
         youtube: {
