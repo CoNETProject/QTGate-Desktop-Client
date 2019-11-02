@@ -1,3 +1,5 @@
+export const CoNET_version = '3.0.9'
+
 /*!
  * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
  *
@@ -71,8 +73,8 @@ export const CoNET_PublicKey = Path.join ( CoNET_Home, '3C272D2E.pem')
 
 export const LocalServerPortNumber = 3000
 export const configPath = Path.join ( QTGateFolder, 'config.json' )
-const packageFilePath = Path.join ( '..', '..','package.json')
-export const packageFile = require ( packageFilePath )
+//const packageFilePath = Path.join ( __dirname,'package.json')
+//export const packageFile = require ( packageFilePath )
 export const QTGateSignKeyID = /3acbe3cbd3c1caa9/i
 export const twitterDataFileName = Path.join ( QTGateFolder, 'twitterData.pem' )
 
@@ -150,7 +152,7 @@ export const InitConfig = () => {
 		firstRun: true,
 		alreadyInit: false,
 		multiLogin: false,
-		version: packageFile.version,
+		version: CoNET_version,
 		newVersion: null,
 		newVerReady: false,
 		keypair: InitKeyPair (),
@@ -250,7 +252,7 @@ export const emitConfig = ( config: install_config, passwordOK: boolean ) => {
 		firstRun: config.firstRun,
 		alreadyInit: config.alreadyInit,
 		newVerReady: config.newVerReady,
-		version: config.version,
+		version: CoNET_version,
 		multiLogin: config.multiLogin,
 		freeUser: config.freeUser,
 		account: config.keypair && config.keypair.email ? config.keypair.email : null,
@@ -287,12 +289,12 @@ export const checkConfig = CallBack => {
 		
 		//		update?
 
-		config.version = packageFile.version
+		config.version = CoNET_version
 		config.newVerReady = false
 		config.newVersion = null
 		config.serverPort = LocalServerPortNumber
 		config.localIpAddress = getLocalInterface ()
-		config.firstRun = packageFile.firstRun || false
+		config.firstRun = false
 		if ( !config.keypair || ! config.keypair.publicKey ) {
 			return CallBack ( null, config )
 		}

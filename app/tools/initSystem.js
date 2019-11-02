@@ -1,4 +1,6 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CoNET_version = '3.0.9';
 /*!
  * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
  *
@@ -14,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
 const Fs = require("fs");
 const Path = require("path");
 const Os = require("os");
@@ -64,8 +65,8 @@ exports.CoNET_Home = Path.join(__dirname);
 exports.CoNET_PublicKey = Path.join(exports.CoNET_Home, '3C272D2E.pem');
 exports.LocalServerPortNumber = 3000;
 exports.configPath = Path.join(exports.QTGateFolder, 'config.json');
-const packageFilePath = Path.join('..', '..', 'package.json');
-exports.packageFile = require(packageFilePath);
+//const packageFilePath = Path.join ( __dirname,'package.json')
+//export const packageFile = require ( packageFilePath )
 exports.QTGateSignKeyID = /3acbe3cbd3c1caa9/i;
 exports.twitterDataFileName = Path.join(exports.QTGateFolder, 'twitterData.pem');
 exports.checkFolder = (folder, CallBack) => {
@@ -135,7 +136,7 @@ exports.InitConfig = () => {
         firstRun: true,
         alreadyInit: false,
         multiLogin: false,
-        version: exports.packageFile.version,
+        version: exports.CoNET_version,
         newVersion: null,
         newVerReady: false,
         keypair: InitKeyPair(),
@@ -226,7 +227,7 @@ exports.emitConfig = (config, passwordOK) => {
         firstRun: config.firstRun,
         alreadyInit: config.alreadyInit,
         newVerReady: config.newVerReady,
-        version: config.version,
+        version: exports.CoNET_version,
         multiLogin: config.multiLogin,
         freeUser: config.freeUser,
         account: config.keypair && config.keypair.email ? config.keypair.email : null,
@@ -258,12 +259,12 @@ exports.checkConfig = CallBack => {
         }
         config.salt = Buffer.from(config.salt['data']);
         //		update?
-        config.version = exports.packageFile.version;
+        config.version = exports.CoNET_version;
         config.newVerReady = false;
         config.newVersion = null;
         config.serverPort = exports.LocalServerPortNumber;
         config.localIpAddress = exports.getLocalInterface();
-        config.firstRun = exports.packageFile.firstRun || false;
+        config.firstRun = false;
         if (!config.keypair || !config.keypair.publicKey) {
             return CallBack(null, config);
         }

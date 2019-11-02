@@ -45,12 +45,12 @@ const saveLog = (err) => {
     });
 };
 const saveServerStartup = (localIpaddress) => {
-    const info = `\n*************************** CoNET Platform [ ${Tool.packageFile.version} ] server start up *****************************\n` +
+    const info = `\n*************************** CoNET Platform [ ${Tool.CoNET_version} ] server start up *****************************\n` +
         `Access url: http://${localIpaddress}:${Tool.LocalServerPortNumber}\n`;
     saveLog(info);
 };
 const saveServerStartupError = (err) => {
-    const info = `\n*************************** CoNET Platform [ ${Tool.packageFile.version} ] server startup falied *****************************\n` +
+    const info = `\n*************************** CoNET Platform [ ${Tool.CoNET_version} ] server startup falied *****************************\n` +
         `platform ${process.platform}\n` +
         `${err['message']}\n`;
     saveLog(info);
