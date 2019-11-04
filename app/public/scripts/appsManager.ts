@@ -840,8 +840,8 @@ const _appScript = {
 	},
 
 	searchNext: ( self, event ) => {
-
-		if ( self.moreResultsButtomLoading ()) {
+		const nextLink = self.searchItem().nextPage
+		if ( self.moreResultsButtomLoading () || !nextLink ) {
 			return
 		}
 
@@ -856,7 +856,7 @@ const _appScript = {
 			
 		}
 
-		const nextLink = self.searchItem().nextPage
+		
 
 		let currentArray = null
 		const com: QTGateAPIRequestCommand = {
@@ -881,7 +881,7 @@ const _appScript = {
 			}
 
 			case 2: {
-				com.subCom = 'imageNext'
+				com.subCom = 'imageSearchNext'
 				currentArray = self.imageItemsArray()
 				break
 			}
@@ -919,9 +919,9 @@ const _appScript = {
 			self.nextButtonConetResponse ( false )
 			const args = com.Args
 			self.returnSearchResultItemsInit ( args.param )
-                currentArray.Result.push ( ...args.param.Result )
-                currentArray.nextPage = args.param.nextPage
-                return self.showResultItems ( self, currentArray )
+			currentArray.Result.push ( ...args.param.Result )
+			currentArray.nextPage = args.param.nextPage
+			return self.showResultItems ( self, currentArray )
 
 		})
 		

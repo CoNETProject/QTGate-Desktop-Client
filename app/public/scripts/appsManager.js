@@ -745,7 +745,8 @@ const _appScript = {
         self.showResultItems(self, self.searchItemsArray());
     },
     searchNext: (self, event) => {
-        if (self.moreResultsButtomLoading()) {
+        const nextLink = self.searchItem().nextPage;
+        if (self.moreResultsButtomLoading() || !nextLink) {
             return;
         }
         self.moreResultsButtomLoading(true);
@@ -754,7 +755,6 @@ const _appScript = {
             self.nextButtonErrorIndex(_view.connectInformationMessage.getErrorIndex(err));
             self.nextButtonShowError(true);
         }
-        const nextLink = self.searchItem().nextPage;
         let currentArray = null;
         const com = {
             command: 'CoSearch',
@@ -776,7 +776,7 @@ const _appScript = {
                 break;
             }
             case 2: {
-                com.subCom = 'imageNext';
+                com.subCom = 'imageSearchNext';
                 currentArray = self.imageItemsArray();
                 break;
             }

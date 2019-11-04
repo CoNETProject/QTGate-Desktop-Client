@@ -589,7 +589,7 @@
 						.space
 						<!-- /ko -->
 
-						<!-- ko ifnot: nextButtonShowError -->
+						<!-- ko if: !nextButtonShowError() && searchItem().nextPage -->
 						button.ui.large.button( data-bind = "css: { 'loading buttonUnActive': moreResultsButtomLoading,  negative: nextButtonShowError, 'loadingGetResponse': nextButtonLoadingGetResponse, 'conetResponse': nextButtonConetResponse },text: info.moreResults[ $root.languageIndex() ], click: searchNext" style="margin-top: 1em;margin-bottom: 2em;" )
 						<!-- /ko -->
 
