@@ -452,21 +452,6 @@ const _appScript = {
             this.showHtmlCodePage(true);
             this.showImgPage(false);
         }
-        getimageData(val, mine, CallBack) {
-            const img = document.createElement('img');
-            const contentBlob = new Blob([val], { type: mine });
-            const url = window.URL.createObjectURL(contentBlob);
-            img.addEventListener('loadend', e => {
-                window.URL.revokeObjectURL(url);
-                const uu = $(`${img.id}`);
-                const ret = uu.attr('src');
-                uu.remove();
-                return CallBack(null, ret);
-            });
-            img.id = uuid_generate();
-            img.src = url;
-            $('#tempDom').append(img);
-        }
     },
     info: {
         totalResults: ['大约有', '約', 'About', '大約有'],
@@ -524,6 +509,9 @@ const _appScript = {
     imageLoadingGetResponse: ko.observable(false),
     imageConetResponse: ko.observable(false),
     imageItemsArray: ko.observable(),
+    searchSimilarImagesList: ko.observableArray([]),
+    showSearchSimilarImagesResult: ko.observable(false),
+    imageSearchItemArray: ko.observable(),
     videoButtonShowLoading: ko.observable(false),
     videoItemsArray: ko.observable(),
     videoButtonShowError: ko.observable(false),
@@ -533,11 +521,7 @@ const _appScript = {
     nextButtonErrorIndex: ko.observable(false),
     nextButtonConetResponse: ko.observable(false),
     nextButtonLoadingGetResponse: ko.observable(false),
-    searchSimilarImagesList: ko.observableArray([]),
-    showSearchSimilarImagesResult: ko.observable(false),
     //	['originImage']
-    similarImagesLoading: ko.observable(false),
-    showSimilarImagesError: ko.observable(false),
     initSearchData: (self) => {
         self.searchItem(null);
         self.searchItemList([]);
@@ -546,14 +530,8 @@ const _appScript = {
         self.newsItemsArray(null);
         self.imageItemsArray(null);
         self.showSearchesRelated(null);
-        self.searchSimilarImagesList([]);
         self.videoItemsArray(null);
-    },
-    similarImagesReadyClick: (self, event) => {
-    },
-    requestSimilarImagesClick: (self, e) => {
-    },
-    SimilarImagesErrorClick: (self, e) => {
+        self.imageSearchItemArray(null);
     },
     showResultItems: (self, items) => {
         self.searchItem(items);
@@ -886,9 +864,10 @@ const _appScript = {
             return self.imageButtonShowError(true);
         };
         if (!self.imageItemsArray()) {
+            const imageLink = self.searchItemsArray() && self.searchItemsArray().action && self.searchItemsArray().action.image ? self.searchItemsArray().action.image : self.imageSearchItemArray().searchesRelated[1];
             const com = {
                 command: 'CoSearch',
-                Args: ['google', self.searchItemsArray().action.image],
+                Args: ['google', imageLink],
                 error: null,
                 subCom: 'imageNext'
             };
@@ -1100,6 +1079,21 @@ const _appScript = {
         //return CallBack ( null, ret )
     },
     imageSearch: (ee) => {
+        const self = _view.appsManager().appScript();
+        const errorProcess = (err) => {
+            self.showInputLoading(false);
+            self.searchInputText('');
+            self.errorMessageIndex(_view.connectInformationMessage.getErrorIndex(err));
+            return self.showSearchError(true);
+        };
+        const showItems = (iResult) => {
+            self.showInputLoading(false);
+            self.currentlyShowItems(2);
+            self.returnSearchResultItemsInit(iResult);
+            self.imageSearchItemArray(iResult);
+            self.searchInputText(iResult.searchesRelated[0]);
+            self.showResultItems(self, self.imageSearchItemArray());
+        };
         if (!ee || !ee.files || !ee.files.length) {
             return;
         }
@@ -1109,18 +1103,11 @@ const _appScript = {
         }
         const reader = new FileReader();
         reader.onload = e => {
-            const self = _view.appsManager().appScript();
             const rawData = reader.result.toString();
             self.showInputLoading(true);
             self.searchInputText(' ');
             self.searchItem(null);
             self.searchItemList([]);
-            const errorProcess = (err) => {
-                self.showInputLoading(false);
-                self.searchInputText('');
-                self.errorMessageIndex(_view.connectInformationMessage.getErrorIndex(err));
-                return self.showSearchError(true);
-            };
             return self.getPictureBase64MaxSize_mediaData(rawData, 1024, 1024, (err, data) => {
                 if (err) {
                     return errorProcess(err);
@@ -1155,13 +1142,7 @@ const _appScript = {
                             if (com.error) {
                                 return errorProcess(com.error);
                             }
-                            self.showInputLoading(false);
-                            const iResult = com.Args.param;
-                            self.currentlyShowItems(2);
-                            self.returnSearchResultItemsInit(iResult);
-                            self.imageItemsArray(iResult);
-                            self.searchInputText(iResult.searchesRelated[0]);
-                            self.showResultItems(self, self.imageItemsArray());
+                            return showItems(com.Args.param);
                         });
                     });
                 });

@@ -453,36 +453,26 @@
 								.meta( data-bind = " text: infoDefine[ $root.languageIndex() ].coSearch.imageSize ")
 								.description( data-bind = " text: size" style = "color: gray;" )
 								.meta
-									
-									<!-- ko if: $parents[0].similarImagesLoading -->
-									span
-										i.icon.notched.circle.loading.purple
-										span.purple( data-bind = " text: infoDefine[ $root.languageIndex() ].coSearch.similarImages" style = "color: #a333c8!important;")
-									<!-- /ko -->
 
-									<!-- ko ifnot: $parents[0].showSimilarImagesError -->
+									<!-- ko ifnot: $parents[0].imageButtonShowError -->
 									.notSimilarImagesShowError
 
-										<!-- ko ifnot: $parents[0].similarImagesLoading -->
-										.ifNotSimilarImagesLoading
-
-											<!-- ko if: $parents[0].searchSimilarImagesList().length -->
-											.ifHaveSearchSimilarImagesList
-												i.icon.file.image.outline.orange.link( data-bind = "click: $parents[0].similarImagesReadyClick ")
-												a.ui( data-bind = " text: infoDefine[ $root.languageIndex() ].coSearch.similarImages, click: $parents[0].similarImagesReadyClick ", style = "color:orange!important" )
-											<!-- /ko -->
-
-											<!-- ko ifnot: $parents[0].searchSimilarImagesList().length -->
-											.ifHaveNotSearchSimilarImagesList
-												a.ui( data-bind = "text: infoDefine[ $root.languageIndex() ].coSearch.similarImages, click: $parents[0].requestSimilarImagesClick " )
-											<!-- /ko -->
+										<!-- ko if: $parents[0].imageButtonShowLoading -->
+											i.icon.notched.circle.loading( data-bind = " css: { 'loadingGetResponse': $parents[0].imageLoadingGetResponse, 'conetResponse': $parents[0].imageConetResponse }")
 										<!-- /ko -->
+
+										<!-- ko if: $parents[0].imageItemsArray() && $parents[0].imageItemsArray().length -->
+											i.icon.file.image.outline.orange.link( data-bind = "click: function () { $parents[0].imageButtonClick ( $parents[0] )}")
+										<!-- /ko -->
+
+										a.ui( data-bind = " text: infoDefine[ $root.languageIndex() ].coSearch.similarImages, click: function () { $parents[0].imageButtonClick( $parents[0] )}" )
+										
 									<!-- /ko -->
 
-									<!-- ko if: $parents[0].showSimilarImagesError -->
+									<!-- ko if: $parents[0].imageButtonShowError -->
 									span
-										i.icon.info.circle.red.link( data-bind = "click: $parents[0].SimilarImagesErrorClick" )
-										a.ui( data-bind = "text: messageBoxDefine [ similarImagesErrorIndex()] [ $root.languageIndex() ], click: $parents[0].SimilarImagesErrorClick "
+										i.icon.info.circle.red.link( data-bind = "click: function () { $parents[0].imageButtonClick( $parents[0] )}" )
+										a.ui( data-bind = "text: messageBoxDefine [ $parents[0].imageButtonErrorIndex()][ $root.languageIndex() ], click: function () { $parents[0].imageButtonClick( $parents[0] )} "
 											style = "color: #990000a8!important;")
 									<!-- /ko -->
 								

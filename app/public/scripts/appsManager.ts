@@ -1,5 +1,4 @@
 
-
 const testHtml = '<div id="mainMenu" data-bind="with: mainScript " style="margin-top: 2em;"><div class="ui divider"></div><div class="ui header AppListHeader" style="color: cornsilk;"><div class="content"><span data-bind=" text: infoDefine[ $root.languageIndex() ].appsManager.nodeName"></span><span data-bind=" text: nodeName  [$root.languageIndex() ]" style="color: lightcyan;"></span><div class="sub header" style="color: cornsilk;"><span data-bind=" text: infoDefine[ $root.languageIndex() ].appsManager.connectAddress "></span><span data-bind=" text: nodeAddress " style="color: lightcyan;"></span></div></div></div><div class="ui header AppListHeader" style=" color: white;"><div class="content"><h2 data-bind=" text: infoDefine[ $root.languageIndex() ].appsManager.serviceList"></h2></div></div><div class="ui divider"></div><div class="ui items divided" data-bind=" foreach: mainMenuItem"><a class="item AppListHeader"><img class="ui medium image" data-bind=" attr: { src: imgSrc }"><div class="content"><div class="header" data-bind=" text: headerText[ $root.languageIndex()], style: { color: headerTextColor }"></div><div class="meta"><span data-bind=" text: meta[ $root.languageIndex() ], style: { color: textColor }"></span></div><div class="description"><p data-bind="text: description[ $root.languageIndex() ], style: { color: textColor } "></p></div><div class="extra" data-bind=" html: extra [ $root.languageIndex() ], style: { color: textColor } "></div></div></a></div></div>'
 
 const _mainMenuObj = {
@@ -416,24 +415,6 @@ const _appScript = {
 			this.showImgPage ( false )
 		}
 
-		private getimageData ( val: any, mine: string, CallBack ) {
-			const  img = document.createElement('img')
-			const contentBlob = new Blob ([ val ], { type: mine })
-			const url = window.URL.createObjectURL ( contentBlob )
-
-			img.addEventListener ( 'loadend', e => {
-				window.URL.revokeObjectURL ( url )
-				const uu = $( `${ img.id }`)
-				const ret = uu.attr ('src')
-				uu.remove ()
-				return CallBack ( null, ret )
-			})
-
-			img.id = uuid_generate ()
-			img.src = url
-			$('#tempDom').append ( img )
-		}
-
 		constructor ( public showUrl: string, private zipBase64Stream: string, private zipBase64StreamUuid: string, private exit: ()=> void ) {
 			const self = this
 			_view.showIconBar ( false )
@@ -559,6 +540,9 @@ const _appScript = {
 	imageLoadingGetResponse: ko.observable ( false ),
 	imageConetResponse: ko.observable ( false ),
 	imageItemsArray: ko.observable (),
+	searchSimilarImagesList: ko.observableArray ([]),
+	showSearchSimilarImagesResult: ko.observable ( false ),
+	imageSearchItemArray: ko.observable (),
 
 	videoButtonShowLoading: ko.observable ( false ),
 	videoItemsArray: ko.observable (),
@@ -571,12 +555,8 @@ const _appScript = {
 	nextButtonConetResponse: ko.observable ( false ),
 	nextButtonLoadingGetResponse: ko.observable ( false ),
 
-	searchSimilarImagesList: ko.observableArray ([]),
-	showSearchSimilarImagesResult: ko.observable ( false ),
 
 	//	['originImage']
-	similarImagesLoading: ko.observable ( false ),
-	showSimilarImagesError: ko.observable ( false ),
 
 	initSearchData: ( self ) => {
 		self.searchItem ( null )
@@ -586,20 +566,8 @@ const _appScript = {
 		self.newsItemsArray ( null )
 		self.imageItemsArray ( null )
 		self.showSearchesRelated ( null )
-		self.searchSimilarImagesList ( [] )
 		self.videoItemsArray ( null )
-	},
-
-	similarImagesReadyClick: ( self, event ) => {
-
-	},
-
-	requestSimilarImagesClick: ( self, e ) => {
-
-	},
-
-	SimilarImagesErrorClick: ( self, e ) => {
-
+		self.imageSearchItemArray ( null )
 	},
 
 	showResultItems: ( self, items ) => {
@@ -1009,6 +977,7 @@ const _appScript = {
 	},
 
 	imageButtonClick: ( self, event ) => {
+
 		if ( self.imageButtonShowLoading ()) {
 			return 
 		}
@@ -1027,10 +996,10 @@ const _appScript = {
 		}
 
 		if ( ! self.imageItemsArray() ) {
-
+			const imageLink =  self.searchItemsArray() && self.searchItemsArray().action && self.searchItemsArray().action.image ? self.searchItemsArray().action.image : self.imageSearchItemArray().searchesRelated[1]
 			const com: QTGateAPIRequestCommand = {
 				command: 'CoSearch',
-				Args: [ 'google', self.searchItemsArray().action.image ],
+				Args: [ 'google', imageLink ],
 				error: null,
 				subCom: 'imageNext'
 			}
@@ -1311,33 +1280,47 @@ const _appScript = {
 		
 	},
 
+
+
 	imageSearch: ( ee ) => {
 		
+			
+			const self = _view.appsManager().appScript()
+
+			const errorProcess = ( err ) => {
+				self.showInputLoading ( false )
+				self.searchInputText ( '' )
+				self.errorMessageIndex ( _view.connectInformationMessage.getErrorIndex( err ))
+				return self.showSearchError ( true )
+			}
+
+			const showItems = ( iResult ) => {
+				self.showInputLoading ( false )
+				self.currentlyShowItems ( 2 )
+				self.returnSearchResultItemsInit ( iResult )
+				self.imageSearchItemArray ( iResult )
+				self.searchInputText ( iResult.searchesRelated[0])
+				self.showResultItems ( self, self.imageSearchItemArray ())
+			}
+
 			if ( !ee || !ee.files || !ee.files.length ) {
 				return
 			}
 
 			const file = ee.files[0]
+
 			if ( !file || !file.type.match ( /^image.(png$|jpg$|jpeg$|gif$)/ )) {
 				return
 			}
-
 			const reader = new FileReader()
 
 			reader.onload = e => {
-				const self = _view.appsManager().appScript()
+				
 				const rawData = reader.result.toString()
 				self.showInputLoading ( true )
 				self.searchInputText (' ')
 				self.searchItem ( null )
 				self.searchItemList ([])
-
-				const errorProcess = ( err ) => {
-					self.showInputLoading ( false )
-					self.searchInputText ( '' )
-					self.errorMessageIndex ( _view.connectInformationMessage.getErrorIndex( err ))
-					return self.showSearchError ( true )
-				}
 
 				return self.getPictureBase64MaxSize_mediaData ( rawData, 1024, 1024, ( err, data ) => {
 					if ( err ) {
@@ -1386,15 +1369,7 @@ const _appScript = {
 									return errorProcess ( com.error  )
 								}
 								
-
-								self.showInputLoading ( false )
-								const iResult = com.Args.param
-								
-								self.currentlyShowItems ( 2 )
-								self.returnSearchResultItemsInit ( iResult )
-								self.imageItemsArray ( iResult )
-								self.searchInputText ( iResult.searchesRelated[0])
-								self.showResultItems ( self, self.imageItemsArray ())
+								return showItems ( com.Args.param )
 				
 							})
 						})
