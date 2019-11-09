@@ -191,11 +191,7 @@ class localServer {
                 return this.catchCmd(mail, uuid);
             }, _exitFunction);
         };
-        if (!this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit) {
-            saveLog(`!this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit`);
-            return makeConnect(false);
-        }
-        return this.CoNETConnectCalss.tryConnect1();
+        return makeConnect(false);
     }
     listenAfterPassword(socket, sessionHash) {
         //console.log (`localServer listenAfterPassword for sessionHash [${ sessionHash }]`)
@@ -291,7 +287,7 @@ class localServer {
             });
         });
         socket.on('sendMedia', (uuid, rawData, CallBack) => {
-            return this.CoNETConnectCalss.sendDataToUuidFolder(Buffer.from(rawData).toString('base64'), uuid, CallBack);
+            return this.CoNETConnectCalss.sendDataToANewUuidFolder(Buffer.from(rawData).toString('base64'), uuid, uuid, CallBack);
         });
         socket.on('mime', (_mime, CallBack) => {
             let y = mime.lookup(_mime);
@@ -324,58 +320,6 @@ class localServer {
                 console.log(`socket.emit ( 'imapTestFinish' )`);
                 socket.emit('imapTestFinish', this.imapConnectData);
             });
-        });
-    }
-    getMedia(mediaString, CallBack) {
-        //saveLog (` getMedia mediaString = [${ mediaString }]`)
-        if (/^http[s]*\:\/\//.test(mediaString)) {
-            return CallBack(null, mediaString);
-        }
-        const files = mediaString.split(',');
-        if (!files || !files.length) {
-            return CallBack(null, '');
-        }
-        //console.log ( files )
-        return Imap.imapGetMediaFile(this.imapConnectData, files[0], CallBack);
-    }
-    getHTMLCompleteZIP(fileName, saveFolder, CallBack) {
-        if (!fileName || !fileName.length) {
-            return CallBack(new Error(`getHTMLComplete function Error: filename empty!`));
-        }
-        return this.getMedia(fileName, (err, data) => {
-            if (err) {
-                return CallBack(err);
-            }
-            Fs.writeFileSync(Path.join(saveFolder, fileName), data);
-            return JSZip.loadAsync(Buffer.from(data.toString(), 'base64'))
-                .then(zip => {
-                let u = true;
-                Async.each(Object.keys(zip.files), (_filename, next) => {
-                    zip.files[_filename].async('nodebuffer').then(content => {
-                        if (content.length) {
-                            return Fs.writeFile(Path.join(saveFolder, _filename), content, next);
-                        }
-                        Fs.mkdir(Path.join(saveFolder, _filename), { recursive: true }, next);
-                    });
-                }, CallBack);
-            });
-        });
-    }
-    getVideo(m, CallBack) {
-        if (!m || !m.QTDownload) {
-            return CallBack();
-        }
-        return this.getMedia(m.QTDownload, (err, data) => {
-            if (data) {
-                const file = Uuid.v4() + '.mp4';
-                const viode = Buffer.from(data, 'base64');
-                return Fs.writeFile(Path.join(Tool.QTGateVideo, file), viode, err => {
-                    m.QTDownload = `/tempfile/videoTemp/${file}`;
-                    console.log(`save video file: [${file}]`);
-                    return CallBack();
-                });
-            }
-            return CallBack();
         });
     }
     passwordFail(CallBack) {

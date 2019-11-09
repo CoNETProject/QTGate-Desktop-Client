@@ -33,6 +33,11 @@ block jumbotron1
 				source( src="/images/startup_background.mp4" type="video/mp4")
 	<!-- /ko -->
 	
+	<!-- ko if: CanadaBackground -->
+	section#CanadaBackground( style = "position: absolute;width: 100%;")
+		include coSearchImage.html
+	<!-- /ko -->
+
 
 	<!-- ko if: sectionAgreement -->
 	section#agreement.content
@@ -348,27 +353,28 @@ block jumbotron1
 		.CoGateCards( style="max-width: 60em;")
 			.welcomeText.ui.header
 				.content
-					h1.shadowText1( data-bind = " text: infoDefine[ $root.languageIndex() ].thirdParty.information" style="color:white;")
+					h1.shadowText1( data-bind = " text: infoDefine[ $root.languageIndex() ].thirdParty.information" style="color:white;" )
 					.sub.header( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.welcomeTextSub" )
 
 
 			<!-- ko if: mainLoading -->
 			h4.ui.header( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.mainLoading" )
-			.ui.active.inline.loader( data-bind = "css: { 'loadingGetResponse': loadingGetResponse, 'conetResponse': conetResponse }")
+			.ui.active.inline.loader( data-bind = "css: { 'loadingGetResponse': loadingGetResponse, 'conetResponse': conetResponse }" )
 			<!-- /ko -->
 
 			<!-- ko if: loadingError -->
-			.ui.red.header( data-bind = " text: messageBoxDefine [ loadingError() ][ $root.languageIndex()]")
+			a.ui.red.header( data-bind = "click: mainNemuError, text: messageBoxDefine [ loadingError() ][ $root.languageIndex()]" href="#" )
 			<!-- /ko -->
 			script#mainMenu( data-bind = "html: mainHtml" type="text/html" )
 
 			<!-- ko if: showMain -->
 			#mainMenuHtml( data-bind = " template: { name: 'mainMenu' }")
 			<!-- /ko -->
+			
 
 			<!-- ko if: showTempMain  -->
 			<!-- mainMenu section -->
-
+			
 			include ../shared/mainMenu
 			
 			<!-- mainMenu section -->
@@ -377,13 +383,27 @@ block jumbotron1
 	<!-- /ko -->
 
 	<!-- ko if: appHtml -->
-	section#appHtml( style = " height: 100em;" )
+	script#runningAppHtml( data-bind = "html: runningAppHtml" type="text/html" )
+
+	<!-- ko if: showAppMain -->
+	section#appHtml( data-bind = " template: { name: 'runningAppHtml' }")
+	<!-- /ko -->
+
 	<!-- /ko -->
 	
+
+
+
 	<!-- ko if: tempAppHtml -->
 	section#tempAppHtml( style = " height: 100em;" )
+		<!----------- start tempAppHtml DEBUG -------------->
+		
 		include ../shared/appHtml
+
+		<!----------- end tempAppHtml DEBUG ----------------->
 	<!-- /ko -->
+
+	
 
 	<!-- /ko -->
 	<!-- /ko -->

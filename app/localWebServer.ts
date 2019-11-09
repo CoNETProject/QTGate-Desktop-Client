@@ -160,8 +160,6 @@ export default class localServer {
 					return makeConnect ( sendMail = false )
 				}
 			}
-			
-			
 		}
 
 		const makeConnect = ( sendMail: boolean ) => {
@@ -192,12 +190,7 @@ export default class localServer {
 			
 		}
 		
-		if ( !this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit ) {
-			saveLog( `!this.CoNETConnectCalss || this.CoNETConnectCalss.alreadyExit` )
-			return makeConnect ( false )
-		}
-		
-		return this.CoNETConnectCalss.tryConnect1 ()
+		return makeConnect ( false )
 		
 	}
 
@@ -271,10 +264,6 @@ export default class localServer {
 				})
 				
 			}
-			
-		
-				
-			
 		})
 
 		socket.on ( 'doingRequest', ( uuid, request, CallBack ) => {
@@ -317,7 +306,7 @@ export default class localServer {
 
 		socket.on ( 'sendMedia', ( uuid, rawData, CallBack ) => {
 			
-			return this.CoNETConnectCalss.sendDataToUuidFolder ( Buffer.from ( rawData ).toString ( 'base64' ), uuid, CallBack )
+			return this.CoNETConnectCalss.sendDataToANewUuidFolder ( Buffer.from ( rawData ).toString ( 'base64' ), uuid, uuid, CallBack )
 		})
 
 		socket.on ( 'mime', ( _mime, CallBack ) => {
@@ -359,68 +348,6 @@ export default class localServer {
 		})
 			
 		
-	}
-
-	private getMedia ( mediaString: string, CallBack ) {
-		//saveLog (` getMedia mediaString = [${ mediaString }]`)
-		if ( /^http[s]*\:\/\//.test ( mediaString )) {
-			return CallBack ( null, mediaString )
-		}
-		const files = mediaString.split (',')
-		if ( !files || !files.length ) {
-			return CallBack ( null, '')
-		}
-		//console.log ( files )
-		return Imap.imapGetMediaFile ( this.imapConnectData, files[0], CallBack )
-	}
-
-	public getHTMLCompleteZIP ( fileName: string, saveFolder: string, CallBack ) {
-
-		if ( !fileName || !fileName.length ) {
-			return CallBack ( new Error (`getHTMLComplete function Error: filename empty!`))
-		}
-
-		return this.getMedia ( fileName, ( err, data: Buffer ) => {
-			if ( err ) {
-				return CallBack ( err )
-			}
-			Fs.writeFileSync ( Path.join( saveFolder, fileName ), data )
-			
-			return JSZip.loadAsync ( Buffer.from ( data.toString(), 'base64' ))
-				.then ( zip => {
-					let u = true
-					Async.each ( Object.keys ( zip.files ), ( _filename, next ) => {
-						zip.files [ _filename ].async ( 'nodebuffer' ).then ( content => {
-							
-							if ( content.length ) {
-								return Fs.writeFile ( Path.join ( saveFolder, _filename ), content, next  )
-							}
-
-							Fs.mkdir ( Path.join ( saveFolder, _filename ), { recursive : true }, next )
-							
-						})
-					}, CallBack )
-				})
-		})
-	}
-
-	private getVideo ( m: twitter_media_video_info, CallBack ) {
-		if ( !m || !m.QTDownload ) {
-			return CallBack ()
-		}
-		return this.getMedia ( m.QTDownload, ( err, data ) => {
-			if ( data ) {
-				const file = Uuid.v4() + '.mp4'
-				const viode = Buffer.from ( data, 'base64' )
-				return Fs.writeFile ( Path.join ( Tool.QTGateVideo, file ), viode, err => {
-					m.QTDownload = `/tempfile/videoTemp/${ file }`
-					console.log (`save video file: [${ file }]`)
-					return CallBack ()
-				})
-			}
-			return CallBack ()
-			
-		})
 	}
 
 	private passwordFail ( CallBack: ( err?, login? ) => void ) {

@@ -42,37 +42,6 @@ export default class extends Imap.imapPeer {
 	public alreadyExit = false
 	private ignorePingTimeout = false
 
-	public checkConnect ( CallBack ) {
-		if ( this.wImap && this.wImap.imapStream && this.wImap.imapStream.writable &&
-			this.rImap && this.rImap.imapStream && this.rImap.imapStream.readable ) {
-
-				if ( this.needPing ) {
-					this.once ( 'ready', () => {
-						console.log (`wImap && rImap looks good, doing PING get ready!`)
-						return CallBack ()
-					})
-					this.Ping ()
-					return console.log ( `doing wait ping ready!` )
-				}
-
-				//		donot need ping send signal ready!
-				this.connectStage = 4
-				this.sockerServer.emit ( 'tryConnectCoNETStage', null, 4, this.cmdResponse ? false : true  )
-				return CallBack ()
-				
-		}
-		console.log ( `checkConnect need destroy `)
-		if ( this.wImap && this.wImap.imapStream && this.wImap.imapStream.writable  ) {
-			console.log ( `checkConnect this.wImap GOOD! `)
-		} else {
-			console.log ( `checkConnect this.rImap GOOD! `)
-		}
-
-		this.destroy ( 3 )
-		return CallBack ( new Error ( 'checkConnect no connect!' ))
-		
-	}
-
 	public exit1 ( err ) {
 		
 		if ( !this.alreadyExit ) {
@@ -94,17 +63,12 @@ export default class extends Imap.imapPeer {
 			
 			return this.exit1 ( err )
 		})
+
 		saveLog (`=====================================  new CoNET connect() doNetSendConnectMail = [${ doNetSendConnectMail }]\n`, true )
 
 		this.newMail = ( mail: string, hashCode: string ) => {
 			return this.cmdResponse ( mail, hashCode )
 		}
-
-		this.on ( 'wImapReady', () => {
-			console.log ( 'on imapReady !' )
-			this.connectStage = 1
-			return this.sockerServer.emit ( 'tryConnectCoNETStage', null, 1 )
-		})
 
 		this.on ( 'ready', () => {
 			this.ignorePingTimeout = false
@@ -132,53 +96,8 @@ export default class extends Imap.imapPeer {
 	}
 
 	public requestCoNET_v1 ( uuid: string, text: string, CallBack ) {
-		const self = this
-		
-		return Async.waterfall ([
-			next => self.checkConnect ( next ),
-			next => {
-				return self.trySendToRemote ( Buffer.from ( text ), uuid, next )
-			}], ( err: Error ) => {
-				if ( err ) {
-					saveLog ( `requestCoNET_v1 got error [${ err.message ? err.message : null }]` )
-					
-					if ( typeof err.message ==='string') {
-						switch ( err.message ) {
-							case 'no network': {
-								return self.sockerServer.emit ( 'tryConnectCoNETStage', 0 )
-							}
-							default: {
-								return self.sockerServer.emit ( 'tryConnectCoNETStage', 5 )
-							}
-						}
-					}
-					return CallBack ( err )
-				}
-				CallBack ()
-			})
+		return this.sendDataToANewUuidFolder ( Buffer.from ( text).toString ( 'base64' ), this.imapData.serverFolder, uuid, CallBack )
 
-	}
-
-	public tryConnect1 () {
-		
-		this.connectStage = 1
-		
-		this.sockerServer.emit ( 'tryConnectCoNETStage', null, this.connectStage = 1 )
-		
-		if ( this.doNetSendConnectMail ) {
-			//	 wait long time to get response from CoNET
-			console.log (`this.doNetSendConnectMail = true`)
-
-		}
-		console.log ( `doing checkConnect `)
-		return this.checkConnect ( err => {
-			if ( err ) {
-				return this.exit1 ( err )
-			}
-		})
-			
-		
-		
 	}
 
 	public getFile ( fileName: string, CallBack ) {

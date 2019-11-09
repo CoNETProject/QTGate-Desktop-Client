@@ -1,21 +1,26 @@
 
+
 #mainMenu_temp( data-bind = "with: mainScript " style = "margin-top: 2em;")
 	.ui.divider
 	.ui.header
 		.content
-			span.shadowText1( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.nodeName" style="color: white;")
-			span.shadowText1( data-bind = " text: nodeName [ $root.languageIndex() ]" style="color: white;")
+			span.shadowText1( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.nodeName" style="color: white;" )
+			span.shadowText1( data-bind = " text: nodeName [ $root.languageIndex() ]" style="color: white;" )
 			.sub.header( style = "margin-top: 0.5em;")
 				span( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.connectAddress " )
 				span( data-bind = " text: nodeAddress " )
 	.ui.header
 		.content
-			h2.shadowText1( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.serviceList" style="color: white;")
+			h2.shadowText1( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.serviceList" style="color: white;" )
 	.ui.divider
-	.ui.items.divided( data-bind = " foreach: mainMenuItem" )
+	.ui.items.divided( data-bind = " foreach: _mainMenuItem " )
 		.item
-			a.ui.small.image( data-bind = " click: function() { $parents[1].appClick ( $index()) } ")
+			a.ui.small.image( data-bind = "css: { 'active dimmer': loading() }, click: function() { $parents[1].appClick ( $index()) } " )
 				img( data-bind = " attr: { src: imgSrc }" )
+				<!-- ko if: loading -->
+					.ui.loader( data-bind = "css: { 'loadingGetResponse': loadingGetResponse, 'conetResponse': conetResponse }" )
+				<!-- /ko -->
+				
 			.content
 				a.header.shadowText1( data-bind = "text: headerText[ $root.languageIndex()], click: function() { $parents[1].appClick ( $index()) }" style="color: white;" )
 				.meta

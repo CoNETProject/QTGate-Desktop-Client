@@ -79,6 +79,86 @@ const initPopupArea = function () {
         inline: inline
     });
 };
+class showWebPageClass {
+    constructor(showUrl, zipBase64Stream, zipBase64StreamUuid, exit) {
+        this.showUrl = showUrl;
+        this.zipBase64Stream = zipBase64Stream;
+        this.zipBase64StreamUuid = zipBase64StreamUuid;
+        this.exit = exit;
+        this.showLoading = ko.observable(true);
+        this.htmlIframe = ko.observable(null);
+        this.showErrorMessage = ko.observable(false);
+        this.showHtmlCodePage = ko.observable(false);
+        this.showImgPage = ko.observable(true);
+        this.png = ko.observable('');
+        const self = this;
+        _view.showIconBar(false);
+        _view.keyPairCalss.decryptMessageToZipStream(zipBase64Stream, (err, data) => {
+            if (err) {
+                return self.showErrorMessageProcess();
+            }
+            showHTMLComplete(zipBase64StreamUuid, data, (err, data) => {
+                if (err) {
+                    return self.showErrorMessageProcess();
+                }
+                _view.bodyBlue(false);
+                const getData = (filename, _data) => {
+                    const regex = new RegExp(`${filename}`, 'g');
+                    const index = html.indexOf(`${filename}`);
+                    if (index > -1) {
+                        if (/js$/.test(filename)) {
+                            _data = _data.replace(/^data:text\/plain;/, 'data:application/javascript;');
+                        }
+                        else if (/css$/.test(filename)) {
+                            _data = _data.replace(/^data:text\/plain;/, 'data:text/css;');
+                        }
+                        else if (/html$|htm$/.test(filename)) {
+                            _data = _data.replace(/^data:text\/plain;/, 'data:text/html;');
+                        }
+                        else if (/pdf$/.test(filename)) {
+                            _data = _data.replace(/^data:text\/plain;/, 'data:text/html;');
+                        }
+                        else {
+                            const kkk = _data;
+                        }
+                        html = html.replace(regex, _data);
+                    }
+                };
+                let html = data.html;
+                data.folder.forEach(n => {
+                    getData(n.filename, n.data);
+                });
+                self.png(data.img);
+                const htmlBolb = new Blob([html], { type: 'text/html' });
+                const _url = window.URL.createObjectURL(htmlBolb);
+                const fileReader = new FileReader();
+                fileReader.onloadend = evt => {
+                    return window.URL.revokeObjectURL(_url);
+                };
+                self.showLoading(false);
+                self.htmlIframe(_url);
+            });
+        });
+    }
+    showErrorMessageProcess() {
+        this.showLoading(false);
+        this.showErrorMessage(true);
+    }
+    close() {
+        this.showImgPage(false);
+        this.showHtmlCodePage(false);
+        this.png(null);
+        this.exit();
+    }
+    imgClick() {
+        this.showHtmlCodePage(false);
+        this.showImgPage(true);
+    }
+    htmlClick() {
+        this.showHtmlCodePage(true);
+        this.showImgPage(false);
+    }
+}
 var view_layout;
 (function (view_layout) {
     class view {
@@ -106,8 +186,8 @@ var view_layout;
             this.CoNETConnectClass = null;
             this.imapFormClass = null;
             this.CoNETConnect = ko.observable(null);
-            this.appMenuObj = {};
             this.bodyBlue = ko.observable(true);
+            this.CanadaBackground = ko.observable(false);
             this.keyPairCalss = null;
             this.appsManager = ko.observable(null);
             this.AppList = ko.observable(false);
@@ -116,6 +196,15 @@ var view_layout;
             this.sessionHash = '';
             this.showLanguageSelect = ko.observable(true);
             this.socketListen();
+            this.CanadaBackground.subscribe(val => {
+                if (val) {
+                    $.ajax({
+                        url: '/scripts/CanadaSvg.js'
+                    }).done(data => {
+                        eval(data);
+                    });
+                }
+            });
         }
         afterInitConfig() {
             this.keyPair(this.localServerConfig().keypair);
@@ -263,16 +352,7 @@ var view_layout;
                     }));
                 }
                 self.connectedCoNET(true);
-                self.AppList(true);
-                self.appsManager(new appsManager(self.appMenuObj));
-                $('.dimmable').dimmer({ on: 'hover' });
-                $('.comeSoon').popup({
-                    on: 'focus',
-                    movePopup: false,
-                    position: 'top left',
-                    inline: true
-                });
-                _view.connectInformationMessage.socketIo.removeEventListener('tryConnectCoNETStage', self.CoNETConnectClass.listenFun);
+                self.homeClick();
             }));
         }
         reFreshLocalServer() {
@@ -281,7 +361,14 @@ var view_layout;
         homeClick() {
             this.AppList(true);
             this.sectionLogin(false);
-            this.appsManager(new appsManager(this.appMenuObj));
+            const connectMainMenu = () => {
+                let am = null;
+                this.appsManager(am = new appsManager(() => {
+                    am = null;
+                    return connectMainMenu();
+                }));
+            };
+            connectMainMenu();
             this.showKeyPair(false);
             $('.dimmable').dimmer({ on: 'hover' });
             $('.comeSoon').popup({
@@ -290,6 +377,7 @@ var view_layout;
                 position: 'top left',
                 inline: true
             });
+            _view.connectInformationMessage.socketIo.removeEventListener('tryConnectCoNETStage', this.CoNETConnectClass.listenFun);
         }
     }
     view_layout.view = view;

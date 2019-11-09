@@ -194,8 +194,8 @@ const template = [{
         ]
     }];
 const appReady = () => {
-    const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
+    //const menu = Menu.buildFromTemplate( template )
+    //Menu.setApplicationMenu ( menu)
     if (!localServer1) {
         localServer1 = new BrowserWindow({ show: DEBUG });
         localServer1._doUpdate = _doUpdate;

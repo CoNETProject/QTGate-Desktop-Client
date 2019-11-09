@@ -96,6 +96,99 @@ const initPopupArea = function () {
     })
 }
 
+class showWebPageClass {
+	public showLoading = ko.observable ( true )
+	public htmlIframe = ko.observable ( null )
+	public showErrorMessage = ko.observable ( false )
+	public showHtmlCodePage = ko.observable ( false )
+	public showImgPage = ko.observable ( true )
+	public showErrorMessageProcess () {
+		this.showLoading ( false )
+		this.showErrorMessage ( true )
+	}
+	public png = ko.observable ('')
+	
+	public close () {
+		this.showImgPage ( false )
+		this.showHtmlCodePage ( false )
+		this.png ( null )
+		this.exit ()
+	}
+
+	public imgClick () {
+		this.showHtmlCodePage ( false )
+		this.showImgPage ( true )
+	}
+	
+	public htmlClick () {
+		this.showHtmlCodePage ( true )
+		this.showImgPage ( false )
+	}
+
+	constructor ( public showUrl: string, private zipBase64Stream: string, private zipBase64StreamUuid: string, private exit: ()=> void ) {
+		const self = this
+		_view.showIconBar ( false )
+		
+		_view.keyPairCalss.decryptMessageToZipStream ( zipBase64Stream, ( err, data ) => {
+			if ( err ) {
+				return self.showErrorMessageProcess ()
+			}
+			showHTMLComplete ( zipBase64StreamUuid, data, ( err, data: { img: string, html: string, folder: [ { filename: string, data: string }]} ) => {
+				if ( err ) {
+					return self.showErrorMessageProcess ()
+				}
+				_view.bodyBlue ( false )
+				const getData =  ( filename: string, _data: string ) => {
+					
+					const regex = new RegExp (`${ filename }`,'g')
+					
+					const index = html.indexOf ( `${ filename }` )
+					
+					if ( index > -1 ) {
+						if ( /js$/.test ( filename )) {
+							_data = _data.replace ( /^data:text\/plain;/, 'data:application/javascript;')
+						} else if ( /css$/.test ( filename )) {
+							_data = _data.replace ( /^data:text\/plain;/, 'data:text/css;')
+						} else if ( /html$|htm$/.test ( filename )) {
+							_data = _data.replace ( /^data:text\/plain;/, 'data:text/html;')
+						} else if ( /pdf$/.test ( filename )) {
+							_data = _data.replace ( /^data:text\/plain;/, 'data:text/html;')
+						} else {
+							const kkk = _data
+						}
+
+						html = html.replace ( regex, _data )
+						
+					}
+					
+					
+				}
+
+				let html = data.html
+				
+				data.folder.forEach ( n => {
+					getData ( n.filename, n.data )
+				})
+
+				
+				
+				self.png ( data.img )
+				
+				const htmlBolb = new Blob ([ html ], { type: 'text/html'})
+				const _url = window.URL.createObjectURL ( htmlBolb )
+				const fileReader = new FileReader()
+				fileReader.onloadend = evt => {
+					return window.URL.revokeObjectURL ( _url )
+				}
+				
+				self.showLoading ( false )
+				self.htmlIframe ( _url )
+				
+			})
+		})
+		
+	}
+}
 
 module view_layout {
     export class view {
@@ -122,8 +215,8 @@ module view_layout {
         public CoNETConnectClass: CoNETConnect = null
         public imapFormClass: imapForm = null
         public CoNETConnect: KnockoutObservable < CoNETConnect > = ko.observable ( null )
-		public appMenuObj = {}
 		public bodyBlue = ko.observable ( true )
+		public CanadaBackground = ko.observable ( false )
 		
 		public keyPairCalss: encryptoClass = null
 
@@ -224,7 +317,16 @@ module view_layout {
     
         constructor () {
             this.socketListen ()
-            
+            this.CanadaBackground.subscribe ( val => {
+				if ( val ) {
+					$.ajax ({
+						url:'/scripts/CanadaSvg.js'
+
+					}).done ( data => {
+						eval ( data )
+					})
+				}
+			})
         }
         
         //          change language
@@ -321,16 +423,8 @@ module view_layout {
                     
                 }
                 self.connectedCoNET ( true )
-                self.AppList ( true )
-                self.appsManager ( new appsManager ( self.appMenuObj ))
-                $('.dimmable').dimmer ({ on: 'hover' })
-                $('.comeSoon').popup ({
-                    on: 'focus',
-                    movePopup: false,
-                    position: 'top left',
-                    inline: true
-				})
-				_view.connectInformationMessage.socketIo.removeEventListener ('tryConnectCoNETStage', self.CoNETConnectClass.listenFun )
+				self.homeClick ()
+				
             }))
 
         }
@@ -343,7 +437,15 @@ module view_layout {
         public homeClick () {
 			this.AppList ( true )
 			this.sectionLogin ( false )
-            this.appsManager ( new appsManager ( this.appMenuObj ))
+			const connectMainMenu = () => {
+				let am = null
+				this.appsManager ( am = new appsManager (() => {
+					am = null
+					return connectMainMenu ()
+				}))
+				
+			}
+            connectMainMenu ()
             this.showKeyPair ( false )
             $('.dimmable').dimmer ({ on: 'hover' })
             $('.comeSoon').popup ({
@@ -351,7 +453,8 @@ module view_layout {
                 movePopup: false,
                 position: 'top left',
                 inline: true
-            })
+			})
+			_view.connectInformationMessage.socketIo.removeEventListener ('tryConnectCoNETStage', this.CoNETConnectClass.listenFun )
         }
     }
 }
