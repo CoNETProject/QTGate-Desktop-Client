@@ -1494,7 +1494,7 @@ export class imapPeer extends Event.EventEmitter {
             next => this.enCrypto ( mail, next ),
             ( data, next ) => {
                 
-                return  seneMessageToFolder ( this.imapData, this.writeBox, Buffer.from ( data ).toString ('base64'), uuid, next )
+                return seneMessageToFolder ( this.imapData, this.writeBox, Buffer.from ( data ).toString ('base64'), uuid, next )
             }
         ], CallBack )
     }

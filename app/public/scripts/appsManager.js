@@ -40,7 +40,8 @@ const _mainMenuObj111 = {
             ],
             extra: [
                 '', '', '', ''
-            ]
+            ],
+            "active": true
         }, {
             imgSrc: '',
             headerText: [
@@ -59,7 +60,8 @@ const _mainMenuObj111 = {
             ],
             extra: [
                 '', '', '', ''
-            ]
+            ],
+            "active": false
         }, {
             imgSrc: '',
             headerText: [
@@ -78,7 +80,8 @@ const _mainMenuObj111 = {
             ],
             extra: [
                 '', '', '', ''
-            ]
+            ],
+            "active": false
         }
     ]
 };
@@ -324,7 +327,7 @@ const appHtml = `
 </g>
 </svg></div></div></div></div><!-- /ko --></form><!-- /ko -->
 <!-- ko if: searchItem() --><div class="listItems" style="margin:1em;"><div class="ui top fixed menu borderless"><div class="item" style="width: 90%;"><form class="ui form" data-bind="event: { 'submit': search_form }" style="width: 100%;"><div class="field"><div class="ui search"><div class="ui input icon" data-bind="css : { 'error': showSearchError(), 'loading disabled': showInputLoading }"><input style="color:rgba(0,0,0,0.5);border-radius: 500rem!important;" type="text" data-bind=" textInput: searchInputText, hasFocus: SearchInputNextHasFocus, attr: { placeholder: showSearchError() ? ( messageBoxDefine [ errorMessageIndex() ][ $root.languageIndex() ]): infoDefine[ $root.languageIndex() ].coSearch.searchInputPlaceholder }"><!-- ko if: searchInputText().length --><i class="icon circular search link icon" data-bind="click: search_form" style="color: #4285f4!important;"></i><!-- /ko -->
-<!-- ko if: !searchInputText().length --><i class="icon image outline link circular" data-bind=" click: function (){ document.getElementById('imageInput1').click() } " style="color: #4285f4!important;"></i><div class="hideInput" style="position: absolute;"><input onchange="fileInputSelected ( this )" id="imageInput1" type="file" accept="image/gif,image/jpeg,image/jpg,image/png" style="opacity:0;width: 0px;height: 0px;"></div><!-- /ko -->
+<!-- ko if: !searchInputText().length --><i class="icon image outline link circular" data-bind=" click: function (){ document.getElementById('imageInput1').click() } " style="color: #4285f4!important;"></i><div class="hideInput" style="position: absolute;"><input onchange="_view.appsManager().appScript().imageSearch( this )" id="imageInput1" type="file" accept="image/gif,image/jpeg,image/jpg,image/png" style="opacity:0;width: 0px;height: 0px;"></div><!-- /ko -->
 <!-- ko if: showSearchError --><i class="icon link circular red close" data-bind=" click: searchInputCloseError "></i><!-- /ko --></div></div></div><!-- ko if: searchItem().action --><div class="field" style="margin-left: 1em;"><!-- ko if: currentlyShowItems() !== 0 --><a class="basic ui label yellow small" data-bind=" click: webItemsClick " style="padding-right: 1em;"><i class="icon rss"></i><span data-bind="text: info.searchToolBarMenu[0][ $root.languageIndex() ] "></span></a><!-- /ko -->
 <!-- ko if: searchItem().action.news && currentlyShowItems() !== 1 --><a class="basic ui label small" style="padding-right: 1em;" data-bind=" click: newsButtonClick , style: {  cursor: newsButtonShowLoading() ? 'unset' : 'pointer' }, css: { 'disabled': newsButtonShowLoading(), 'olive': newsItemsArray() &amp;&amp; !newsButtonShowLoading(), 'grey': !newsItemsArray() &amp;&amp; !newsButtonShowError(), 'red': newsButtonShowError() }"><!-- ko if: newsButtonShowError --><i class="icon info red"></i><span data-bind=" text: messageBoxDefine[ newsButtonErrorIndex()][ $root.languageIndex() ] "></span><!-- /ko -->
 <!-- ko ifnot: newsButtonShowError -->
@@ -341,7 +344,7 @@ const appHtml = `
 <!-- ko if: videoButtonShowLoading() --><i class="icon notched circle loading"></i><!-- /ko -->
 <!-- /ko --><span data-bind="text: info.searchToolBarMenu[3][ $root.languageIndex() ]  "></span></a><!-- /ko --></div><!-- /ko -->
 <!-- ko if: !searchItem()['originImage'] && showSearchesRelated() --><div class="field" style="margin-left: 1em;"><div class="ui grey header" data-bind="text: infoDefine[ $root.languageIndex() ].coSearch.SearchesRelated[0] + searchInputTextShow() + infoDefine[ $root.languageIndex() ].coSearch.SearchesRelated[1]" style="margin-bottom: 1em;"></div><div class="related ui grid" style="padding-bottom: 1em;"><!-- ko foreach: searchItem().searchesRelated --><a class="five wide column" href="#" data-bind="text: text, click: function () { $parents[0].searchesRelatedSelect ( $parents[0], $index())}" style="padding-top: 0.2rem;padding-bottom: 0.2rem;"></a><!-- /ko --></div></div><!-- /ko --></form></div></div><div class="items" data-bind=" style: { 'margin-top': showSearchesRelated() &amp;&amp; !searchItem()['originImage'] ? '15.5em' : '7.5em', 'padding-top': showSearchesRelated() &amp;&amp; !searchItem()['originImage'] ? '1em': '1em' }, click: function () { showSearchesRelated ( false ); return true;}"><div class="AppList CoContent content"><div class="ui items searchItems"><div class="totalResults ui grey header"><div class="sub header"><span class="totalResults1" data-bind=" text: info.totalResults[ $root.languageIndex() ]"></span><span class="totalResults2" data-bind=" text: searchItem().totalResults" style="margin: 0.5em;"></span><span class="totalResults3" data-bind=" text: info.totalResults1[ $root.languageIndex() ]"></span></div></div><!-- ko if: searchItem()['originImage'] --><div class="imageResultInfo item"><!-- ko with: searchItem()['originImage'] --><div class="image"><img data-bind=" attr: { src: img }"></div><div class="content"><div class="meta" data-bind=" text: infoDefine[ $root.languageIndex() ].coSearch.imageSize "></div><div class="description" data-bind=" text: size" style="color: gray;"></div><div class="meta"><!-- ko ifnot: $parents[0].imageButtonShowError --><div class="notSimilarImagesShowError"><!-- ko if: $parents[0].imageButtonShowLoading --><i class="icon notched circle loading" data-bind=" css: { 'loadingGetResponse': $parents[0].imageLoadingGetResponse, 'conetResponse': $parents[0].imageConetResponse }"></i><!-- /ko -->
-<!-- ko if: $parents[0].imageItemsArray() && $parents[0].imageItemsArray().length --><i class="icon file image outline orange link" data-bind="click: function () { $parents[0].imageButtonClick ( $parents[0] )}"></i><!-- /ko --><a class="ui" data-bind=" text: infoDefine[ $root.languageIndex() ].coSearch.similarImages, click: function () { $parents[0].imageButtonClick( $parents[0] )}"></a></div><!-- /ko -->
+<!-- ko if: $parents[0].imageItemsArray() && $parents[0].imageItemsArray().Result --><i class="icon file image outline orange link" data-bind="click: function () { $parents[0].imageButtonClick ( $parents[0] )}"></i><!-- /ko --><a class="ui" data-bind="style: { 'color': $parents[0].imageItemsArray() &amp;&amp; $parents[0].imageItemsArray().Result ? '#f2711c': '#4183c4'}, text: infoDefine[ $root.languageIndex() ].coSearch.similarImages, click: function () { $parents[0].imageButtonClick( $parents[0] )}"></a></div><!-- /ko -->
 <!-- ko if: $parents[0].imageButtonShowError --><span><i class="icon info circle red link" data-bind="click: function () { $parents[0].imageButtonClick( $parents[0] )}"></i><a class="ui" data-bind="text: messageBoxDefine [ $parents[0].imageButtonErrorIndex()][ $root.languageIndex() ], click: function () { $parents[0].imageButtonClick( $parents[0] )} " style="color: #990000a8!important;"></a></span><!-- /ko --></div></div><!-- /ko --></div><!-- /ko --><div class="space"></div><div class="space"></div><!-- ko foreach: searchItemList --><div class="item"><!-- ko if: imageInfo && imageInfo['img'] --><div class="image ui top aligned" data-bind="style: { height: imageInfo['videoTime'] ? '90px' : 'auto' }" style=" width:150px "><img data-bind="attr: { src: imageInfo.img }"><!-- ko if: imageInfo['videoTime'] --><div class="ui bottom right attached label tiny" data-bind="text: imageInfo['videoTime'] " style=" background-color: #3130307a!important;; color: rgba(255, 252, 252, 0.77)!important;;"></div><!-- /ko --></div><!-- /ko --><div class="content"><div class="header"><a data-bind="text: title, attr: { href: url } " style="font-weight: normal;font-size: medium;" target="_blank"></a></div><!-- ko ifnot: newsBrand --><div class="meta" style="margin:unset;"><span><!-- ko if: !showLoading() && ! snapshotReady() && !showError() --><i class="icon object group grey link" data-bind="click: function() { $parents[0].getSnapshotClick( $parents[0], $index ())}"></i><!-- /ko -->
 <!-- ko if: showLoading --><i class="icon notched circle loading" data-bind="css: { 'loadingGetResponse': loadingGetResponse, 'conetResponse': conetResponse }"></i><!-- /ko -->
 <!-- ko if: snapshotReady --><i class="icon file image outline olive link" data-bind="click: function() { $parents[0].showSnapshotClick( $parents[0], $index())}"></i><!-- /ko -->
@@ -387,6 +390,9 @@ class appsManager {
         this.appMenu = this.getAppMenu();
         this.runningAppHtml = ko.observable(null);
         this.showAppMain = ko.observable(false);
+        this.AppObj = {};
+        this.appLoadingError = ko.observable(false);
+        this.appLoadingErrorIndex = ko.observable(null);
         /***
          *
          * 		debug temp
@@ -424,8 +430,18 @@ class appsManager {
         item.loadingGetResponse(false);
         item.conetResponse(true);
     }
-    updateAppsManu() {
-        const self = this;
+    getAppObject(mainMenuItem) {
+        for (let i = 0; i < mainMenuItem.length; i++) {
+            const uu = mainMenuItem[i];
+            if (uu.active) {
+                const objName = `APP-${i}`;
+                this.AppObj[objName] = window.localStorage.getItem(objName);
+            }
+        }
+    }
+    updateAppsManu(_self = null) {
+        const self = _self || this;
+        self.appLoadingError(false);
         /**
          *
          * 		DEBUG use Temp Pug
@@ -496,57 +512,110 @@ class appsManager {
     mainNemuError() {
         this.exit();
     }
-    runApp() {
-        _view.bodyBlue(false);
-        _view.showIconBar(false);
-        /**
-         *
-         * 			DEBUG APP use Temp pug
-         *
-         */
-        this.showMainMenu(false);
-        this.tempAppHtml(true);
-        appScript.startup(appScript);
-        this.appScript(appScript);
-        _view.CanadaBackground(true);
-        return;
-        /** */
-        this.showMainMenu(false);
-        this.runningAppHtml(appHtml);
-        this.appHtml(true);
-        setTimeout(() => {
-            this.showAppMain(true);
-            appScript.startup(appScript);
-            this.appScript(appScript);
-        }, 1000);
-    }
     appClick(appIndex) {
         const self = this;
         const item = self.mainScript().mainMenuItem[appIndex];
         self.mainScript()._mainMenuItem([item]);
         item.loading(true);
-        setTimeout(() => {
-            setTimeout(() => {
-                self.showConetResponse(item);
-                setTimeout(() => {
-                    this.runApp();
-                }, 1000);
-            }, 1000);
-            self.showLoadingGetResponse(item);
-        }, 1000);
-        return;
+        const runningApp = (obj) => {
+            _view.bodyBlue(false);
+            _view.showIconBar(false);
+            this.showMainMenu(false);
+            /**
+             *
+             * 			DEBUG APP use Temp pug
+             *
+             */
+            /*
+            
+            this.tempAppHtml ( true )
+            
+            appScript.startup ( appScript )
+            
+            this.appScript ( appScript )
+            _view.CanadaBackground ( true )
+            return
+            /** */
+            /**
+             *
+             * 			Use appHtml
+             */
+            /*
+
+            
+            this.runningAppHtml ( appHtml )
+            this.appHtml ( true )
+            
+            this.showAppMain ( true )
+            appScript.startup ( appScript )
+            
+            this.appScript ( appScript )
+            /** */
+            this.runningAppHtml(obj[1]);
+            this.appHtml(true);
+            eval(obj[2]);
+            appScript.startup(appScript);
+            this.appScript(appScript);
+            this.showAppMain(true);
+        };
+        const AppName = `APP-${appIndex}`;
+        let obj = this.AppObj[AppName];
+        if (obj) {
+            runningApp(obj);
+        }
+        const com = {
+            command: AppName,
+            Args: obj && obj[0] ? obj[0] : null,
+            error: null,
+            subCom: null
+        };
+        const showError = (err) => {
+            item.loading(false);
+            self.appLoadingErrorIndex(_view.connectInformationMessage.getErrorIndex(err));
+            return self.appLoadingError(true);
+        };
+        return _view.keyPairCalss.emitRequest(com, (err, com) => {
+            if (err) {
+                return showError(err);
+            }
+            if (!com) {
+                self.conetResponse(false);
+                return self.loadingGetResponse(true);
+            }
+            if (com.error === -1) {
+                self.loadingGetResponse(false);
+                return self.conetResponse(true);
+            }
+            if (com.error) {
+                return showError(com.error);
+            }
+            _view.connectInformationMessage.hideMessage();
+            if (!com.Args || !com.Args.length) {
+                return;
+            }
+            obj = com.Args;
+            if (typeof Storage !== "undefined") {
+                window.localStorage.setItem(AppName, JSON.stringify(com.Args));
+            }
+            return runningApp(obj);
+        });
         /*
         $.ajax ({
             url: "/scripts/appCosearch.js"
         }).done ( data => {
         /** */
-        //const yyy = data
-        self.showMainMenu(false);
-        self.tempAppHtml(true);
-        _view.bodyBlue(false);
-        _view.showIconBar(false);
-        self.appScript(appScript);
-        //eval ( data )
+        /*
+            //const yyy = data
+            self.showMainMenu ( false )
+            self.tempAppHtml ( true )
+            _view.bodyBlue ( false )
+            _view.showIconBar ( false )
+            
+            self.appScript ( appScript )
+            
+            //eval ( data )
+
         //})
+        /** */
     }
 }

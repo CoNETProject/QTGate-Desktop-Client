@@ -13,6 +13,14 @@
 		.content
 			h2.shadowText1( data-bind = " text: infoDefine[ $root.languageIndex() ].appsManager.serviceList" style="color: white;" )
 	.ui.divider
+
+	<!-- ko if: $parents[0].appLoadingError -->
+		span.shadowText1( data-bind =" click: function() { $parents[0].updateAppsManu( $parents[0] ) }")
+			i.shadowText1.icon.link.exclamation.triangle.red
+			a( data-bind = "text: messageBoxDefine [ $parents[0].appLoadingErrorIndex() ][ $root.languageIndex() ]" style = "color:red;" href="#")
+	<!-- /ko -->
+
+	<!-- ko ifnot: $parents[0].appLoadingError -->
 	.ui.items.divided( data-bind = " foreach: _mainMenuItem " )
 		.item
 			a.ui.small.image( data-bind = "css: { 'active dimmer': loading() }, click: function() { $parents[1].appClick ( $index()) } " )
@@ -20,12 +28,14 @@
 				<!-- ko if: loading -->
 					.ui.loader( data-bind = "css: { 'loadingGetResponse': loadingGetResponse, 'conetResponse': conetResponse }" )
 				<!-- /ko -->
-				
+			
 			.content
+				
 				a.header.shadowText1( data-bind = "text: headerText[ $root.languageIndex()], click: function() { $parents[1].appClick ( $index()) }" style="color: white;" )
+				
 				.meta
 					span( data-bind = " text: meta[ $root.languageIndex() ]" )
 				.description
 					p( data-bind = "  text: description[ $root.languageIndex() ]" style="color: white;")
 				.extra( data-bind = " html: extra [ $root.languageIndex() ]" style="color: white;")
-	
+	<!-- /ko -->

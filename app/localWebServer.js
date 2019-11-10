@@ -143,6 +143,9 @@ class localServer {
     tryConnectCoNET(socket, sessionHash) {
         console.log(`doing tryConnectCoNET`);
         //		have CoGate connect
+        if (this.CoNETConnectCalss) {
+            return this.CoNETConnectCalss.Ping();
+        }
         let sendMail = false;
         const _exitFunction = err => {
             //console.trace ( `_exitFunction err =`, err )
