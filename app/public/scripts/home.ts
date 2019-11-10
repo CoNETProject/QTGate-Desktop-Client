@@ -275,7 +275,8 @@ module view_layout {
                 
                     self.showKeyPair ( false )
                     initPopupArea ()
-                    let uu = null
+					let uu = null
+					self.keyPairCalss = new encryptoClass ( self.keyPair () )
                     self.imapSetup ( uu = new imapForm ( config.account, null, function ( imapData: IinputData ) {
                         self.imapSetup ( uu = null )
                         return self.imapSetupClassExit ( imapData, sessionHash )
@@ -307,7 +308,7 @@ module view_layout {
                 return self.initConfig ( config )
             })
 
-            this.connectInformationMessage.socketIo.on ('init', ( err, config: install_config) => {
+            this.connectInformationMessage.socketIo.on ('init', ( err, config: install_config ) => {
                 if ( err ) {
                     return
                 }

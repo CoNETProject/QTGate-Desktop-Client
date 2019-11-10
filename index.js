@@ -20,74 +20,10 @@ const port = 3000;
 const path_1 = require("path");
 const url_1 = require("url");
 const { app, BrowserWindow, Tray, Menu, dialog, autoUpdater, desktopCapturer, shell } = require('electron');
-const handleSquirrelEvent = () => {
-    if (process.argv.length === 1 || process.platform !== 'win32') {
-        return false;
-    }
-    const ChildProcess = require('child_process');
-    const path = require('path');
-    const appFolder = path.resolve(process.execPath, '..');
-    const rootAtomFolder = path.resolve(appFolder, '..');
-    const updateDotExe = path.resolve(path.join(rootAtomFolder, 'Update.exe'));
-    const exeName = path.basename(process.execPath);
-    const spawn = function (command, args) {
-        let spawnedProcess, error;
-        try {
-            spawnedProcess = ChildProcess.spawn(command, args, { detached: true });
-        }
-        catch (error) { }
-        return spawnedProcess;
-    };
-    const spawnUpdate = function (args) {
-        return spawn(updateDotExe, args);
-    };
-    const squirrelEvent = process.argv[1];
-    switch (squirrelEvent) {
-        case '--squirrel-install':
-        case '--squirrel-updated':
-            // Optionally do things such as:
-            // - Add your .exe to the PATH
-            // - Write to the registry for things like file associations and
-            //   explorer context menus
-            // Install desktop and start menu shortcuts
-            spawnUpdate(['--createShortcut', exeName]);
-            setTimeout(app.quit, 1000);
-            return true;
-        case '--squirrel-uninstall':
-            // Undo anything you did in the --squirrel-install and
-            // --squirrel-updated handlers
-            // Remove desktop and start menu shortcuts
-            spawnUpdate(['--removeShortcut', exeName]);
-            setTimeout(app.quit, 1000);
-            return true;
-        case '--squirrel-obsolete':
-            // This is called on the outgoing version of your app before
-            // we update to the new version - it's the opposite of
-            // --squirrel-updated
-            app.quit();
-            return true;
-    }
-};
-if (handleSquirrelEvent()) {
-    // squirrel event handled and app will exit in 1000ms, so don't do anything else
-}
-const makeSingleInstance = () => {
-    //  For Mac App Store build
-    if (process.platform === 'darwin') {
-        return false;
-    }
-    return app.makeSingleInstance(() => {
-        createWindow();
-    });
-};
-if (makeSingleInstance()) {
-    app.quit();
-}
 // squirrel event handled and app will exit in 1000ms, so don't do anything else
 const version = app.getVersion();
 let localServer1 = null;
 let tray = null;
-let mainWindow = null;
 let doReady = false;
 const _doUpdate = (tag_name, _port) => {
     let url = null;
@@ -197,7 +133,12 @@ const appReady = () => {
     //const menu = Menu.buildFromTemplate( template )
     //Menu.setApplicationMenu ( menu)
     if (!localServer1) {
-        localServer1 = new BrowserWindow({ show: DEBUG });
+        localServer1 = new BrowserWindow({
+            show: DEBUG,
+            webPreferences: {
+                nodeIntegration: true
+            }
+        });
         localServer1._doUpdate = _doUpdate;
         DEBUG ? localServer1.webContents.openDevTools() : null;
         //localServer1.maximize ()
@@ -207,7 +148,7 @@ const appReady = () => {
             slashes: true
         }));
         setTimeout(() => {
-            shell.openExternal(`http://127.0.0.1:${port}`);
+            createWindow();
         }, 2000);
         /*
         setTimeout (() => {
@@ -235,6 +176,13 @@ const appReady = () => {
     }
 };
 const initialize = () => {
+    const gotTheLock = app.requestSingleInstanceLock();
+    if (!gotTheLock) {
+        return app.quit();
+    }
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        createWindow();
+    });
     app.once('ready', () => {
         if (doReady) {
             return;
@@ -242,16 +190,7 @@ const initialize = () => {
         doReady = true;
         return appReady();
     });
-    app.once('will-finish-launching', () => {
-        /*
-        if ( doReady )
-            return
-        doReady = true
-        
-        return appReady ()
-        */
-    });
-    app.on('window-all-closed', () => {
+    app.once('window-all-closed', () => {
         app.quit();
     });
 };

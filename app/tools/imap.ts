@@ -766,7 +766,7 @@ class ImapServerSwitchStream extends Stream.Transform {
 
 		this.appendWaitResponsrTimeOut = setTimeout (() => {
 			
-			return this.emit ( 'error', new Error ('appendStreamV3 mail serrver write timeout!') )
+			return this.doCommandCallback( new Error ('appendStreamV3 mail serrver write timeout!'))
 				
 		}, _time )
 
@@ -1342,7 +1342,7 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
 			}
 			saveLog (`imapAccountTest doing timeout`)
 			doCallBack ( new Error ( 'timeout' ), null )
-		}, pingPongTimeOut )
+		}, pingFailureTime )
 
 		seneMessageToFolder ( IMapConnect, listenFolder, ramdomText.toString ('base64'), null, err => {
 			if ( err ) {

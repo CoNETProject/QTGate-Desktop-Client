@@ -248,6 +248,7 @@ var view_layout;
                     self.showKeyPair(false);
                     initPopupArea();
                     let uu = null;
+                    self.keyPairCalss = new encryptoClass(self.keyPair());
                     self.imapSetup(uu = new imapForm(config.account, null, function (imapData) {
                         self.imapSetup(uu = null);
                         return self.imapSetupClassExit(imapData, sessionHash);

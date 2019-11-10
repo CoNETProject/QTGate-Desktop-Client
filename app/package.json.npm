@@ -11,13 +11,13 @@
     "name": "CoNET Technology Inc.",
     "email": "info@CoNETTech.ca"
   },
-  "main": "./core/main",
+  "main": "./main",
   "bugs": {
     "url": "https://github.com/QTGate/CoNET/issues"
   },
   "homepage": "https://www.CoNETTech.ca",
   "dependencies": {
-	"async": "^3.1.0",
+    "async": "^3.1.0",
     "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
     "jimp": "^0.8.5",

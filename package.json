@@ -1,6 +1,6 @@
 {
   "name": "conet",
-  "version": "3.0.20",
+  "version": "3.1.1",
   "license": "MIT",
   "description": "CoNET platform",
   "scripts": {
@@ -45,6 +45,21 @@
     "mac": {
       "category": "public.app-category.utilities",
       "icon": "resources/qtgate"
+    },
+    "dmg": {
+		"backgroundColor": "#ffffff",
+      "contents": [
+        {
+          "x": 110,
+          "y": 220
+        },
+        {
+          "x": 420,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
     },
     "linux": {
       "target": [
