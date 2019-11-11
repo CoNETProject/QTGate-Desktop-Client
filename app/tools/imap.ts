@@ -446,11 +446,9 @@ class ImapServerSwitchStream extends Stream.Transform {
                 case '+':
                 case '*': {
                     clearTimeout ( this.idleResponsrTime )
-                    if ( /^RECENT$|^FETCH$|^EXISTS$|^EXPUNGE$/i.test ( cmdArray[2] )) {
-                        
-                        newSwitchRet = true
-					}
-					if ( /^RECENT$/i.test ( cmdArray[2] ) || this.isWaitLogout ) {
+                    
+					if ( /^RECENT$|^EXISTS$/i.test ( cmdArray[2] ) || this.isWaitLogout ) {
+						newSwitchRet = true
 						this.idleDoingDown()
 						
 					}

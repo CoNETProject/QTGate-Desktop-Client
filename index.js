@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-const DEBUG = true;
+const DEBUG = false;
 const port = 3000;
 const path_1 = require("path");
 const url_1 = require("url");

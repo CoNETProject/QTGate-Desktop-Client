@@ -1,6 +1,6 @@
 {
   "name": "conet",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "license": "MIT",
   "description": "CoNET platform",
   "scripts": {
@@ -47,7 +47,7 @@
       "icon": "resources/qtgate"
     },
     "dmg": {
-		"backgroundColor": "#ffffff",
+      "backgroundColor": "#ffffff",
       "contents": [
         {
           "x": 110,
