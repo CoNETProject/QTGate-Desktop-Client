@@ -32,7 +32,7 @@ import * as Fs from 'fs'
 import * as Tool from './initSystem'
 
 const MAX_INT = 9007199254740992
-const debug = true
+const debug = false
 const pingFailureTime = 1000 * 60
 
 const ErrorLogFile = join ( Tool.QTGateFolder, 'imap.log' )
