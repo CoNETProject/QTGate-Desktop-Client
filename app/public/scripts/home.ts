@@ -227,7 +227,10 @@ module view_layout {
         public newVersion = ko.observable ( null )
 		public sessionHash = ''
 		public showLanguageSelect = ko.observable ( true )
+		private demoTimeout
+		private demoMainElm
 
+		
         private afterInitConfig ( ) {
             
             this.keyPair ( this.localServerConfig ().keypair )
@@ -246,6 +249,7 @@ module view_layout {
                  *      Key pair ready
                  * 
                  */
+				
                 makeKeyPairData ( this, config.keypair )
                 if ( ! config.keypair.passwordOK ) {
                     config.keypair.showLoginPasswordField ( true )
@@ -258,7 +262,7 @@ module view_layout {
                  *      No key pair
                  * 
                  */
-                
+                this.svgDemo_showLanguage ()
                 this.clearImapData ()
                 config.keypair = null
                 let _keyPairGenerateForm =  new keyPairGenerateForm ( function ( _keyPair: keypair, sessionHash: string ) {
@@ -328,11 +332,13 @@ module view_layout {
 					})
 				}
 			})
+
+			
         }
         
         //          change language
-        public selectItem ( that: any, site: () => number ) {
-    
+        public selectItem ( that?: any, site?: () => number ) {
+			
             const tindex = lang [ this.tLang ()]
             let index =  tindex + 1
             if ( index > 3 ) {
@@ -359,6 +365,12 @@ module view_layout {
         }
         //          start click
         public openClick () {
+
+			clearTimeout ( this.demoTimeout )
+			if ( this.demoMainElm && typeof this.demoMainElm.remove === 'function' ) {
+				this.demoMainElm.remove()
+				this.demoMainElm = null
+			}
             if ( !this.connectInformationMessage.socketIoOnline ) {
                 return this.connectInformationMessage.showSystemError ()
             }
@@ -456,7 +468,53 @@ module view_layout {
                 inline: true
 			})
 			_view.connectInformationMessage.socketIo.removeEventListener ('tryConnectCoNETStage', this.CoNETConnectClass.listenFun )
-        }
+		}
+
+		/**
+		 * 
+		 * 		T/t = Translate (t is relative, T is absolute) R/r = rotate(r is relative, R is absolute) S/s = scale(s is relative, S is absolute)
+		 */
+		
+		private svgDemo_showLanguage () {
+			
+			let i = 0
+			const changeLanguage = () => {
+				if ( ++i === 1 ) {
+					backGround_mask_circle.attr ({
+						stroke: "#FF000090",
+					})
+					return setTimeout (() => {
+						changeLanguage()
+					}, 1000 )
+				}
+				if ( i > 5 || !this.sectionWelcome() ) {
+					main.remove()
+					return this.demoMainElm = main = null
+				}
+				this.selectItem ()
+				this.demoTimeout = setTimeout (() => {
+					changeLanguage ()
+				}, 2000 )
+			}
+
+			const width = window.innerWidth
+			const height = window.outerHeight
+			let main = this.demoMainElm = Snap( width, height )
+			
+			const backGround_mask_circle = main.circle( width / 2, height / 2, width / 1.7 ).attr({
+				fill:'#00000000',
+				stroke: "#FF000020",
+				strokeWidth: 5,
+			})
+
+			const wT = width/2 - 35
+			const wY = 30 - height / 2
+			backGround_mask_circle.animate ({
+				transform: `t${ wT } ${ wY }`,
+				r: 30
+			}, 3000, mina.easeout, changeLanguage )
+
+		}
     }
 }
 

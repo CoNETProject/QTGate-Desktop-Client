@@ -1,6 +1,6 @@
 {
   "name": "conet",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "license": "MIT",
   "description": "CoNET platform",
   "scripts": {
@@ -22,11 +22,12 @@
     "@types/express": "^4.17.2",
     "@types/jquery": "^3.3.31",
     "@types/knockout": "^3.4.66",
-    "@types/node": "^12.12.7",
+    "@types/node": "^12.12.14",
     "@types/node-uuid": "^0.0.28",
+    "@types/snapsvg": "0.5.0",
     "@types/socket.io": "^1.4.40",
     "@types/socket.io-client": "^1.4.32",
-    "electron": "^6.1.4",
+    "electron": "^6.1.5",
     "electron-builder-squirrel-windows": "22.1.0"
   },
   "build": {
@@ -87,11 +88,12 @@
     "jimp": "^0.8.5",
     "jszip": "^3.2.2",
     "knockout": "^3.5.1",
-    "mime-types": "^2.1.24",
+    "mime-types": "^2.1.25",
     "node-uuid": "^1.4.8",
     "nodemailer": "^6.3.1",
-    "openpgp": "^4.6.2",
+    "openpgp": "^4.7.0",
     "pug": "^2.0.4",
+    "snapsvg": "^0.5.1",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0"
   }

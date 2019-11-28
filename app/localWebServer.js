@@ -76,6 +76,11 @@ const imapErrorCallBack = (message) => {
     }
     return -1;
 };
+class apiRequest {
+    constructor(req) {
+        this.req = req;
+    }
+}
 class localServer {
     constructor(cmdResponse, test) {
         this.cmdResponse = cmdResponse;
@@ -148,56 +153,17 @@ class localServer {
         }
         let sendMail = false;
         const _exitFunction = err => {
-            //console.trace ( `_exitFunction err =`, err )
-            //console.log (`sessionHashPool.length = [${ this.sessionHashPool.length }]`)
-            switch (err) {
-                ///			connect conet had timeout
-                case 1: {
-                    return socket.emit('tryConnectCoNETStage', 0);
-                }
-                case 2: {
-                    return console.log(`CoNETConnectCalss exit with 2, stop remake CoNETConnectCalss!`);
-                }
-                case 3: {
-                    return makeConnect(sendMail = false);
-                }
-                case null:
-                case undefined:
-                default: {
-                    if (!sendMail) {
-                        return makeConnect(sendMail = true);
-                    }
-                    return makeConnect(sendMail = false);
-                }
-            }
+            console.trace(`makeConnect on _exitFunction err this.CoNETConnectCalss destroy!`, err);
+            this.CoNETConnectCalss = null;
         };
-        const makeConnect = (sendMail) => {
-            if (!this.imapConnectData.sendToQTGate || sendMail) {
-                this.imapConnectData.sendToQTGate = true;
-                Tool.saveEncryptoData(Tool.imapDataFileName1, this.imapConnectData, this.config, this.savedPasswrod, () => { });
-                this.socketServer.emit('tryConnectCoNETStage', null, 3);
-                this.socketServer.emit('systemErr', 'sendConnectRequestMail');
-                return Tool.sendCoNETConnectRequestEmail(this.imapConnectData, this.openPgpKeyOption, this.config.version, this.nodeList[0].email, this.keyPair.publicKey, (err) => {
-                    if (err) {
-                        console.log(`sendCoNETConnectRequestEmail callback error`, err);
-                        saveLog(`tryConnectCoNET sendCoNETConnectRequestEmail got error [${err.message ? err.message : JSON.stringify(err)}]`);
-                        this.socketServer.emit('systemErr', err);
-                        return socket.emit('tryConnectCoNETStage', imapErrorCallBack(err.message));
-                    }
-                    return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, true, (mail, uuid) => {
-                        return this.catchCmd(mail, uuid);
-                    }, _exitFunction);
-                });
-            }
-            console.log(`makeConnect without sendMail`);
-            return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, false, (mail, uuid) => {
+        const makeConnect = () => {
+            return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, !this.imapConnectData.sendToQTGate, this.keyPair.publicKey, this.nodeList[0].email, (mail, uuid) => {
                 return this.catchCmd(mail, uuid);
             }, _exitFunction);
         };
-        return makeConnect(false);
+        return makeConnect();
     }
     listenAfterPassword(socket, sessionHash) {
-        //console.log (`localServer listenAfterPassword for sessionHash [${ sessionHash }]`)
         socket.on('checkImap', (emailAddress, password, timeZone, tLang, CallBack1) => {
             CallBack1();
             console.log(`localServer on checkImap!`);
@@ -232,9 +198,14 @@ class localServer {
             return this.doingCheckImap(socket);
         });
         socket.on('tryConnectCoNET', CallBack1 => {
+            const uuid = Uuid.v4();
+            CallBack1(uuid);
+            const _callBack = (...data) => {
+                socket.emit(uuid, ...data);
+            };
             saveLog(`socket on tryConnectCoNET!`);
             if (!this.imapConnectData) {
-                return CallBack1('systemError');
+                return _callBack('systemError');
             }
             if (!this.imapConnectData.confirmRisk) {
                 this.imapConnectData.confirmRisk = true;
@@ -244,8 +215,25 @@ class localServer {
             }
             return this.tryConnectCoNET(socket, sessionHash);
         });
+        socket.on('sendRequestMail', CallBack1 => {
+            CallBack1();
+            if (!this.CoNETConnectCalss) {
+                return console.log(`localServer on sendRequestMail Error! have no this.CoNETConnectCalss!`);
+            }
+            socket.emit('tryConnectCoNETStage', null, 2, false);
+            if (this.CoNETConnectCalss) {
+                console.log(`localWebServer on sendRequestMail !`);
+                return this.CoNETConnectCalss.sendRequestMail();
+            }
+            console.log(`localWebServer on sendRequestMail have no CoNETConnectCalss create CoNETConnectCalss`);
+            return this.tryConnectCoNET(socket, sessionHash);
+        });
         socket.on('checkActiveEmailSubmit', (text, CallBack1) => {
-            console.log(`on checkActiveEmailSubmit`);
+            const uuid = Uuid.v4();
+            CallBack1(uuid);
+            const _callBack = (...data) => {
+                socket.emit(uuid, ...data);
+            };
             const key = Buffer.from(text, 'base64').toString();
             if (key && key.length) {
                 console.log(`active key success! \n[${key}]`);
@@ -255,19 +243,32 @@ class localServer {
                     if (err) {
                         saveLog(`Tool.saveConfig return Error: [${err.message}]`);
                     }
-                    CallBack1();
+                    _callBack();
                 });
             }
         });
-        socket.on('doingRequest', (uuid, request, CallBack) => {
+        socket.on('doingRequest', (uuid, request, CallBack1) => {
+            const _uuid = Uuid.v4();
+            CallBack1(_uuid);
+            const _callBack = (...data) => {
+                socket.emit(_uuid, ...data);
+            };
             this.requestPool.set(uuid, socket);
             saveLog(`doingRequest on ${uuid}`);
-            return this.CoNETConnectCalss.requestCoNET_v1(uuid, request, CallBack);
+            if (this.CoNETConnectCalss) {
+                return this.CoNETConnectCalss.requestCoNET_v1(uuid, request, _callBack);
+            }
+            return socket.emit('systemErr');
         });
-        socket.on('getFilesFromImap', (files, CallBack) => {
+        socket.on('getFilesFromImap', (files, CallBack1) => {
+            const uuid = Uuid.v4();
+            CallBack1(uuid);
+            const _callBack = (...data) => {
+                socket.emit(uuid, ...data);
+            };
             console.log(`socket.on ('getFilesFromImap')`, files);
             if (typeof files !== 'string' || !files.length) {
-                return CallBack(new Error('invalidRequest'));
+                return _callBack(new Error('invalidRequest'));
             }
             const _files = files.split(',');
             console.log(`socket.on ('getFilesFromImap') _files = [${_files}] _files.length = [${_files.length}]`);
@@ -283,29 +284,49 @@ class localServer {
                 });
             }, err => {
                 if (err) {
-                    return CallBack(err);
+                    return _callBack(err);
                 }
-                console.log(`******************** getFilesFromImap success all [${ret.length}] fies!\n\n${ret}\n\n`);
-                return CallBack(null, ret);
+                //console.log (`******************** getFilesFromImap success all [${ ret.length }] fies!\n\n${ ret }\n\n`)
+                return _callBack(null, ret);
             });
         });
-        socket.on('sendMedia', (uuid, rawData, CallBack) => {
-            return this.CoNETConnectCalss.sendDataToANewUuidFolder(Buffer.from(rawData).toString('base64'), uuid, uuid, CallBack);
+        socket.on('sendMedia', (uuid, rawData, CallBack1) => {
+            const _uuid = Uuid.v4();
+            CallBack1(_uuid);
+            const _callBack = (...data) => {
+                socket.emit(_uuid, ...data);
+            };
+            return this.CoNETConnectCalss.sendDataToANewUuidFolder(Buffer.from(rawData).toString('base64'), uuid, uuid, _callBack);
         });
-        socket.on('mime', (_mime, CallBack) => {
+        socket.on('mime', (_mime, CallBack1) => {
+            const _uuid = Uuid.v4();
+            CallBack1(_uuid);
+            const _callBack = (...data) => {
+                socket.emit(_uuid, ...data);
+            };
             let y = mime.lookup(_mime);
             if (!y) {
-                return CallBack(new Error('no mime'));
+                return _callBack(new Error('no mime'));
             }
-            return CallBack(null, y);
+            return _callBack(null, y);
         });
+        /*
+                socket.on ('getUrl', ( url: string, CallBack ) => {
+                    const uu = new URLSearchParams ( url )
+                    if ( !uu || typeof uu.get !== 'function' ) {
+                        console.log (`getUrl [${ url }] have not any URLSearchParams`)
+                        return CallBack ()
+                    }
+                    
+                    return CallBack ( null, uu.get('imgrefurl'), uu.get('/imgres?imgurl'))
+                })
+        */
     }
     doingCheckImap(socket) {
         this.imapConnectData.imapTestResult = false;
         return Async.series([
             next => Imap.imapAccountTest(this.imapConnectData, err => {
                 if (err) {
-                    console.log(`doingCheckImap Imap.imapAccountTest return err`, err);
                     return next(err);
                 }
                 console.log(`imapAccountTest success!`, typeof next);
@@ -325,9 +346,6 @@ class localServer {
             });
         });
     }
-    passwordFail(CallBack) {
-        return CallBack(null, true);
-    }
     socketServerConnected(socket) {
         const clientName = `[${socket.id}][ ${socket.conn.remoteAddress}]`;
         let sessionHash = '';
@@ -337,32 +355,36 @@ class localServer {
             login: false
         };
         saveLog(`socketServerConnected ${clientName} connect ${this.localConnected.size}`);
-        socket.once('disconnect', reason => {
-            saveLog(`socketServerConnected ${clientName} on disconnect ${this.localConnected.size}`);
-            return this.localConnected.delete(clientName);
-        });
         socket.once('init', Callback1 => {
-            saveLog(`socket.on ( 'init' )`);
+            const uuid = Uuid.v4();
+            Callback1(uuid);
             const ret = Tool.emitConfig(this.config, false);
-            return Callback1(null, ret);
+            //console.log ( Util.inspect( ret, false, 3, true  ))
+            //console.log ( `typeof Callback1 [${ typeof Callback1 }]`)
+            return socket.emit(uuid, null, ret);
         });
         socket.once('agreeClick', () => {
             this.config.firstRun = false;
             return Tool.saveConfig(this.config, saveLog);
         });
         socket.on('checkPemPassword', (password, CallBack1) => {
+            const uuid = Uuid.v4();
+            CallBack1(uuid);
+            const passwordFail = (...data) => {
+                return socket.emit(uuid, null, ...data);
+            };
             if (!this.config.keypair || !this.config.keypair.publicKey) {
                 console.log(`checkPemPassword !this.config.keypair`);
-                return this.passwordFail(CallBack1);
+                return passwordFail(true);
             }
             if (!password || password.length < 5) {
                 console.log(`! password `);
-                return this.passwordFail(CallBack1);
+                return passwordFail(true);
             }
             if (this.savedPasswrod && this.savedPasswrod.length) {
                 if (this.savedPasswrod !== password) {
                     console.log(`savedPasswrod !== password `);
-                    return this.passwordFail(CallBack1);
+                    return passwordFail(true);
                 }
             }
             return Async.waterfall([
@@ -375,7 +397,7 @@ class localServer {
                     //console.log ( `checkPemPassword Tool.getKeyPairInfo success!`)
                     if (!key.passwordOK) {
                         saveLog(`[${clientName}] on checkPemPassword had try password! [${password}]`);
-                        return this.passwordFail(CallBack1);
+                        return passwordFail(true);
                     }
                     this.savedPasswrod = password;
                     this.keyPair = key;
@@ -392,20 +414,20 @@ class localServer {
                 //console.log (`checkPemPassword Async.waterfall success!`)
                 if (err) {
                     if (!(err.message && /no such file/i.test(err.message))) {
-                        CallBack1();
+                        passwordFail(null);
                         return saveLog(`Tool.makeGpgKeyOption return err [${err && err.message ? err.message : null}]`);
                     }
                 }
                 this.sessionHashPool.push(sessionHash = Crypto.randomBytes(10).toString('hex'));
-                console.log(`this.sessionHashPool.push!\n${this.sessionHashPool}\n${this.sessionHashPool.length}`);
+                //console.log (`this.sessionHashPool.push!\n${ this.sessionHashPool }\n${ this.sessionHashPool.length }`)
                 this.listenAfterPassword(socket, sessionHash);
                 try {
                     this.imapConnectData = JSON.parse(data);
                     this.localConnected.set(clientName, clientObj);
-                    return CallBack1(null, this.imapConnectData, this.Pbkdf2Password, sessionHash);
+                    return passwordFail(this.imapConnectData, this.Pbkdf2Password, sessionHash);
                 }
                 catch (ex) {
-                    return CallBack1();
+                    return passwordFail(null);
                 }
             });
         });
@@ -432,6 +454,11 @@ class localServer {
             return this.socketServer.emit('init', null, this.config);
         });
         socket.on('NewKeyPair', (preData, CallBack1) => {
+            const uuid = Uuid.v4();
+            CallBack1(uuid);
+            const _callBack = (...data) => {
+                socket.emit(uuid, ...data);
+            };
             //		already have key pair
             if (this.config.keypair && this.config.keypair.createDate) {
                 return saveLog(`[${clientName}] on NewKeyPair but system already have keypair: ${this.config.keypair.publicKeyID} stop and return keypair.`);
@@ -440,33 +467,33 @@ class localServer {
             return Tool.getPbkdf2(this.config, this.savedPasswrod, (err, Pbkdf2Password) => {
                 if (err) {
                     saveLog(`NewKeyPair getPbkdf2 Error: [${err.message}]`);
-                    return CallBack1('systemError');
+                    return _callBack('systemError');
                 }
                 preData.password = Pbkdf2Password.toString('hex');
-                console.log(`preData.password = [${preData.password}]`);
+                //console.log (`preData.password = [${ preData.password }]`)
                 return Tool.newKeyPair(preData.email, preData.nikeName, preData.password, (err, retData) => {
                     if (err) {
                         console.log(err);
-                        CallBack1();
+                        _callBack();
                         return saveLog(`CreateKeyPairProcess return err: [${err.message}]`);
                     }
                     if (!retData) {
                         const info = `newKeyPair return null key!`;
                         saveLog(info);
                         console.log(info);
-                        return CallBack1();
+                        return _callBack();
                     }
                     if (!clientObj.listenAfterPasswd) {
                         clientObj.listenAfterPasswd = clientObj.login = true;
                         this.localConnected.set(clientName, clientObj);
                         this.sessionHashPool.push(sessionHash = Crypto.randomBytes(10).toString('hex'));
-                        console.log(`this.sessionHashPool.push!\n${this.sessionHashPool}\n${this.sessionHashPool.length}`);
+                        //console.log ( `this.sessionHashPool.push!\n${ this.sessionHashPool }\n${ this.sessionHashPool.length }`)
                         this.listenAfterPassword(socket, sessionHash);
                     }
                     return Tool.getKeyPairInfo(retData.publicKey, retData.privateKey, preData.password, (err, key) => {
                         if (err) {
                             const info = `Tool.getKeyPairInfo Error [${err.message ? err.message : 'null err message '}]`;
-                            return CallBack1('systemError');
+                            return _callBack('systemError');
                         }
                         this.keyPair = this.config.keypair = key;
                         this.config.account = this.config.keypair.email;
@@ -476,30 +503,11 @@ class localServer {
                             }
                             this.openPgpKeyOption = data;
                             Tool.saveConfig(this.config, saveLog);
-                            return CallBack1(null, this.config.keypair, sessionHash);
+                            return _callBack(null, this.config.keypair, sessionHash);
                         });
                     });
                 });
             });
-        });
-        socket.on('password', (password, Callback1) => {
-            Callback1();
-            if (!this.config.keypair || !this.config.keypair.publicKey) {
-                console.log(`password !this.config.keypair`);
-                return socket.emit('password', true);
-            }
-            if (!password || password.length < 5) {
-                console.log(`! password `);
-                return socket.emit('password', true);
-            }
-            if (this.savedPasswrod && this.savedPasswrod.length) {
-                if (this.savedPasswrod !== password) {
-                    console.log(`savedPasswrod !== password `);
-                    return socket.emit('password', true);
-                }
-            }
-            this.sessionHashPool.push(sessionHash = Crypto.randomBytes(10).toString('hex'));
-            console.log(`this.sessionHashPool.push!\n${this.sessionHashPool}\n${this.sessionHashPool.length}`);
         });
     }
 }

@@ -613,8 +613,8 @@ ul.plan-features {
 
 	.loaderCoNET {
 		overflow: hidden;
-		padding: 1em;
-		margin: 1em;
+		padding: 2em;
+		position: relative;
 	}
 	
 	.loaderCoNET-div {
@@ -785,6 +785,8 @@ ul.plan-features {
 	animation-fill-mode: forwards;
 }
 
+
+
 .backgroundTransparent {
   background: rgba(255,255,255,0.01)!important;
 }
@@ -863,3 +865,56 @@ ul.plan-features {
 .buttonUnActive {
 	background: #e0e1e288 none!important;
 }
+
+@keyframes svg_Background {
+	to { filter: blur(3px);}
+	to { background: black ;}
+}
+
+.svgBackground_Animation {
+	-webkit-animation-name: svg_Background;
+	-webkit-animation-duration: 0.5s;
+	animation-name: svg_Background;
+	animation-duration: 0.5s;
+	animation-timing-function: ease-in;
+	animation-fill-mode: forwards;
+}
+.terminalText { 
+	position: relative;
+	display: inline-block;
+	min-width: 360px;
+  }
+  
+  .terminalText::after {
+	content: "";
+	position: absolute;
+	/* Remove display: inline-block if not required to be on the same line as text etc */
+	display: inline-block;
+	background-color:grey;
+	top: 14px;
+	margin-left: 2px;
+	width: 10px;
+	/* Set height to the line height of .text */
+	height: 2px;
+	/* 
+	Animation paramaters:
+	blink = animation-name, 
+	1s = animation-duration, 
+	step-end = animation-timing-function,
+	infinite = animation-iteration-count
+	*/
+	-webkit-animation: blink 1s step-end infinite;
+	animation: blink 1s step-end infinite;
+  }
+  
+  @-webkit-keyframes blink {
+	0% { opacity: 1.0; }
+	50% { opacity: 0.0; }
+	100% { opacity: 1.0; }
+  }
+  
+  @keyframes blink {
+	0% { opacity: 1.0; }
+	50% { opacity: 0.0; }
+	100% { opacity: 1.0; }
+  }

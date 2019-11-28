@@ -16,25 +16,19 @@
 const messageBoxDefine = {
 	LoadingPage: ['正在解密数据和加载页面','暗号化したデータを復号化とページの読み込み中。','Decrypting data and loading page.','正在解密数据和加载頁面'],
 	offline:
-		[' 无互联网链接 ',' インターネットに接続していないです ',' Have no Internet ',' 無互聯網連結 '],
+		['无互联网，邮件服务器无法到达！','インターネットがないか、メールサーバーへ接続ができません！','Have no Internet, can not connect to mail server!','無互聯網，郵件伺服器無法到達！'],
 	systemError:
 		['CoNET客户端故障，请重启后再试','端末故障です、CoNETを再起動してください','CoNET client error! Restart CoNET please!','CoNET客戶端故障，請重啟後再試'],
 	reConnectCoNET:
-		['CoNET链接已中断','CoNETとの接続が中断され','CoNET connection lost.','CoNET的鏈接已中斷'],
+		['CoNET链接已中断','CoNETとの接続が中断され','CoNET connection lost.','CoNET的鏈接已中斷'
+	],
 	connectingToCoNET:
-		['正在连接CoNET...','CoNETへ接続中...','Connecting to CoNET...','正在連結CoNET...'],
+		['正在连接CoNET...','CoNETへ接続中...','Connecting to CoNET...','正在連結CoNET...'
+	],
 	connectedToCoNET:
-		['无IP地址成功连接CoNET','IPなしでCoNETに接続しました','Success to connect CoNET without IP address.','無IP地址成功連結CoNET'],
-	timeOut: [
-		'CoNET节点无响应，节点可能正在忙碌中，请稍后再试',
-		'CoNETノートからの応答がなかったです、サーバー側は忙しいかもしれませんが、後ほどもう一度してみてください。',
-		'CoNET node not responding to requests. Maybe busy now, try again later.',
-		'CoNET節點無響應，節點可能正在忙碌中，請稍後再試'],
-	sendConnectRequestMail: [
-		'客户端正向CoNET系统发出联机请求Email。这需要额外的时间，请耐心等待。',
-		'接続要請メールをCoNETシステムへ送信しました、接続を完了するまで時間がかかるのため、しばらくお待ちおください。',
-		'Sending connection request email to CoNET. Please wait a moment, re-connecting to CoNET.',
-		'客戶端正向CoNET發出聯網請求Email。這需要額外的時間，請耐心等待。'],
+		['无IP地址成功连接CoNET','IPなしでCoNETに接続しました','Success to connect CoNET without IP address.','無IP地址成功連結CoNET'
+	],
+	
 	maximumRequest: [
 		'您的请求已达最大值，请稍后再试',
 		'レクエスト回数は制限にかかった、後ほど改めてお試しください',
@@ -50,7 +44,7 @@ const messageBoxDefine = {
 	unKnowError: [
 		'未知错误，请再试！如果持续发生请重启CoNET客户端或重新安装',
 		'不明なエラーが発生、もしこんな状況が続くであれば、CoNET端末を再起動するか、CoNET端末を再インストールしてください。',
-		'Opps. Unknow error. Try again or restart CoNET client, if still same error please re-install CoNET.',
+		'Oops. Unknown error. Try again or restart CoNET client, if still same error please re-install CoNET.',
 		'未知错误，请再试！如果持续发生请重启CoNET客户端或重新安装'
 
 	],
@@ -71,7 +65,44 @@ const messageBoxDefine = {
 	],
 	pageLoadingError: [
 		'页面加载发生错误','エラーが発生してページの読み込みが完了できません','Loading page has error.','頁面加載發生錯誤'
-	]
+	],
+	connectToMailServer: [
+		'正在连接邮件服务器: ',
+		'メールサーバーへ接続をしています: ',
+		'Connect to mail server: ',
+		'正在連接郵件伺服器: '
+	],
+	connectedMailServer: [
+		'正在连接邮件服务器: 完成',
+		'メールサーバーへ接続をしています: 完成',
+		'Connect to mail server: success.',
+		'正在連接郵件伺服器: 完成'
+	],
+	waitingPong :[
+		'正在等待节点响应: ',
+		'ノートのレスポンスを待っています: ',
+		'Waiting for a response from node: ',
+		'正在等待節點響應: '
+	],
+	waitingPongTimeOver :[
+		'正在等待节点响应: 超时错误！',
+		'ノートのレスポンスを待っています: タイムオーバーエラー！',
+		'Waiting for a response from node: Over time error!',
+		'正在等待節點響應: 響應超時錯誤！'
+	],
+	sendConnectRequestMail :[
+		'客户端向节点发出联机请求邮件，完成需要额外的时间，请耐心等待',
+		'接続メールをノートへ送信しました、完了まで時間がかかります、しばらくお待ち下さい',
+		'Sending connection request email to node. Please wait a moment',
+		'客戶端向節點發出聯機請求郵件，完成需要額外的時間，請耐心等待'
+	],
+	timeOut: [
+		'节点无响应，可能正在忙碌中，请稍后再试',
+		'ノートの応答がなかったです、忙しいかもしれませんが、後ほどもう一度してみてください。',
+		'Node have not responding to requests, try again later.',
+		'節點無響應，可能正在忙碌中，請稍後再試'
+	],
+
 
 
 }
@@ -126,6 +157,9 @@ class connectInformationMessage {
 		if ( ! this.socketIoOnline ) {
 			return this.showErrorMessage ( 'systemError' )
 		}
+
+
+
 		const argLength = args.length - 1
 		let _CallBack = null
 	
@@ -133,16 +167,25 @@ class connectInformationMessage {
 			_CallBack = args.pop ()
 		}
 
-
-
-		this.socketIo.emit ( eventName, ...args, ( err, ...data ) => {
-			if ( err ) {
-				self.showErrorMessage ( err )
-			}
-
+		const _timeout = setTimeout(() => {
 			if ( _CallBack ) {
-				return _CallBack ( err, ...data )
+				_CallBack( new Error ('systemErr'))
+				return _CallBack = null
 			}
+			return this.showSystemError()
+		}, 3000 )
+		
+		return this.socketIo.emit ( eventName, ...args, uuid => {
+			clearTimeout ( _timeout )
+			this.socketIo.once ( uuid, ( err, ...data ) => {
+				if ( err ) {
+					self.showErrorMessage ( err )
+				}
+	
+				if ( _CallBack ) {
+					return _CallBack ( err, ...data )
+				}
+				})
 		})
 	}
 

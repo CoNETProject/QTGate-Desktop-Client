@@ -28,10 +28,10 @@ let doReady = false;
 const _doUpdate = (tag_name, _port) => {
     let url = null;
     if (process.platform === 'darwin') {
-        url = `http://127.0.0.1:${_port}/update/mac?ver=${tag_name}`;
+        url = `http://localhost:${_port}/update/mac?ver=${tag_name}`;
     }
     else if (process.platform === 'win32') {
-        url = `http://127.0.0.1:${_port}/latest/${tag_name}/`;
+        url = `http://localhost:${_port}/latest/${tag_name}/`;
     }
     else {
         console.log(`process.platform === linux`);
@@ -56,8 +56,21 @@ const _doUpdate = (tag_name, _port) => {
     autoUpdater.setFeedURL(url);
     autoUpdater.checkForUpdates();
 };
+const createLocalBrowser = () => {
+    const localServer = new BrowserWindow({
+        show: DEBUG,
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+    DEBUG ? localServer.webContents.openDevTools() : null;
+    localServer.loadURL(`http://localhost:${port}`);
+};
 const createWindow = () => {
-    shell.openExternal(`http://127.0.0.1:${port}`);
+    if (process.platform === 'win32') {
+        return createLocalBrowser();
+    }
+    shell.openExternal(`http://localhost:${port}`);
 };
 const data11 = [
     {

@@ -197,13 +197,21 @@ block jumbotron1
 
 			<!-- ko if: showCheckProcess -->
 			.card.centered.raised( style = " width: 100%;" )
+
 				.content.checkImapData
+					
 					.ui.segment( data-bind = "css: { yellow: checkProcessing() < -1, red: checkImapError() > -1 }")
+						
 						p( data-bind = " visible: checkImapError() > -1, text: infoDefine [ $root.languageIndex() ].imapInformation.imapCheckError[checkImapError()]")
 						p( data-bind = "visible: checkImapStep() > -1 && checkImapError() === -1, text: infoDefine [ $root.languageIndex() ].imapInformation.imapCheckingStep[checkImapStep()]")
 						Button.ui.icon.button.orange( data-bind = " visible: checkImapError() > -1, click: returnImapSetup, text: infoDefine [ $root.languageIndex() ].imapInformation.title " )
-						.keyPairProcessBar.ui.bottom.teal.attached.progress( data-bind="visible: checkImapError() === -1" style="margin-bottom: 1em;" data-value="1" data-total="100")
-							.bar
+						<!-- ko if: checkImapError() < 0 -->
+						.loaderCoNET( style = "position: relative;")
+							.loaderCoNET-div
+							.loaderCoNET-div
+							.loaderCoNET-div
+							.loaderCoNET-div
+						<!-- /ko -->
 			<!-- /ko -->
 			//-	if: showCheckProcess
 
@@ -230,25 +238,32 @@ block jumbotron1
 							.ui.negative.button( data-bind = " text: infoDefine[ $root.languageIndex() ].imapInformation.agree, click: imapConform ")
 					<!-- /ko -->
 					<!-- ko if: Loading() && ! showSendImapDataWarning() -->
-					.loaderCoNET
+					.loaderCoNET( style = "position: relative;")
 						.loaderCoNET-div
 						.loaderCoNET-div
 						.loaderCoNET-div
 						.loaderCoNET-div
+					
+					
+					<!-- /ko -->
+					<!-- ko if: infoTextArray() && infoTextArray().length -->
+					.ui.segment( style = "min-height: 10em;")
+						<!-- ko foreach: infoTextArray -->
+						.infoText( data-bind = "style: { 'color': err() === null ? 'grey' : ( !err() ? 'green' : 'red') }, css: { 'terminalText': ($index() === $parent.infoTextArray().length - 1) && !$parent.showTryAgain() }, text: messageBoxDefine[ text() ] [ $root.languageIndex() ] " style = "color: grey;")
+						<!-- /ko -->
+
+					<!-- ko if: showSendConnectMail -->
+					.ui.teal.center.aligned.segment( data-bind = " click: sendConnectMail " style = "cursor: pointer;")
+						.text( data-bind = " text: infoDefine[ $root.languageIndex() ].linuxUpdate.tryAgain ")
 					<!-- /ko -->
 
-					<!-- ko if: mayNotMakeImapConnect -->
-					
-						//- if connetcError() > -1
-						//-	imapInformation.imapCheckError[ connetcError() ]
-						//-.ui.segment( data-bind = "css: { yellow: connectStage() < -1, red: connetcError() > -1 }" )
-							p( data-bind="visible: connetcError() > -1, text: infoDefine [ $root.languageIndex() ].imapInformation.imapCheckError[ connetcError() ]")
-							Button.ui.icon.button.orange( data-bind = " visible: connetcError() > -1, click: returnToImapSetup, text: infoDefine [ $root.languageIndex() ].imapInformation.title " )
-							p( data-bind= "visible: connectStage() > -1, text: infoDefine [ $root.languageIndex() ].imapInformation.imapCheckingStep[ connectStage() ]")
-							p( data-bind="visible: maynotConnectConet, text: ")
-							.keyPairProcessBar.ui.bottom.teal.attached.progress( data-bind="visible: connetcError() < 0" style="margin-bottom: 1em;" data-value="1" data-total="100")
-								.bar
+					<!-- ko if: showNetworkError -->
+					.ui.red.center.aligned.segment( data-bind = " click: tryAgain" style = "cursor: pointer;")
+						.text( data-bind = " text: infoDefine[ $root.languageIndex() ].linuxUpdate.tryAgain ")
 					<!-- /ko -->
+
+					<!-- /ko -->
+					
 
 			<!-- /ko -->
 			//-	if: showConnectCoNETProcess
@@ -407,5 +422,4 @@ block jumbotron1
 
 	<!-- /ko -->
 	<!-- /ko -->
-
-
+	

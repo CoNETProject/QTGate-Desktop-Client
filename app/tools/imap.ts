@@ -63,8 +63,10 @@ class ImapServerSwitchStream extends Stream.Transform {
     public _buffer = Buffer.alloc (0)
     public serverCommandError ( err: Error, CallBack ) {
         this.imapServer.emit ( 'error', err )
-        if ( CallBack )
-            CallBack ( err )
+        if ( CallBack ) {
+			CallBack ( err )
+		}
+            
     }
     public Tag: string = null
     public cmd: string = null
@@ -147,7 +149,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                         this.doCommandCallback ( null, commandLine )
                         return callback ()
 					}
-					
+					console.log (`IMAP preProcessCommane on NO Tag!`, commandLine )
                     const errs = cmdArray.slice (2).join(' ')
                     this.doCommandCallback ( new Error ( errs ))
                     return callback ()
@@ -228,9 +230,9 @@ class ImapServerSwitchStream extends Stream.Transform {
                 
                 //  have no fill body get next chunk
                 if ( ! _buf1 ) {
-                    if (!this.callback) {
+                    if ( !this.callback ) {
                         this.callback = true
-                        return next()
+                        return next ()
                     }
                     return
                 }
@@ -250,14 +252,13 @@ class ImapServerSwitchStream extends Stream.Transform {
         return doLine ()
     }
 
-
     private capability () {
 
         this.doCommandCallback = ( err ) => {
 
             if ( this.imapServer.listenFolder ) {
                 
-                return this.createBox ( true, this.imapServer.listenFolder, ( err, newMail, UID: number ) => {
+                return this.createBox ( true, this.imapServer.listenFolder, ( err, newMail, UID: string ) => {
                     
                     if ( err ) {
                         console.log (`========================= [${ this.imapServer.listenFolder || this.imapServer.imapSerialID }] openBox Error do this.end ()`, err )
@@ -319,7 +320,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         return this.imapServer.destroyAll( null)
     }
 
-    public doNewMail ( UID = 0 ) {
+    public doNewMail ( UID = '' ) {
         
         this.reNewCount --
                
@@ -330,42 +331,48 @@ class ImapServerSwitchStream extends Stream.Transform {
                 return this.imapServer.destroyAll ( err )
 			}
 			let haveMoreNewMail = false
-			const getNewMail = () => {
+			const getNewMail = ( _fatchID, CallBack ) => {
             
 				return Async.waterfall ([
-					next => this.fetch ( newMailIds, next ),
+					next => this.fetch ( _fatchID, next ),
 					( _moreNew, next ) => {
 						haveMoreNewMail = _moreNew
-						return this.flagsDeleted ( newMailIds, next )
+						return this.flagsDeleted ( _fatchID, next )
 					},
 					next => {
 						return this.expunge ( next )
 					}
-				], ( err: Error, newMail ) => {
-					
+				], CallBack )
+			}
+			
+            if ( newMailIds || ( newMailIds = UID )) {
+
+				const uids = newMailIds.split(',')
+				return Async.eachSeries ( uids, ( n ,next ) => {
+					const _uid = parseInt( n )
+					if ( _uid > 0 ) {
+						return getNewMail ( _uid, next )
+					}
+					return next ()
+				}, ( err ) => {
 					this.runningCommand = null
 					if ( err ) {
 						saveLog ( `ImapServerSwitchStream [${ this.imapServer.listenFolder || this.imapServer.imapSerialID }] doNewMail ERROR! [${ err.message }]`)
 						return this.imapServer.destroyAll ( err )
 					}
-						
-					if ( haveMoreNewMail || havemore || newMail ) {
+					if ( haveMoreNewMail || havemore ) {
 						
 						return this.doNewMail ()
 					}
 					return this.idleNoop ( )
 				})
-			}
-			
-            if ( newMailIds || ( newMailIds = UID )) {
-                return getNewMail ()
+                
 			}
 
 			this.runningCommand = null
 			this.imapServer.emit ( 'ready' )
 			return this.idleNoop()
 			
-            
             
         })
         
@@ -480,7 +487,7 @@ class ImapServerSwitchStream extends Stream.Transform {
                 this.isImapUserLoginSuccess = true
                 return this.capability ()
             }
-            
+            console.log (`ImapServerSwitchStream class login error `, err )
             return this.imapServer.destroyAll ( err )
         }
 
@@ -850,7 +857,6 @@ class ImapServerSwitchStream extends Stream.Transform {
 						
 						this.debug ? console.log ( `${ text1 } doing length [${ this.imapServer.fetching }]` ) : null
 						
-						
                     }
                     if ( /^RECENT$/i.test ( cmdArray[2]) && parseInt ( cmdArray[1]) > 0 ) {
                         newSwitchRet = true
@@ -860,7 +866,8 @@ class ImapServerSwitchStream extends Stream.Transform {
                 default:
                 return _callback ()
             }
-        }
+		}
+		
         //console.log (`ImapServerSwitchStream doing UID FETCH `)
         this.cmd = `UID FETCH ${ fetchNum } ${ this.imapServer.fetchAddCom }`
         this.Tag = `A${ this.imapServer.TagCount1() }`
@@ -1100,24 +1107,29 @@ export class qtGateImap extends Event.EventEmitter {
     }
 
     public destroyAll ( err: Error ) {
-        
-        this.imapStream.logout (() => {
-            
-            this.imapEnd = true
+		//console.trace (`class qtGateImap on destroyAll`, err )
+		this.imapEnd = true
 
-            if ( this.socket && typeof this.socket.end === 'function' ) {
-                this.socket.end ()
-            }
-            this.emit ( 'end', err )
-                
-        })
-        
+		if ( this.socket && typeof this.socket.end === 'function' ) {
+			this.socket.end ()
+		}
+		if ( err ) {
+			return this.emit ( 'error', err )
+		}
+        this.emit ( 'end', err )
         
     }
 
-    public logout () {
+    public logout ( CallBack = null ) {
+
+		const _end = () => {
+			if ( typeof CallBack === 'function' ) {
+				return CallBack ()
+			}
+		}
+
         if ( this.imapEnd ) {
-            return 
+            return _end ()
         }
         this.imapEnd = true
         return this.imapStream.logout (() => {
@@ -1127,7 +1139,8 @@ export class qtGateImap extends Event.EventEmitter {
                 this.socket.end()
             }
             
-            return this.emit ( 'end' )
+			this.emit ( 'end' )
+			return _end ()
         })
     }
 
@@ -1350,13 +1363,8 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
 
     })
 
-    rImap.once ( 'end', err => {
-        saveLog ( `rImap.once ( 'end' ) [${ err && err.message ? err.message : 'err = undefine' }]`, true )
-        if (! callbackCall && !err ) {
-            saveLog (`rImap.once ( 'end') before finished test! do imapAccountTest again!`, true )
-            return imapAccountTest ( IMapConnect, CallBack )
-        }
-        return doCallBack ( err, null )
+    rImap.once ( 'end', () => {
+        
     })
 
     rImap.once ( 'error', err => {
@@ -1402,10 +1410,10 @@ export class imapPeer extends Event.EventEmitter {
 
     private mail ( email: Buffer ) {
         
-		console.log (`imapPeer new mail:\n\n${ email.toString()}`)
+		//console.log (`imapPeer new mail:\n\n${ email.toString()}`)
 		const subject = getMailSubject ( email )
 		const attr = getMailAttached (  email ).toString ()
-		console.log ( attr )
+		//console.log ( attr )
 		if ( subject ) {
 			saveLog(`\n\nnew mail have subject [${ subject }]return to APP !\n\n`)
 			return this.newMail ( attr, subject )
@@ -1466,7 +1474,7 @@ export class imapPeer extends Event.EventEmitter {
                 }, pingFailureTime )
                 clearTimeout ( this.waitingReplyTimeOut )
                
-                return this.emit ('ready')
+                return this.emit ('CoNETConnected')
             }
 
             return this.newMail ( uu, null )
@@ -1506,7 +1514,6 @@ export class imapPeer extends Event.EventEmitter {
         return this.waitingReplyTimeOut = setTimeout (() => {
             saveLog ( `ON setTimeOutOfPing this.emit ( 'pingTimeOut' ) `, true )
             
-            
             return this.emit ( 'pingTimeOut' )
         }, pingPongTimeOut )
     }
@@ -1515,7 +1522,9 @@ export class imapPeer extends Event.EventEmitter {
         
         if ( this.pingUuid ) {
             return saveLog ( `Ping already waiting other ping, STOP!`)
-        }
+		}
+		
+		this.emit ('ping')
 
         const pingUuid = Uuid.v4 ()
         
@@ -1599,7 +1608,10 @@ export class imapPeer extends Event.EventEmitter {
        
         if ( this.rImap ) {
             return this.rImap.imapStream._logout (() => {
-				this.exit ( err )
+				if ( typeof this.exit === 'function' ) {
+					this.exit ( err )
+				}
+				
 			})
         }
         

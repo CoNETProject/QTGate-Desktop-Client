@@ -316,8 +316,6 @@ class imapForm {
         this.passwordShowError(false);
     }
     checkImapSetup() {
-        const processBar = $('.keyPairProcessBar');
-        processBar.progress('reset');
         let self = this;
         this.checkProcessing(true);
         this.checkImapStep(0);
@@ -326,18 +324,12 @@ class imapForm {
                 return errorProcess(err);
             }
             self.checkImapStep(5);
-            $('.keyPairProcessBar').progress({
-                percent: 33
-            });
         };
         const smtpTest = function (err) {
             if (err !== null && err > -1) {
                 return errorProcess(err);
             }
             self.checkImapStep(2);
-            $('.keyPairProcessBar').progress({
-                percent: 66
-            });
         };
         const imapTestFinish = function (IinputData) {
             removeAllListen();

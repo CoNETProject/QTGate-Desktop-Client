@@ -595,22 +595,20 @@
 
 		<!-- ko if: !showMain() && showSnapshop () -->
 		#subPage( data-bind = " with: showWebPage ")
-
 			
 			.ui.top.fixed.menu.borderless
 				.item( style = "width: 90%;" )
 					form.ui.form( style = "width: 100%;" data-bind = "css: { 'error': showErrorMessage }" )
 						.field( style = "width: 100%;" )
-							.ui.input.left.icon.right.action( data-bind = "css : { 'loading': showLoading }" style = "width: 100%;" )
+							.ui.left.icon.input( data-bind = "css : { 'loading': showLoading }" style = "width: 100%;" )
 								i.icon.close.link.circular( data-bind = "click: close " style="color: #4285f4!important;")
 								input( style = "color: rgba ( 0,0,0,0.5 );" readonly data-bind = "value: showUrl" )
-								<!-- ko if: showHtmlCodePage -->
-								button.ui.button.twitter( data-bind = "click: imgClick ")
-									i.icon.image
+								<!-- ko if: showHtmlCodePage() && ! showLoading() -->
+								i.icon.link.image.circular( data-bind = " click: imgClick " style="left: auto; right: .5em; color:#947b66!important;" )
 								<!-- /ko -->
-								<!-- ko if: showImgPage -->
-								button.ui.button.instagram( data-bind = "click: htmlClick")
-									i.icon.code
+
+								<!-- ko if: showImgPage() && ! showLoading() -->
+								i.icon.link.code.circular( data-bind = " click: htmlClick " style="left: auto; right: .5em; color:#346b0b!important;" )
 								<!-- /ko -->
 						
 						<!-- ko if: showLoading -->
@@ -646,7 +644,20 @@
 		.ui.six.doubling.cards( data-bind = " foreach: searchSimilarImagesList " style="margin: 2em; margin-top: 3em;")
 			
 			.card
-				.image
+				a.ui.right.corner.label( data-bind = "click: function() { return $parents[0].imagesResultClick( $parents[0], $index (), 'img')},  class: showImageError() ? 'red' : ( snapshotImageReady() ? 'teal': 'grey')" )
+					<!-- ko if: !showImageLoading() && !showImageError() -->
+						i.icon.object.group.link
+					<!-- /ko -->
+
+					<!-- ko if: showImageLoading -->
+						i.icon.notched.circle.loading( data-bind = "css: { 'loadingGetResponse': loadingImageGetResponse, 'conetResponse': conetImageResponse }")
+					<!-- /ko -->
+					
+					<!-- ko if: showImageError -->
+					i.icon.info.circle.link( data-bind = "attr: { id: id + '-1', 'data-content': messageBoxDefine [ imageErrorIndex()] [ $root.languageIndex() ] }")
+					<!-- /ko -->
+				a.ui.image( data-bind = "attr: { 'href': imgUrlHref }" target = "_blank" )
+					//-( data-bind = "click: function() { return $parents[0].imagesResultClick( $parents[0], $index (), 'image')}")
 					img( data-bind = "attr: { src: imgSrc }")
 				.content
 					.meta
@@ -655,8 +666,18 @@
 					.description( data-bind = "text: description " )
 				.extra.content
 					span
-						i.icon.object.group.olive
-					span( data-bind = "text: webUrl" )
+						<!-- ko if: !showLoading() && !showError() -->
+							i.icon.object.group.link( data-bind = "class: snapshotReady() ? 'olive': 'grey', click: function() { return $parents[0].imagesResultClick( $parents[0], $index (), 'link')}")
+						<!-- /ko -->
+
+						<!-- ko if: showLoading -->
+							i.icon.notched.circle.loading( data-bind = "css: { 'loadingGetResponse': loadingGetResponse, 'conetResponse': conetResponse }")
+						<!-- /ko -->
+						
+						<!-- ko if: showError -->
+						i.icon.info.circle.red.link( data-bind = "attr: { id: id, 'data-content': messageBoxDefine [ errorIndex()] [ $root.languageIndex() ]}")
+						<!-- /ko -->
+					a( data-bind = "text: webUrl, attr: { 'href': webUrlHref }" target = "_blank" )
 		<!-- /ko -->
 	
 	<!-- /ko -->

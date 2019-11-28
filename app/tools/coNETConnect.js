@@ -33,54 +33,80 @@ const timeOutWhenSendConnectRequestMail = 1000 * 60;
 const commandRequestTimeOutTime = 1000 * 10;
 const requestTimeOut = 1000 * 60;
 class default_1 extends Imap.imapPeer {
-    constructor(imapData, sockerServer, openKeyOption, doNetSendConnectMail, cmdResponse, _exit) {
+    constructor(imapData, sockerServer, openKeyOption, sentConnectMail, publicKey, nodeEmailAddress, cmdResponse, _exit) {
         super(imapData, imapData.clientFolder, imapData.serverFolder, (encryptText, CallBack) => {
             return Tool.encryptMessage(openKeyOption, encryptText, CallBack);
         }, (decryptText, CallBack) => {
             return Tool.decryptoMessage(openKeyOption, decryptText, CallBack);
         }, err => {
+            this.sockerServer.emit('tryConnectCoNETStage', null, -2);
             return this.exit1(err);
         });
         this.imapData = imapData;
         this.sockerServer = sockerServer;
         this.openKeyOption = openKeyOption;
-        this.doNetSendConnectMail = doNetSendConnectMail;
+        this.sentConnectMail = sentConnectMail;
+        this.publicKey = publicKey;
+        this.nodeEmailAddress = nodeEmailAddress;
         this.cmdResponse = cmdResponse;
         this._exit = _exit;
         this.CoNETConnectReady = false;
         this.connectStage = -1;
         this.alreadyExit = false;
-        this.ignorePingTimeout = false;
-        saveLog(`=====================================  new CoNET connect() doNetSendConnectMail = [${doNetSendConnectMail}]\n`, true);
+        this.timeoutWaitAfterSentrequestMail = null;
+        saveLog(`=====================================  new CoNET connect()`, true);
+        this.sockerServer.emit('tryConnectCoNETStage', null, 5);
         this.newMail = (mail, hashCode) => {
             return this.cmdResponse(mail, hashCode);
         };
-        this.on('ready', () => {
-            this.ignorePingTimeout = false;
+        this.on('CoNETConnected', () => {
             this.CoNETConnectReady = true;
+            this.sentConnectMail = false;
             saveLog('Connected CoNET!', true);
+            clearTimeout(this.timeoutWaitAfterSentrequestMail);
             this.connectStage = 4;
-            this.sockerServer.emit('tryConnectCoNETStage', null, 4, cmdResponse ? false : true);
-            this.sockerServer.emit('systemErr', 'connectedToCoNET');
+            this.sockerServer.emit('tryConnectCoNETStage', null, 4);
             return;
         });
         this.on('pingTimeOut', () => {
-            if (this.ignorePingTimeout) {
-                return saveLog(`coNETConnect on pingTimeOut this.ignorePingTimeout = true, do nothing!`, true);
+            console.log(`class CoNETConnect on pingTimeOut`);
+            if (this.sentConnectMail) {
+                return;
             }
-            return this.destroy();
+            this.sentConnectMail = true;
+            this.sockerServer.emit('tryConnectCoNETStage', null, 3);
+            return this.sendRequestMail();
         });
-        this.ignorePingTimeout = doNetSendConnectMail;
-        this.sockerServer.emit('tryConnectCoNETStage', null, this.connectStage = 0);
-        this.sockerServer.emit('systemErr', 'connectingToCoNET');
+        this.on('ping', () => {
+            this.sockerServer.emit('tryConnectCoNETStage', null, 1);
+            return this.sockerServer.emit('tryConnectCoNETStage', null, 2);
+        });
+        if (sentConnectMail) {
+            this.sockerServer.emit('tryConnectCoNETStage', null, 3);
+            return this.sendRequestMail();
+        }
     }
     exit1(err) {
+        this.sockerServer.emit('tryConnectCoNETStage', null, -1);
         if (!this.alreadyExit) {
             this.alreadyExit = true;
             console.log(`CoNETConnect class exit1 doing this._exit() success!`);
             return this._exit(err);
         }
         console.log(`exit1 cancel already Exit [${err}]`);
+    }
+    setTimeWaitAfterSentrequestMail() {
+        this.timeoutWaitAfterSentrequestMail = setTimeout(() => {
+            return this.sockerServer.emit('tryConnectCoNETStage', null, 0);
+        }, 1000 * 60 * 1.5);
+    }
+    sendRequestMail() {
+        return Tool.sendCoNETConnectRequestEmail(this.imapData, this.openKeyOption, this.publicKey, this.nodeEmailAddress, (err) => {
+            if (err) {
+                return console.log(`Imap.imapPeer sentConnectMail got Error!`);
+            }
+            this.setTimeWaitAfterSentrequestMail();
+        });
     }
     requestCoNET_v1(uuid, text, CallBack) {
         return this.sendDataToANewUuidFolder(Buffer.from(text).toString('base64'), this.imapData.serverFolder, uuid, CallBack);
@@ -94,7 +120,7 @@ class default_1 extends Imap.imapPeer {
             const attr = Imap.getMailAttached(mail);
             CallBack(null, attr);
             callback = true;
-            return rImap.destroyAll(null);
+            return rImap.logout();
         });
         rImap.once('error', err => {
             rImap.destroyAll(null);

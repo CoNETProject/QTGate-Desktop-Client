@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CoNET_version = '3.0.9';
 /*!
  * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
  *
@@ -16,13 +15,13 @@ exports.CoNET_version = '3.0.9';
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+exports.CoNET_version = '3.2.0';
 const Fs = require("fs");
 const Path = require("path");
 const Os = require("os");
 const Async = require("async");
 const Crypto = require("crypto");
 const OpenPgp = require("openpgp");
-const Util = require("util");
 const Http = require("http");
 const Https = require("https");
 const Net = require("net");
@@ -715,10 +714,10 @@ const testSmtpAndSendMail = (imapData, CallBack) => {
         return CallBack();
     });
 };
-exports.sendCoNETConnectRequestEmail = (imapData, openKeyOption, ver, toEmail, publicKey, CallBack) => {
+exports.sendCoNETConnectRequestEmail = (imapData, openKeyOption, publicKey, toEmail, CallBack) => {
     const qtgateCommand = {
         account: imapData.account,
-        QTGateVersion: ver,
+        QTGateVersion: exports.CoNET_version,
         imapData: imapData,
         command: 'connect',
         error: null,
@@ -747,7 +746,7 @@ exports.sendCoNETConnectRequestEmail = (imapData, openKeyOption, ver, toEmail, p
                 debug: true
             };
             const transporter = Nodemailer.createTransport(option);
-            console.log(Util.inspect(option));
+            //console.log ( Util.inspect ( option ))
             const mailOptions = {
                 from: imapData.smtpUserName,
                 to: toEmail,
@@ -756,6 +755,7 @@ exports.sendCoNETConnectRequestEmail = (imapData, openKeyOption, ver, toEmail, p
                         content: _data
                     }]
             };
+            //console.log ( Util.inspect ( mailOptions ) )
             return transporter.sendMail(mailOptions, next);
         }
     ], CallBack);

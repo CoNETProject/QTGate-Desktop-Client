@@ -1,4 +1,4 @@
-export const CoNET_version = '3.0.9'
+
 
 /*!
  * Copyright 2018 CoNET Technology Inc. All Rights Reserved.
@@ -15,7 +15,7 @@ export const CoNET_version = '3.0.9'
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+export const CoNET_version = '3.2.0'
 import * as Fs from 'fs'
 import * as Path from 'path'
 import * as Os from 'os'
@@ -804,11 +804,11 @@ const testSmtpAndSendMail = ( imapData: IinputData, CallBack ) => {
 	})
 }
 
-export const sendCoNETConnectRequestEmail = ( imapData: IinputData, openKeyOption, ver: string, toEmail: string, publicKey: string, CallBack ) => {
+export const sendCoNETConnectRequestEmail = ( imapData: IinputData, openKeyOption, publicKey, toEmail: string, CallBack ) => {
 
 	const qtgateCommand: QTGateCommand = {
 		account: imapData.account,
-		QTGateVersion: ver,
+		QTGateVersion: CoNET_version,
 		imapData: imapData,
 		command: 'connect',
 		error: null,
@@ -837,7 +837,7 @@ export const sendCoNETConnectRequestEmail = ( imapData: IinputData, openKeyOptio
 				debug: true
 			}
 			const transporter = Nodemailer.createTransport ( option )
-			console.log ( Util.inspect ( option ))
+			//console.log ( Util.inspect ( option ))
 			const mailOptions = {
 				from: imapData.smtpUserName,
 				to: toEmail,
@@ -846,6 +846,7 @@ export const sendCoNETConnectRequestEmail = ( imapData: IinputData, openKeyOptio
 					content: _data
 				}]
 			}
+			//console.log ( Util.inspect ( mailOptions ) )
 			return transporter.sendMail ( mailOptions, next )
 		}
 	], CallBack )

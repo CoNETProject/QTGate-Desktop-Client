@@ -40,59 +40,92 @@ export default class extends Imap.imapPeer {
 	private CoNETConnectReady = false
 	public connectStage = -1
 	public alreadyExit = false
-	private ignorePingTimeout = false
+	private timeoutWaitAfterSentrequestMail:NodeJS.Timeout = null
 
 	public exit1 ( err ) {
-		
+		this.sockerServer.emit ( 'tryConnectCoNETStage', null, -1 )
 		if ( !this.alreadyExit ) {
 			this.alreadyExit = true
 			console.log (`CoNETConnect class exit1 doing this._exit() success!`)
 			return this._exit ( err )
 		}
-		console.log (`exit1 cancel already Exit [${ err }]`)
+		console.log ( `exit1 cancel already Exit [${ err }]`)
 	}
 
-	constructor ( public imapData: IinputData, private sockerServer: SocketIO.Server, private openKeyOption, public doNetSendConnectMail: boolean,
+	public setTimeWaitAfterSentrequestMail () {
+		this.timeoutWaitAfterSentrequestMail = setTimeout (() => {
+			return this.sockerServer.emit ( 'tryConnectCoNETStage', null, 0 )
+		}, 1000 * 60 * 1.5 )
+	}
+
+	public sendRequestMail () {
+		return Tool.sendCoNETConnectRequestEmail ( this.imapData, this.openKeyOption, this.publicKey, this.nodeEmailAddress, ( err: Error ) => {
+			if ( err ) {
+				return console.log ( `Imap.imapPeer sentConnectMail got Error!`)
+			}
+			this.setTimeWaitAfterSentrequestMail ()
+		})
+	}
+
+
+
+	constructor ( public imapData: IinputData, private sockerServer: SocketIO.Server, private openKeyOption, private sentConnectMail, private publicKey, private nodeEmailAddress, 
 		private cmdResponse: ( mail: string, hashCode: string ) => void, public _exit: ( err ) => void ) {
-		super ( imapData, imapData.clientFolder, imapData.serverFolder, ( encryptText: string, CallBack ) => {
+		super ( imapData, imapData.clientFolder, imapData.serverFolder,  ( encryptText: string, CallBack ) => {
 			
 			return Tool.encryptMessage ( openKeyOption, encryptText, CallBack )
+
 		}, ( decryptText: string, CallBack ) => {
+
 			return Tool.decryptoMessage ( openKeyOption, decryptText, CallBack )
+
 		}, err => {
-			
+			this.sockerServer.emit ( 'tryConnectCoNETStage', null, -2 )
 			return this.exit1 ( err )
 		})
 
-		saveLog (`=====================================  new CoNET connect() doNetSendConnectMail = [${ doNetSendConnectMail }]\n`, true )
-
+		saveLog (`=====================================  new CoNET connect()`, true )
+		this.sockerServer.emit ( 'tryConnectCoNETStage', null, 5 )
 		this.newMail = ( mail: string, hashCode: string ) => {
 			return this.cmdResponse ( mail, hashCode )
 		}
 
-		this.on ( 'ready', () => {
-			this.ignorePingTimeout = false
+		this.on ( 'CoNETConnected', () => {
+			
 			this.CoNETConnectReady = true
+			this.sentConnectMail = false
 			saveLog ( 'Connected CoNET!', true )
+			clearTimeout ( this.timeoutWaitAfterSentrequestMail )
 			this.connectStage = 4
-			this.sockerServer.emit ( 'tryConnectCoNETStage', null, 4, cmdResponse ? false : true  )
-			this.sockerServer.emit ( 'systemErr', 'connectedToCoNET')
+			this.sockerServer.emit ( 'tryConnectCoNETStage', null, 4 )
 			return 
 		})
 
 		this.on ( 'pingTimeOut', () => {
-			
-			if ( this.ignorePingTimeout ) {
-				
-				return saveLog ( `coNETConnect on pingTimeOut this.ignorePingTimeout = true, do nothing!`, true )
+
+			console.log ( `class CoNETConnect on pingTimeOut` )
+			if ( this.sentConnectMail ) {
+				return 
 			}
-			return this.destroy ()
+			this.sentConnectMail = true
+			this.sockerServer.emit ( 'tryConnectCoNETStage', null, 3 )
+			
+			return this.sendRequestMail ()
+			
+
+		})
+
+		this.on ( 'ping', () => {
+			this.sockerServer.emit ( 'tryConnectCoNETStage', null, 1 )
+			return this.sockerServer.emit ( 'tryConnectCoNETStage', null, 2 )
 		})
 		
-		this.ignorePingTimeout = doNetSendConnectMail
+		if ( sentConnectMail ) {
+			this.sockerServer.emit ( 'tryConnectCoNETStage', null, 3 )
+			return this.sendRequestMail ()
+			
+		}
 		
-		this.sockerServer.emit ( 'tryConnectCoNETStage', null, this.connectStage = 0 )
-		this.sockerServer.emit ( 'systemErr', 'connectingToCoNET')
 	}
 
 	public requestCoNET_v1 ( uuid: string, text: string, CallBack ) {
@@ -113,7 +146,7 @@ export default class extends Imap.imapPeer {
 			
 			CallBack ( null, attr )
 			callback = true
-			return rImap.destroyAll( null )
+			return rImap.logout ()
 		})
 
 		rImap.once ( 'error', err => {

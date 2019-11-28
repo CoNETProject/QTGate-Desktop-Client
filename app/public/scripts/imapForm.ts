@@ -342,8 +342,7 @@ class imapForm {
 	}
 	
 	private checkImapSetup () {
-		const processBar = $('.keyPairProcessBar')
-		processBar.progress ('reset')
+		
 		let self = this
 		this.checkProcessing ( true )
 		this.checkImapStep (0)
@@ -353,9 +352,7 @@ class imapForm {
 				return errorProcess ( err )
 			}
 			self.checkImapStep (5)
-			$('.keyPairProcessBar').progress ({
-				percent: 33
-			})
+			
 		}
 
 		const smtpTest = function ( err ) {
@@ -364,9 +361,7 @@ class imapForm {
 				return errorProcess ( err )
 			}
 			self.checkImapStep (2)
-			$('.keyPairProcessBar').progress ({
-				percent: 66
-			})
+			
 		}
 
 		const imapTestFinish = function ( IinputData: IinputData ) {

@@ -435,7 +435,12 @@ class appsManager {
             const uu = mainMenuItem[i];
             if (uu.active) {
                 const objName = `APP-${i}`;
-                this.AppObj[objName] = window.localStorage.getItem(objName);
+                const kk = window.localStorage.getItem(objName);
+                try {
+                    this.AppObj[objName] = JSON.parse(kk);
+                }
+                catch (ex) {
+                }
             }
         }
     }
@@ -466,6 +471,7 @@ class appsManager {
             self.mainLoading(false);
             self.conetResponse(false);
             _view.connectInformationMessage.hideMessage();
+            this.getAppObject(_mainMenuObj.mainMenuItem);
         };
         if (this.appMenu && this.appMenu.length) {
             viewMainMenuu();
@@ -526,15 +532,11 @@ class appsManager {
              * 			DEBUG APP use Temp pug
              *
              */
-            /*
-            
-            this.tempAppHtml ( true )
-            
-            appScript.startup ( appScript )
-            
-            this.appScript ( appScript )
-            _view.CanadaBackground ( true )
-            return
+            this.tempAppHtml(true);
+            appScript.startup(appScript);
+            this.appScript(appScript);
+            _view.CanadaBackground(true);
+            return;
             /** */
             /**
              *
@@ -560,6 +562,12 @@ class appsManager {
         };
         const AppName = `APP-${appIndex}`;
         let obj = this.AppObj[AppName];
+        /**
+         *
+         * 		use Debug
+         *
+         */
+        return runningApp(null);
         if (obj) {
             runningApp(obj);
         }
@@ -599,23 +607,5 @@ class appsManager {
             }
             return runningApp(obj);
         });
-        /*
-        $.ajax ({
-            url: "/scripts/appCosearch.js"
-        }).done ( data => {
-        /** */
-        /*
-            //const yyy = data
-            self.showMainMenu ( false )
-            self.tempAppHtml ( true )
-            _view.bodyBlue ( false )
-            _view.showIconBar ( false )
-            
-            self.appScript ( appScript )
-            
-            //eval ( data )
-
-        //})
-        /** */
     }
 }
