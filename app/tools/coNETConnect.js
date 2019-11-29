@@ -79,12 +79,13 @@ class default_1 extends Imap.imapPeer {
         });
         this.on('ping', () => {
             this.sockerServer.emit('tryConnectCoNETStage', null, 1);
-            return this.sockerServer.emit('tryConnectCoNETStage', null, 2);
+            this.sockerServer.emit('tryConnectCoNETStage', null, 2);
+            if (sentConnectMail) {
+                console.log(`CoNETConnect class sentConnectMail = true`);
+                this.sockerServer.emit('tryConnectCoNETStage', null, 3);
+                return this.sendRequestMail();
+            }
         });
-        if (sentConnectMail) {
-            this.sockerServer.emit('tryConnectCoNETStage', null, 3);
-            return this.sendRequestMail();
-        }
     }
     exit1(err) {
         this.sockerServer.emit('tryConnectCoNETStage', null, -1);

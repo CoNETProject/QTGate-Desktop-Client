@@ -69,7 +69,7 @@ export default class extends Imap.imapPeer {
 
 
 
-	constructor ( public imapData: IinputData, private sockerServer: SocketIO.Server, private openKeyOption, private sentConnectMail, private publicKey, private nodeEmailAddress, 
+	constructor ( public imapData: IinputData, private sockerServer, private openKeyOption, private sentConnectMail, private publicKey, private nodeEmailAddress, 
 		private cmdResponse: ( mail: string, hashCode: string ) => void, public _exit: ( err ) => void ) {
 		super ( imapData, imapData.clientFolder, imapData.serverFolder,  ( encryptText: string, CallBack ) => {
 			
@@ -117,14 +117,15 @@ export default class extends Imap.imapPeer {
 
 		this.on ( 'ping', () => {
 			this.sockerServer.emit ( 'tryConnectCoNETStage', null, 1 )
-			return this.sockerServer.emit ( 'tryConnectCoNETStage', null, 2 )
+			this.sockerServer.emit ( 'tryConnectCoNETStage', null, 2 )
+					
+			if ( sentConnectMail ) {
+				console.log (`CoNETConnect class sentConnectMail = true`)
+				this.sockerServer.emit ( 'tryConnectCoNETStage', null, 3 )
+				return this.sendRequestMail ()
+				
+			}
 		})
-		
-		if ( sentConnectMail ) {
-			this.sockerServer.emit ( 'tryConnectCoNETStage', null, 3 )
-			return this.sendRequestMail ()
-			
-		}
 		
 	}
 

@@ -92,8 +92,7 @@ const _mainMenuObj111 = {
 
 }
 
-const appHtml = `
-<div id="CoSearch"><!-- ko with: appScript --><div class="backGroundSetup" data-bind=" style: { background: searchItem() ? 'white' : '#B4E4ED' }" style="height: 100em; "><!-- ko if: showMain() --><div class="main"><!-- ko if: showMainSearchForm() --><form class="ui form" id="coSearchForm" data-bind=" style: { 'margin-top': showSearchSetupForm() ? '15em' : '25em' }, event: { 'submit': search_form }, submitBubble: false" style="100%;"><!-- ko if: !showSearchSetupForm() --><div class="field"><div class="ui search"><div class="ui input huge icon" data-bind="css : { animationSearchInput: hasFocus, 'error': showSearchError(), 'loading disabled': showInputLoading }" style="width: 100%;border-radius: 500rem;"><input style="color:rgba(0,0,0,0.5); border-radius: 500rem; width: 100%;" type="text" data-bind="attr: { placeholder: showSearchError() ? ( messageBoxDefine [ errorMessageIndex() ][ $root.languageIndex() ]): infoDefine[ $root.languageIndex() ].coSearch.searchInputPlaceholder }, css : { backgroundTransparent: ! backGroundBlue ()}, textInput: searchInputText, hasFocus: hasFocus"><!-- ko if: !showSearchError() -->
+const appHtml = `<div id="CoSearch"><!-- ko with: appScript --><div class="backGroundSetup" data-bind=" style: { background: searchItem() ? 'white' : '#B4E4ED' }" style="height: 100em; "><!-- ko if: showMain() --><div class="main"><!-- ko if: showMainSearchForm() --><form class="ui form" id="coSearchForm" data-bind=" style: { 'margin-top': showSearchSetupForm() ? '15em' : '25em' }, event: { 'submit': search_form }, submitBubble: false" style="100%;"><!-- ko if: !showSearchSetupForm() --><div class="field"><div class="ui search"><div class="ui input huge icon" data-bind="css : { animationSearchInput: hasFocus, 'error': showSearchError(), 'loading disabled': showInputLoading }" style="width: 100%;border-radius: 500rem;"><input style="color:rgba(0,0,0,0.5); border-radius: 500rem; width: 100%;" type="text" data-bind="attr: { placeholder: showSearchError() ? ( messageBoxDefine [ errorMessageIndex() ][ $root.languageIndex() ]): infoDefine[ $root.languageIndex() ].coSearch.searchInputPlaceholder }, css : { backgroundTransparent: ! backGroundBlue ()}, textInput: searchInputText, hasFocus: hasFocus"><!-- ko if: !showSearchError() -->
 <!-- ko if : !hasFocusShowTool() --><i class="icon link circular" data-bind=" html: searchSetupIcon (), click: searchSetupClick " style="box-shadow: 0 0 0 0.1em ; color: #42c8f4!important;"></i><!-- /ko -->
 <!-- ko if : hasFocusShowTool -->
 <!-- ko if: !searchInputText().length --><i class="icon image outline link circular" data-bind=" click: function (){ document.getElementById('imageInput1').click() }, style: { 'margin-top' : hasFocus ? '2px' : '0px' }" style="box-shadow: 0 0 0 0.1em; color: #42c8f4!important;"></i><input onchange="_view.appsManager().appScript().imageSearch( this )" id="imageInput1" type="file" accept="image/gif,image/jpeg,image/jpg,image/png" style="opacity:0"><!-- /ko -->
@@ -374,11 +373,15 @@ const appHtml = `
 <!-- /ko --><span data-bind="text: description" style="color: grey"></span></div></div></div><div class="space"></div><div class="space"></div><!-- /ko -->
 <!-- ko if: !nextButtonShowError() && searchItem().nextPage --><button class="ui large button" data-bind="css: { 'loading buttonUnActive': moreResultsButtomLoading,  negative: nextButtonShowError, 'loadingGetResponse': nextButtonLoadingGetResponse, 'conetResponse': nextButtonConetResponse },text: info.moreResults[ $root.languageIndex() ], click: searchNext" style="margin-top: 1em;margin-bottom: 2em;"></button><!-- /ko -->
 <!-- ko if: nextButtonShowError --><button class="ui large button negative" data-bind="text: messageBoxDefine [ nextButtonErrorIndex()][ $root.languageIndex() ], click: nextButtonErrorClick " style="background-color: #b94835e3;margin-top: 1em;margin-bottom: 2em;"></button><!-- /ko --><div class="space"></div><div class="space"></div></div></div></div></div><!-- /ko --></div><!-- /ko -->
-<!-- ko if: !showMain() && showSnapshop () --><div id="subPage" data-bind=" with: showWebPage "><div class="ui top fixed menu borderless"><div class="item" style="width: 90%;"><form class="ui form" style="width: 100%;" data-bind="css: { 'error': showErrorMessage }"><div class="field" style="width: 100%;"><div class="ui input left icon right action" data-bind="css : { 'loading': showLoading }" style="width: 100%;"><i class="icon close link circular" data-bind="click: close " style="color: #4285f4!important;"></i><input style="color: rgba ( 0,0,0,0.5 );" readonly data-bind="value: showUrl"><!-- ko if: showHtmlCodePage --><button class="ui button twitter" data-bind="click: imgClick "><i class="icon image"></i></button><!-- /ko -->
-<!-- ko if: showImgPage --><button class="ui button instagram" data-bind="click: htmlClick"><i class="icon code"></i></button><!-- /ko --></div></div><!-- ko if: showLoading --><div class="field"><p data-bind=" text: messageBoxDefine ['LoadingPage'][$root.languageIndex()]" style="color: grey;"></p></div><div class="field"><div class="loaderCoNET" style=" margin-top: 3em;"><div class="loaderCoNET-div"></div><div class="loaderCoNET-div"></div><div class="loaderCoNET-div"></div><div class="loaderCoNET-div"></div></div></div><!-- /ko -->
+<!-- ko if: !showMain() && showSnapshop () --><div id="subPage" data-bind=" with: showWebPage "><div class="ui top fixed menu borderless"><div class="item" style="width: 90%;"><form class="ui form" style="width: 100%;" data-bind="css: { 'error': showErrorMessage }"><div class="field" style="width: 100%;"><div class="ui left icon input" data-bind="css : { 'loading': showLoading }" style="width: 100%;"><i class="icon close link circular" data-bind="click: close " style="color: #4285f4!important;"></i><input style="color: rgba ( 0,0,0,0.5 );" readonly data-bind="value: showUrl"><!-- ko if: showHtmlCodePage() && ! showLoading() --><i class="icon link image circular" data-bind=" click: imgClick " style="left: auto; right: .5em; color:#947b66!important;"></i><!-- /ko -->
+<!-- ko if: showImgPage() && ! showLoading() --><i class="icon link code circular" data-bind=" click: htmlClick " style="left: auto; right: .5em; color:#346b0b!important;"></i><!-- /ko --></div></div><!-- ko if: showLoading --><div class="field"><p data-bind=" text: messageBoxDefine ['LoadingPage'][$root.languageIndex()]" style="color: grey;"></p></div><div class="field"><div class="loaderCoNET" style=" margin-top: 3em;"><div class="loaderCoNET-div"></div><div class="loaderCoNET-div"></div><div class="loaderCoNET-div"></div><div class="loaderCoNET-div"></div></div></div><!-- /ko -->
 <!-- ko if: showErrorMessage --><div class="ui error message"><span><i class="icon exclamation triangle red link"></i><span data-bind=" text: messageBoxDefine ['pageLoadingError'][$root.languageIndex()]"></span></span></div><!-- /ko --></form></div></div><!-- ko if: showHtmlCodePage --><iframe data-bind=" attr: { src: htmlIframe() } " style="border: none;width: 100%; height: -webkit-fill-available;margin-top: 7em;" sandbox="allow-forms"></iframe><!-- /ko -->
 <!-- ko if: showImgPage --><img data-bind=" attr: { src: png }" style="border: none;margin: 7em 1em 1em 1em;"><!-- /ko --></div><!-- /ko -->
-<!-- ko if: !showMain() && showSearchSimilarImagesResult () --><div class="closeButton" style="z-index: 999;top: 1.3em; left: 1em; position: fixed; width: 2em;"><i class="icon left chevron link circular teal" data-bind="click: closeSimilarImagesResult "></i></div><div class="ui six doubling cards" data-bind=" foreach: searchSimilarImagesList " style="margin: 2em; margin-top: 3em;"><div class="card"><div class="image"><img data-bind="attr: { src: imgSrc }"></div><div class="content"><div class="meta"><span class="data" data-bind="text: infoDefine[ $root.languageIndex() ].coSearch.imageSize"></span><span class="data" data-bind="text: size"></span></div><div class="description" data-bind="text: description "></div></div><div class="extra content"><span><i class="icon object group olive"></i></span><span data-bind="text: webUrl"></span></div></div></div><!-- /ko --></div><!-- /ko --></div>`
+<!-- ko if: !showMain() && showSearchSimilarImagesResult () --><div class="closeButton" style="z-index: 999;top: 1.3em; left: 1em; position: fixed; width: 2em;"><i class="icon left chevron link circular teal" data-bind="click: closeSimilarImagesResult "></i></div><div class="ui six doubling cards" data-bind=" foreach: searchSimilarImagesList " style="margin: 2em; margin-top: 3em;"><div class="card"><a class="ui right corner label" data-bind="click: function() { return $parents[0].imagesResultClick( $parents[0], $index (), 'img')},  class: showImageError() ? 'red' : ( snapshotImageReady() ? 'teal': 'grey')"><!-- ko if: !showImageLoading() && !showImageError() --><i class="icon object group link"></i><!-- /ko -->
+<!-- ko if: showImageLoading --><i class="icon notched circle loading" data-bind="css: { 'loadingGetResponse': loadingImageGetResponse, 'conetResponse': conetImageResponse }"></i><!-- /ko -->
+<!-- ko if: showImageError --><i class="icon info circle link" data-bind="attr: { id: id + '-1', 'data-content': messageBoxDefine [ imageErrorIndex()] [ $root.languageIndex() ] }"></i><!-- /ko --></a><a class="ui image" data-bind="attr: { 'href': imgUrlHref }" target="_blank"><img data-bind="attr: { src: imgSrc }"></a><div class="content"><div class="meta"><span class="data" data-bind="text: infoDefine[ $root.languageIndex() ].coSearch.imageSize"></span><span class="data" data-bind="text: size"></span></div><div class="description" data-bind="text: description "></div></div><div class="extra content"><span><!-- ko if: !showLoading() && !showError() --><i class="icon object group link" data-bind="class: snapshotReady() ? 'olive': 'grey', click: function() { return $parents[0].imagesResultClick( $parents[0], $index (), 'link')}"></i><!-- /ko -->
+<!-- ko if: showLoading --><i class="icon notched circle loading" data-bind="css: { 'loadingGetResponse': loadingGetResponse, 'conetResponse': conetResponse }"></i><!-- /ko -->
+<!-- ko if: showError --><i class="icon info circle red link" data-bind="attr: { id: id, 'data-content': messageBoxDefine [ errorIndex()] [ $root.languageIndex() ]}"></i><!-- /ko --></span><a data-bind="text: webUrl, attr: { 'href': webUrlHref }" target="_blank"></a></div></div></div><!-- /ko --></div><!-- /ko --></div>`
 const appMenuData = 'appmenu'
 
 declare const Jimp
@@ -582,7 +585,7 @@ class appsManager {
 			 */
 
 			
-			
+			/*
 			this.tempAppHtml ( true )
 			
 			appScript.startup ( appScript )
@@ -598,9 +601,9 @@ class appsManager {
 			 * 			Use appHtml 
 			 */
 
-			/*
-
 			
+
+			/*
 			this.runningAppHtml ( appHtml )
 			this.appHtml ( true )
 			
@@ -608,6 +611,7 @@ class appsManager {
 			appScript.startup ( appScript )
 			
 			this.appScript ( appScript )
+
 			/** */
 
 			this.runningAppHtml ( obj[1] )
@@ -627,9 +631,13 @@ class appsManager {
 		 * 		use Debug 
 		 * 
 		 */
+		/*
 		return runningApp ( null )
 
-		
+		/** end Debug */
+
+
+
 		if ( obj ) {
 			runningApp ( obj )
 		}

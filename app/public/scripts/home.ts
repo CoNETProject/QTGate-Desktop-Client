@@ -511,7 +511,7 @@ module view_layout {
 			const wY = 30 - height / 2
 			backGround_mask_circle.animate ({
 				transform: `t${ wT } ${ wY }`,
-				r: 30
+				r: 60
 			}, 3000, mina.easeout, changeLanguage )
 
 		}

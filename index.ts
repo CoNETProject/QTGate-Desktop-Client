@@ -71,7 +71,7 @@ const _doUpdate = ( tag_name: string, _port ) => {
 const createLocalBrowser = () => {
 	const localServer = new BrowserWindow (
 		{ 
-			show: DEBUG,
+			show: true,
 			webPreferences: {
 				nodeIntegration: true
 			}

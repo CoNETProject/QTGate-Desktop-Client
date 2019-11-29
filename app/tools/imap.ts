@@ -357,7 +357,7 @@ class ImapServerSwitchStream extends Stream.Transform {
 				}, ( err ) => {
 					this.runningCommand = null
 					if ( err ) {
-						saveLog ( `ImapServerSwitchStream [${ this.imapServer.listenFolder || this.imapServer.imapSerialID }] doNewMail ERROR! [${ err.message }]`)
+						debug ? saveLog ( `ImapServerSwitchStream [${ this.imapServer.listenFolder || this.imapServer.imapSerialID }] doNewMail ERROR! [${ err.message }]`) : null
 						return this.imapServer.destroyAll ( err )
 					}
 					if ( haveMoreNewMail || havemore ) {
@@ -1008,7 +1008,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         this.commandProcess = ( text: string, cmdArray: string[], next, _callback ) => {
             switch ( cmdArray[0] ) {
                 case '*': {
-                    saveLog ( `IMAP listAllMailBox this.commandProcess text = [${ text }]` )
+                    debug ? saveLog ( `IMAP listAllMailBox this.commandProcess text = [${ text }]` ) : null
                     if ( /^LIST/i.test ( cmdArray [1] ) ) {
                         boxes.push ( cmdArray[2] + ',' + cmdArray[4] )
                     } 
@@ -1097,7 +1097,7 @@ export class qtGateImap extends Event.EventEmitter {
         //saveLog ( `new qtGateImap imapSerialID [${ this.imapSerialID }] listenFolder [${ this.listenFolder }] writeFolder [${ this.writeFolder }]`, true )
         this.connect ()
         this.once ( `error`, err => {
-            saveLog ( `[${ this.imapSerialID }] this.on error ${ err && err.message ? err.message : null }`)
+            debug ? saveLog ( `[${ this.imapSerialID }] this.on error ${ err && err.message ? err.message : null }`) : null
             this.imapEnd = true
             this.destroyAll ( err )
             
@@ -1113,9 +1113,7 @@ export class qtGateImap extends Event.EventEmitter {
 		if ( this.socket && typeof this.socket.end === 'function' ) {
 			this.socket.end ()
 		}
-		if ( err ) {
-			return this.emit ( 'error', err )
-		}
+		
         this.emit ( 'end', err )
         
     }
@@ -1147,7 +1145,7 @@ export class qtGateImap extends Event.EventEmitter {
 }
 
 export const seneMessageToFolder = ( IMapConnect: imapConnect, writeFolder: string, message: string, subject: string, CallBack ) => {
-	const wImap = new qtGateImap ( IMapConnect, null, false, writeFolder, true, null )
+	const wImap = new qtGateImap ( IMapConnect, null, false, writeFolder, false, null )
 	let _callback = false 
 
 	wImap.once ('error', err => {
@@ -1219,7 +1217,7 @@ export const getMailSubject = ( email: Buffer ) => {
 		return /^subject: /i.test( n )
 	})
 	if ( !yy || !yy.length ) {
-		saveLog(`\n\n${ ret } \n`)
+		debug ? saveLog(`\n\n${ ret } \n`) : null
 		return ''
 	}
 	return yy.split(/^subject: /i)[1]
@@ -1237,7 +1235,7 @@ export const getMailAttachedBase64 = ( email: Buffer ) => {
 }
 
 export const imapBasicTest = ( IMapConnect: imapConnect, CallBack ) => {
-    saveLog ( `start imapBasicTest imap [${ JSON.stringify (IMapConnect) }]`)
+    debug ? saveLog ( `start imapBasicTest imap [${ JSON.stringify (IMapConnect) }]`): null
     let callbackCall = false
     let append = false
     let timeout: NodeJS.Timer = null
@@ -1260,7 +1258,7 @@ export const imapBasicTest = ( IMapConnect: imapConnect, CallBack ) => {
         
         let err: Error = null
         let rImap = new qtGateImapRead ( IMapConnect, listenFolder, false, mail => {
-            saveLog (`new mail`)
+            debug ? saveLog (`new mail`) : null
             const attach = getMailAttached ( mail )
             if ( ! attach ) {
                 err = new Error ( `imapAccountTest ERROR: can't read attachment!`)
@@ -1280,7 +1278,7 @@ export const imapBasicTest = ( IMapConnect: imapConnect, CallBack ) => {
                 if ( _err ) {
                     err = _err
                 }
-                saveLog (`rImap.fetchAndDelete finished by err [${ err && err.message ? err.message : null }]` )
+                debug ? saveLog (`rImap.fetchAndDelete finished by err [${ err && err.message ? err.message : null }]` ): null
                 rImap.logout ()
                 rImap = null
             })
@@ -1288,7 +1286,7 @@ export const imapBasicTest = ( IMapConnect: imapConnect, CallBack ) => {
 
         rImap.once ( 'end', err => {
             if ( !didFatch ) {
-                saveLog (`doCatchMail rImap.once end but didFatch = false try again!`)
+                debug ? saveLog (`doCatchMail rImap.once end but didFatch = false try again!`) : null
                 return doCatchMail ( id, _CallBack )
             }
             _CallBack ( err , getText )
@@ -1297,7 +1295,7 @@ export const imapBasicTest = ( IMapConnect: imapConnect, CallBack ) => {
 	
 	seneMessageToFolder ( IMapConnect, listenFolder, ramdomText.toString ('base64'), null, ( err, code ) => {
 		if ( err ) {
-			saveLog (`seneMessageToFolder got error [${ err.message }]`)
+			debug ? saveLog (`seneMessageToFolder got error [${ err.message }]`): null
             return doCallBack ( err, null )
 		}
 	})
@@ -1307,7 +1305,7 @@ export const imapBasicTest = ( IMapConnect: imapConnect, CallBack ) => {
 }
 
 export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
-    saveLog ( `start test imap [${ IMapConnect.imapUserName }]`, true )
+    debug ? saveLog ( `start test imap [${ IMapConnect.imapUserName }]`, true ) : null
     let callbackCall = false
     let startTime = null
     
@@ -1329,7 +1327,7 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
         rImap.logout ()
         rImap = null
         const attach = getMailAttached ( mail )
-        saveLog ( `test rImap on new mail! ` )
+        debug ? saveLog ( `test rImap on new mail! ` ) : null
         if ( ! attach ) {
             return doCallBack ( new Error ( `imapAccountTest ERROR: can't read attachment!`), null )
         }
@@ -1343,7 +1341,7 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
     rImap.once ( 'ready', () => {
 
 		
-        saveLog ( `rImap.once ( 'ready' ) do new qtGateImapwrite`)
+        debug ? saveLog ( `rImap.once ( 'ready' ) do new qtGateImapwrite`): null 
 
 		startTime = new Date ().getTime ()
 
@@ -1351,13 +1349,13 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
 			if ( rImap ) {
 				rImap.logout ()
 			}
-			saveLog (`imapAccountTest doing timeout`)
+			debug ? saveLog (`imapAccountTest doing timeout`) : null
 			doCallBack ( new Error ( 'timeout' ), null )
 		}, pingFailureTime )
 
 		seneMessageToFolder ( IMapConnect, listenFolder, ramdomText.toString ('base64'), null, err => {
 			if ( err ) {
-				saveLog (`imapAccountTest seneMessageToFolder Error! ${ err.message }`)
+				debug ? saveLog (`imapAccountTest seneMessageToFolder Error! ${ err.message }`): null 
 			}
 		})
 
@@ -1368,7 +1366,7 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
     })
 
     rImap.once ( 'error', err => {
-        saveLog ( `rImap.once ( 'error' ) [${ err.message }]`, true )
+        debug ? saveLog ( `rImap.once ( 'error' ) [${ err.message }]`, true ): null
         return doCallBack ( err )
     })
 
@@ -1376,7 +1374,7 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
 }
 
 export const imapGetMediaFile = ( IMapConnect: imapConnect, fileName: string, CallBack ) => {
-    let rImap = new qtGateImapRead ( IMapConnect, fileName, true, mail => {
+    let rImap = new qtGateImapRead ( IMapConnect, fileName, false, mail => {
         rImap.logout ()
         const retText = getMailAttachedBase64 ( mail )
         return CallBack ( null, retText )
@@ -1415,42 +1413,42 @@ export class imapPeer extends Event.EventEmitter {
 		const attr = getMailAttached (  email ).toString ()
 		//console.log ( attr )
 		if ( subject ) {
-			saveLog(`\n\nnew mail have subject [${ subject }]return to APP !\n\n`)
+			debug ? saveLog(`\n\nnew mail have subject [${ subject }]return to APP !\n\n`): null
 			return this.newMail ( attr, subject )
 		}
-		saveLog(`\n\nnew mail to this.deCrypto!\n\n`)
+		debug ? saveLog(`\n\nnew mail to this.deCrypto!\n\n`): null
         return this.deCrypto ( attr, ( err, data ) => {
             if ( err ) {
-                saveLog ( email.toString())
-                saveLog ('******************')
-                saveLog ( attr )
-                saveLog ('****************************************')
-                return saveLog ( `deCrypto GOT ERROR! [${ err.message }]` )
+                debug ? saveLog ( email.toString()): null
+                debug ? saveLog ('******************'): null
+                debug ? saveLog ( attr ): null
+                debug ? saveLog ('****************************************'): null
+                return debug ? saveLog ( `deCrypto GOT ERROR! [${ err.message }]` ): null
             }
-            saveLog(`\n\nnew mail Try to JSON parse \n\n`)
+            debug ? saveLog(`\n\nnew mail Try to JSON parse \n\n`): null
             let uu = null
             try {
 				uu = JSON.parse ( data )
 				console.log ( Util.inspect ( uu, false, 4, true  ))
             } catch ( ex ) {
-                return saveLog ( `imapPeer mail deCrypto JSON.parse got ERROR [${ ex.message }] data = [${ Util.inspect ( data )}]`, true )
+                return debug ? saveLog ( `imapPeer mail deCrypto JSON.parse got ERROR [${ ex.message }] data = [${ Util.inspect ( data )}]`, true ): null
             }
             
             if ( uu.ping && uu.ping.length ) {
-                saveLog ( `GOT PING [${ uu.ping }]`, true )
+                debug ? saveLog ( `GOT PING [${ uu.ping }]`, true ): null
                 
                 if ( ! this.peerReady ) {
                     
                     if ( /outlook\.com/i.test ( this.imapData.imapServer)) {
-                        saveLog ( `doing outlook server support!`)
+                        debug ? saveLog ( `doing outlook server support!`): null
                         return setTimeout (() => {
-                            saveLog (`outlook replyPing ()`, true )
+                            debug ? saveLog (`outlook replyPing ()`, true ): null
                             this.replyPing ( uu )
                             return this.Ping ()
                         }, 5000 )
                     }
                     this.replyPing ( uu )
-                    return saveLog ( `THIS peerConnect have not ready send ping!`, true)
+                    return debug ? saveLog ( `THIS peerConnect have not ready send ping!`, true ): null
 
                 }
                 return this.replyPing ( uu )
@@ -1459,13 +1457,13 @@ export class imapPeer extends Event.EventEmitter {
             if ( uu.pong && uu.pong.length ) {
                 //saveLog ( `===> new PONG come!`, true )
                 if ( !this.pingUuid ) {
-                    return saveLog ( `GOT in the past PONG [${ uu.pong }]!`, true )
+                    return debug ? saveLog ( `GOT in the past PONG [${ uu.pong }]!`, true ): null
                 }
                 if ( this.pingUuid !== uu.pong ) {
-                    return saveLog ( `GOT unknow PONG [${ uu.pong }]! this.pingUuid = [${ this.pingUuid }]`, true )
+                    return debug ? saveLog ( `GOT unknow PONG [${ uu.pong }]! this.pingUuid = [${ this.pingUuid }]`, true ): null
                 }
                 
-                saveLog ( `imapPeer connected Clear waitingReplyTimeOut!`, true )
+                debug ? saveLog ( `imapPeer connected Clear waitingReplyTimeOut!`, true ): null
                 this.pingUuid = null
                 this.peerReady = true
                 this.pingCount = 0
@@ -1488,7 +1486,7 @@ export class imapPeer extends Event.EventEmitter {
 
         return this.encryptAndAppendWImap1 ( JSON.stringify ({ pong: uu.ping }), null, err => {
             if ( err ) {
-                saveLog (`reply Ping ERROR! [${ err.message ? err.message : null }]`)
+                debug ? saveLog (`reply Ping ERROR! [${ err.message ? err.message : null }]`): null 
             }
         })
         
@@ -1510,9 +1508,9 @@ export class imapPeer extends Event.EventEmitter {
         clearTimeout ( this.waitingReplyTimeOut )
         clearTimeout ( this.needPingTimeOut )
         this.needPing = false
-        saveLog ( `Make Time Out for a Ping, ping ID = [${ this.pingUuid }]`, true )
+        debug ? saveLog ( `Make Time Out for a Ping, ping ID = [${ this.pingUuid }]`, true ): null
         return this.waitingReplyTimeOut = setTimeout (() => {
-            saveLog ( `ON setTimeOutOfPing this.emit ( 'pingTimeOut' ) `, true )
+            debug ? saveLog ( `ON setTimeOutOfPing this.emit ( 'pingTimeOut' ) `, true ): null
             
             return this.emit ( 'pingTimeOut' )
         }, pingPongTimeOut )
@@ -1521,7 +1519,7 @@ export class imapPeer extends Event.EventEmitter {
     public Ping () {
         
         if ( this.pingUuid ) {
-            return saveLog ( `Ping already waiting other ping, STOP!`)
+            return debug ? saveLog ( `Ping already waiting other ping, STOP!`): null
 		}
 		
 		this.emit ('ping')
@@ -1542,7 +1540,7 @@ export class imapPeer extends Event.EventEmitter {
     public newReadImap() {
 
         if ( this.makeRImap || this.rImap && this.rImap.imapStream && this.rImap.imapStream.readable ) {
-            return saveLog (`newReadImap have rImap.imapStream.readable = true, stop!`, true )
+            return debug ? saveLog (`newReadImap have rImap.imapStream.readable = true, stop!`, true ): null
         }
         this.makeRImap = true
         //saveLog ( `=====> newReadImap!`, true )
@@ -1554,13 +1552,13 @@ export class imapPeer extends Event.EventEmitter {
 
         this.rImap.once ( 'ready', () => {
             this.makeRImap = false
-            saveLog ( `this.rImap.once on ready `)
+            debug ? saveLog ( `this.rImap.once on ready `): null
 			this.Ping ()
         })
 
         this.rImap.once ( 'error', err => {
             this.makeRImap = false
-            saveLog ( `rImap on Error [${ err.message }]`, true )
+            debug ? saveLog ( `rImap on Error [${ err.message }]`, true ): null
             if ( err && err.message && /auth|login|log in|Too many simultaneous|UNAVAILABLE/i.test ( err.message )) {
                 return this.destroy (1)
             }
@@ -1576,11 +1574,11 @@ export class imapPeer extends Event.EventEmitter {
             this.rImap = null
             this.makeRImap = false
             if ( typeof this.exit === 'function') {
-                saveLog (`imapPeer rImap on END!`)
+                debug ? saveLog (`imapPeer rImap on END!`): null
                 this.exit ( err )
                 return this.exit = null
             }
-            saveLog (`imapPeer rImap on END! but this.exit have not a function `)
+            debug ? saveLog (`imapPeer rImap on END! but this.exit have not a function `): null
             
             
         })
@@ -1591,7 +1589,7 @@ export class imapPeer extends Event.EventEmitter {
         private deCrypto: ( text: string, callback: ( err?: Error, data?: string ) => void ) => void,
         public exit: ( err?: number ) => void) {
         super ()
-        saveLog ( `doing peer account [${ imapData.imapUserName }] listen with[${ listenBox }], write with [${ writeBox }] `)
+        debug ? saveLog ( `doing peer account [${ imapData.imapUserName }] listen with[${ listenBox }], write with [${ writeBox }] `): null
 
         this.newReadImap ()
     }

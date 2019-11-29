@@ -215,7 +215,8 @@ export default class localServer {
 			}
 			if ( !this.imapConnectData.confirmRisk ) {
 				this.imapConnectData.confirmRisk = true
-				return Tool.saveEncryptoData (  Tool.imapDataFileName1,this.imapConnectData, this.config, this.savedPasswrod, err => {
+				
+				return Tool.saveEncryptoData (  Tool.imapDataFileName1, this.imapConnectData, this.config, this.savedPasswrod, err => {
 					return this.tryConnectCoNET ( socket, sessionHash )
 				})
 			}
@@ -252,12 +253,20 @@ export default class localServer {
 				console.log ( `active key success! \n[${ key }]`)
 				
 				this.keyPair.publicKey = this.config.keypair.publicKey = key
-				this.keyPair.verified = this.config.keypair.verified = true 
+				this.keyPair.verified = this.config.keypair.verified = true
+				this.imapConnectData.sendToQTGate = true
+				_callBack ()
+				Tool.saveEncryptoData (  Tool.imapDataFileName1, this.imapConnectData, this.config, this.savedPasswrod, err => {
+					if ( err ) {
+						saveLog (`Tool.saveConfig return Error: [${ err.message }]`)
+					}
+				})
 				return Tool.saveConfig ( this.config, err => {
 					if ( err ) {
 						saveLog (`Tool.saveConfig return Error: [${ err.message }]`)
 					}
-					_callBack ()
+					
+					
 				})
 				
 			}
@@ -579,7 +588,6 @@ export default class localServer {
 
 
 	}
-
 
 	constructor( private cmdResponse: ( cmd: QTGateAPIRequestCommand ) => void, test: boolean ) {
 		//Express.static.mime.define({ 'message/rfc822' : ['mhtml','mht'] })
