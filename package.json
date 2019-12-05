@@ -1,6 +1,6 @@
 {
-  "name": "conet",
-  "version": "3.2.2",
+  "name": "conet_client",
+  "version": "3.2.3",
   "license": "MIT",
   "description": "CoNET platform",
   "scripts": {
@@ -91,7 +91,7 @@
     "mime-types": "^2.1.25",
     "node-uuid": "^1.4.8",
     "nodemailer": "^6.3.1",
-    "openpgp": "^4.7.0",
+    "openpgp": "^4.7.1",
     "pug": "^2.0.4",
     "snapsvg": "^0.5.1",
     "socket.io": "^2.3.0",

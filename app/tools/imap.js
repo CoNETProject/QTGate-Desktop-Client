@@ -29,8 +29,9 @@ const timers_1 = require("timers");
 const buffer_1 = require("buffer");
 const Tool = require("./initSystem");
 const MAX_INT = 9007199254740992;
-const debug = false;
+const debug = true;
 const pingFailureTime = 1000 * 60;
+const NoopLoopWaitingTime = 1000 * 1;
 const ErrorLogFile = path_1.join(Tool.QTGateFolder, 'imap.log');
 const ErrorLogFileStream = path_1.join(Tool.QTGateFolder, 'imapStream.log');
 let flag = 'w';
@@ -347,7 +348,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         }
         this.doCommandCallback = (err => {
             if (err) {
-                return this.imapServer.destroyAll(null);
+                return this.imapServer.destroyAll(err);
             }
             this.waitingDoingIdleStop = false;
             this.runningCommand = null;
@@ -362,6 +363,14 @@ class ImapServerSwitchStream extends Stream.Transform {
             if (this.imapServer.idleSupport) {
                 return this.idleNoop();
             }
+            /**
+             * NOOP support
+             */
+            timers_1.setTimeout(() => {
+                if (!this.runningCommand) {
+                    return this.idleNoop();
+                }
+            }, NoopLoopWaitingTime);
         });
         this.idleNextStop = this.imapServer.idleSupport
             ? timers_1.setTimeout(() => {
@@ -376,7 +385,9 @@ class ImapServerSwitchStream extends Stream.Transform {
                     timers_1.clearTimeout(this.idleResponsrTime);
                     if (/^RECENT$|^EXISTS$/i.test(cmdArray[2]) || this.isWaitLogout) {
                         newSwitchRet = true;
-                        this.idleDoingDown();
+                        if (this.imapServer.idleSupport) {
+                            this.idleDoingDown();
+                        }
                     }
                     return callback();
                 }
@@ -633,7 +644,7 @@ class ImapServerSwitchStream extends Stream.Transform {
         }, _time);
         //console.log (`*************************************  append time = [${ time }] `)
         if (this.imapServer.literalPlus) {
-            this.debug ? debugOut(out, false, this.imapServer.listenFolder || this.imapServer.imapSerialID) : null;
+            this.debug ? debugOut(out + Base64Data + '\r\n', false, this.imapServer.listenFolder || this.imapServer.imapSerialID) : null;
             this.push(out);
             this.push(Base64Data + '\r\n');
         }
@@ -861,7 +872,6 @@ class qtGateImap extends Event.EventEmitter {
         this.imapSerialID = Crypto.createHash('md5').update(this.listenFolder + this.writeFolder).digest('hex').toUpperCase();
         this.port = typeof this.IMapConnect.imapPortNumber === 'object' ? this.IMapConnect.imapPortNumber[0] : this.IMapConnect.imapPortNumber;
         this.connectTimeOut = null;
-        //saveLog ( `new qtGateImap imapSerialID [${ this.imapSerialID }] listenFolder [${ this.listenFolder }] writeFolder [${ this.writeFolder }]`, true )
         this.connect();
         this.once(`error`, err => {
             debug ? saveLog(`[${this.imapSerialID}] this.on error ${err && err.message ? err.message : null}`) : null;
@@ -884,6 +894,7 @@ class qtGateImap extends Event.EventEmitter {
                 this.destroyAll(null);
             });
         };
+        console.log(`qtGateImap connect mail server [${this.IMapConnect.imapServer}: ${this.port}]`);
         if (!this.IMapConnect.imapSsl) {
             this.socket = Net.createConnection({ port: this.port, host: this.IMapConnect.imapServer }, _connect);
         }
@@ -933,7 +944,7 @@ class qtGateImap extends Event.EventEmitter {
 }
 exports.qtGateImap = qtGateImap;
 exports.seneMessageToFolder = (IMapConnect, writeFolder, message, subject, CallBack) => {
-    const wImap = new qtGateImap(IMapConnect, null, false, writeFolder, false, null);
+    const wImap = new qtGateImap(IMapConnect, null, false, writeFolder, debug, null);
     let _callback = false;
     wImap.once('error', err => {
         wImap.destroyAll(err);
@@ -1004,63 +1015,6 @@ exports.getMailAttachedBase64 = (email) => {
     const attachment = email.slice(attachmentStart + 4);
     return attachment.toString();
 };
-exports.imapBasicTest = (IMapConnect, CallBack) => {
-    debug ? saveLog(`start imapBasicTest imap [${JSON.stringify(IMapConnect)}]`) : null;
-    let callbackCall = false;
-    let append = false;
-    let timeout = null;
-    const listenFolder = 'INBOX';
-    let getText = false;
-    const ramdomText = Crypto.randomBytes(1024 * 100);
-    const doCallBack = (err, ret) => {
-        if (!callbackCall) {
-            callbackCall = true;
-            timers_1.clearTimeout(timeout);
-            return CallBack(err, ret);
-        }
-    };
-    const doCatchMail = (id, _CallBack) => {
-        let didFatch = false;
-        let err = null;
-        let rImap = new qtGateImapRead(IMapConnect, listenFolder, false, mail => {
-            debug ? saveLog(`new mail`) : null;
-            const attach = exports.getMailAttached(mail);
-            if (!attach) {
-                err = new Error(`imapAccountTest ERROR: can't read attachment!`);
-            }
-            else if (ramdomText.compare(attach) !== 0) {
-                err = new Error(`imapAccountTest ERROR: attachment changed!`);
-            }
-            else {
-                getText = true;
-            }
-        });
-        rImap.once('ready', () => {
-            rImap.fetchAndDelete(id, _err => {
-                didFatch = true;
-                if (_err) {
-                    err = _err;
-                }
-                debug ? saveLog(`rImap.fetchAndDelete finished by err [${err && err.message ? err.message : null}]`) : null;
-                rImap.logout();
-                rImap = null;
-            });
-        });
-        rImap.once('end', err => {
-            if (!didFatch) {
-                debug ? saveLog(`doCatchMail rImap.once end but didFatch = false try again!`) : null;
-                return doCatchMail(id, _CallBack);
-            }
-            _CallBack(err, getText);
-        });
-    };
-    exports.seneMessageToFolder(IMapConnect, listenFolder, ramdomText.toString('base64'), null, (err, code) => {
-        if (err) {
-            debug ? saveLog(`seneMessageToFolder got error [${err.message}]`) : null;
-            return doCallBack(err, null);
-        }
-    });
-};
 exports.imapAccountTest = (IMapConnect, CallBack) => {
     debug ? saveLog(`start test imap [${IMapConnect.imapUserName}]`, true) : null;
     let callbackCall = false;
@@ -1076,36 +1030,16 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
             return CallBack(err, ret);
         }
     };
-    let rImap = new qtGateImapRead(IMapConnect, listenFolder, false, mail => {
+    let rImap = new qtGateImapRead(IMapConnect, listenFolder, debug, mail => {
         rImap.logout();
-        rImap = null;
-        const attach = exports.getMailAttached(mail);
-        debug ? saveLog(`test rImap on new mail! `) : null;
-        if (!attach) {
-            return doCallBack(new Error(`imapAccountTest ERROR: can't read attachment!`), null);
-        }
-        if (ramdomText.compare(attach) !== 0) {
-            return doCallBack(new Error(`imapAccountTest ERROR: attachment changed!`), null);
-        }
-        return doCallBack(null, new Date().getTime() - startTime);
     });
     rImap.once('ready', () => {
         debug ? saveLog(`rImap.once ( 'ready' ) do new qtGateImapwrite`) : null;
-        startTime = new Date().getTime();
-        timeout = timers_1.setTimeout(() => {
-            if (rImap) {
-                rImap.logout();
-            }
-            debug ? saveLog(`imapAccountTest doing timeout`) : null;
-            doCallBack(new Error('timeout'), null);
-        }, pingFailureTime);
-        exports.seneMessageToFolder(IMapConnect, listenFolder, ramdomText.toString('base64'), null, err => {
-            if (err) {
-                debug ? saveLog(`imapAccountTest seneMessageToFolder Error! ${err.message}`) : null;
-            }
-        });
+        rImap.logout();
     });
-    rImap.once('end', () => {
+    rImap.once('end', err => {
+        console.log(`imapAccountTest on end err = `, err);
+        doCallBack(err);
     });
     rImap.once('error', err => {
         debug ? saveLog(`rImap.once ( 'error' ) [${err.message}]`, true) : null;
@@ -1113,7 +1047,7 @@ exports.imapAccountTest = (IMapConnect, CallBack) => {
     });
 };
 exports.imapGetMediaFile = (IMapConnect, fileName, CallBack) => {
-    let rImap = new qtGateImapRead(IMapConnect, fileName, false, mail => {
+    let rImap = new qtGateImapRead(IMapConnect, fileName, debug, mail => {
         rImap.logout();
         const retText = exports.getMailAttachedBase64(mail);
         return CallBack(null, retText);
@@ -1254,7 +1188,7 @@ class imapPeer extends Event.EventEmitter {
         }
         this.makeRImap = true;
         //saveLog ( `=====> newReadImap!`, true )
-        this.rImap = new qtGateImapRead(this.imapData, this.listenBox, false, email => {
+        this.rImap = new qtGateImapRead(this.imapData, this.listenBox, debug, email => {
             this.mail(email);
         });
         this.rImap.once('ready', () => {

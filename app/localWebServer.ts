@@ -145,7 +145,6 @@ export default class localServer {
 		let sendMail = false
 		const _exitFunction = err => {
 			console.trace ( `makeConnect on _exitFunction err this.CoNETConnectCalss destroy!`, err )
-
 			this.CoNETConnectCalss = null
 			
 		}
@@ -274,18 +273,19 @@ export default class localServer {
 
 		socket.on ( 'doingRequest', ( uuid, request, CallBack1 ) => {
 			const _uuid = Uuid.v4()
-			CallBack1( _uuid )
+			CallBack1 ( _uuid )
 
 			const _callBack = ( ...data ) => {
 				socket.emit ( _uuid, ...data )
 			}
 			this.requestPool.set ( uuid, socket )
-			saveLog (`doingRequest on ${ uuid }`)
+			
 			if ( this.CoNETConnectCalss ) {
+				saveLog (`doingRequest on ${ uuid }`)
 				return this.CoNETConnectCalss.requestCoNET_v1 ( uuid, request, _callBack )
 			}
-			return socket.emit ('systemErr')
-			
+			saveLog ( `doingRequest on ${ uuid } but have not CoNETConnectCalss need restart! socket.emit ( 'systemErr' )`)
+			socket.emit ( 'systemErr' )
 		})
 
 		socket.on ( 'getFilesFromImap', ( files: string, CallBack1 ) => {
@@ -295,7 +295,7 @@ export default class localServer {
 			const _callBack = ( ...data ) => {
 				socket.emit ( uuid, ...data )
 			}
-			console.log ( `socket.on ('getFilesFromImap')`, files )
+			
 			if ( typeof files !== 'string' || !files.length ) {
 				return _callBack ( new Error ('invalidRequest'))
 			}
@@ -421,10 +421,16 @@ export default class localServer {
 		socket.on ( 'checkPemPassword', ( password: string, CallBack1 ) => {
 			const uuid = Uuid.v4()
 			CallBack1 ( uuid )
+			this.sessionHashPool.push ( sessionHash = Crypto.randomBytes ( 10 ).toString ('hex'))
 
-			const passwordFail = ( ...data ) => {
-				return socket.emit ( uuid, null, ...data )
+			const passwordFail = ( err ) => {
+				if ( err ) {
+					return socket.emit ( uuid, null, err )
+				}
+				return socket.emit ( uuid, null, err, this.Pbkdf2Password, sessionHash )
+				
 			}
+
 			if ( !this.config.keypair || !this.config.keypair.publicKey ) {
 				console.log ( `checkPemPassword !this.config.keypair` )
 				
@@ -439,7 +445,10 @@ export default class localServer {
 					console.log ( `savedPasswrod !== password `)
 					return passwordFail ( true )
 				}
-
+				
+				return passwordFail ( this.imapConnectData )
+				
+				
 			}
 			
 			return Async.waterfall ([
@@ -451,6 +460,7 @@ export default class localServer {
 				( key, next ) => {
 					//console.log ( `checkPemPassword Tool.getKeyPairInfo success!`)
 					if ( ! key.passwordOK ) {
+						this.Pbkdf2Password = null
 						saveLog ( `[${ clientName }] on checkPemPassword had try password! [${ password }]` )
 						return passwordFail ( true )
 					}
@@ -475,14 +485,14 @@ export default class localServer {
 					}
 				}
 
-				this.sessionHashPool.push ( sessionHash = Crypto.randomBytes (10).toString ('hex'))
-				//console.log (`this.sessionHashPool.push!\n${ this.sessionHashPool }\n${ this.sessionHashPool.length }`)
+				
+				// console.log (`this.sessionHashPool.push!\n${ this.sessionHashPool }\n${ this.sessionHashPool.length }`)
 				this.listenAfterPassword ( socket, sessionHash )
 				try {
 					this.imapConnectData = JSON.parse ( data )
 					this.localConnected.set ( clientName, clientObj )
 					
-					return passwordFail ( this.imapConnectData, this.Pbkdf2Password, sessionHash )
+					return passwordFail ( this.imapConnectData )
 				} catch ( ex ) {
 					return passwordFail ( null )
 				}
@@ -496,7 +506,7 @@ export default class localServer {
 			console.log ( `on deleteKeyPairNext` )
 			const thisConnect = this.localConnected.get ( clientName )
 
-			if ( this.localConnected.size > 1 && ! thisConnect.login ) {
+			if ( this.localConnected.size > 1 && thisConnect && ! thisConnect.login ) {
 				console.log (`this.localConnected = [${ Util.inspect( this.localConnected, false, 2, true )}], thisConnect.login = [${ thisConnect.login }]`)
 				return this.socketServer.emit ( 'deleteKeyPairNoite' )
 			}

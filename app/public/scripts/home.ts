@@ -332,7 +332,6 @@ module view_layout {
 					})
 				}
 			})
-
 			
         }
         
@@ -476,7 +475,9 @@ module view_layout {
 		 */
 		
 		private svgDemo_showLanguage () {
-			
+			if ( !this.sectionWelcome()) {
+				return
+			}
 			let i = 0
 			const changeLanguage = () => {
 				if ( ++i === 1 ) {

@@ -391,6 +391,9 @@ var view_layout;
          * 		T/t = Translate (t is relative, T is absolute) R/r = rotate(r is relative, R is absolute) S/s = scale(s is relative, S is absolute)
          */
         svgDemo_showLanguage() {
+            if (!this.sectionWelcome()) {
+                return;
+            }
             let i = 0;
             const changeLanguage = () => {
                 if (++i === 1) {

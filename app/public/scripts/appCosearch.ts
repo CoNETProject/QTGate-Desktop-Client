@@ -160,6 +160,11 @@ let appScript = {
 	},
 
 	search_form: ( self, event ) => {
+
+		if ( self.showInputLoading()) {
+			return 
+		}
+		
 		if ( !_view.CanadaBackground ()) {
 			_view.CanadaBackground ( true )
 		}

@@ -34,6 +34,7 @@ import * as Tool from './initSystem'
 const MAX_INT = 9007199254740992
 const debug = false
 const pingFailureTime = 1000 * 60
+const NoopLoopWaitingTime = 1000 * 1
 
 const ErrorLogFile = join ( Tool.QTGateFolder, 'imap.log' )
 const ErrorLogFileStream = join ( Tool.QTGateFolder, 'imapStream.log' )
@@ -422,7 +423,7 @@ class ImapServerSwitchStream extends Stream.Transform {
 		
         this.doCommandCallback = ( err => {
             if ( err ) {
-                return this.imapServer.destroyAll ( null )
+                return this.imapServer.destroyAll ( err )
             }
             this.waitingDoingIdleStop = false
             this.runningCommand = null
@@ -437,7 +438,16 @@ class ImapServerSwitchStream extends Stream.Transform {
             
             if ( this.imapServer.idleSupport ) {
                 return this.idleNoop ()
-            }
+			}
+			/**
+			 * NOOP support
+			 */
+			setTimeout(() => {
+				if ( !this.runningCommand ) {
+					return this.idleNoop ()
+				}
+				
+			},  NoopLoopWaitingTime )
 
         })
     
@@ -456,7 +466,10 @@ class ImapServerSwitchStream extends Stream.Transform {
                     
 					if ( /^RECENT$|^EXISTS$/i.test ( cmdArray[2] ) || this.isWaitLogout ) {
 						newSwitchRet = true
-						this.idleDoingDown()
+						if ( this.imapServer.idleSupport ) {
+							this.idleDoingDown()
+						}
+						
 						
 					}
                     return callback ()
@@ -779,7 +792,7 @@ class ImapServerSwitchStream extends Stream.Transform {
 		if ( this.imapServer.literalPlus ) {
 			
 			
-			this.debug ? debugOut ( out, false, this.imapServer.listenFolder || this.imapServer.imapSerialID ) : null
+			this.debug ? debugOut ( out + Base64Data + '\r\n', false, this.imapServer.listenFolder || this.imapServer.imapSerialID ) : null
 			this.push ( out )
 			this.push ( Base64Data + '\r\n' )
 			
@@ -1067,7 +1080,7 @@ export class qtGateImap extends Event.EventEmitter {
 				this.destroyAll ( null )
 			})
         }
-
+		console.log (`qtGateImap connect mail server [${ this.IMapConnect.imapServer }: ${ this.port }]`)
         if ( ! this.IMapConnect.imapSsl ) {
             this.socket = Net.createConnection ({ port: this.port, host: this.IMapConnect.imapServer }, _connect )
         } else {
@@ -1094,7 +1107,6 @@ export class qtGateImap extends Event.EventEmitter {
 
     constructor ( public IMapConnect: imapConnect, public listenFolder: string, public deleteBoxWhenEnd: boolean, public writeFolder: string, private debug: boolean, public newMail: ( mail ) => void ) {
         super ()
-        //saveLog ( `new qtGateImap imapSerialID [${ this.imapSerialID }] listenFolder [${ this.listenFolder }] writeFolder [${ this.writeFolder }]`, true )
         this.connect ()
         this.once ( `error`, err => {
             debug ? saveLog ( `[${ this.imapSerialID }] this.on error ${ err && err.message ? err.message : null }`) : null
@@ -1145,7 +1157,7 @@ export class qtGateImap extends Event.EventEmitter {
 }
 
 export const seneMessageToFolder = ( IMapConnect: imapConnect, writeFolder: string, message: string, subject: string, CallBack ) => {
-	const wImap = new qtGateImap ( IMapConnect, null, false, writeFolder, false, null )
+	const wImap = new qtGateImap ( IMapConnect, null, false, writeFolder, debug, null )
 	let _callback = false 
 
 	wImap.once ('error', err => {
@@ -1234,75 +1246,6 @@ export const getMailAttachedBase64 = ( email: Buffer ) => {
     return attachment.toString()
 }
 
-export const imapBasicTest = ( IMapConnect: imapConnect, CallBack ) => {
-    debug ? saveLog ( `start imapBasicTest imap [${ JSON.stringify (IMapConnect) }]`): null
-    let callbackCall = false
-    let append = false
-    let timeout: NodeJS.Timer = null
-    const listenFolder = 'INBOX'
-    let getText = false
-    const ramdomText = Crypto.randomBytes ( 1024*100 )
-
-    const doCallBack = ( err, ret ) => {
-        if ( ! callbackCall ) {
-            callbackCall = true
-            clearTimeout ( timeout )
-            return CallBack ( err, ret )
-        }
-    }
-    
-    
-
-    const doCatchMail = ( id, _CallBack ) => {
-        let didFatch = false
-        
-        let err: Error = null
-        let rImap = new qtGateImapRead ( IMapConnect, listenFolder, false, mail => {
-            debug ? saveLog (`new mail`) : null
-            const attach = getMailAttached ( mail )
-            if ( ! attach ) {
-                err = new Error ( `imapAccountTest ERROR: can't read attachment!`)
-            } else 
-            if ( ramdomText.compare ( attach ) !== 0 ) {
-                err = new Error ( `imapAccountTest ERROR: attachment changed!`)
-            } else {
-
-                getText = true
-            }   
-            
-        })
-
-        rImap.once ( 'ready', () => {
-            rImap.fetchAndDelete ( id, _err => {
-                didFatch = true
-                if ( _err ) {
-                    err = _err
-                }
-                debug ? saveLog (`rImap.fetchAndDelete finished by err [${ err && err.message ? err.message : null }]` ): null
-                rImap.logout ()
-                rImap = null
-            })
-        })
-
-        rImap.once ( 'end', err => {
-            if ( !didFatch ) {
-                debug ? saveLog (`doCatchMail rImap.once end but didFatch = false try again!`) : null
-                return doCatchMail ( id, _CallBack )
-            }
-            _CallBack ( err , getText )
-        })
-	}
-	
-	seneMessageToFolder ( IMapConnect, listenFolder, ramdomText.toString ('base64'), null, ( err, code ) => {
-		if ( err ) {
-			debug ? saveLog (`seneMessageToFolder got error [${ err.message }]`): null
-            return doCallBack ( err, null )
-		}
-	})
-
-
-
-}
 
 export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
     debug ? saveLog ( `start test imap [${ IMapConnect.imapUserName }]`, true ) : null
@@ -1323,46 +1266,20 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
         }
     }
     
-    let rImap = new qtGateImapRead ( IMapConnect, listenFolder, false, mail => {
+    let rImap = new qtGateImapRead ( IMapConnect, listenFolder, debug, mail => {
         rImap.logout ()
-        rImap = null
-        const attach = getMailAttached ( mail )
-        debug ? saveLog ( `test rImap on new mail! ` ) : null
-        if ( ! attach ) {
-            return doCallBack ( new Error ( `imapAccountTest ERROR: can't read attachment!`), null )
-        }
-        if ( ramdomText.compare ( attach ) !== 0 ) {
-            return doCallBack ( new Error ( `imapAccountTest ERROR: attachment changed!`), null )
-        }
-
-        return doCallBack ( null, new Date().getTime () - startTime )
+       
     })
 
     rImap.once ( 'ready', () => {
-
-		
         debug ? saveLog ( `rImap.once ( 'ready' ) do new qtGateImapwrite`): null 
-
-		startTime = new Date ().getTime ()
-
-		timeout = setTimeout (() => {
-			if ( rImap ) {
-				rImap.logout ()
-			}
-			debug ? saveLog (`imapAccountTest doing timeout`) : null
-			doCallBack ( new Error ( 'timeout' ), null )
-		}, pingFailureTime )
-
-		seneMessageToFolder ( IMapConnect, listenFolder, ramdomText.toString ('base64'), null, err => {
-			if ( err ) {
-				debug ? saveLog (`imapAccountTest seneMessageToFolder Error! ${ err.message }`): null 
-			}
-		})
+		rImap.logout ()
 
     })
 
-    rImap.once ( 'end', () => {
-        
+    rImap.once ( 'end', err => {
+		console.log (`imapAccountTest on end err = `, err )
+        doCallBack ( err )
     })
 
     rImap.once ( 'error', err => {
@@ -1374,7 +1291,7 @@ export const imapAccountTest = ( IMapConnect: imapConnect, CallBack ) => {
 }
 
 export const imapGetMediaFile = ( IMapConnect: imapConnect, fileName: string, CallBack ) => {
-    let rImap = new qtGateImapRead ( IMapConnect, fileName, false, mail => {
+    let rImap = new qtGateImapRead ( IMapConnect, fileName, debug, mail => {
         rImap.logout ()
         const retText = getMailAttachedBase64 ( mail )
         return CallBack ( null, retText )
@@ -1546,7 +1463,7 @@ export class imapPeer extends Event.EventEmitter {
         //saveLog ( `=====> newReadImap!`, true )
 
 
-        this.rImap = new qtGateImapRead ( this.imapData, this.listenBox, false, email => {
+        this.rImap = new qtGateImapRead ( this.imapData, this.listenBox, debug, email => {
             this.mail ( email )
         })
 
@@ -1625,7 +1542,4 @@ export class imapPeer extends Event.EventEmitter {
 	}
 
 }
-
-
-
 

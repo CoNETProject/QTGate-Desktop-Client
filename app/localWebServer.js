@@ -260,11 +260,12 @@ class localServer {
                 socket.emit(_uuid, ...data);
             };
             this.requestPool.set(uuid, socket);
-            saveLog(`doingRequest on ${uuid}`);
             if (this.CoNETConnectCalss) {
+                saveLog(`doingRequest on ${uuid}`);
                 return this.CoNETConnectCalss.requestCoNET_v1(uuid, request, _callBack);
             }
-            return socket.emit('systemErr');
+            saveLog(`doingRequest on ${uuid} but have not CoNETConnectCalss need restart! socket.emit ( 'systemErr' )`);
+            socket.emit('systemErr');
         });
         socket.on('getFilesFromImap', (files, CallBack1) => {
             const uuid = Uuid.v4();
@@ -272,7 +273,6 @@ class localServer {
             const _callBack = (...data) => {
                 socket.emit(uuid, ...data);
             };
-            console.log(`socket.on ('getFilesFromImap')`, files);
             if (typeof files !== 'string' || !files.length) {
                 return _callBack(new Error('invalidRequest'));
             }
@@ -376,8 +376,12 @@ class localServer {
         socket.on('checkPemPassword', (password, CallBack1) => {
             const uuid = Uuid.v4();
             CallBack1(uuid);
-            const passwordFail = (...data) => {
-                return socket.emit(uuid, null, ...data);
+            this.sessionHashPool.push(sessionHash = Crypto.randomBytes(10).toString('hex'));
+            const passwordFail = (err) => {
+                if (err) {
+                    return socket.emit(uuid, null, err);
+                }
+                return socket.emit(uuid, null, err, this.Pbkdf2Password, sessionHash);
             };
             if (!this.config.keypair || !this.config.keypair.publicKey) {
                 console.log(`checkPemPassword !this.config.keypair`);
@@ -392,6 +396,7 @@ class localServer {
                     console.log(`savedPasswrod !== password `);
                     return passwordFail(true);
                 }
+                return passwordFail(this.imapConnectData);
             }
             return Async.waterfall([
                 next => Tool.getPbkdf2(this.config, password, next),
@@ -402,6 +407,7 @@ class localServer {
                 (key, next) => {
                     //console.log ( `checkPemPassword Tool.getKeyPairInfo success!`)
                     if (!key.passwordOK) {
+                        this.Pbkdf2Password = null;
                         saveLog(`[${clientName}] on checkPemPassword had try password! [${password}]`);
                         return passwordFail(true);
                     }
@@ -424,13 +430,12 @@ class localServer {
                         return saveLog(`Tool.makeGpgKeyOption return err [${err && err.message ? err.message : null}]`);
                     }
                 }
-                this.sessionHashPool.push(sessionHash = Crypto.randomBytes(10).toString('hex'));
-                //console.log (`this.sessionHashPool.push!\n${ this.sessionHashPool }\n${ this.sessionHashPool.length }`)
+                // console.log (`this.sessionHashPool.push!\n${ this.sessionHashPool }\n${ this.sessionHashPool.length }`)
                 this.listenAfterPassword(socket, sessionHash);
                 try {
                     this.imapConnectData = JSON.parse(data);
                     this.localConnected.set(clientName, clientObj);
-                    return passwordFail(this.imapConnectData, this.Pbkdf2Password, sessionHash);
+                    return passwordFail(this.imapConnectData);
                 }
                 catch (ex) {
                     return passwordFail(null);
@@ -441,7 +446,7 @@ class localServer {
             CallBack1();
             console.log(`on deleteKeyPairNext`);
             const thisConnect = this.localConnected.get(clientName);
-            if (this.localConnected.size > 1 && !thisConnect.login) {
+            if (this.localConnected.size > 1 && thisConnect && !thisConnect.login) {
                 console.log(`this.localConnected = [${Util.inspect(this.localConnected, false, 2, true)}], thisConnect.login = [${thisConnect.login}]`);
                 return this.socketServer.emit('deleteKeyPairNoite');
             }
