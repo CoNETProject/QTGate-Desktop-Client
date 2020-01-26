@@ -955,6 +955,7 @@ exports.seneMessageToFolder = (IMapConnect, writeFolder, message, subject, CallB
     });
     wImap.once('ready', () => {
         Async.series([
+            next => wImap.imapStream.createBox(false, writeFolder, next),
             next => wImap.imapStream.appendStreamV4(message, subject, writeFolder, next),
             next => wImap.imapStream._logout(next)
         ], err => {

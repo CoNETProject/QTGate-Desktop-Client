@@ -32,7 +32,7 @@ import * as Fs from 'fs'
 import * as Tool from './initSystem'
 
 const MAX_INT = 9007199254740992
-const debug = false
+const debug = true
 const pingFailureTime = 1000 * 60
 const NoopLoopWaitingTime = 1000 * 1
 
@@ -1170,6 +1170,7 @@ export const seneMessageToFolder = ( IMapConnect: imapConnect, writeFolder: stri
 
 	wImap.once ( 'ready', () => {
 		Async.series ([
+			next => wImap.imapStream.createBox ( false, writeFolder, next ),
 			next => wImap.imapStream.appendStreamV4 ( message, subject, writeFolder, next ),
 			next => wImap.imapStream._logout ( next )
 		], err => {

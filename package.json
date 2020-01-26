@@ -1,6 +1,6 @@
 {
   "name": "conet_client",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "license": "MIT",
   "description": "CoNET platform",
   "scripts": {
@@ -18,16 +18,18 @@
     "node": ">=50.9"
   },
   "devDependencies": {
+    "@types/asn1js": "0.0.1",
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.2",
     "@types/jquery": "^3.3.31",
     "@types/knockout": "^3.4.66",
-    "@types/node": "^12.12.14",
+    "@types/node": "^12.12.25",
     "@types/node-uuid": "^0.0.28",
+    "@types/pkijs": "0.0.2",
     "@types/snapsvg": "0.5.0",
     "@types/socket.io": "^2.1.4",
     "@types/socket.io-client": "1.4.32",
-    "electron": "^7.1.2",
+    "electron": "^7.1.10",
     "electron-builder-squirrel-windows": "22.2.0"
   },
   "build": {
@@ -82,16 +84,16 @@
   },
   "homepage": "https://www.CoNETTech.ca",
   "dependencies": {
-    "async": "^3.1.0",
+    "async": "^3.1.1",
     "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
     "jimp": "^0.9.3",
     "jszip": "^3.2.2",
     "knockout": "^3.5.1",
-    "mime-types": "^2.1.25",
+    "mime-types": "^2.1.26",
     "node-uuid": "^1.4.8",
-    "nodemailer": "^6.3.1",
-    "openpgp": "^4.7.1",
+    "nodemailer": "^6.4.2",
+    "openpgp": "^4.8.1",
     "pug": "^2.0.4",
     "snapsvg": "^0.5.1",
     "socket.io": "^2.3.0",

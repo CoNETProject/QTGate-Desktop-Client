@@ -610,7 +610,7 @@ export default class localServer {
 		this.expressServer.use ( Express.static ( Path.join ( __dirname, 'html' )))
 	
 		
-
+		
 		this.expressServer.get ( '/', ( req, res ) => {
 
             res.render( 'home', { title: 'home', proxyErr: false  })
