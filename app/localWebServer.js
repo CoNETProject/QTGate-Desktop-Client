@@ -76,11 +76,6 @@ const imapErrorCallBack = (message) => {
     }
     return -1;
 };
-class apiRequest {
-    constructor(req) {
-        this.req = req;
-    }
-}
 class localServer {
     constructor(cmdResponse, test) {
         this.cmdResponse = cmdResponse;
@@ -98,7 +93,7 @@ class localServer {
         this.sessionHashPool = [];
         this.Pbkdf2Password = null;
         this.nodeList = [{
-                email: 'QTGate@CoNETTech.ca',
+                email: 'node@Kloak.app',
                 keyID: '',
                 key: ''
             }];
@@ -138,6 +133,11 @@ class localServer {
         });
     }
     catchCmd(mail, uuid) {
+        if (!this.imapConnectData.sendToQTGate) {
+            this.imapConnectData.sendToQTGate = true;
+            Tool.saveEncryptoData(Tool.imapDataFileName1, this.imapConnectData, this.config, this.savedPasswrod, err => {
+            });
+        }
         console.log(`Get response from CoNET uuid [${uuid}] length [${mail.length}]`);
         const socket = this.requestPool.get(uuid);
         if (!socket) {
@@ -157,7 +157,7 @@ class localServer {
             this.CoNETConnectCalss = null;
         };
         const makeConnect = () => {
-            return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, this.openPgpKeyOption, !this.imapConnectData.sendToQTGate, this.keyPair.publicKey, this.nodeList[0].email, (mail, uuid) => {
+            return this.CoNETConnectCalss = new coNETConnect_1.default(this.imapConnectData, this.socketServer, !this.imapConnectData.sendToQTGate, this.nodeList[0].email, this.openPgpKeyOption, this.keyPair.publicKey, (mail, uuid) => {
                 return this.catchCmd(mail, uuid);
             }, _exitFunction);
         };
@@ -203,8 +203,9 @@ class localServer {
             const _callBack = (...data) => {
                 socket.emit(uuid, ...data);
             };
-            saveLog(`socket on tryConnectCoNET!`);
+            console.log(`socket on tryConnectCoNET!\n\n`);
             if (!this.imapConnectData) {
+                console.log(`socket.on ( 'tryConnectCoNET') !this.imapConnectData \n\n `);
                 return _callBack('systemError');
             }
             if (!this.imapConnectData.confirmRisk) {
@@ -235,6 +236,7 @@ class localServer {
                 socket.emit(uuid, ...data);
             };
             const key = Buffer.from(text, 'base64').toString();
+            console.log(`checkActiveEmailSubmit`, key);
             if (key && key.length) {
                 console.log(`active key success! \n[${key}]`);
                 this.keyPair.publicKey = this.config.keypair.publicKey = key;
@@ -260,6 +262,7 @@ class localServer {
                 socket.emit(_uuid, ...data);
             };
             this.requestPool.set(uuid, socket);
+            console.log(`on doingRequest uuid = [${uuid}]\n${request}\n`);
             if (this.CoNETConnectCalss) {
                 saveLog(`doingRequest on ${uuid}`);
                 return this.CoNETConnectCalss.requestCoNET_v1(uuid, request, _callBack);
@@ -377,11 +380,9 @@ class localServer {
             const uuid = Uuid.v4();
             CallBack1(uuid);
             this.sessionHashPool.push(sessionHash = Crypto.randomBytes(10).toString('hex'));
-            const passwordFail = (err) => {
-                if (err) {
-                    return socket.emit(uuid, null, err);
-                }
-                return socket.emit(uuid, null, err, this.Pbkdf2Password, sessionHash);
+            const passwordFail = (imap) => {
+                //onsole.log (`passwordFail this.Pbkdf2Password = [${ this.Pbkdf2Password }]`)
+                return socket.emit(uuid, null, imap, this.Pbkdf2Password, sessionHash);
             };
             if (!this.config.keypair || !this.config.keypair.publicKey) {
                 console.log(`checkPemPassword !this.config.keypair`);
@@ -396,6 +397,7 @@ class localServer {
                     console.log(`savedPasswrod !== password `);
                     return passwordFail(true);
                 }
+                this.listenAfterPassword(socket, sessionHash);
                 return passwordFail(this.imapConnectData);
             }
             return Async.waterfall([
@@ -411,6 +413,7 @@ class localServer {
                         saveLog(`[${clientName}] on checkPemPassword had try password! [${password}]`);
                         return passwordFail(true);
                     }
+                    //console.log (`checkPemPassword this.Pbkdf2Password = [${ this.Pbkdf2Password}]`)
                     this.savedPasswrod = password;
                     this.keyPair = key;
                     clientObj.listenAfterPasswd = clientObj.login = true;
@@ -418,15 +421,15 @@ class localServer {
                     return Tool.makeGpgKeyOption(this.config, this.savedPasswrod, next);
                 },
                 (option_KeyOption, next) => {
-                    //console.log (`checkPemPassword Tool.makeGpgKeyOption success!`)
+                    console.log(`checkPemPassword Tool.makeGpgKeyOption success!`);
                     this.openPgpKeyOption = option_KeyOption;
                     return Tool.readEncryptoFile(Tool.imapDataFileName1, password, this.config, next);
                 }
             ], (err, data) => {
-                //console.log (`checkPemPassword Async.waterfall success!`)
+                console.log(`checkPemPassword Async.waterfall success!`);
                 if (err) {
                     if (!(err.message && /no such file/i.test(err.message))) {
-                        passwordFail(null);
+                        passwordFail(err);
                         return saveLog(`Tool.makeGpgKeyOption return err [${err && err.message ? err.message : null}]`);
                     }
                 }
@@ -434,12 +437,12 @@ class localServer {
                 this.listenAfterPassword(socket, sessionHash);
                 try {
                     this.imapConnectData = JSON.parse(data);
-                    this.localConnected.set(clientName, clientObj);
-                    return passwordFail(this.imapConnectData);
                 }
                 catch (ex) {
-                    return passwordFail(null);
+                    return passwordFail(ex);
                 }
+                this.localConnected.set(clientName, clientObj);
+                return passwordFail(this.imapConnectData);
             });
         });
         socket.on('deleteKeyPairNext', CallBack1 => {

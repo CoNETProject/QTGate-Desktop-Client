@@ -23,13 +23,12 @@ const Event = require("events");
 const Uuid = require("node-uuid");
 const Async = require("async");
 const Crypto = require("crypto");
-const Util = require("util");
 const path_1 = require("path");
 const timers_1 = require("timers");
 const buffer_1 = require("buffer");
 const Tool = require("./initSystem");
 const MAX_INT = 9007199254740992;
-const debug = true;
+const debug = false;
 const pingFailureTime = 1000 * 60;
 const NoopLoopWaitingTime = 1000 * 1;
 const ErrorLogFile = path_1.join(Tool.QTGateFolder, 'imap.log');
@@ -288,6 +287,7 @@ class ImapServerSwitchStream extends Stream.Transform {
             };
             if (newMailIds || (newMailIds = UID)) {
                 const uids = newMailIds.split(',');
+                //console.log (`doNewMail newMailIds = 【${ newMailIds }】`)
                 return Async.eachSeries(uids, (n, next) => {
                     const _uid = parseInt(n);
                     if (_uid > 0) {
@@ -378,7 +378,7 @@ class ImapServerSwitchStream extends Stream.Transform {
             }, idleInterval)
             : null;
         this.commandProcess = (text, cmdArray, next, callback) => {
-            console.log(`idleNoop commandProcess coming ${text}\n${cmdArray}`);
+            //console.log (`idleNoop commandProcess coming ${ text }\n${ cmdArray }`)
             switch (cmdArray[0]) {
                 case '+':
                 case '*': {
@@ -583,13 +583,16 @@ class ImapServerSwitchStream extends Stream.Transform {
             this.push(out + '\r\n');
         }
     }
-    appendStreamV4(Base64Data, subject = null, folderName, CallBack) {
+    appendStreamV4(Base64Data = '', subject = null, folderName, CallBack) {
         if (!this.canDoLogout) {
             return CallBack(new Error(`wImap busy!`));
         }
+        if (!Base64Data) {
+            Base64Data = '';
+        }
         this.canDoLogout = false;
         this.doCommandCallback = (err, response) => {
-            this.debug ? saveLog(`appendStreamV2 doing this.doCommandCallback`) : null;
+            //this.debug ? saveLog (`appendStreamV2 doing this.doCommandCallback`) : null
             timers_1.clearTimeout(this.appendWaitResponsrTimeOut);
             this.canDoLogout = true;
             if (err) {
@@ -606,7 +609,7 @@ class ImapServerSwitchStream extends Stream.Transform {
             let code = response && response.length ? response.split('[')[1] : null;
             if (code) {
                 code = code.split(' ')[2];
-                console.log(`this.doCommandCallback\n\n code = ${code} code.length = ${code.length}\n\n`);
+                //console.log ( `this.doCommandCallback\n\n code = ${ code } code.length = ${ code.length }\n\n` )
                 if (code) {
                     return CallBack(null, parseInt(code));
                 }
@@ -994,7 +997,7 @@ exports.getMailAttached = (email) => {
         return '';
     }
     const attachment = email.slice(attachmentStart + 4);
-    return buffer_1.Buffer.from(attachment.toString(), 'base64');
+    return attachment.toString();
 };
 exports.getMailSubject = (email) => {
     const ret = email.toString().split('\r\n\r\n')[0].split('\r\n');
@@ -1005,7 +1008,7 @@ exports.getMailSubject = (email) => {
         debug ? saveLog(`\n\n${ret} \n`) : null;
         return '';
     }
-    return yy.split(/^subject: /i)[1];
+    return yy.split(/^subject: +/i)[1];
 };
 exports.getMailAttachedBase64 = (email) => {
     const attachmentStart = email.indexOf('\r\n\r\n');
@@ -1054,15 +1057,13 @@ exports.imapGetMediaFile = (IMapConnect, fileName, CallBack) => {
         return CallBack(null, retText);
     });
 };
-const pingPongTimeOut = 1000 * 30;
+const pingPongTimeOut = 1000 * 15;
 class imapPeer extends Event.EventEmitter {
-    constructor(imapData, listenBox, writeBox, enCrypto, deCrypto, exit) {
+    constructor(imapData, listenBox, writeBox, exit) {
         super();
         this.imapData = imapData;
         this.listenBox = listenBox;
         this.writeBox = writeBox;
-        this.enCrypto = enCrypto;
-        this.deCrypto = deCrypto;
         this.exit = exit;
         this.mailPool = [];
         this.domainName = this.imapData.imapUserName.split('@')[1];
@@ -1083,81 +1084,34 @@ class imapPeer extends Event.EventEmitter {
     mail(email) {
         //console.log (`imapPeer new mail:\n\n${ email.toString()}`)
         const subject = exports.getMailSubject(email);
-        const attr = exports.getMailAttached(email).toString();
-        //console.log ( attr )
+        const attr = exports.getMailAttached(email);
         if (subject) {
-            debug ? saveLog(`\n\nnew mail have subject [${subject}]return to APP !\n\n`) : null;
+            /**
+             *
+             *
+             *
+             */
+            if (subject === this.pingUuid) {
+                this.pingUuid = null;
+                console.log(`CoNETConnected`);
+                console.log(attr);
+                timers_1.clearTimeout(this.waitingReplyTimeOut);
+                return this.emit('CoNETConnected', attr);
+            }
+            console.log(`this.newMail\n${email.toString()}`);
             return this.newMail(attr, subject);
         }
-        debug ? saveLog(`\n\nnew mail to this.deCrypto!\n\n`) : null;
-        return this.deCrypto(attr, (err, data) => {
-            if (err) {
-                debug ? saveLog(email.toString()) : null;
-                debug ? saveLog('******************') : null;
-                debug ? saveLog(attr) : null;
-                debug ? saveLog('****************************************') : null;
-                return debug ? saveLog(`deCrypto GOT ERROR! [${err.message}]`) : null;
-            }
-            debug ? saveLog(`\n\nnew mail Try to JSON parse \n\n`) : null;
-            let uu = null;
-            try {
-                uu = JSON.parse(data);
-                console.log(Util.inspect(uu, false, 4, true));
-            }
-            catch (ex) {
-                return debug ? saveLog(`imapPeer mail deCrypto JSON.parse got ERROR [${ex.message}] data = [${Util.inspect(data)}]`, true) : null;
-            }
-            if (uu.ping && uu.ping.length) {
-                debug ? saveLog(`GOT PING [${uu.ping}]`, true) : null;
-                if (!this.peerReady) {
-                    if (/outlook\.com/i.test(this.imapData.imapServer)) {
-                        debug ? saveLog(`doing outlook server support!`) : null;
-                        return timers_1.setTimeout(() => {
-                            debug ? saveLog(`outlook replyPing ()`, true) : null;
-                            this.replyPing(uu);
-                            return this.Ping();
-                        }, 5000);
-                    }
-                    this.replyPing(uu);
-                    return debug ? saveLog(`THIS peerConnect have not ready send ping!`, true) : null;
-                }
-                return this.replyPing(uu);
-            }
-            if (uu.pong && uu.pong.length) {
-                //saveLog ( `===> new PONG come!`, true )
-                if (!this.pingUuid) {
-                    return debug ? saveLog(`GOT in the past PONG [${uu.pong}]!`, true) : null;
-                }
-                if (this.pingUuid !== uu.pong) {
-                    return debug ? saveLog(`GOT unknow PONG [${uu.pong}]! this.pingUuid = [${this.pingUuid}]`, true) : null;
-                }
-                debug ? saveLog(`imapPeer connected Clear waitingReplyTimeOut!`, true) : null;
-                this.pingUuid = null;
-                this.peerReady = true;
-                this.pingCount = 0;
-                this.needPingTimeOut = timers_1.setTimeout(() => {
-                    this.needPing = true;
-                }, pingFailureTime);
-                timers_1.clearTimeout(this.waitingReplyTimeOut);
-                return this.emit('CoNETConnected');
-            }
-            return this.newMail(uu, null);
-        });
+        console.log(`get mail have not subject\n\n`, email.toString());
     }
     replyPing(uu) {
-        return this.encryptAndAppendWImap1(JSON.stringify({ pong: uu.ping }), null, err => {
+        return this.AppendWImap1(null, uu, err => {
             if (err) {
                 debug ? saveLog(`reply Ping ERROR! [${err.message ? err.message : null}]`) : null;
             }
         });
     }
-    encryptAndAppendWImap1(mail, uuid, CallBack) {
-        return Async.waterfall([
-            next => this.enCrypto(mail, next),
-            (data, next) => {
-                return exports.seneMessageToFolder(this.imapData, this.writeBox, buffer_1.Buffer.from(data).toString('base64'), uuid, next);
-            }
-        ], CallBack);
+    AppendWImap1(mail, uuid, CallBack) {
+        return exports.seneMessageToFolder(this.imapData, this.writeBox, mail, uuid, CallBack);
     }
     setTimeOutOfPing() {
         timers_1.clearTimeout(this.waitingReplyTimeOut);
@@ -1175,7 +1129,7 @@ class imapPeer extends Event.EventEmitter {
         }
         this.emit('ping');
         const pingUuid = Uuid.v4();
-        return this.encryptAndAppendWImap1(JSON.stringify({ ping: pingUuid }), null, err => {
+        return this.AppendWImap1(null, pingUuid, err => {
             if (err) {
                 return this.destroy(err);
             }

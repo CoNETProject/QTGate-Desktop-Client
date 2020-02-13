@@ -149,7 +149,7 @@ class connectInformationMessage {
         }, 3000);
         return this.socketIo.emit(eventName, ...args, uuid => {
             clearTimeout(_timeout);
-            this.socketIo.once(uuid, (err, ...data) => {
+            return this.socketIo.once(uuid, (err, ...data) => {
                 if (err) {
                     self.showErrorMessage(err);
                 }

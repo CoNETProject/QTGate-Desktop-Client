@@ -177,7 +177,7 @@ class connectInformationMessage {
 		
 		return this.socketIo.emit ( eventName, ...args, uuid => {
 			clearTimeout ( _timeout )
-			this.socketIo.once ( uuid, ( err, ...data ) => {
+			return this.socketIo.once ( uuid, ( err, ...data ) => {
 				if ( err ) {
 					self.showErrorMessage ( err )
 				}
@@ -185,7 +185,7 @@ class connectInformationMessage {
 				if ( _CallBack ) {
 					return _CallBack ( err, ...data )
 				}
-				})
+			})
 		})
 	}
 

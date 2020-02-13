@@ -95,11 +95,6 @@ const imapErrorCallBack = ( message: string ) => {
 
 }
 
-class apiRequest {
-	constructor ( private req ) {
-
-	}
-}
 
 export default class localServer {
 	private expressServer = Express()
@@ -116,7 +111,7 @@ export default class localServer {
 	private sessionHashPool = []
 	private Pbkdf2Password = null
 	private nodeList = [{
-		email: 'QTGate@CoNETTech.ca',
+		email: 'node@Kloak.app',
 		keyID:'',
 		key: ''
 	}]
@@ -125,7 +120,13 @@ export default class localServer {
 
 
 	private catchCmd ( mail: string, uuid: string ) {
-		console.log (`Get response from CoNET uuid [${ uuid }] length [${ mail.length }]`)
+		if ( !this.imapConnectData.sendToQTGate ) {
+			this.imapConnectData.sendToQTGate = true
+			Tool.saveEncryptoData (  Tool.imapDataFileName1, this.imapConnectData, this.config, this.savedPasswrod, err => {
+
+			})
+		}
+		console.log ( `Get response from CoNET uuid [${ uuid }] length [${ mail.length }]`)
 		const socket = this.requestPool.get ( uuid )
 		if ( !socket ) {
 			return console.log (`Get cmd that have no matched socket \n\n`, mail )
@@ -151,8 +152,8 @@ export default class localServer {
 
 		const makeConnect = () => {
 			
-			return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, this.openPgpKeyOption, !this.imapConnectData.sendToQTGate,
-				this.keyPair.publicKey, this.nodeList[0].email, ( mail, uuid ) => {
+			return this.CoNETConnectCalss = new CoNETConnectCalss ( this.imapConnectData, this.socketServer, !this.imapConnectData.sendToQTGate, this.nodeList[0].email,
+				this.openPgpKeyOption, this.keyPair.publicKey, ( mail, uuid ) => {
 				return this.catchCmd ( mail, uuid )
 			}, _exitFunction )
 			
@@ -207,9 +208,10 @@ export default class localServer {
 			const _callBack = ( ...data ) => {
 				socket.emit ( uuid, ...data )
 			}
-			saveLog (`socket on tryConnectCoNET!`)
+			console.log (`socket on tryConnectCoNET!\n\n`)
 			if ( !this.imapConnectData ) {
-				return _callBack ('systemError')
+				console.log (`socket.on ( 'tryConnectCoNET') !this.imapConnectData \n\n `)
+				return _callBack ( 'systemError' )
 				
 			}
 			if ( !this.imapConnectData.confirmRisk ) {
@@ -243,11 +245,13 @@ export default class localServer {
 		socket.on ( 'checkActiveEmailSubmit', ( text, CallBack1 ) => {
 			const uuid = Uuid.v4()
 			CallBack1( uuid )
-
+			
 			const _callBack = ( ...data ) => {
 				socket.emit ( uuid, ...data )
 			}
+
 			const key = Buffer.from ( text, 'base64' ).toString ()
+			console.log (`checkActiveEmailSubmit`, key )
 			if ( key && key.length ) {
 				console.log ( `active key success! \n[${ key }]`)
 				
@@ -255,7 +259,7 @@ export default class localServer {
 				this.keyPair.verified = this.config.keypair.verified = true
 				this.imapConnectData.sendToQTGate = true
 				_callBack ()
-				Tool.saveEncryptoData (  Tool.imapDataFileName1, this.imapConnectData, this.config, this.savedPasswrod, err => {
+				Tool.saveEncryptoData ( Tool.imapDataFileName1, this.imapConnectData, this.config, this.savedPasswrod, err => {
 					if ( err ) {
 						saveLog (`Tool.saveConfig return Error: [${ err.message }]`)
 					}
@@ -269,6 +273,7 @@ export default class localServer {
 				})
 				
 			}
+			
 		})
 
 		socket.on ( 'doingRequest', ( uuid, request, CallBack1 ) => {
@@ -280,6 +285,8 @@ export default class localServer {
 			}
 			this.requestPool.set ( uuid, socket )
 			
+			console.log (`on doingRequest uuid = [${ uuid }]\n${ request }\n`)
+
 			if ( this.CoNETConnectCalss ) {
 				saveLog (`doingRequest on ${ uuid }`)
 				return this.CoNETConnectCalss.requestCoNET_v1 ( uuid, request, _callBack )
@@ -419,33 +426,36 @@ export default class localServer {
 		})
 
 		socket.on ( 'checkPemPassword', ( password: string, CallBack1 ) => {
+
 			const uuid = Uuid.v4()
 			CallBack1 ( uuid )
+
 			this.sessionHashPool.push ( sessionHash = Crypto.randomBytes ( 10 ).toString ('hex'))
 
-			const passwordFail = ( err ) => {
-				if ( err ) {
-					return socket.emit ( uuid, null, err )
-				}
-				return socket.emit ( uuid, null, err, this.Pbkdf2Password, sessionHash )
+			const passwordFail = ( imap ) => {
+
+				//onsole.log (`passwordFail this.Pbkdf2Password = [${ this.Pbkdf2Password }]`)
+				return socket.emit ( uuid, null, imap, this.Pbkdf2Password, sessionHash )
 				
 			}
 
 			if ( !this.config.keypair || !this.config.keypair.publicKey ) {
 				console.log ( `checkPemPassword !this.config.keypair` )
-				
 				return passwordFail ( true )
 			}
+
 			if ( !password || password.length < 5 ) {
 				console.log (`! password `)
 				return passwordFail ( true )
 			}
+			
 			if ( this.savedPasswrod && this.savedPasswrod.length ) {
 				if ( this.savedPasswrod !== password ) {
 					console.log ( `savedPasswrod !== password `)
 					return passwordFail ( true )
 				}
 				
+				this.listenAfterPassword ( socket, sessionHash )
 				return passwordFail ( this.imapConnectData )
 				
 				
@@ -455,6 +465,7 @@ export default class localServer {
 				next => Tool.getPbkdf2 ( this.config, password, next ),
 				( Pbkdf2Password: Buffer, next ) => {
 					this.Pbkdf2Password = Pbkdf2Password.toString ( 'hex' )
+					
 					Tool.getKeyPairInfo ( this.config.keypair.publicKey, this.config.keypair.privateKey, this.Pbkdf2Password, next )
 				},
 				( key, next ) => {
@@ -464,23 +475,24 @@ export default class localServer {
 						saveLog ( `[${ clientName }] on checkPemPassword had try password! [${ password }]` )
 						return passwordFail ( true )
 					}
+					//console.log (`checkPemPassword this.Pbkdf2Password = [${ this.Pbkdf2Password}]`)
 					this.savedPasswrod = password
 					
 					this.keyPair = key
-					clientObj.listenAfterPasswd = clientObj.login= true
+					clientObj.listenAfterPasswd = clientObj.login = true
 					this.localConnected.set ( clientName, clientObj )
 					return Tool.makeGpgKeyOption ( this.config, this.savedPasswrod, next )
 				},
 				( option_KeyOption, next ) => {
-					//console.log (`checkPemPassword Tool.makeGpgKeyOption success!`)
+					console.log (`checkPemPassword Tool.makeGpgKeyOption success!`)
 					this.openPgpKeyOption = option_KeyOption
 
 					return Tool.readEncryptoFile ( Tool.imapDataFileName1, password, this.config, next )
 			}], ( err: Error, data: string ) => {
-				//console.log (`checkPemPassword Async.waterfall success!`)
+				console.log (`checkPemPassword Async.waterfall success!`)
 				if ( err ) {
 					if ( !( err.message && /no such file/i.test( err.message ))) {
-						passwordFail ( null )
+						passwordFail ( err )
 						return saveLog ( `Tool.makeGpgKeyOption return err [${ err && err.message ? err.message : null }]` )
 					}
 				}
@@ -488,15 +500,16 @@ export default class localServer {
 				
 				// console.log (`this.sessionHashPool.push!\n${ this.sessionHashPool }\n${ this.sessionHashPool.length }`)
 				this.listenAfterPassword ( socket, sessionHash )
+
 				try {
 					this.imapConnectData = JSON.parse ( data )
-					this.localConnected.set ( clientName, clientObj )
 					
-					return passwordFail ( this.imapConnectData )
 				} catch ( ex ) {
-					return passwordFail ( null )
+					return passwordFail ( ex )
 				}
-				
+				this.localConnected.set ( clientName, clientObj )
+					
+				return passwordFail ( this.imapConnectData )
 			})
 			
 		})

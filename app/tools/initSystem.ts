@@ -54,7 +54,8 @@ export const checkUrl = ( url ) => {
 
     const urlCheck = Url.parse ( url )
 
-    const ret = /^http:|^https:$/.test ( urlCheck.protocol ) && ! /^localhost|^127.0.0.1/.test ( urlCheck.hostname )
+	const ret = /^http:|^https:$/.test ( urlCheck.protocol ) && ! /^localhost|^127.0.0.1/.
+	test ( urlCheck.hostname )
     if ( ret ) {
         return true
     }
@@ -69,13 +70,13 @@ export const CoNETConnectLog = Path.join ( QTGateFolder, 'CoNETConnect.log' )
 export const imapDataFileName1 = Path.join ( QTGateFolder, 'imapData.pem' )
 
 export const CoNET_Home = Path.join ( __dirname )
-export const CoNET_PublicKey = Path.join ( CoNET_Home, '3C272D2E.pem')
+export const CoNET_PublicKey = Path.join ( CoNET_Home, '1231B119.pem')
 
 export const LocalServerPortNumber = 3000
 export const configPath = Path.join ( QTGateFolder, 'config.json' )
 //const packageFilePath = Path.join ( __dirname,'package.json')
 //export const packageFile = require ( packageFilePath )
-export const QTGateSignKeyID = /3acbe3cbd3c1caa9/i
+export const QTGateSignKeyID = /3acbe3cbd3c1caa9|864662851231B119/i
 export const twitterDataFileName = Path.join ( QTGateFolder, 'twitterData.pem' )
 
 export const checkFolder = ( folder: string, CallBack: ( err?: Error ) => void ) => {
@@ -188,6 +189,7 @@ export const getQTGateSign = ( user: OpenPgp.key.users ) => {
 	}
 	let Certification = false
 	user.otherCertifications.forEach ( n => {
+		console.log (`user.otherCertifications\n${ n.issuerKeyId.toHex ().toLowerCase() }`)
 		if ( QTGateSignKeyID.test ( n.issuerKeyId.toHex ().toLowerCase())) {
 			return Certification = true
 		}
@@ -719,7 +721,7 @@ export async function readEncryptoFile ( filename: string, savedPasswrod, config
 			try {
 				options11.message = await OpenPgp.message.readArmored ( data.toString ())
 			} catch ( ex ) {
-				console.log (`options.message error!\n${data.toString ()}`)
+				console.log (`options.message error!\n${ data.toString ()}`)
 				return CallBack ( ex )
 			}
 			let _return = false
@@ -841,7 +843,7 @@ export const sendCoNETConnectRequestEmail = ( imapData: IinputData, openKeyOptio
 			const mailOptions = {
 				from: imapData.smtpUserName,
 				to: toEmail,
-				subject:'CoNET',
+				subject:'node',
 				attachments: [{
 					content: _data
 				}]

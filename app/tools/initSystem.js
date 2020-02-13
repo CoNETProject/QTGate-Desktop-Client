@@ -47,7 +47,8 @@ const InitKeyPair = () => {
 };
 exports.checkUrl = (url) => {
     const urlCheck = Url.parse(url);
-    const ret = /^http:|^https:$/.test(urlCheck.protocol) && !/^localhost|^127.0.0.1/.test(urlCheck.hostname);
+    const ret = /^http:|^https:$/.test(urlCheck.protocol) && !/^localhost|^127.0.0.1/.
+        test(urlCheck.hostname);
     if (ret) {
         return true;
     }
@@ -61,12 +62,12 @@ exports.ErrorLogFile = Path.join(exports.QTGateFolder, 'systemError.log');
 exports.CoNETConnectLog = Path.join(exports.QTGateFolder, 'CoNETConnect.log');
 exports.imapDataFileName1 = Path.join(exports.QTGateFolder, 'imapData.pem');
 exports.CoNET_Home = Path.join(__dirname);
-exports.CoNET_PublicKey = Path.join(exports.CoNET_Home, '3C272D2E.pem');
+exports.CoNET_PublicKey = Path.join(exports.CoNET_Home, '1231B119.pem');
 exports.LocalServerPortNumber = 3000;
 exports.configPath = Path.join(exports.QTGateFolder, 'config.json');
 //const packageFilePath = Path.join ( __dirname,'package.json')
 //export const packageFile = require ( packageFilePath )
-exports.QTGateSignKeyID = /3acbe3cbd3c1caa9/i;
+exports.QTGateSignKeyID = /3acbe3cbd3c1caa9|864662851231B119/i;
 exports.twitterDataFileName = Path.join(exports.QTGateFolder, 'twitterData.pem');
 exports.checkFolder = (folder, CallBack) => {
     Fs.access(folder, err => {
@@ -168,6 +169,7 @@ exports.getQTGateSign = (user) => {
     }
     let Certification = false;
     user.otherCertifications.forEach(n => {
+        console.log(`user.otherCertifications\n${n.issuerKeyId.toHex().toLowerCase()}`);
         if (exports.QTGateSignKeyID.test(n.issuerKeyId.toHex().toLowerCase())) {
             return Certification = true;
         }
@@ -750,7 +752,7 @@ exports.sendCoNETConnectRequestEmail = (imapData, openKeyOption, publicKey, toEm
             const mailOptions = {
                 from: imapData.smtpUserName,
                 to: toEmail,
-                subject: 'CoNET',
+                subject: 'node',
                 attachments: [{
                         content: _data
                     }]

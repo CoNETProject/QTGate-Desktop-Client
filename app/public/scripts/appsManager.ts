@@ -472,7 +472,7 @@ class appsManager {
 		 * 		DEBUG use Temp Pug
 		 * 
 		 */
-		/*
+		
 		const _mainMenuObj = _mainMenuObj111
 		self.initMenuArray ( _mainMenuObj.mainMenuItem )
 		_mainMenuObj['_mainMenuItem'] = ko.observableArray ( _mainMenuObj.mainMenuItem )
@@ -480,7 +480,7 @@ class appsManager {
 		self.showTempMain ( true )
 		return self.mainScript ( _mainMenuObj )
 		/** */
-
+		
 		const viewMainMenuu = () => {
 			
 			self.mainHtml ( self.appMenu [1] )
@@ -585,7 +585,7 @@ class appsManager {
 			 */
 
 			
-			/*
+			
 			this.tempAppHtml ( true )
 			
 			appScript.startup ( appScript )
@@ -631,7 +631,7 @@ class appsManager {
 		 * 		use Debug 
 		 * 
 		 */
-		/*
+		
 		return runningApp ( null )
 
 		/** end Debug */

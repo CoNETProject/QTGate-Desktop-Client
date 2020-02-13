@@ -33,21 +33,18 @@ const timeOutWhenSendConnectRequestMail = 1000 * 60;
 const commandRequestTimeOutTime = 1000 * 10;
 const requestTimeOut = 1000 * 60;
 class default_1 extends Imap.imapPeer {
-    constructor(imapData, sockerServer, openKeyOption, sentConnectMail, publicKey, nodeEmailAddress, cmdResponse, _exit) {
-        super(imapData, imapData.clientFolder, imapData.serverFolder, (encryptText, CallBack) => {
-            return Tool.encryptMessage(openKeyOption, encryptText, CallBack);
-        }, (decryptText, CallBack) => {
-            return Tool.decryptoMessage(openKeyOption, decryptText, CallBack);
-        }, err => {
+    constructor(imapData, sockerServer, sentConnectMail, nodeEmailAddress, openKeyOption, publicKey, cmdResponse, _exit) {
+        super(imapData, imapData.clientFolder, imapData.serverFolder, err => {
+            console.debug(`imapPeer doing exit! err =`, err);
             this.sockerServer.emit('tryConnectCoNETStage', null, -2);
             return this.exit1(err);
         });
         this.imapData = imapData;
         this.sockerServer = sockerServer;
-        this.openKeyOption = openKeyOption;
         this.sentConnectMail = sentConnectMail;
-        this.publicKey = publicKey;
         this.nodeEmailAddress = nodeEmailAddress;
+        this.openKeyOption = openKeyOption;
+        this.publicKey = publicKey;
         this.cmdResponse = cmdResponse;
         this._exit = _exit;
         this.CoNETConnectReady = false;
@@ -59,13 +56,14 @@ class default_1 extends Imap.imapPeer {
         this.newMail = (mail, hashCode) => {
             return this.cmdResponse(mail, hashCode);
         };
-        this.on('CoNETConnected', () => {
+        this.on('CoNETConnected', publicKey => {
             this.CoNETConnectReady = true;
             this.sentConnectMail = false;
             saveLog('Connected CoNET!', true);
+            //console.log ( publicKey )
             clearTimeout(this.timeoutWaitAfterSentrequestMail);
             this.connectStage = 4;
-            this.sockerServer.emit('tryConnectCoNETStage', null, 4);
+            this.sockerServer.emit('tryConnectCoNETStage', null, 4, publicKey);
             return;
         });
         this.on('pingTimeOut', () => {
@@ -88,6 +86,7 @@ class default_1 extends Imap.imapPeer {
         });
     }
     exit1(err) {
+        console.trace(`imapPeer doing exit! this.sockerServer.emit ( 'tryConnectCoNETStage', null, -1 )`);
         this.sockerServer.emit('tryConnectCoNETStage', null, -1);
         if (!this.alreadyExit) {
             this.alreadyExit = true;

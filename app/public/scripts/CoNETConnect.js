@@ -41,17 +41,9 @@ class CoNETConnect {
             this.Loading(true);
         }
     }
-    listingConnectStage(err, stage) {
+    listingConnectStage(err, stage, publicKeyMessage) {
         const self = this;
         this.showConnectCoNETProcess(true);
-        /*
-        if ( typeof err === 'number' && err > -1 ) {
-            this.connectStage ( -1 )
-            this.ready ( err )
-            _view.connectInformationMessage.socketIo.removeListener ( 'tryConnectCoNETStage', this.listenFun )
-            return this.connetcError ( err )
-        }
-        */
         switch (stage) {
             case 1: {
                 const index = this.infoTextArray()[this.infoTextArray().length - 1];
@@ -89,18 +81,23 @@ class CoNETConnect {
                 this.showConnectCoNETProcess(false);
                 this.connectedCoNET(true);
                 _view.connectInformationMessage.socketIo.removeListener('tryConnectCoNETStage', this.listenFun);
-                if (!this.isKeypairBeSign) {
-                    if (!this.keyPairSign()) {
-                        let u = null;
-                        return this.keyPairSign(u = new keyPairSign((function () {
-                            self.keyPairSign(u = null);
-                            self.ready(null);
-                        })));
+                return _view.keyPairCalss.decryptMessage(publicKeyMessage, (err, data) => {
+                    if (err) {
+                        return self.infoTextArray.push({ text: ko.observable('unKnowError'), err: ko.observable(true) });
                     }
-                    return;
-                }
-                _view.showIconBar(true);
-                return this.ready(null);
+                    if (!this.isKeypairBeSign) {
+                        if (!this.keyPairSign()) {
+                            let u = null;
+                            return this.keyPairSign(u = new keyPairSign((function () {
+                                self.keyPairSign(u = null);
+                                self.ready(null);
+                            })));
+                        }
+                        return;
+                    }
+                    _view.showIconBar(true);
+                    return this.ready(null);
+                });
             }
             /**
              * 	connectToMailServer
@@ -134,7 +131,7 @@ class CoNETConnect {
         this.showTryAgain(false);
         _view.connectInformationMessage.sockEmit('sendRequestMail', err => {
             if (err) {
-                return this.listingConnectStage(null, -1);
+                return this.listingConnectStage(null, -1, null);
             }
         });
     }
@@ -155,13 +152,13 @@ class CoNETConnect {
         this.connetcError(-1);
         this.Loading(true);
         //return this.test ()
-        this.listenFun = (err, stage) => {
-            return self.listingConnectStage(err, stage);
+        this.listenFun = (err, stage, message) => {
+            return self.listingConnectStage(err, stage, message);
         };
         _view.connectInformationMessage.socketIo.on('tryConnectCoNETStage', this.listenFun);
         _view.connectInformationMessage.sockEmit('tryConnectCoNET', err => {
             if (err) {
-                return this.listingConnectStage(null, -1);
+                return this.listingConnectStage(null, -1, null);
             }
         });
     }

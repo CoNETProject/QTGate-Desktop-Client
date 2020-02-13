@@ -104,7 +104,10 @@ let appScript = {
         self.errorMessageIndex(null);
     },
     returnSearchResultItemsInit: (items) => {
+        let i = 0;
+        const y = [];
         items.Result.forEach(n => {
+            i++;
             n['showLoading'] = ko.observable(false);
             n['conetResponse'] = ko.observable(false);
             n['loadingGetResponse'] = ko.observable(false);
@@ -123,11 +126,8 @@ let appScript = {
                     n.imageInfo['videoTime'] = null;
                 }
             }
-            if (n.clickUrl) {
-                const url = new URLSearchParams(n.clickUrl);
-                n['webUrlHref'] = url.get('imgrefurl');
-                n['imgUrlHref'] = url.get('/imgres?imgurl');
-            }
+            n['webUrlHref'] = n.clickUrl;
+            n['imgUrlHref'] = n.imgSrc;
             n['showImageLoading'] = ko.observable(false);
             n['showImageError'] = ko.observable(false);
             n['snapshotImageReady'] = ko.observable(false);

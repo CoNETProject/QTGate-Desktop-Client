@@ -455,13 +455,12 @@ class appsManager {
          * 		DEBUG use Temp Pug
          *
          */
-        /*
-        const _mainMenuObj = _mainMenuObj111
-        self.initMenuArray ( _mainMenuObj.mainMenuItem )
-        _mainMenuObj['_mainMenuItem'] = ko.observableArray ( _mainMenuObj.mainMenuItem )
-        self.mainLoading ( false )
-        self.showTempMain ( true )
-        return self.mainScript ( _mainMenuObj )
+        const _mainMenuObj = _mainMenuObj111;
+        self.initMenuArray(_mainMenuObj.mainMenuItem);
+        _mainMenuObj['_mainMenuItem'] = ko.observableArray(_mainMenuObj.mainMenuItem);
+        self.mainLoading(false);
+        self.showTempMain(true);
+        return self.mainScript(_mainMenuObj);
         /** */
         const viewMainMenuu = () => {
             self.mainHtml(self.appMenu[1]);
@@ -535,14 +534,11 @@ class appsManager {
              * 			DEBUG APP use Temp pug
              *
              */
-            /*
-            this.tempAppHtml ( true )
-            
-            appScript.startup ( appScript )
-            
-            this.appScript ( appScript )
-            _view.CanadaBackground ( true )
-            return
+            this.tempAppHtml(true);
+            appScript.startup(appScript);
+            this.appScript(appScript);
+            _view.CanadaBackground(true);
+            return;
             /** */
             /**
              *
@@ -572,9 +568,7 @@ class appsManager {
          * 		use Debug
          *
          */
-        /*
-        return runningApp ( null )
-
+        return runningApp(null);
         /** end Debug */
         if (obj) {
             runningApp(obj);
