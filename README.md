@@ -2,7 +2,7 @@
 # CoNet プラットフォームはKloak Platformへ移行
 # 請訪問Kloak平台
 
-# Kloak Platform/Kloakプラットフォーム/Kloak平台(https://github.com/KloakIT/Kloak_platform)
+# [Kloak Platform/Kloakプラットフォーム/Kloak平台](https://github.com/KloakIT/Kloak_platform)
 
 [![Build Status](https://travis-ci.org/QTGate/QTGate-Desktop-Client.svg?branch=master)](https://travis-ci.org/QTGate/QTGate-Desktop-Client)
 [![Gitter](https://img.shields.io/badge/chat-on%20gitter-blue.svg)](https://gitter.im/QTGate/Lobby)
